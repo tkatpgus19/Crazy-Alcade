@@ -1,70 +1,92 @@
-# Getting Started with Create React App
+# Crazy Alcade FrontEnd
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### 초기 세팅 내용
 
-## Available Scripts
+```JavaScript
+- Create-React-App으로 생성.
 
-In the project directory, you can run:
+- 필요없는 파일들 제거. ex) test, test.css ...
+- 필요한 폴더들 생성. ex) images, pages ...
 
-### `npm start`
+- router, router-dom 설치
+- eslint, prettier 설치
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 확인할 것.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```bash
+// frontend 폴더로 이동.
+$cd frontend
 
-### `npm test`
+// vscode로 열기.
+$code .
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+// package.json에 있는 패키지들 설치 작업.
+$npm install
 
-### `npm run build`
+// "프론트의 시작" 글씨 잘 보이나 확인.
+$npm start
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
++ ESLint, Prettier 잘 동작하나 확인.
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 브랜치 생성
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+1. git push origin 브랜치명
 
-### `npm run eject`
+2. gerrit과 gitlab 둘다 생성된 브랜치 반영하기 위해서 기능 관련 작업
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+3. 작업 완료하면 git add . 와 git commit -m “컨벤션 지켜주세요” 으로 커밋 남기기
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+4. git push origin HEAD:refs/for/브랜치명
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+5. 이렇게 푸쉬를 해야 깃랩에는 푸쉬 안되고 gerrit에만 푸쉬가 돼서 코드 리뷰가 가능합니다!
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+6. 코드 리뷰 gerrit에서 하고 submit 하면 깃랩에 푸쉬 됨!
+```
 
-## Learn More
+### 커밋 컨벤션
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+📌 제목 : 코드의 변경 사항에 대해 짧은 요약 (필수)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+| 태그       | 설명                                                 |
+| ---------- | ---------------------------------------------------- |
+| `Feat`     | 새로운 기능 추가                                     |
+| `Fix`      | 버그 수정                                            |
+| `Docs`     | 문서 수정                                            |
+| `Style`    | 코드 포맷 변경, 세미콜론 누락, 코드 수정이 없는 경우 |
+| `Refactor` | 코드 리팩토링                                        |
+| `Test`     | 테스트 코드                                          |
+| `Chore`    | 빌드 업무 수정, 패키지 매니저 수정                   |
+| `Design`   | 디자인 변경                                          |
+| `Add`      | 코드, 테스트, 예제, 문서 등의 추가 생성이 있는 경우  |
+| `Rename`   | 파일명, 폴더명을 수정한 경우                         |
+| `Move`     | 코드의 이동이 있는 경우                              |
+| `Remove`   | 코드(파일)의 삭제가 있는 경우                        |
+| `Comment`  | 필요한 주석 추가 및 변경                             |
 
-### Code Splitting
+<br>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+📌 본문 : 부연 설명 (선택)
 
-### Analyzing the Bundle Size
+- 제목과 구분되기 위해 공백 한 줄을 띄워서 작성
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+<br>
 
-### Making a Progressive Web App
+📌 꼬리말 : issue tracker id 작성 (선택)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- `유형: #이슈 번호`
 
-### Advanced Configuration
+<br>
+✨ 예시
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```
+Feat: 로그인 API 개발
 
-### Deployment
+카카오 소셜 로그인
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Resolves: #123
+Ref: #456
+Related to: #48, #45
+```
