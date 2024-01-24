@@ -34,7 +34,7 @@ $npm start
 
 ### 브랜치 생성
 
-g
+ggggggg
 
 ```bash
 1. git push origin 브랜치명
