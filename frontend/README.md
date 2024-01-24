@@ -48,6 +48,30 @@ $npm start
 6. 코드 리뷰 gerrit에서 하고 submit 하면 깃랩에 푸쉬 됨!
 ```
 
+### 브랜치의 브랜치 로컬에 만들기
+
+```bash
+1. feature 브랜치(feature/login)를 'frontend' 브랜치('master' 브랜치에서 따는 것이 아니다!)에서 분기
+$git checkout -b feature/login frontend
+
+/* ~ 새로운 기능에 대한 작업 수행 ~ */
+/* feature 브랜치에서 모든 작업이 끝나면 */
+
+2. 'frontend' 브랜치로 이동한다.
+$ git checkout frontend
+
+3. 'frontend' 브랜치에 feature/login 브랜치 내용을 병합(merge)한다.
+# --no-ff 옵션: 새로운 커밋 객체를 만들어 'frontend' 브랜치에 merge
+$ git merge --no-ff feature/login
+
+선택 (4. 더 이상 사용하지 않는 feature 브랜치면 삭제한다.)
+# -d 옵션: feature/login에 해당하는 브랜치를 삭제한다.
+$ git branch -d feature/login
+
+5.  'frontend' 브랜치를 원격 중앙 저장소(Gerrit)에 올린다.
+$ git push origin HEAD:refs/for/frontend
+```
+
 ### 폴더 구조
 
 ```
