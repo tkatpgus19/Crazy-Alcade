@@ -1,5 +1,7 @@
 # Crazy Alcade FrontEnd
 
+테스트
+
 ### 초기 세팅 내용
 
 ```JavaScript
@@ -31,6 +33,8 @@ $npm start
 ```
 
 ### 브랜치 생성
+
+g
 
 ```bash
 1. git push origin 브랜치명
