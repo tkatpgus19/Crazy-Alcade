@@ -1,6 +1,6 @@
 # Crazy Alcade FrontEnd
 
-테스트
+테스트 + 브랜치의 브랜치 + 2
 
 ### 초기 세팅 내용
 
@@ -33,8 +33,6 @@ $npm start
 ```
 
 ### 브랜치 생성
-
-g
 
 ```bash
 1. git push origin 브랜치명
