@@ -11,10 +11,10 @@ public class BaseErrorResponse {
     private final String status;
     private final String message;
 
-    public BaseErrorResponse(ExceptionStatus exeptionStatus) {
-        this.code = exeptionStatus.getStatus().value();
-        this.status = exeptionStatus.getStatus().name();
-        this.message = exeptionStatus.getMessage();
+    public BaseErrorResponse(ExceptionStatus exceptionStatus) {
+        this.code = exceptionStatus.getStatus().value();
+        this.status = exceptionStatus.getStatus().name();
+        this.message = exceptionStatus.getMessage();
     }
 
 }
