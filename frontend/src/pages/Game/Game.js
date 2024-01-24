@@ -1,9 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-function Main() {
+
+function Game() {
   return (
     <div>
-      <h1>메인 페이지입니다</h1>
+      <h1>게임 페이지입니다</h1>
       <ul>
         <li>
           <Link to="/">메인화면</Link>
@@ -22,4 +23,4 @@ function Main() {
   );
 }
 
-export default Main;
+export default Game;
