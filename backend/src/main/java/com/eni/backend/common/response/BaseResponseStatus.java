@@ -1,4 +1,4 @@
-package com.eni.backend.common.exception.response;
+package com.eni.backend.common.response;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum ExceptionStatus {
+public enum BaseResponseStatus {
 
     // SUCCESS
     SUCCESS(HttpStatus.OK, "요청에 성공하였습니다."),

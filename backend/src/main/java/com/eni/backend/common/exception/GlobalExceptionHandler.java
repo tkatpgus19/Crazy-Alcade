@@ -1,6 +1,6 @@
 package com.eni.backend.common.exception;
 
-import com.eni.backend.common.exception.response.BaseErrorResponse;
+import com.eni.backend.common.response.BaseErrorResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import static com.eni.backend.common.exception.response.ExceptionStatus.*;
+import static com.eni.backend.common.response.BaseResponseStatus.*;
 
 
 @Slf4j
@@ -45,14 +45,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomBadRequestException.class)
     protected BaseErrorResponse handleCustomException(CustomBadRequestException e) {
         log.error("[CustomBadRequestException]");
-        return new BaseErrorResponse(e.getExceptionStatus());
+        return new BaseErrorResponse(e.getBaseResponseStatus());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(CustomServerErrorException.class)
     public BaseErrorResponse handleDatabaseException(CustomServerErrorException e) {
         log.error("[CustomServerErrorException]", e);
-        return new BaseErrorResponse(e.getExceptionStatus());
+        return new BaseErrorResponse(e.getBaseResponseStatus());
     }
 
 }

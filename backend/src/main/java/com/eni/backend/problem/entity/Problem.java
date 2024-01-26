@@ -36,12 +36,6 @@ public class Problem extends BaseTimeEntity {
     private String description;
 
     @Column(nullable = false)
-    private Integer exp;
-
-    @Column(nullable = false)
-    private Integer coin;
-
-    @Column(nullable = false)
     private Integer time;
 
     @Column(nullable = false)
@@ -63,8 +57,6 @@ public class Problem extends BaseTimeEntity {
         this.no = no;
         this.title = title;
         this.description = description;
-        this.exp = exp;
-        this.coin = coin;
         this.time = time;
         this.memory = memory;
         this.tier = tier;

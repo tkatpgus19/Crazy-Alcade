@@ -24,27 +24,28 @@ public class Tier {
     @Column(nullable = false)
     private TierValue value;
 
-    @Column(nullable = false)
-    private Integer success_exp;
+    @Column(name = "success_exp", nullable = false)
+    private Integer successExp;
 
-    @Column(nullable = false)
-    private Integer normal_fail_exp;
+    @Column(name = "normal_fail_exp", nullable = false)
+    private Integer normalFailExp;
 
-    @Column(nullable = false)
-    private Integer item_fail_exp;
+    @Column(name = "item_fail_exp", nullable = false)
+    private Integer itemFailExp;
 
-    @Column(nullable = false)
-    private Integer retry_exp;
+    @Column(name = "retry_exp", nullable = false)
+    private Integer retryExp;
 
     @OneToMany(mappedBy = "tier", cascade = CascadeType.REMOVE)
     private List<Problem> problems = new ArrayList<>();
 
     @Builder
-    private Tier(TierValue value, Integer success_exp, Integer normal_fail_exp, Integer item_fail_exp, Integer retry_exp) {
+    public Tier(TierValue value, Integer successExp, Integer normalFailExp, Integer itemFailExp, Integer retryExp) {
         this.value = value;
-        this.success_exp = success_exp;
-        this.normal_fail_exp = normal_fail_exp;
-        this.item_fail_exp = item_fail_exp;
-        this.retry_exp = retry_exp;
+        this.successExp = successExp;
+        this.normalFailExp = normalFailExp;
+        this.itemFailExp = itemFailExp;
+        this.retryExp = retryExp;
     }
+
 }
