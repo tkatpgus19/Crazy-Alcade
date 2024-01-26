@@ -1,6 +1,6 @@
 package com.eni.backend.common.exception;
 
-import com.eni.backend.common.exception.response.BaseErrorResponse;
+import com.eni.backend.common.response.BaseErrorResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
