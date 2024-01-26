@@ -4,7 +4,6 @@ import com.eni.backend.code.entity.Code;
 import com.eni.backend.common.entity.BaseTimeEntity;
 import com.eni.backend.common.entity.ProblemPlatform;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -64,7 +63,6 @@ public class Problem extends BaseTimeEntity {
         this.no = no;
         this.title = title;
         this.description = description;
-        this.tier = tier;
         this.exp = exp;
         this.coin = coin;
         this.time = time;
