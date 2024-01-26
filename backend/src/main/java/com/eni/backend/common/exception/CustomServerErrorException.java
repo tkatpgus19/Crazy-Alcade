@@ -1,6 +1,6 @@
 package com.eni.backend.common.exception;
 
-import com.eni.backend.common.exception.response.ExceptionStatus;
+import com.eni.backend.common.response.BaseResponseStatus;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -8,6 +8,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CustomServerErrorException extends RuntimeException {
 
-    private final ExceptionStatus exceptionStatus;
+    private final BaseResponseStatus baseResponseStatus;
 
 }
