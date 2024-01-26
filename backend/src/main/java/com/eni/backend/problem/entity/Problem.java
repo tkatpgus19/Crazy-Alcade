@@ -35,6 +35,12 @@ public class Problem extends BaseTimeEntity {
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String description;
 
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
+    private String input;
+
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
+    private String output;
+
     @Column(nullable = false)
     private Integer time;
 
@@ -52,7 +58,7 @@ public class Problem extends BaseTimeEntity {
     private Tier tier;
 
     @Builder
-    public Problem(ProblemPlatform platform, Integer no, String title, String description, Integer exp, Integer coin, Integer time, Integer memory, Tier tier) {
+    public Problem(ProblemPlatform platform, Integer no, String title, String input, String output, String description, Integer time, Integer memory, Tier tier) {
         this.platform = platform;
         this.no = no;
         this.title = title;
