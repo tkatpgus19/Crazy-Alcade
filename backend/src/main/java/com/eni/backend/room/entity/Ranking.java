@@ -28,9 +28,10 @@ public class Ranking {
     private Integer coin;
 
     @Builder
-    private Ranking(PlayMode playMode, Integer value, Integer coin) {
+    public Ranking(PlayMode playMode, Integer value, Integer coin) {
         this.playMode = playMode;
         this.value = value;
         this.coin = coin;
     }
+
 }
