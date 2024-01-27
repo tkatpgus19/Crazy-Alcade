@@ -81,8 +81,10 @@ Project/
 │ ├── components/ # React 컴포넌트들
 │ ├── pages/ # 페이지 컴포넌트들 (라우팅)
 │ ├── styles/ # CSS 스타일 및 스타일 유틸리티
+│ ├── utils/ # 기능들
+│ ├── store/ # 상태 관리 파일
 │ └── index.js
-│ └── Router.js # 라우팅 파일
+│ └── App.js
 ├── public/
 │ ├── data/ # 데이터
 │ ├── images/ # 정적 이미지 ex) favicon
