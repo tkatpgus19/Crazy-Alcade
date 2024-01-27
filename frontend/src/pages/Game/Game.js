@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
+import { Counter } from "../../utils/counter/Counter";
 function Game() {
   return (
     <div>
@@ -19,6 +19,9 @@ function Game() {
           <Link to="/game">게임화면</Link>
         </li>
       </ul>
+      <div>
+        <Counter />
+      </div>
     </div>
   );
 }
