@@ -11,9 +11,21 @@ html {
   width: 100vw;
   height: 100vh;
   background: white;
+
   display: flex;
-  /*
-  align-items: center;
-  justify-content: center;
-  */
+  align-items: stretch; /* 수직 방향으로 꽉 차게 설정 */
+  justify-content: stretch; /* 수평 방향으로 꽉 차게 설정 */
+}
+
+/* 폰트 적용 */
+@font-face {
+  font-family: "DNFBitBitv2";
+  font-weight: normal;
+  src: url("./fonts/DNFBitBitv2.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "BMDOHYEON";
+  font-weight: normal;
+  src: url("./fonts/BMDOHYEON.ttf") format("truetype");
 }
