@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import imgfile from "../../assets/images/logo.png";
 import background from "../../assets/images/mainback.png";
-import IntroLogout from "./IntroLogout";
 import "./Main.css";
 
 class Main extends Component {
@@ -17,12 +16,18 @@ class Main extends Component {
       alignItems: "space-between",
     };
 
+    // 로고 이미지 스타일 정의
+    const logoStyle = {
+      // 로고에 대한 추가 스타일을 여기에 추가
+    };
+
     return (
       <div className="main-container" style={backgroundStyle}>
         {/* 왼쪽 부분 (my-page) */}
-        <div className="logo">
+        <div className="logo" style={logoStyle}>
           <img className="logoimg" src={imgfile} alt="로고" />
         </div>
+
         <div className="my-page">
           {/* 이름 입력 칸 */}
           <div className="name-input">
@@ -51,6 +56,7 @@ class Main extends Component {
           </div>
 
           <br />
+
           {/* 하단 흰색 네모 칸 4개 정렬 */}
           <div className="white-boxes">
             <div className="white-box"></div>
@@ -63,6 +69,7 @@ class Main extends Component {
           <br />
           <br />
           <br />
+
           {/* 마이페이지 파란색 네모 칸 */}
           <div className="blue-box">
             <p>마이페이지</p>
@@ -73,14 +80,14 @@ class Main extends Component {
         <div className="right-side">
           {/* 오른쪽 상단 버튼들 */}
           <div className="right-top-buttons">
-            <button className="intrologout-button">게임 소개</button>
-            <button className="intrologout-button">로그아웃</button>
+            <button className="intro-button">게임 소개</button>
+            <button className="logout-button">로그아웃</button>
           </div>
 
           <br />
           <br />
 
-          {/* 오른쪽 하단 버튼들 */}
+          {/* ItemShop, CreateRoom 버튼 그룹 */}
           <div className="right-bottom-buttons">
             <button className="itemshop-button">아이템 상점</button>
             <button className="createroom-button">방 만들기</button>
@@ -98,9 +105,6 @@ class Main extends Component {
 
           {/* 채팅 부분 */}
           <div className="chat-page"></div>
-
-          {/* IntroLogout 컴포넌트 */}
-          <IntroLogout />
         </div>
       </div>
     );
