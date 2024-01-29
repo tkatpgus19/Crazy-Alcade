@@ -12,6 +12,7 @@
   /* BOX의 border를 고려해 나가기 버튼 삐져나오는 현상 방지 */
   box-sizing: border-box;
   margin: auto;
+  overflow: hidden;
 }
 
 .roomInfo {

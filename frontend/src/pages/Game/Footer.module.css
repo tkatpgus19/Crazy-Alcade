@@ -1,0 +1,10 @@
+/* Footer.module.css */
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  background-color: transparent;
+  position: fixed;
+  bottom: 10px;
+  width: 95%;
+}

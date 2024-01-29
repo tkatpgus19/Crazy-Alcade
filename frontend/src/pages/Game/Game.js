@@ -5,10 +5,26 @@ import VideoScreen from "./VideoScreen";
 import Problem from "./Problem";
 import WebIDE from "./WebIDE";
 import styles from "./Game.module.css";
+import Footer from "./Footer";
 //importVideoChat from "./VideoChat"; // VideoChat 컴포넌트의 경로에 맞게 수정하세요.
 // import ChatBox from "./ChatBox"; // ChatBox 컴포넌트의 경로에 맞게 수정하세요.
 
 function Game() {
+  const handleSave = () => {
+    // 임시 저장 로직
+    alert("임시 저장");
+  };
+
+  const handleRun = () => {
+    // 코드 실행 로직
+    alert("코드 실행");
+  };
+
+  const handleSubmit = () => {
+    // 코드 제출 로직
+    alert("코드 제출");
+  };
+
   return (
     <div className={styles.backgroundStyle}>
       <Header
@@ -26,6 +42,7 @@ function Game() {
           <WebIDE />
         </div>
       </div>
+      <Footer onSave={handleSave} onRun={handleRun} onSubmit={handleSubmit} />
     </div>
   );
 }
