@@ -12,8 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import static com.eni.backend.common.response.BaseResponseStatus.BAD_REQUEST;
-import static com.eni.backend.common.response.BaseResponseStatus.QUERY_PARAMS_NOT_FOUND;
+import static com.eni.backend.common.response.BaseResponseStatus.*;
 import static com.eni.backend.common.util.BindingResultUtils.getErrorMessages;
 
 @Slf4j
@@ -42,11 +41,25 @@ public class ProblemController {
         log.info("ProblemController.getList");
 
         // 쿼리 파라미터 null 체크
-        if (ObjectUtils.isEmpty(tierId)) {
-            throw new CustomBadRequestException(QUERY_PARAMS_NOT_FOUND);
-        }
+        nullCheck(tierId);
 
         return BaseSuccessResponse.of(problemService.getList(tierId));
+    }
+
+    @GetMapping("/{problem-id}")
+    public BaseSuccessResponse<?> get(@PathVariable(required = false, name = "problem-id") Long problemId) {
+        log.info("ProblemController.get");
+
+        // Path Variable null 체크
+        nullCheck(problemId);
+
+        return BaseSuccessResponse.of(problemService.get(problemId));
+    }
+
+    private void nullCheck(Long id) {
+        if (ObjectUtils.isEmpty(id)) {
+            throw new CustomBadRequestException(QUERY_PARAMS_OR_PATH_VARIABLE_NOT_FOUND);
+        }
     }
 
 }

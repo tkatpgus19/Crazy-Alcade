@@ -25,7 +25,7 @@ public class GetProblemListResponse {
     public static GetProblemListResponse of(Problem problem) {
         return builder()
                 .problemId(problem.getId())
-                .platform(problem.getPlatform().name())
+                .platform(problem.getStringPlatform())
                 .no(problem.getNo())
                 .title(problem.getTitle())
                 .build();

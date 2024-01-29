@@ -5,6 +5,7 @@ import com.eni.backend.common.exception.CustomBadRequestException;
 import com.eni.backend.common.exception.CustomServerErrorException;
 import com.eni.backend.problem.dto.request.PostProblemRequest;
 import com.eni.backend.problem.dto.response.GetProblemListResponse;
+import com.eni.backend.problem.dto.response.GetProblemResponse;
 import com.eni.backend.problem.dto.response.PostProblemResponse;
 import com.eni.backend.problem.entity.Problem;
 import com.eni.backend.problem.entity.Tier;
@@ -70,6 +71,11 @@ public class ProblemService {
                 .collect(Collectors.toList());
     }
 
+    public GetProblemResponse get(Long problemId) {
+        // 조회
+        return GetProblemResponse.of(findProblemById(problemId));
+    }
+
     private ProblemPlatform getProblemPlatform(String platform) {
         ProblemPlatform problemPlatform;
         try {
@@ -95,6 +101,11 @@ public class ProblemService {
         if (!tierRepository.existsById(tierId)) {
             throw new CustomBadRequestException(TIER_NOT_FOUND);
         }
+    }
+
+    private Problem findProblemById(Long problemId) {
+        return problemRepository.findById(problemId)
+                .orElseThrow(() -> new CustomBadRequestException(PROBLEM_NOT_FOUND));
     }
 
 }
