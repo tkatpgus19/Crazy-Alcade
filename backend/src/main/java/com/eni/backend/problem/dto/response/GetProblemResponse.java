@@ -1,9 +1,12 @@
 package com.eni.backend.problem.dto.response;
 
 import com.eni.backend.problem.entity.Problem;
+import com.eni.backend.problem.entity.Testcase;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+
+import java.util.List;
 
 @ToString
 @Getter
@@ -19,9 +22,10 @@ public class GetProblemResponse {
     private String output;
     private String time;
     private String memory;
+    private List<GetExampleResponse> examples;
 
     @Builder
-    public GetProblemResponse(Long problemId, String tier, String platform, Integer no, String title, String description, String input, String output, String time, String memory) {
+    private GetProblemResponse(Long problemId, String tier, String platform, Integer no, String title, String description, String input, String output, String time, String memory, List<GetExampleResponse> examples) {
         this.problemId = problemId;
         this.tier = tier;
         this.platform = platform;
@@ -32,9 +36,10 @@ public class GetProblemResponse {
         this.output = output;
         this.time = time;
         this.memory = memory;
+        this.examples = examples;
     }
 
-    public static GetProblemResponse of(Problem problem) {
+    public static GetProblemResponse of(Problem problem, List<GetExampleResponse> examples) {
         return builder()
                 .problemId(problem.getId())
                 .tier(problem.getStringTier())
@@ -46,6 +51,7 @@ public class GetProblemResponse {
                 .output(problem.getOutput())
                 .time(problem.getStringTime())
                 .memory(problem.getStringMemory())
+                .examples(examples)
                 .build();
     }
 
