@@ -7,6 +7,11 @@
   padding: 16px; /* 전체 컨테이너의 패딩을 설정합니다. */
   box-sizing: border-box;
   height: 150px;
+  border: 1px solid black;
+  overflow-x: hidden;
+  border-radius: 15px;
+  width: 95%;
+  margin: auto;
 }
 
 /* 사용자 영상과 마이크/소리 아이콘을 배치할 영역 추가 */
@@ -19,12 +24,12 @@
 
 .user-video {
   width: 100%; /* 사용자의 영상이 차지할 영역 비율을 조절할 수 있습니다. */
+  height: 100%;
   margin-right: 16px; /* 사용자 영상과 다른 영상 사이의 간격을 조절할 수 있습니다. */
   border: 2px solid #ffffff; /* 흰색 테두리 추가 */
 }
 
 .video-container {
-  width: 30%;
   padding: 0 8px;
   box-sizing: border-box;
 }
@@ -40,8 +45,6 @@ iframe {
   justify-content: center;
   width: 50px;
   height: 50px;
-  background-color: #ffffff; /* 흰색 배경 추가 */
-  color: #007bff; /* 파란색 아이콘 색상 추가 */
   font-size: 24px;
   cursor: pointer;
 }

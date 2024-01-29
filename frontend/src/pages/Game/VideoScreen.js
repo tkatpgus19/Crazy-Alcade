@@ -23,8 +23,10 @@ const VideoScreen = () => {
             allowFullScreen
           ></iframe>
         </div>
-        <div className="mic-icon">🎤</div>
-        <div className="sound-icon">🔊</div>
+        <div className="icon-container">
+          <h1 className="mic-icon">🎤</h1>
+          <h1 className="sound-icon">🔊</h1>
+        </div>
       </div>
       {videoUrls.map((url, index) => (
         <div key={index} className="video-container">
@@ -36,7 +38,9 @@ const VideoScreen = () => {
           ></iframe>
         </div>
       ))}
-      <div className="chat-icon">🗨️</div>
+      <div>
+        <h1 className="chat-icon">🗨️</h1>
+      </div>
     </div>
   );
 };
