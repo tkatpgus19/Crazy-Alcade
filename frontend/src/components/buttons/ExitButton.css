@@ -16,4 +16,5 @@
   line-height: 35px; /* 높이와 동일하게 설정 */
   -webkit-text-stroke: 1px black;
   box-sizing: border-box;
+  margin-right: 35px;
 }

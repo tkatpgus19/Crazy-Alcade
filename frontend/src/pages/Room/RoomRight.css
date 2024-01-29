@@ -1,0 +1,19 @@
+.chat-start-container {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  height: 98%;
+  box-sizing: border-box;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+}
+
+.three-button-container {
+  display: flex;
+  width: 48.7%;
+  height: 100%;
+  gap: 10px;
+}

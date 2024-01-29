@@ -3,7 +3,7 @@
 .header {
   /* 임시 배경색, 배경화면 지정 시 transparent로 변경 예정 */
   width: 100vw;
-  background-color: rgba(51, 51, 51, 0.5);
+  /* background-color: rgba(51, 51, 51, 0.5); */
 
   padding: 10px;
 
