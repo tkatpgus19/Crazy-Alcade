@@ -1,20 +1,36 @@
 package com.eni.backend.common.response;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
 public class BaseErrorResponse {
 
     private final int code;
     private final String status;
     private final String message;
 
-    public BaseErrorResponse(BaseResponseStatus baseResponseStatus) {
-        this.code = baseResponseStatus.getStatus().value();
-        this.status = baseResponseStatus.getStatus().name();
-        this.message = baseResponseStatus.getMessage();
+    @Builder
+    private BaseErrorResponse(int code, String status, String message) {
+        this.code = code;
+        this.status = status;
+        this.message = message;
+    }
+
+    public static BaseErrorResponse of(BaseResponseStatus baseResponseStatus) {
+        return builder()
+                .code(baseResponseStatus.getStatus().value())
+                .status(baseResponseStatus.getStatus().name())
+                .message(baseResponseStatus.getMessage())
+                .build();
+    }
+
+    public static BaseErrorResponse of(BaseResponseStatus baseResponseStatus, String message) {
+        return builder()
+                .code(baseResponseStatus.getStatus().value())
+                .status(baseResponseStatus.getStatus().name())
+                .message(message)
+                .build();
     }
 
 }

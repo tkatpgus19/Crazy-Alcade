@@ -1,6 +1,7 @@
 package com.eni.backend.common.exception;
 
 import com.eni.backend.common.response.BaseErrorResponse;
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
@@ -14,45 +15,69 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import static com.eni.backend.common.response.BaseResponseStatus.*;
 
-
 @Slf4j
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
+    /**
+     * URL Not Found Error
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({BadRequestException.class, NoHandlerFoundException.class, TypeMismatchException.class})
     public BaseErrorResponse handleBadRequest(Exception e) {
         log.error("[BadRequestException]", e);
-        return new BaseErrorResponse(URL_NOT_FOUND);
+        return BaseErrorResponse.of(URL_NOT_FOUND);
     }
 
+    /**
+     * Method Not Supported Error
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public BaseErrorResponse handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         log.error("[HttpRequestMethodNotSupportedException]", e);
-        return new BaseErrorResponse(METHOD_NOT_SUPPORTED);
+        return BaseErrorResponse.of(METHOD_NOT_SUPPORTED);
     }
 
+    /**
+     * Internal Server Error
+     */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(RuntimeException.class)
     public BaseErrorResponse handleRuntimeException(Exception e) {
         log.error("[RuntimeException]", e);
-        return new BaseErrorResponse(SERVER_ERROR);
+        return BaseErrorResponse.of(SERVER_ERROR);
     }
 
+    /**
+     * Validation Error
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ConstraintViolationException.class)
+    public BaseErrorResponse handleConstraintViolationException(Exception e) {
+        log.error("[ConstraintViolationException]", e);
+        return BaseErrorResponse.of(BAD_REQUEST, e.getMessage());
+    }
+
+    /**
+     * Custom Bad Request
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(CustomBadRequestException.class)
-    protected BaseErrorResponse handleCustomException(CustomBadRequestException e) {
+    protected BaseErrorResponse handleCustomBadRequestException(CustomBadRequestException e) {
         log.error("[CustomBadRequestException]");
-        return new BaseErrorResponse(e.getBaseResponseStatus());
+        return BaseErrorResponse.of(e.getBaseResponseStatus());
     }
 
+    /**
+     * Custom Internal Server Error
+     */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(CustomServerErrorException.class)
-    public BaseErrorResponse handleDatabaseException(CustomServerErrorException e) {
+    public BaseErrorResponse handleCustomServerErrorException(CustomServerErrorException e) {
         log.error("[CustomServerErrorException]", e);
-        return new BaseErrorResponse(e.getBaseResponseStatus());
+        return BaseErrorResponse.of(e.getBaseResponseStatus());
     }
 
 }

@@ -30,10 +30,20 @@ public class Testcase {
     private Problem problem;
 
     @Builder
-    public Testcase(String input, String output, Boolean isHidden, Problem problem) {
+    private Testcase(String input, String output, Boolean isHidden, Problem problem) {
         this.input = input;
         this.output = output;
         this.isHidden = isHidden;
         this.problem = problem;
     }
+
+    public static Testcase of(String input, String output, Boolean isHidden, Problem problem) {
+        return builder()
+                .input(input)
+                .output(output)
+                .isHidden(isHidden)
+                .problem(problem)
+                .build();
+    }
+
 }
