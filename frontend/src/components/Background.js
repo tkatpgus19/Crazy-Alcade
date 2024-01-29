@@ -6,7 +6,7 @@ const BackgroundImage = ({ children }) => {
     <div
       style={{
         position: "relative",
-        height: "100%",
+        height: "100vh",
         width: "100%",
         backgroundImage: 'url("/images/background.png")',
         backgroundSize: "cover",

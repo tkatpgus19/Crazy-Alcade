@@ -1,13 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import GameTitle from "./GameTitle.js"; // Import the GameTitle component
 import ExitButton from "../../components/buttons/ExitButton.js"; // Import the ExitButton component
+import styles from "./WaitingRoom.module.css";
 
 const RoomHeader2 = ({ gametitle, onExitClick }) => {
   return (
     <div className="header">
       <div className="room-info">
-        <GameTitle title={gametitle} /> {/* Use GameTitle component */}
+        <div className={styles.gametitle}>1557. 왜 이렇게 빨리 끝나나요</div>
       </div>
       <ExitButton onClick={onExitClick} /> {/* Use ExitButton component */}
     </div>

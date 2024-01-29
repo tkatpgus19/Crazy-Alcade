@@ -1,8 +1,0 @@
-.three-box-container {
-  display: flex;
-  width: 90%;
-  height: 45%;
-  gap: 40px;
-  margin: 30px auto 20px auto;
-  /* 상 우 하 좌 순서 */
-}
