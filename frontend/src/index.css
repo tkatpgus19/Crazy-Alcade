@@ -7,16 +7,6 @@ html {
   overflow: hidden; /* 스크롤 바 숨기기 */
 }
 
-#root {
-  width: 100vw;
-  height: 100vh;
-  background: white;
-
-  display: flex;
-  align-items: stretch; /* 수직 방향으로 꽉 차게 설정 */
-  justify-content: stretch; /* 수평 방향으로 꽉 차게 설정 */
-}
-
 /* 폰트 적용 */
 @font-face {
   font-family: "DNFBitBitv2";

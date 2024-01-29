@@ -24,3 +24,7 @@
   -webkit-text-stroke: 1px black;
   box-sizing: content-box;
 }
+
+.room-title {
+  user-select: none;
+}
