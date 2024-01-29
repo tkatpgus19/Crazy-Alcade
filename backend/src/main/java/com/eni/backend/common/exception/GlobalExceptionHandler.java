@@ -1,6 +1,7 @@
 package com.eni.backend.common.exception;
 
 import com.eni.backend.common.response.BaseErrorResponse;
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
@@ -19,6 +20,9 @@ import static com.eni.backend.common.response.BaseResponseStatus.*;
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
+    /**
+     * URL Not Found Error
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({BadRequestException.class, NoHandlerFoundException.class, TypeMismatchException.class})
     public BaseErrorResponse handleBadRequest(Exception e) {
@@ -26,6 +30,9 @@ public class GlobalExceptionHandler {
         return BaseErrorResponse.of(URL_NOT_FOUND);
     }
 
+    /**
+     * Method Not Supported Error
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public BaseErrorResponse handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
@@ -33,6 +40,9 @@ public class GlobalExceptionHandler {
         return BaseErrorResponse.of(METHOD_NOT_SUPPORTED);
     }
 
+    /**
+     * Internal Server Error
+     */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(RuntimeException.class)
     public BaseErrorResponse handleRuntimeException(Exception e) {
@@ -40,6 +50,19 @@ public class GlobalExceptionHandler {
         return BaseErrorResponse.of(SERVER_ERROR);
     }
 
+    /**
+     * Validation Error
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ConstraintViolationException.class)
+    public BaseErrorResponse handleConstraintViolationException(Exception e) {
+        log.error("[ConstraintViolationException]", e);
+        return BaseErrorResponse.of(BAD_REQUEST, e.getMessage());
+    }
+
+    /**
+     * Custom Bad Request
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(CustomBadRequestException.class)
     protected BaseErrorResponse handleCustomBadRequestException(CustomBadRequestException e) {
@@ -47,6 +70,9 @@ public class GlobalExceptionHandler {
         return BaseErrorResponse.of(e.getBaseResponseStatus());
     }
 
+    /**
+     * Custom Internal Server Error
+     */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(CustomServerErrorException.class)
     public BaseErrorResponse handleCustomServerErrorException(CustomServerErrorException e) {

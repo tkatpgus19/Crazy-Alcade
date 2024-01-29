@@ -3,8 +3,6 @@ package com.eni.backend.common.response;
 import lombok.Builder;
 import lombok.Getter;
 
-import static com.eni.backend.common.response.BaseResponseStatus.SUCCESS;
-
 @Getter
 public class BaseErrorResponse {
 
@@ -24,6 +22,14 @@ public class BaseErrorResponse {
                 .code(baseResponseStatus.getStatus().value())
                 .status(baseResponseStatus.getStatus().name())
                 .message(baseResponseStatus.getMessage())
+                .build();
+    }
+
+    public static BaseErrorResponse of(BaseResponseStatus baseResponseStatus, String message) {
+        return builder()
+                .code(baseResponseStatus.getStatus().value())
+                .status(baseResponseStatus.getStatus().name())
+                .message(message)
                 .build();
     }
 
