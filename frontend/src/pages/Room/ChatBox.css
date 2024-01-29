@@ -1,0 +1,14 @@
+/* ChatBox.css */
+
+.chat-box {
+  background-color: #0777d2; /* 파란색 배경 */
+  width: 95%; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
+  height: 85%;
+  border-radius: 15px;
+  margin-top: auto;
+  margin-left: 20px;
+
+  margin-right: auto;
+  border: 1.6px solid;
+  border-color: black;
+}
