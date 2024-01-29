@@ -1,0 +1,25 @@
+/* MainContent.css */
+
+.mainContent {
+  display: flex;
+  flex-direction: row; /* 가로 방향으로 배치 */
+  margin-top: 16px; /* 원하는 간격으로 조절 */
+}
+
+.problemArea,
+.webIDE {
+  flex: 1;
+  border: 2px solid #ffffff;
+  overflow: hidden;
+}
+
+.problemArea {
+  padding: 16px;
+  background-color: #3498db; /* 예시 색상, 필요에 따라 변경 */
+  flex: 2; /* 40%를 차지하도록 설정 */
+}
+
+.webIDE {
+  flex: 3; /* 60%를 차지하도록 설정 */
+  background-color: grey; /* 예시 색상, 필요에 따라 변경 */
+}

@@ -14,7 +14,12 @@
   margin: auto;
 }
 
-.timer-and-exit {
+.roomInfo {
+  display: flex;
+  align-items: center;
+}
+
+.timerAndExit {
   display: flex;
   align-items: center;
 }

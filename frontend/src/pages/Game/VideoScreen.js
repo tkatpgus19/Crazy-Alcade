@@ -1,7 +1,7 @@
 // VideoScreen.js
 
 import React from "react";
-import "./VideoScreen.css";
+import styles from "./VideoScreen.module.css";
 
 const VideoScreen = () => {
   const videoUrls = [
@@ -13,9 +13,9 @@ const VideoScreen = () => {
   ];
 
   return (
-    <div className="video-screen">
-      <div className="user-area">
-        <div className="user-video">
+    <div className={styles.videoScreen}>
+      <div className={styles.userArea}>
+        <div className={styles.userVideo}>
           <iframe
             title="User Video"
             src="https://example.com/user-video"
@@ -23,13 +23,13 @@ const VideoScreen = () => {
             allowFullScreen
           ></iframe>
         </div>
-        <div className="icon-container">
-          <h1 className="mic-icon">🎤</h1>
-          <h1 className="sound-icon">🔊</h1>
+        <div className="iconContainer">
+          <h1 className="micIcon">🎤</h1>
+          <h1 className="soundIcon">🔊</h1>
         </div>
       </div>
       {videoUrls.map((url, index) => (
-        <div key={index} className="video-container">
+        <div key={index} className="videoContainer">
           <iframe
             title={`Video ${index + 1}`}
             src={url}
