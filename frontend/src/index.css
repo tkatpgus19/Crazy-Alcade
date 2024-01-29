@@ -1,0 +1,23 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* 스크롤 바 숨기기 */
+}
+*/
+
+
+/* 폰트 적용 */
+@font-face {
+  font-family: "DNFBitBitv2";
+  font-weight: normal;
+  src: url("./fonts/DNFBitBitv2.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "BMDOHYEON";
+  font-weight: normal;
+  src: url("./fonts/BMDOHYEON.ttf") format("truetype");
+}
