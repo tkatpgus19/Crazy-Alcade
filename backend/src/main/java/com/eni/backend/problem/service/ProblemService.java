@@ -52,7 +52,7 @@ public class ProblemService {
             throw new CustomServerErrorException(DATABASE_ERROR);
         }
 
-        // ID 값 반환
+        // 생성된 ID 값 반환
         return PostProblemResponse.of(problem.getId());
     }
 
@@ -61,7 +61,7 @@ public class ProblemService {
         try {
             problemPlatform = ProblemPlatform.valueOf(platform);
         } catch (Exception e) {
-            throw new CustomBadRequestException(LANGUAGE_NOT_SUPPORTED);
+            throw new CustomBadRequestException(PLATFORM_NOT_SUPPORTED);
         }
         return problemPlatform;
     }
