@@ -13,8 +13,6 @@
   box-sizing: border-box;
 }
 
-<<<<<<< HEAD
-=======
 .language-box {
   height: 35px;
   width: 80px;
@@ -34,13 +32,10 @@
   box-sizing: content-box;
 }
 
->>>>>>> f64ecaaaf1ad79268f4145b2dd7bef3c42b60313
 .timer-and-exit {
   display: flex;
   align-items: center;
 }
-<<<<<<< HEAD
-=======
 
 .timer {
   height: 35px;
@@ -70,4 +65,3 @@
 .timer:hover {
   opacity: 0.8;
 }
->>>>>>> f64ecaaaf1ad79268f4145b2dd7bef3c42b60313
