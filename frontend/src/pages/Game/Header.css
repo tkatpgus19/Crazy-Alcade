@@ -1,0 +1,67 @@
+/* Header.css */
+
+.header {
+  /* 임시 배경색, 배경화면 지정 시 transparent로 변경 예정 */
+  width: 100vw;
+  background-color: rgba(51, 51, 51, 0.5);
+
+  padding: 10px;
+
+  display: flex;
+  justify-content: space-between;
+  /* BOX의 border를 고려해 나가기 버튼 삐져나오는 현상 방지 */
+  box-sizing: border-box;
+}
+
+.language-box {
+  height: 35px;
+  width: 80px;
+  background-color: whitesmoke;
+  box-shadow: 1px 1px 1px black;
+
+  border: 1px solid;
+  border-color: black;
+  border-radius: 5px;
+
+  font-size: 12px;
+  color: black;
+  font-family: "DNFBitBitv2";
+  text-align: center;
+  line-height: 35px; /* 높이와 동일하게 설정 */
+  -webkit-text-stroke: 0px;
+  box-sizing: content-box;
+}
+
+.timer-and-exit {
+  display: flex;
+  align-items: center;
+}
+
+.timer {
+  height: 35px;
+  width: 110px;
+  background-color: #0bbeff;
+  box-shadow: 1px 1px 1px black;
+
+  margin-right: 8px;
+  padding: 0px 6px;
+  border: 1px solid;
+  border-color: black;
+  border-radius: 5px;
+
+  font-size: 13px;
+  color: black;
+  font-family: "DNFBitBitv2";
+  text-align: center;
+  line-height: 35px; /* 높이와 동일하게 설정 */
+  -webkit-text-stroke: 0.5px white;
+  box-sizing: border-box;
+}
+
+/* Hover 효과 추가 예시 */
+.exit-button:hover,
+.room-title:hover,
+.language-box:hover,
+.timer:hover {
+  opacity: 0.8;
+}
