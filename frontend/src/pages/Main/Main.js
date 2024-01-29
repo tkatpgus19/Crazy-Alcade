@@ -1,28 +1,3 @@
-<<<<<<< HEAD
-import React from "react";
-import { Link } from "react-router-dom";
-
-function Main() {
-  return (
-    <div>
-      <h1>메인 페이지입니다</h1>
-      <ul>
-        <li>
-          <Link to="/">메인화면</Link>
-        </li>
-        <li>
-          <Link to="/login">로그인화면</Link>
-        </li>
-        <li>
-          <Link to="/room">대기화면</Link>
-        </li>
-        <li>
-          <Link to="/game">게임화면</Link>
-        </li>
-      </ul>
-    </div>
-  );
-=======
 import React, { Component } from "react";
 import imgfile from "../../assets/images/logo.png";
 import background from "../../assets/images/mainback.png";
@@ -130,7 +105,6 @@ class Main extends Component {
       </div>
     );
   }
->>>>>>> f64ecaaaf1ad79268f4145b2dd7bef3c42b60313
 }
 
 export default Main;
