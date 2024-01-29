@@ -8,14 +8,103 @@
   margin-top: 20px;
 }
 
-.right-top-buttons {
+.my-page {
+  position: absolute; /* 고정 위치 설정 */
+  left: 60px; /* 왼쪽 공백을 늘립니다. */
+  top: 130px; /* 위쪽에 정렬되도록 설정 */
+  width: 310px; /* 가로 크기를 늘립니다. */
+  height: 555px; /* 세로 크기를 화면 밑까지 확장합니다. */
+  background-color: rgba(52, 49, 49, 0.7); /* 반투명 회색 배경색 지정 */
+  padding: 10px;
+  border: 2px solid black;
+}
+
+/* 스타일링 for 이름 입력 칸 */
+.name-input {
+  position: relative;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  display: flex; /* Flex 컨테이너로 설정 */
+  flex-direction: column; /* 수직으로 정렬 */
+  align-items: center; /* 가운데 정렬 */
+  justify-content: center; /* 가운데 정렬 */
+}
+
+.name-input::before {
+  content: "김배찌"; /* 표시할 텍스트 */
+  color: black; /* 글자 색상 설정 */
+  position: absolute; /* 절대 위치 설정 */
+  top: 50%; /* 상단 여백을 50%로 설정하여 수직 중앙 정렬 */
+  left: 50%; /* 좌측 여백을 50%로 설정하여 수평 중앙 정렬 */
+  transform: translate(-50%, -50%); /* 50% 만큼 이동하여 정확한 중앙 정렬 */
+  font-weight: bold;
+}
+
+/* 스타일링 for 프로필 사진 칸 */
+.profile-picture {
+  position: relative; /* 상대적 위치 설정 */
+  width: 150px; /* 원하는 네모 칸의 너비 */
+  height: 150px; /* 원하는 네모 칸의 높이 */
+  background-color: skyblue; /* 하늘색 배경 설정 */
+  display: flex; /* Flex 컨테이너로 설정 */
+  align-items: center; /* 세로 가운데 정렬 */
+  justify-content: center; /* 가로 가운데 정렬 */
+  margin-left: 75px;
+}
+
+#profile-pic {
+  display: none; /* 기존의 파일 업로드 버튼 감추기 */
+}
+
+/* 스타일링 for 소개 칸 */
+.introduction {
+  margin-bottom: 10px;
+  margin-left: 20px;
+  font-size: 20px;
+  color: white;
+  line-height: 2;
+}
+
+/* 스타일링 for 하단 흰색 네모 칸 4개 정렬 */
+.white-boxes {
+  display: flex; /* Flex 컨테이너로 설정 */
+  align-items: center; /* 가운데 정렬 */
+  justify-content: center; /* 가운데 정렬 */
+}
+
+.white-box {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+  background-color: white;
+  border: 2px solid black;
+}
+
+/* 스타일링 for 마이페이지 파란색 네모 칸 */
+.mypage-blue-box {
+  width: 260px;
+  height: 30px;
+  background-color: #0594df;
+  color: white;
+  margin-left: 25px;
+  text-align: center;
+  line-height: 30px;
+  cursor: pointer;
+  display: flex; /* Flex 컨테이너로 설정 */
+  flex-direction: column; /* 수직으로 정렬 */
+  justify-content: center; /* 가운데 정렬 */
+  align-items: center;
+}
+
+/* .right-top-buttons {
   display: flex;
   gap: 10px;
   margin-top: 10px;
-}
+} */
 
 .intro-button {
-  align-self: flex-end;
+  /* margin-top: 20px; */
+
   margin-right: 10px;
   padding: 10px;
   font-size: 14px;
@@ -28,8 +117,7 @@
 }
 
 .logout-button {
-  align-self: flex-end;
-  margin-right: 10px;
+  margin-right: 20px;
   padding: 10px;
   font-size: 14px;
   cursor: pointer;
@@ -40,8 +128,7 @@
   text-shadow: 2px 2px 2px black; /* 검은색 텍스트 테두리 추가 */
 }
 
-.itemshop-button,
-.createroom-button {
+.itemshop-button {
   right: 60px;
   padding: 10px;
   font-size: 14px;
@@ -52,110 +139,83 @@
   outline: none;
   /* text-shadow: 2px 2px 2px black; 검은색 텍스트 테두리 추가 */
   font-weight: bold;
-}
-
-.intrologout-button:hover {
-  text-decoration: underline;
-}
-
-/* Styling for 아이템 상점 버튼 */
-.itemshop-button {
   border-color: black;
   background-color: orange;
   margin-right: 10px;
 }
 
-/* Styling for 방 만들기 버튼 */
 .createroom-button {
+  right: 70px;
+  padding: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  background: none;
+  border: 2px solid black; /* 검은색 테두리 추가 */
+  color: black;
+  outline: none;
+  /* text-shadow: 2px 2px 2px black; 검은색 텍스트 테두리 추가 */
+  font-weight: bold;
   border-color: black;
   background-color: yellow;
   margin-right: 30px;
 }
 
-.my-page {
-  position: absolute; /* 고정 위치 설정 */
-  left: 60px; /* 왼쪽 공백을 늘립니다. */
-  top: 150px; /* 위쪽에 정렬되도록 설정 */
-  width: 310px; /* 가로 크기를 늘립니다. */
-  height: 75vh; /* 세로 크기를 화면 밑까지 확장합니다. */
-  background-color: rgba(52, 49, 49, 0.7); /* 반투명 회색 배경색 지정 */
-  padding: 10px;
-  border: 2px solid black;
+.intro-button:hover {
+  text-decoration: underline;
 }
 
-/* 스타일링 for 이름 입력 칸 */
-.name-input {
-  margin-bottom: 10px;
-}
-
-/* 스타일링 for 프로필 사진 칸 */
-.profile-picture {
-  margin-bottom: 10px;
-}
-
-/* 스타일링 for 소개 칸 */
-.introduction {
-  margin-bottom: 10px;
-}
-
-/* 스타일링 for 하단 흰색 네모 칸 4개 정렬 */
-.white-boxes {
-  display: flex;
-}
-
-.white-box {
-  width: 50px;
-  height: 50px;
-  margin-right: 10px;
-  background-color: white;
-  border: 2px solid black;
-}
-
-/* 스타일링 for 마이페이지 파란색 네모 칸 */
-.blue-box {
-  width: 100px;
-  height: 50px;
-  background-color: rgb(48, 179, 222);
-  color: white;
-  text-align: center;
-  line-height: 50px;
-  cursor: pointer;
+.logout-button:hover {
+  text-decoration: underline;
 }
 
 .room-page {
   position: absolute; /* 고정 위치 설정 */
   right: 60px; /* 왼쪽 공백을 늘립니다. */
-  top: 150px; /* 위쪽에 정렬되도록 설정 */
+  top: 130px; /* 위쪽에 정렬되도록 설정 */
   width: 1000px; /* 가로 크기를 늘립니다. */
-  height: 45vh; /* 세로 크기를 화면 밑까지 확장합니다. */
+  height: 333px; /* 세로 크기를 화면 밑까지 확장합니다. */
   background-color: rgba(52, 49, 49, 0.7); /* 반투명 회색 배경색 지정 */
   padding: 10px;
   border: 2px solid black;
 }
 
+/* 스타일링 for 드롭다운 버튼 */
+
 /* 게임 방 리스트 스타일 */
 .game-room-list {
+  margin-left: 45px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-bottom: 50px;
-  margin-top: 20%; /* room-page 아래에 여백 추가 */
+  gap: 30px;
+  margin-top: 25px; /* room-page 아래에 여백 추가 */
+  height: 250px;
+  width: 900px;
 }
 
 .room {
   padding: 10px;
   border: 2px solid black;
-  background-color: lightblue;
+  background-color: #12deff;
   color: black;
   text-align: center;
+}
+
+.room-blue-box {
+  width: 200px;
+  height: 30px;
+  background-color: #0584df;
+  color: white;
+  text-align: left;
+  font-weight: bold;
+  line-height: 30px;
 }
 
 .chat-page {
   position: absolute; /* 고정 위치 설정 */
   right: 60px; /* 왼쪽 공백을 늘립니다. */
-  top: 520px; /* 위쪽에 정렬되도록 설정 */
+  top: 500px; /* 위쪽에 정렬되도록 설정 */
   width: 1000px; /* 가로 크기를 늘립니다. */
-  height: 25vh; /* 세로 크기를 화면 밑까지 확장합니다. */
+  height: 185px; /* 세로 크기를 화면 밑까지 확장합니다. */
   background-color: rgba(52, 49, 49, 0.7); /* 반투명 회색 배경색 지정 */
   padding: 10px;
   border: 2px solid black;

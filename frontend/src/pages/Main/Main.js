@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { FaAngleDown } from "react-icons/fa"; // FontAwesome에서 FaAngleDown 가져오기
 import imgfile from "../../assets/images/logo.png";
 import background from "../../assets/images/mainback.png";
 import "./Main.css";
@@ -38,24 +39,18 @@ class Main extends Component {
 
           {/* 사진 넣는 칸 */}
           <div className="profile-picture">
-            <label htmlFor="profile-pic">프로필 사진:</label>
+            <label htmlFor="profile-pic">프로필 사진</label>
             <input type="file" id="profile-pic" accept="image/*" />
           </div>
-
-          <br />
-          <br />
-          <br />
 
           {/* 소개 칸 */}
           <div className="introduction">
             <p>
-              <div>lv. </div>
+              <div>Lv. </div>
               <div>경험치 </div>
               <div>코인</div>
             </p>
           </div>
-
-          <br />
 
           {/* 하단 흰색 네모 칸 4개 정렬 */}
           <div className="white-boxes">
@@ -67,11 +62,9 @@ class Main extends Component {
 
           <br />
           <br />
-          <br />
-          <br />
 
           {/* 마이페이지 파란색 네모 칸 */}
-          <div className="blue-box">
+          <div className="mypage-blue-box">
             <p>마이페이지</p>
           </div>
         </div>
@@ -79,24 +72,27 @@ class Main extends Component {
         {/* 오른쪽 부분 (right-side) */}
         <div className="right-side">
           {/* 오른쪽 상단 버튼들 */}
-          <div className="right-top-buttons">
-            <button className="intro-button">게임 소개</button>
-            <button className="logout-button">로그아웃</button>
-          </div>
+
+          <button className="intro-button">게임 소개</button>
+          <button className="logout-button">로그아웃</button>
 
           <br />
           <br />
 
           {/* ItemShop, CreateRoom 버튼 그룹 */}
-          <div className="right-bottom-buttons">
-            <button className="itemshop-button">아이템 상점</button>
-            <button className="createroom-button">방 만들기</button>
-          </div>
+
+          <button className="itemshop-button">아이템 상점</button>
+          <button className="createroom-button">방 만들기</button>
 
           {/* 방 목록 부분 */}
           <div className="room-page">
+            {/* 게임 대기 화면 방 */}
             <div className="game-room-list">
-              <div className="room">Room 1</div>
+              <div className="room">
+                <div className="room-blue-box">
+                  <p>너만 오면 고</p>
+                </div>
+              </div>
               <div className="room">Room 2</div>
               <div className="room">Room 3</div>
               <div className="room">Room 4</div>
