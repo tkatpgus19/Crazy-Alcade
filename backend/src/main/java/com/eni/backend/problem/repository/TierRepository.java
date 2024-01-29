@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface TierRepository extends JpaRepository<Tier, Long> {
 
-    Optional<Tier> findById(Long problemId);
+    boolean existsById(Long tierId);
+    Optional<Tier> findById(Long tierId);
 
 }

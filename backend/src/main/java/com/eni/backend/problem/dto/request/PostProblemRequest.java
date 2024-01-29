@@ -1,4 +1,4 @@
-package com.eni.backend.problem.dto;
+package com.eni.backend.problem.dto.request;
 
 import com.eni.backend.common.entity.ProblemPlatform;
 import com.eni.backend.problem.entity.Problem;

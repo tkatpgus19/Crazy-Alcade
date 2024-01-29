@@ -15,6 +15,7 @@ public enum BaseResponseStatus {
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "유효하지 않은 요청입니다."),
     URL_NOT_FOUND(HttpStatus.BAD_REQUEST, "유효하지 않은 URL 입니다."),
     METHOD_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "해당 URL에서 지원하지 않는 HTTP Method 입니다."),
+    QUERY_PARAMS_NOT_FOUND(HttpStatus.BAD_REQUEST, "쿼리 파라미터 값이 없습니다."),
 
     // INTERNAL_SERVER_ERROR
     SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버에서 오류가 발생하였습니다."),

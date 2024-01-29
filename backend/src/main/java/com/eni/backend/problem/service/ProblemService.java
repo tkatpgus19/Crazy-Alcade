@@ -3,8 +3,9 @@ package com.eni.backend.problem.service;
 import com.eni.backend.common.entity.ProblemPlatform;
 import com.eni.backend.common.exception.CustomBadRequestException;
 import com.eni.backend.common.exception.CustomServerErrorException;
-import com.eni.backend.problem.dto.PostProblemRequest;
-import com.eni.backend.problem.dto.PostProblemResponse;
+import com.eni.backend.problem.dto.request.PostProblemRequest;
+import com.eni.backend.problem.dto.response.GetProblemListResponse;
+import com.eni.backend.problem.dto.response.PostProblemResponse;
 import com.eni.backend.problem.entity.Problem;
 import com.eni.backend.problem.entity.Tier;
 import com.eni.backend.problem.repository.ProblemRepository;
@@ -13,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.eni.backend.common.response.BaseResponseStatus.*;
 
@@ -56,6 +60,16 @@ public class ProblemService {
         return PostProblemResponse.of(problem.getId());
     }
 
+    public List<GetProblemListResponse> getList(Long tierId) {
+        // 유효성 검사
+        validateTierId(tierId);
+
+        // 조회
+        return problemRepository.findAllByTierId(tierId)
+                .stream().map(GetProblemListResponse::of)
+                .collect(Collectors.toList());
+    }
+
     private ProblemPlatform getProblemPlatform(String platform) {
         ProblemPlatform problemPlatform;
         try {
@@ -72,9 +86,15 @@ public class ProblemService {
         }
     }
 
-    private Tier findTierById(Long problemId) {
-        return tierRepository.findById(problemId)
+    private Tier findTierById(Long tierId) {
+        return tierRepository.findById(tierId)
                 .orElseThrow(() -> new CustomBadRequestException(TIER_NOT_FOUND));
+    }
+
+    private void validateTierId(Long tierId) {
+        if (!tierRepository.existsById(tierId)) {
+            throw new CustomBadRequestException(TIER_NOT_FOUND);
+        }
     }
 
 }
