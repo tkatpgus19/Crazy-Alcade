@@ -39,13 +39,13 @@ public class Tier {
     @OneToMany(mappedBy = "tier", cascade = CascadeType.REMOVE)
     private List<Problem> problems = new ArrayList<>();
 
-    @Builder
-    public Tier(TierValue value, Integer successExp, Integer normalFailExp, Integer itemFailExp, Integer retryExp) {
-        this.value = value;
-        this.successExp = successExp;
-        this.normalFailExp = normalFailExp;
-        this.itemFailExp = itemFailExp;
-        this.retryExp = retryExp;
-    }
+//    @Builder
+//    private Tier(TierValue value, Integer successExp, Integer normalFailExp, Integer itemFailExp, Integer retryExp) {
+//        this.value = value;
+//        this.successExp = successExp;
+//        this.normalFailExp = normalFailExp;
+//        this.itemFailExp = itemFailExp;
+//        this.retryExp = retryExp;
+//    }
 
 }
