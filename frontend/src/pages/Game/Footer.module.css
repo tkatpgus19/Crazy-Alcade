@@ -3,8 +3,11 @@
 .footer {
   display: flex;
   justify-content: flex-end;
-  background-color: transparent;
-  position: fixed;
-  bottom: 10px;
   width: 95%;
+  margin: auto;
+}
+
+/* 또는 필요한 경우에는 버튼에도 스타일을 적용할 수 있습니다. */
+.button {
+  margin-right: 20px;
 }
