@@ -1,4 +1,4 @@
-package com.eni.backend.problem.dto;
+package com.eni.backend.problem.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

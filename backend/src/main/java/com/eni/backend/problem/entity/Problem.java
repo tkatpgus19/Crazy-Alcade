@@ -84,5 +84,20 @@ public class Problem extends BaseTimeEntity {
                 .build();
     }
 
+    public String getStringPlatform() {
+        return this.platform.name();
+    }
+
+    public String getStringTime() {
+        return this.time + "초";
+    }
+
+    public String getStringMemory() {
+        return this.memory + "MB";
+    }
+
+    public String getStringTier() {
+        return this.tier.getStringTier();
+    }
 
 }

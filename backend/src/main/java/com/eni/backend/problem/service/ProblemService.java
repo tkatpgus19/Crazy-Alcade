@@ -3,16 +3,24 @@ package com.eni.backend.problem.service;
 import com.eni.backend.common.entity.ProblemPlatform;
 import com.eni.backend.common.exception.CustomBadRequestException;
 import com.eni.backend.common.exception.CustomServerErrorException;
-import com.eni.backend.problem.dto.PostProblemRequest;
-import com.eni.backend.problem.dto.PostProblemResponse;
+import com.eni.backend.problem.dto.request.PostProblemRequest;
+import com.eni.backend.problem.dto.response.GetExampleResponse;
+import com.eni.backend.problem.dto.response.GetProblemListResponse;
+import com.eni.backend.problem.dto.response.GetProblemResponse;
+import com.eni.backend.problem.dto.response.PostProblemResponse;
 import com.eni.backend.problem.entity.Problem;
 import com.eni.backend.problem.entity.Tier;
 import com.eni.backend.problem.repository.ProblemRepository;
+import com.eni.backend.problem.repository.TestcaseRepository;
 import com.eni.backend.problem.repository.TierRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 import static com.eni.backend.common.response.BaseResponseStatus.*;
 
@@ -23,6 +31,7 @@ public class ProblemService {
 
     private final ProblemRepository problemRepository;
     private final TierRepository tierRepository;
+    private final TestcaseRepository testcaseRepository;
 
     @Transactional
     public PostProblemResponse post(PostProblemRequest request) {
@@ -52,8 +61,49 @@ public class ProblemService {
             throw new CustomServerErrorException(DATABASE_ERROR);
         }
 
-        // ID 값 반환
+        // 생성된 ID 값 반환
         return PostProblemResponse.of(problem.getId());
+    }
+
+    public List<GetProblemListResponse> getList(Long tierId) {
+        // 유효성 검사
+        validateTierId(tierId);
+
+        // 조회
+        return problemRepository.findAllByTierId(tierId)
+                .stream().map(GetProblemListResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public GetProblemResponse get(Long problemId) {
+        // 문제 조회
+        Problem problem = findProblemById(problemId);
+
+        // 예제 테스트케이스 조회
+        List<GetExampleResponse> examples = getExamples(problemId);
+
+        // dto로 변환해서 반환
+        return GetProblemResponse.of(problem, examples);
+    }
+
+    private List<GetExampleResponse> getExamples(Long problemId) {
+        return testcaseRepository.findAllByProblemIdAndIsHidden(problemId, false) // 예제 테스트케이스
+                .stream().map(GetExampleResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public GetProblemResponse getRandom(Long tierId) {
+        // 해당 티어의 문제 리스트 조회
+        List<GetProblemListResponse> problems = getList(tierId);
+
+        // 랜덤 번호 생성
+        int randomNo = new Random().nextInt(problems.size());
+
+        // 문제 ID
+        Long problemId = problems.get(randomNo).getProblemId();
+
+        // 반환
+        return get(problemId);
     }
 
     private ProblemPlatform getProblemPlatform(String platform) {
@@ -61,7 +111,7 @@ public class ProblemService {
         try {
             problemPlatform = ProblemPlatform.valueOf(platform);
         } catch (Exception e) {
-            throw new CustomBadRequestException(LANGUAGE_NOT_SUPPORTED);
+            throw new CustomBadRequestException(PLATFORM_NOT_SUPPORTED);
         }
         return problemPlatform;
     }
@@ -72,9 +122,20 @@ public class ProblemService {
         }
     }
 
-    private Tier findTierById(Long problemId) {
-        return tierRepository.findById(problemId)
+    private Tier findTierById(Long tierId) {
+        return tierRepository.findById(tierId)
                 .orElseThrow(() -> new CustomBadRequestException(TIER_NOT_FOUND));
+    }
+
+    private void validateTierId(Long tierId) {
+        if (!tierRepository.existsById(tierId)) {
+            throw new CustomBadRequestException(TIER_NOT_FOUND);
+        }
+    }
+
+    private Problem findProblemById(Long problemId) {
+        return problemRepository.findById(problemId)
+                .orElseThrow(() -> new CustomBadRequestException(PROBLEM_NOT_FOUND));
     }
 
 }
