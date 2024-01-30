@@ -9,7 +9,6 @@ import com.eni.backend.problem.dto.response.GetProblemListResponse;
 import com.eni.backend.problem.dto.response.GetProblemResponse;
 import com.eni.backend.problem.dto.response.PostProblemResponse;
 import com.eni.backend.problem.entity.Problem;
-import com.eni.backend.problem.entity.Testcase;
 import com.eni.backend.problem.entity.Tier;
 import com.eni.backend.problem.repository.ProblemRepository;
 import com.eni.backend.problem.repository.TestcaseRepository;
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import static com.eni.backend.common.response.BaseResponseStatus.*;
@@ -90,6 +90,20 @@ public class ProblemService {
         return testcaseRepository.findAllByProblemIdAndIsHidden(problemId, false) // 예제 테스트케이스
                 .stream().map(GetExampleResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public GetProblemResponse getRandom(Long tierId) {
+        // 해당 티어의 문제 리스트 조회
+        List<GetProblemListResponse> problems = getList(tierId);
+
+        // 랜덤 번호 생성
+        int randomNo = new Random().nextInt(problems.size());
+
+        // 문제 ID
+        Long problemId = problems.get(randomNo).getProblemId();
+
+        // 반환
+        return get(problemId);
     }
 
     private ProblemPlatform getProblemPlatform(String platform) {

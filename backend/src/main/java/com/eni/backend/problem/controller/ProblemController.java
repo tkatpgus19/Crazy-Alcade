@@ -56,6 +56,16 @@ public class ProblemController {
         return BaseSuccessResponse.of(problemService.get(problemId));
     }
 
+    @GetMapping("/random")
+    public BaseSuccessResponse<?> getRandom(@RequestParam(required = false, name = "tier-id") Long tierId) {
+        log.info("ProblemController.getRandom");
+
+        // 쿼리 파라미터 null 체크
+        nullCheck(tierId);
+
+        return BaseSuccessResponse.of(problemService.getRandom(tierId));
+    }
+
     private void nullCheck(Long id) {
         if (ObjectUtils.isEmpty(id)) {
             throw new CustomBadRequestException(QUERY_PARAMS_OR_PATH_VARIABLE_NOT_FOUND);
