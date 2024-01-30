@@ -4,13 +4,10 @@ import React from "react";
 import styles from "./VideoScreen.module.css";
 
 const VideoScreen = () => {
-  const videoUrls = [
-    "https://example.com/video1",
-    "https://example.com/video2",
-    "https://example.com/video3",
-    "https://example.com/video4",
-    "https://example.com/video5",
-  ];
+  const dummyUrl =
+    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+
+  const videoUrls = [dummyUrl, dummyUrl, dummyUrl, dummyUrl, dummyUrl];
 
   return (
     <div className={styles.videoScreen}>
@@ -18,7 +15,7 @@ const VideoScreen = () => {
         <div className={styles.userVideo}>
           <iframe
             title="User Video"
-            src="https://example.com/user-video"
+            src={`${dummyUrl}?autoplay=1`}
             frameBorder="0"
             allowFullScreen
           ></iframe>
@@ -32,7 +29,7 @@ const VideoScreen = () => {
         <div key={index} className="videoContainer">
           <iframe
             title={`Video ${index + 1}`}
-            src={url}
+            src={`${dummyUrl}?autoplay=1`}
             frameBorder="0"
             allowFullScreen
           ></iframe>
