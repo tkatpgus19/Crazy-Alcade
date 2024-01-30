@@ -5,6 +5,7 @@ import RoomHeader2 from "./RoomHeader2";
 import GrayBox from "../../components/graybox/GrayBox";
 import styles from "./WaitingRoom.module.css";
 import MiniBox from "./MiniBox";
+import Status from "./Status";
 
 const Room = () => {
   return (
@@ -13,15 +14,33 @@ const Room = () => {
       <RoomHeader2 onExitClick={() => alert("Exit clicked")} />
       <GrayBox>
         <div className={styles.blue}>
-          <div className={styles.MiniBox3}>
-            <MiniBox />
-            <MiniBox />
-            <MiniBox />
+          <div className={styles.miniBoxup}>
+            <div>
+              <MiniBox image="/images/user.png" />
+              <Status />
+            </div>
+            <div>
+              <MiniBox image="/images/user.png" />
+              <Status />
+            </div>
+            <div>
+              <MiniBox image="/images/user.png" />
+              <Status />
+            </div>
           </div>
-          <div className={styles.MiniBox3}>
-            <MiniBox />
-            <MiniBox />
-            <MiniBox />
+          <div className={styles.miniBoxdown}>
+            <div>
+              <MiniBox image="/images/user.png" />
+              <Status />
+            </div>
+            <div>
+              <MiniBox image="/images/user.png" />
+              <Status />
+            </div>
+            <div>
+              <MiniBox image="/images/user.png" />
+              <Status />
+            </div>
           </div>
         </div>
         <div className={styles.right}>

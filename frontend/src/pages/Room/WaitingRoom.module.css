@@ -2,12 +2,11 @@
 
 .blue {
   background-color: #0777d2; /* 파란색 배경 */
-  width: 845px; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
-  height: 520px; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
+  width: 1000px; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
+  height: 540px; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
   border-radius: 15px;
   margin-left: 1%;
   margin-bottom: auto;
-  margin-right: 1%;
   border: 1.6px solid;
   border-color: black;
 }
@@ -16,15 +15,15 @@
 
 .chat {
   background-color: #0777d2; /* 파란색 배경 */
-  width: 455px; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
-  height: 550px;
+  width: 530px; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
+  height: 520px;
   border-radius: 15px;
   margin-top: auto;
-  margin-left: 20px;
-
+  margin-left: 30px;
   margin-right: auto;
   border: 1.6px solid;
   border-color: black;
+  padding-bottom: 300px;
 }
 
 /* StartButton.css */
@@ -47,10 +46,10 @@
   border-radius: 12px; /* 버튼 모서리 둥글게 */
   border: 2px solid;
   border-color: white;
-  width: 130px;
+  width: 180px;
   height: 40px;
   margin-top: 15px;
-  margin-left: 20px;
+  margin-left: 30px;
   color: white;
   font-family: "DNFBitBitv2";
 }
@@ -73,13 +72,26 @@
   margin: 20px 0 0 0;
 }
 
-/* 3개의 상태창 스타일 */
-.MiniBox3 {
+/* 3개의 상태창 스타일 위*/
+.miniBoxup {
   display: flex;
-  width: 90%;
-  height: 45%;
+  justify-content: space-between;
+  width: 680px;
+  height: 200px;
   gap: 40px;
-  margin: 30px auto 20px auto;
+  margin: 25px auto 50px auto;
+  /* 상 우 하 좌 순서 */
+}
+
+/* 3 개의 상태창 스타일 아래  */
+.miniBoxdown {
+  display: flex;
+  margin-top: 20px;
+  justify-content: space-between;
+  width: 680px;
+  height: 200px;
+  gap: 40px;
+  margin: 20px auto 20px auto;
   /* 상 우 하 좌 순서 */
 }
 
@@ -102,7 +114,7 @@
   display: flex;
   flex-direction: column;
   width: 40%;
-  height: 98%;
+  height: 540px;
   box-sizing: border-box;
 }
 
@@ -124,4 +136,39 @@
   -webkit-text-stroke: 0.5px black;
   box-sizing: content-box;
   margin-left: 30px;
+}
+
+.charid {
+  background-color: #0777d2;
+  border-radius: 8px;
+  border: 2px solid;
+  width: 170px;
+  height: 28px;
+  margin-top: 3px;
+  margin-left: 3px;
+  text-align: center; /* 텍스트 중앙 정렬 */
+  font-family: "DNFBitBitv2";
+  font-size: 18px;
+  color: white;
+  border-color: black;
+}
+
+.ready {
+  background-color: #00396c;
+  border-radius: 8px;
+  border: 2px solid;
+  width: 170px;
+  height: 28px;
+  margin-top: 3px;
+  margin-left: 3px;
+  text-align: center; /* 텍스트 중앙 정렬 */
+  font-family: "DNFBitBitv2";
+  font-size: 18px;
+  color: #f29100;
+  border-color: black;
+  text-shadow:
+    1px 1px 0 #ff0000,
+    -1px -1px 0 #ff0000,
+    1px -1px 0 #ff0000,
+    -1px 1px 0 #ff0000; /* 텍스트 테두리 추가 */
 }
