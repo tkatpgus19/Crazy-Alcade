@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { FaAngleDown } from "react-icons/fa"; // FontAwesome에서 FaAngleDown 가져오기
 import imgfile from "../../assets/images/logo.png";
 import background from "../../assets/images/mainback.png";
-import "./Main.css";
+import "./Main.module.css";
+import styles from "./Main.module.css";
 
 class Main extends Component {
   render() {
@@ -11,7 +11,7 @@ class Main extends Component {
       backgroundImage: `url(${background})`,
       backgroundRepeat: "no-repeat",
       backgroundSize: "cover",
-      height: "100vh",
+      height: "740px",
       display: "flex",
       justifyContent: "space-between",
       alignItems: "space-between",
@@ -23,28 +23,28 @@ class Main extends Component {
     };
 
     return (
-      <div className="main-container" style={backgroundStyle}>
+      <div className={styles.mainContainer} style={backgroundStyle}>
         {/* 왼쪽 부분 (my-page) */}
-        <div className="logo" style={logoStyle}>
-          <img className="logoimg" src={imgfile} alt="로고" />
+        <div className={styles.logo} style={logoStyle}>
+          <img className={styles.logoImg} src={imgfile} alt="로고" />
         </div>
 
-        <div className="my-page">
+        <div className={styles.myPage}>
           {/* 이름 입력 칸 */}
-          <div className="name-input">
+          <div className={styles.nameInput}>
             <label htmlFor="name"></label>
             <input type="text" id="name" />
           </div>
           <br />
 
           {/* 사진 넣는 칸 */}
-          <div className="profile-picture">
+          <div className={styles.profilePicture}>
             <label htmlFor="profile-pic">프로필 사진</label>
-            <input type="file" id="profile-pic" accept="image/*" />
+            <input type="file" id={styles.profilePic} accept="image/*" />
           </div>
 
           {/* 소개 칸 */}
-          <div className="introduction">
+          <div className={styles.introduction}>
             <p>
               <div>Lv. </div>
               <div>경험치 </div>
@@ -53,54 +53,88 @@ class Main extends Component {
           </div>
 
           {/* 하단 흰색 네모 칸 4개 정렬 */}
-          <div className="white-boxes">
-            <div className="white-box"></div>
-            <div className="white-box"></div>
-            <div className="white-box"></div>
-            <div className="white-box"></div>
+          <div className={styles.whiteBoxes}>
+            <div className={styles.whiteBox}></div>
+            <div className={styles.whiteBox}></div>
+            <div className={styles.whiteBox}></div>
+            <div className={styles.whiteBox}></div>
           </div>
 
           <br />
           <br />
 
           {/* 마이페이지 파란색 네모 칸 */}
-          <div className="mypage-blue-box">
+          <div className={styles.myPageBlueBox}>
             <p>마이페이지</p>
           </div>
         </div>
 
         {/* 오른쪽 부분 (right-side) */}
-        <div className="right-side">
+        <div className={styles.rightSide}>
           {/* 오른쪽 상단 버튼들 */}
 
-          <button className="intro-button">게임 소개</button>
-          <button className="logout-button">로그아웃</button>
+          <button className={styles.introButton}>게임 소개</button>
+          <button className={styles.logoutButton}>로그아웃</button>
 
           <br />
           <br />
 
           {/* ItemShop, CreateRoom 버튼 그룹 */}
 
-          <button className="itemshop-button">아이템 상점</button>
-          <button className="createroom-button">방 만들기</button>
+          <button className={styles.itemShopButton}>아이템상점</button>
+          <button className={styles.createRoomButton}>방만들기</button>
 
           {/* 방 목록 부분 */}
-          <div className="room-page">
+          <div className={styles.roomPage}>
             {/* 게임 대기 화면 방 */}
-            <div className="game-room-list">
-              <div className="room">
-                <div className="room-blue-box">
+            <div className={styles.gameRoomList}>
+              {/* 방 하나하나 */}
+              <div className={styles.room}>
+                {/* 방 안의 제목 */}
+                <div className={styles.roomBlueBox}>
                   <p>너만 오면 고</p>
                 </div>
+                <div className={styles.playingText}> playing </div>
               </div>
-              <div className="room">Room 2</div>
-              <div className="room">Room 3</div>
-              <div className="room">Room 4</div>
+              <div className={styles.room}>
+                <div className={styles.roomBlueBox}>
+                  <p>안들어오면 지상렬</p>
+                </div>
+                <div className={styles.playingText}> playing </div>
+              </div>
+              <div className={styles.room}>
+                <div className={styles.roomBlueBox}>
+                  <p>현직개발자</p>
+                </div>
+                <div className={styles.waitingText}> waiting </div>
+              </div>
+              <div className={styles.room}>
+                <div className={styles.roomBlueBox}>
+                  <p>방 이름을 꼭 지어야해?</p>
+                </div>
+                <div className={styles.playingText}> playing </div>
+              </div>
             </div>
+            <div className={styles.pageMove}></div>
           </div>
 
           {/* 채팅 부분 */}
-          <div className="chat-page"></div>
+          <div className={styles.chatPage}>
+            <button className={styles.chatPageButton}>전체</button>
+            <div className={styles.chatContent}>
+              {/* 채팅 내용이 들어갈 부분 */}
+            </div>
+            {/* 새로운 부분 */}
+            <div className={styles.scrollBar}></div>
+            <div className={styles.chatInputContainer}>
+              <input
+                className={styles.chatInput}
+                type="text"
+                placeholder="채팅을 입력하세요"
+              />
+              <button className={styles.sendButton}>전송</button>
+            </div>
+          </div>
         </div>
       </div>
     );
