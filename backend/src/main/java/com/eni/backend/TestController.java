@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
     @GetMapping("")
-    public String temp() {
+    public String test() {
         return "ci-cd test";
     }
 
