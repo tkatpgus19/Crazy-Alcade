@@ -15,7 +15,7 @@
 
 .chat {
   background-color: #0777d2; /* 파란색 배경 */
-  width: 530px; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
+  width: 93.4%; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
   height: 520px;
   border-radius: 15px;
   margin-top: auto;
