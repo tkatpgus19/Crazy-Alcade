@@ -26,6 +26,5 @@
 
 .webIDE {
   flex: 3; /* 60%를 차지하도록 설정 */
-  background-color: grey; /* 예시 색상, 필요에 따라 변경 */
   margin-left: 8px; /* 문제와 Web IDE 간의 간격을 조절 */
 }

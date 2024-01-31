@@ -11,7 +11,7 @@ const Problem = () => {
       const response = await fetch("http://i10d104.p.ssafy.io:8080/problems/1");
 
       // 네트워크 에러 확인
-      if (!response.ok) {
+      if (!response || !response.ok) {
         throw new Error("서버 응답이 올바르지 않습니다.");
       }
 
@@ -30,12 +30,12 @@ const Problem = () => {
   useEffect(() => {
     getData();
 
-    // 1초 후에 로딩이 완료되지 않은 경우 새로고침 아이콘 표시
+    // 3초 후에 로딩이 완료되지 않은 경우 새로고침 아이콘 표시
     const timeoutId = setTimeout(() => {
       if (loading) {
         setError("데이터를 불러오는 중에 문제가 발생했습니다.");
       }
-    }, 1000);
+    }, 3000);
 
     // 컴포넌트가 언마운트되면 타이머 해제
     return () => clearTimeout(timeoutId);
