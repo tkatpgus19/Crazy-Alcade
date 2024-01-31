@@ -5,12 +5,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/temp")
-public class TempController {
+@RequestMapping("/test")
+public class TestController {
 
     @GetMapping("")
     public String temp() {
-        return "임시코드";
+        return "ci-cd test";
     }
 
 }
