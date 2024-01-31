@@ -7,6 +7,26 @@ import styles from "./Game.module.css";
 import Footer from "./Footer";
 import WebIDE from "./WebIDE";
 
+import { Resizable } from "re-resizable";
+import styled from "@emotion/styled";
+
+const Container = styled.div`
+  width: 100%;
+  height: 100vh;
+  display: flex;
+`;
+
+const LeftDiv = styled.div`
+  flex: 1;
+  background-color: #2980b9;
+`;
+
+const RightDiv = styled.div`
+  margin-left: 20px;
+  background-color: skyblue;
+  height: 100%;
+`;
+
 function Game() {
   const handleSave = () => {
     // 임시 저장 로직
@@ -40,6 +60,34 @@ function Game() {
           <WebIDE />
         </div>
       </div>
+      <Container>
+        <LeftDiv />
+        <Resizable
+          defaultSize={{ width: "50%", height: "100%" }}
+          minWidth={"20%"}
+          maxWidth={"80%"}
+          enable={{
+            top: false,
+            right: false,
+            bottom: false,
+            left: true,
+            topRight: false,
+            bottomRight: false,
+            bottomLeft: false,
+            topLeft: false,
+          }}
+          handleStyles={{
+            left: {
+              width: "20px",
+              height: "100%",
+              left: "0px",
+              backgroundColor: "#d1d5db",
+            },
+          }}
+        >
+          <RightDiv />
+        </Resizable>
+      </Container>
       <Footer onSave={handleSave} onRun={handleRun} onSubmit={handleSubmit} />
     </div>
   );
