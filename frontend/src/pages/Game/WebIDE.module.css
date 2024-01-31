@@ -1,0 +1,24 @@
+.webIDEContainer {
+  position: relative;
+}
+
+.buttonContainer {
+  position: absolute;
+  top: 0px;
+  right: 3px;
+  z-index: 1;
+}
+
+.floatButton {
+  width: 20px; /* 너비 */
+  height: 20px; /* 높이 */
+  background-color: whitesmoke;
+  color: black;
+  cursor: pointer;
+  font-size: 10px;
+  margin-left: 1px;
+}
+
+.floatButton:hover {
+  background-color: gray;
+}

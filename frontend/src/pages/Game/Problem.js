@@ -1,63 +1,66 @@
-// ProblemArea.js
-
 import React, { useState, useEffect } from "react";
 import styles from "./Problem.module.css";
 
 const Problem = () => {
   const [problemData, setProblemData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const getData = async () => {
-    const response = await fetch("http://192.168.100.60:8080/problems/1")
-      .then((response) => response.json())
-      .then((data) => setProblemData(data.result))
-      .catch((error) => console.error("Error fetching problem:", error));
-    console.log(data);
+    try {
+      const response = await fetch("http://i10d104.p.ssafy.io:8080/problems/1");
+
+      // 네트워크 에러 확인
+      if (!response.ok) {
+        throw new Error("서버 응답이 올바르지 않습니다.");
+      }
+
+      const data = await response.json();
+      setProblemData(data.result);
+      setError(null);
+      setLoading(false); // 로딩 완료 시 로딩 상태 변경
+    } catch (error) {
+      console.error("데이터를 불러오는 중에 문제가 발생했습니다.", error);
+      setProblemData(null);
+      setError("데이터를 불러오는 중에 문제가 발생했습니다.");
+      setLoading(false); // 에러 발생 시 로딩 상태 변경
+    }
   };
 
   useEffect(() => {
     getData();
-  }, []);
 
-  // 더미 데이터
-  const dummyData = {
-    problemId: 1,
-    tier: "BRONZE",
-    platform: "BOJ",
-    no: 1000,
-    title: "더미 맨",
-    description: "더미 맨은 무적이다",
-    input: "SAY HO~",
-    output: "HO~",
-    time: "1초",
-    memory: "1MB",
-    examples: [
-      {
-        input: "4 2",
-        output: "6",
-      },
-      {
-        input: "7 2",
-        output: "9",
-      },
-    ],
+    // 1초 후에 로딩이 완료되지 않은 경우 새로고침 아이콘 표시
+    const timeoutId = setTimeout(() => {
+      if (loading) {
+        setError("데이터를 불러오는 중에 문제가 발생했습니다.");
+      }
+    }, 1000);
+
+    // 컴포넌트가 언마운트되면 타이머 해제
+    return () => clearTimeout(timeoutId);
+  }, [loading]);
+
+  const handleRetry = () => {
+    setLoading(true);
+    setError(null);
   };
 
-  if (!problemData) {
-    // Loading 중일 때 더미 데이터 사용
-    return renderProblem(dummyData);
+  if (loading) {
+    // 로딩 중일 때 애니메이션 표시
+    return <div className={styles.loading}>Loading...</div>;
   }
 
-  const {
-    problemId,
-    tier,
-    no,
-    title,
-    description,
-    input,
-    output,
-    time,
-    memory,
-    examples,
-  } = problemData;
+  if (error) {
+    // 에러가 발생한 경우
+    return (
+      <div className={styles.errorContainer}>
+        <p>{error}</p>
+        <button onClick={handleRetry}>재시도</button>
+      </div>
+    );
+  }
+  // ... 이전 코드 계속
 
   return renderProblem({
     problemId,
