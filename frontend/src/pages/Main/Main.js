@@ -1,10 +1,35 @@
 import React, { Component } from "react";
 import imgfile from "../../assets/images/logo.png";
 import background from "../../assets/images/mainback.png";
-import "./Main.module.css";
+import "./Main.module.css"; // Main 컴포넌트에서 사용하는 CSS 파일
 import styles from "./Main.module.css";
+import CreateRoomModal from "./CreateRoomModal";
 
+// Main 컴포넌트를 정의합니다.
 class Main extends Component {
+  // 초기 상태를 설정합니다.
+  state = {
+    isModalOpen: false,
+    createRoomButtonPressed: false,
+  };
+
+  // 모달 열기 메서드
+  openModal = () => {
+    this.setState({ isModalOpen: true });
+  };
+
+  // 모달 닫기 메서드
+  closeModal = () => {
+    this.setState({ isModalOpen: false });
+  };
+
+  // 방 만들기 메서드
+  createRoom = (roomData) => {
+    console.log("방이 생성되었습니다:", roomData);
+    this.setState({ createRoomButtonPressed: true });
+  };
+
+  // 렌더 메서드
   render() {
     // 배경 이미지 스타일 정의
     const backgroundStyle = {
@@ -29,6 +54,7 @@ class Main extends Component {
           <img className={styles.logoImg} src={imgfile} alt="로고" />
         </div>
 
+        {/* my-page 영역 */}
         <div className={styles.myPage}>
           {/* 이름 입력 칸 */}
           <div className={styles.nameInput}>
@@ -37,7 +63,7 @@ class Main extends Component {
           </div>
           <br />
 
-          {/* 사진 넣는 칸 */}
+          {/* 프로필 사진 입력 칸 */}
           <div className={styles.profilePicture}>
             <label htmlFor="profile-pic">프로필 사진</label>
             <input type="file" id={styles.profilePic} accept="image/*" />
@@ -72,20 +98,73 @@ class Main extends Component {
         {/* 오른쪽 부분 (right-side) */}
         <div className={styles.rightSide}>
           {/* 오른쪽 상단 버튼들 */}
-
-          <button className={styles.introButton}>게임 소개</button>
-          <button className={styles.logoutButton}>로그아웃</button>
-
+          <div className={styles.rightTop}>
+            <button className={styles.introButton}>게임 소개</button>
+            <button className={styles.logoutButton}>로그아웃</button>
+          </div>
           <br />
           <br />
 
           {/* ItemShop, CreateRoom 버튼 그룹 */}
-
-          <button className={styles.itemShopButton}>아이템상점</button>
-          <button className={styles.createRoomButton}>방만들기</button>
+          <div className={styles.rightMiddle}>
+            <button className={styles.itemShopButton}>아이템상점</button>
+            {/* 방 만들기 버튼 */}
+            <button
+              className={`${styles.createRoomButton} ${this.state.createRoomButtonPressed ? styles.createRoomButtonPressed : ""}`}
+              onClick={this.openModal}
+            >
+              방만들기
+            </button>
+            {/* 모달이 열린 상태라면 CreateRoomModal을 렌더링합니다 */}
+            {this.state.isModalOpen && (
+              <div className={styles.overlay}>
+                <CreateRoomModal
+                  closeModal={this.closeModal}
+                  createRoom={this.createRoom}
+                />
+              </div>
+            )}
+          </div>
 
           {/* 방 목록 부분 */}
           <div className={styles.roomPage}>
+            {/* 노말, 아이템전 + 옵션 선택하는 드롭다운 박스 */}
+            <div className={styles.optionButtons}>
+              {/* 토글 방식으로 노말전, 아이템전 버튼 */}
+              <button
+                className={`${styles.normalButton} ${this.state.normalMode ? styles.active : ""}`}
+                onClick={() => this.setState({ normalMode: true })}
+              >
+                노말전
+              </button>
+              <button
+                className={`${styles.itemButton} ${!this.state.normalMode ? styles.active : ""}`}
+                onClick={() => this.setState({ normalMode: false })}
+              >
+                아이템전
+              </button>
+              {/* 사용 언어 드롭다운 */}
+              <select name="language" className={styles.optionButton}>
+                <option value="java">Java</option>
+                <option value="python">Python</option>
+              </select>
+              {/* 난이도 드롭다운 */}
+              <select name="difficulty" className={styles.optionButton}>
+                <option value="gold">Gold</option>
+                <option value="silver">Silver</option>
+                <option value="bronze">Bronze</option>
+              </select>
+              {/* 코드 리뷰 드롭다운 */}
+              <select name="codeReview" className={styles.optionButton}>
+                <option value="o">o</option>
+                <option value="x">x</option>
+              </select>
+              {/* 미해결 문제 체크박스 */}
+              <div className={styles.optionButton}>
+                <input type="checkbox" id="unresolved" />
+                <label htmlFor="unresolved">미해결 문제</label>
+              </div>
+            </div>
             {/* 게임 대기 화면 방 */}
             <div className={styles.gameRoomList}>
               {/* 방 하나하나 */}
@@ -95,27 +174,53 @@ class Main extends Component {
                   <p>너만 오면 고</p>
                 </div>
                 <div className={styles.playingText}> playing </div>
+                <div className={styles.roomDescription}>백준 1001.A+B</div>
+                <div className={styles.roomDescription}>시간 : 1h 30m</div>
+                <div className={styles.roomDescription}>언어 : Python</div>
               </div>
               <div className={styles.room}>
                 <div className={styles.roomBlueBox}>
                   <p>안들어오면 지상렬</p>
                 </div>
                 <div className={styles.playingText}> playing </div>
+                <div className={styles.roomDescription}>
+                  백준 16023.아기상어
+                </div>
+                <div className={styles.roomDescription}>시간 : 1h 30m</div>
+                <div className={styles.roomDescription}>언어 : Python</div>
               </div>
               <div className={styles.room}>
                 <div className={styles.roomBlueBox}>
                   <p>현직개발자</p>
                 </div>
                 <div className={styles.waitingText}> waiting </div>
+                <div className={styles.roomDescription}>
+                  백준 1557.왜 이렇게 빨리 끝나나요
+                </div>
+                <div className={styles.roomDescription}>시간 : 2h 30m</div>
+                <div className={styles.roomDescription}>언어 : Java</div>
               </div>
               <div className={styles.room}>
                 <div className={styles.roomBlueBox}>
                   <p>방 이름을 꼭 지어야해?</p>
                 </div>
                 <div className={styles.playingText}> playing </div>
+                <div className={styles.roomDescription}>
+                  백준 1033.현직이의 미로찾기
+                </div>
+                <div className={styles.roomDescription}>시간 : 1h 30m</div>
+                <div className={styles.roomDescription}>언어 : Python</div>
               </div>
             </div>
-            <div className={styles.pageMove}></div>
+            {/* <div className={styles.pageCircles}>
+              <div className={styles.pageCircle}></div>
+              <div className={styles.pageCircle}></div>
+              <div className={styles.pageCircle}></div>
+            </div> */}
+            <div className={styles.backandforthPage}>
+              <div className={styles.backPage}></div>
+              <div className={styles.forthPage}></div>
+            </div>
           </div>
 
           {/* 채팅 부분 */}
@@ -124,8 +229,6 @@ class Main extends Component {
             <div className={styles.chatContent}>
               {/* 채팅 내용이 들어갈 부분 */}
             </div>
-            {/* 새로운 부분 */}
-            <div className={styles.scrollBar}></div>
             <div className={styles.chatInputContainer}>
               <input
                 className={styles.chatInput}
@@ -141,4 +244,5 @@ class Main extends Component {
   }
 }
 
+// Main 컴포넌트를 내보냅니다.
 export default Main;
