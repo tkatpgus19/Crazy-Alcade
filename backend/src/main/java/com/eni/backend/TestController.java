@@ -12,7 +12,7 @@ public class TestController {
 
     @GetMapping("")
     public String test() {
-        log.info("test-8");
+        log.info("test-9");
         return "ci-cd test";
     }
 
