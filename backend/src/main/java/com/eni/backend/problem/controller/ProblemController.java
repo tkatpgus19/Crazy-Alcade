@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import static com.eni.backend.common.response.BaseResponseStatus.*;
 import static com.eni.backend.common.util.BindingResultUtils.getErrorMessages;
 
+@CrossOrigin(origins = { "*" }, methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE} , maxAge = 6000)
 @Slf4j
 @Validated
 @RestController
