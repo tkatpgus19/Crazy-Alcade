@@ -8,24 +8,6 @@ import Footer from "./Footer";
 import WebIDE from "./WebIDE";
 
 import { Resizable } from "re-resizable";
-import styled from "@emotion/styled";
-
-const Container = styled.div`
-  width: 100%;
-  height: 100vh;
-  display: flex;
-`;
-
-const LeftDiv = styled.div`
-  flex: 1;
-  background-color: #2980b9;
-`;
-
-const RightDiv = styled.div`
-  margin-left: 20px;
-  background-color: skyblue;
-  height: 100%;
-`;
 
 function Game() {
   const handleSave = () => {
@@ -52,20 +34,15 @@ function Game() {
         onExitClick={() => alert("Exit clicked")}
       />
       <VideoScreen />
-      <div className={styles.mainContent}>
+      <div className={styles.container}>
         <div className={styles.problemArea}>
           <Problem />
         </div>
-        <div className={styles.webIDE}>
-          <WebIDE />
-        </div>
-      </div>
-      <Container>
-        <LeftDiv />
+
         <Resizable
-          defaultSize={{ width: "50%", height: "100%" }}
-          minWidth={"20%"}
-          maxWidth={"80%"}
+          defaultSize={{ width: "60%", height: "100%" }}
+          minWidth={"30%"}
+          maxWidth={"70%"}
           enable={{
             top: false,
             right: false,
@@ -78,16 +55,20 @@ function Game() {
           }}
           handleStyles={{
             left: {
-              width: "20px",
-              height: "100%",
-              left: "0px",
+              width: "5px",
+              height: "95%",
+              left: "-2px",
               backgroundColor: "#d1d5db",
+              marginTop: "10px",
+              borderRadius: "30px",
             },
           }}
         >
-          <RightDiv />
+          <div className={styles.webIDE}>
+            <WebIDE />
+          </div>
         </Resizable>
-      </Container>
+      </div>
       <Footer onSave={handleSave} onRun={handleRun} onSubmit={handleSubmit} />
     </div>
   );
