@@ -1,14 +1,12 @@
 package com.eni.backend.member.entity;
 
+import com.eni.backend.auth.oauth2.user.OAuth2Provider;
 import com.eni.backend.code.entity.Code;
 import com.eni.backend.common.entity.BaseTimeEntity;
 import com.eni.backend.common.entity.Language;
 import com.eni.backend.item.entity.MemberItem;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.sql.Timestamp;
@@ -16,7 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "member")
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseTimeEntity {
 
@@ -25,24 +25,24 @@ public class Member extends BaseTimeEntity {
     @Column(name = "member_id", nullable = false)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
+    private String email;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private OAuth2Provider oAuth2Provider;
+
+    @Column(length = 8)
     private String nickname;
 
     @Column
-    private String avatar;
-
-    @Column(nullable = false)
-    private String email;
+    private String profile;
 
     @Column(nullable = false)
     private Integer coin;
 
     @Column(nullable = false)
     private Integer exp;
-
-    @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp connectedAt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -51,6 +51,10 @@ public class Member extends BaseTimeEntity {
     @Column
     @ColumnDefault("0")
     private Integer complaint;
+
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Timestamp connectedAt;
 
     @OneToOne
     @JoinColumn(name = "level_id")
@@ -63,15 +67,49 @@ public class Member extends BaseTimeEntity {
     private List<MemberItem> memberItems = new ArrayList<>();
 
     @Builder
-    public Member(String nickname, String avatar, String email, Integer coin, Integer exp, Timestamp connectedAt, Language lang, Integer complaint, Level level) {
+    private Member(String email, OAuth2Provider oAuth2Provider, String nickname, String profile, Integer coin, Integer exp, Language lang, Level level, Integer complaint, Timestamp connectedAt) {
         this.nickname = nickname;
-        this.avatar = avatar;
+        this.profile = profile;
         this.email = email;
+        this.oAuth2Provider = oAuth2Provider;
         this.coin = coin;
         this.exp = exp;
-        this.connectedAt = connectedAt;
         this.lang = lang;
         this.complaint = complaint;
         this.level = level;
+        this.connectedAt = connectedAt;
+    }
+
+    public static Member of(String email, OAuth2Provider oAuth2Provider, String nickname, String profile, Integer coin, Integer exp, Language lang, Level level, Integer complaint, Timestamp connectedAt) {
+        return builder()
+                .email(email)
+                .oAuth2Provider(oAuth2Provider)
+                .nickname(nickname)
+                .profile(profile)
+                .lang(lang)
+                .coin(coin)
+                .exp(exp)
+                .complaint(complaint)
+                .level(level)
+                .connectedAt(connectedAt)
+                .build();
+    }
+
+    public Member update(String email, OAuth2Provider oAuth2Provider) {
+        this.email = email;
+        this.oAuth2Provider = oAuth2Provider;
+        return this;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateLang(Language lang) {
+        this.lang = lang;
+    }
+
+    public void updateProfile(String profile) {
+        this.profile = profile;
     }
 }

@@ -1,12 +1,12 @@
 package com.eni.backend.common.config;
 
-import lombok.RequiredArgsConstructor;
 import com.eni.backend.auth.jwt.JwtAuthorizationFilter;
 import com.eni.backend.auth.jwt.JwtCustomExceptionFilter;
 import com.eni.backend.auth.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.eni.backend.auth.oauth2.handler.OAuth2AuthenticationFailureHandler;
 import com.eni.backend.auth.oauth2.handler.OAuth2AuthenticationSuccessHandler;
 import com.eni.backend.auth.oauth2.service.CustomOAuth2UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -48,9 +48,8 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(antMatcher("/api/admin/**")).hasRole("ADMIN")
-                        .requestMatchers(antMatcher("/api/member/**")).hasRole("MEMBER")
-                        .requestMatchers(antMatcher("/api/**")).permitAll()
+                        .requestMatchers(antMatcher("/api/user")).authenticated()
+                        .requestMatchers(antMatcher("/api/auth/**")).permitAll()
                         .anyRequest().authenticated()
                 )
 

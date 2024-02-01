@@ -1,8 +1,6 @@
 package com.eni.backend.member.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -13,7 +11,7 @@ public class Level {
 
     @Id
     @Column(name = "level_id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false)
     private String image;

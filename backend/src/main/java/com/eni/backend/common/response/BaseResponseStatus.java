@@ -10,6 +10,9 @@ public enum BaseResponseStatus {
 
     // SUCCESS
     SUCCESS(HttpStatus.OK, "요청에 성공하였습니다."),
+    SIGNUP_SUCCESS(HttpStatus.OK, "회원가입에 성공하였습니다."),
+    LOGIN_SUCCESS(HttpStatus.OK,"로그인에 성공하였습니다."),
+    LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃에 성공하였습니다."),
 
     // BAD_REQUEST
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "유효하지 않은 요청입니다."),
