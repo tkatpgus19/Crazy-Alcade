@@ -1,4 +1,4 @@
-.language-box {
+.languageBox {
   height: 35px;
   width: 80px;
   background-color: whitesmoke;
@@ -17,6 +17,6 @@
   box-sizing: content-box;
 }
 
-.language-box {
+.languageBox {
   user-select: none;
 }
