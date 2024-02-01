@@ -1,22 +1,23 @@
-.language-box {
+.exitButton {
   height: 35px;
-  width: 80px;
-  background-color: whitesmoke;
+  background-color: #ffac0b;
   box-shadow: 1px 1px 1px black;
 
+  padding: 0px 12px;
   border: 1px solid;
   border-color: black;
   border-radius: 5px;
 
-  font-size: 12px;
-  color: black;
+  font-size: 13px;
+  color: white;
   font-family: "DNFBitBitv2";
   text-align: center;
+  cursor: pointer;
   line-height: 35px; /* 높이와 동일하게 설정 */
-  -webkit-text-stroke: 0px;
-  box-sizing: content-box;
+  -webkit-text-stroke: 1px black;
+  box-sizing: border-box;
 }
 
-.language-box {
-  user-select: none;
+.exit-button:hover {
+  opacity: 0.8;
 }

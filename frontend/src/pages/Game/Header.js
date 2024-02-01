@@ -1,23 +1,23 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "./Header.css";
+import styles from "./Header.module.css";
+
 
 import RoomTitle from "../../components/titles/RoomTitle.js";
 import LanguageBox from "./components/LanguageBox.js";
 import Timer from "./components/Timer.js";
 import ExitButton from "../../components/buttons/ExitButton.js";
 
-const Header = ({ roomTitle, language, remainingTime, onExitClick }) => {
+const Header = ({ roomTitle, language, initialTime, onExitClick }) => {
   return (
-    <div className="header">
-      <div className="room-info">
-        <RoomTitle title={roomTitle} />{" "}
-        {/* RoomTitle 컴포넌트 사용 /}{" "}
+    <div className={styles.header}>
+      <div className={styles.roomInfo}>
+        <RoomTitle title={roomTitle} />
         <LanguageBox language={language} />
       </div>
-      <div className="timer-and-exit">
-        <Timer remainingTime={remainingTime} />
-        <ExitButton onClick={onExitClick} /> {/ Use ExitButton component */}
+      <div className={styles.timerAndExit}>
+        <Timer initialTime={initialTime} />
+        <ExitButton onClick={onExitClick} />
       </div>
     </div>
   );
@@ -27,7 +27,7 @@ const Header = ({ roomTitle, language, remainingTime, onExitClick }) => {
 Header.propTypes = {
   roomTitle: PropTypes.string.isRequired,
   language: PropTypes.string.isRequired,
-  remainingTime: PropTypes.number.isRequired,
+  initialTime: PropTypes.number.isRequired,
   onExitClick: PropTypes.func.isRequired,
 };
 
