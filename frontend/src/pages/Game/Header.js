@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "./Header.css"; // 필요에 따라 CSS 파일의 경로를 수정하세요.
+import "./Header.module.css"; // 필요에 따라 CSS 파일의 경로를 수정하세요.
 import ExitButton from "../../components/buttons/ExitButton.js"; // Import the ExitButton component
 import RoomTitle from "../../components/titles/RoomTitle.js"; // Import the ExitButton component
 import LanguageBox from "./components/LanguageBox.js";
