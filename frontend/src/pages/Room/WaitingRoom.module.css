@@ -95,6 +95,31 @@
   /* 상 우 하 좌 순서 */
 }
 
+/* 상태창 나타내주기 */
+.status {
+  background-color: #0bbeff;
+  border-radius: 8px;
+  border-color: black;
+  border: 2px solid;
+  width: 180px;
+  height: 70px;
+  margin-top: 5px;
+}
+/* 대기방 첫번째 헤더 */
+.roomheader1 {
+  margin-bottom: 15px;
+  padding-top: 15px;
+  padding-left: 11px;
+}
+
+/* 대기방 두번째 헤더 */
+.roomheader2 {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 11px;
+  padding-right: 9px;
+}
+
 /* 오른쪽 아래 3개 버튼 스타일  */
 .button3 {
   display: flex;
@@ -136,6 +161,10 @@
   -webkit-text-stroke: 0.5px black;
   box-sizing: content-box;
   margin-left: 30px;
+}
+
+.roominfo {
+  display: flex;
 }
 
 .charid {

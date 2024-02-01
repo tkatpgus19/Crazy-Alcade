@@ -1,11 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import RoomTitle from "../../components/titles/RoomTitle.js";
+import styles from "./WaitingRoom.module.css";
 
 const RoomHeader = ({ roomTitle }) => {
   return (
-    <div className="header">
-      <div className="room-info">
+    <div className={styles.roomheader1}>
+      <div>
         <RoomTitle title={roomTitle} />
       </div>
     </div>
