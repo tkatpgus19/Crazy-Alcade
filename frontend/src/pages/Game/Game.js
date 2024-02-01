@@ -8,8 +8,16 @@ import Footer from "./Footer";
 import WebIDE from "./WebIDE";
 
 import { Resizable } from "re-resizable";
+import { useNavigate } from "react-router-dom";
 
 function Game() {
+  const navigate = useNavigate();
+
+  const handleExitClick = () => {
+    // "/"로 이동하는 코드
+    navigate("/");
+  };
+
   const handleSave = () => {
     // 임시 저장 로직
     alert("임시 저장");
@@ -31,7 +39,7 @@ function Game() {
         roomTitle="1. 너만 오면 고"
         language="Python"
         initialTime={60} // 예시로 120초 설정
-        onExitClick={() => alert("Exit clicked")}
+        onExitClick={handleExitClick} // 수정된 부분
       />
       <VideoScreen />
       <div className={styles.container}>

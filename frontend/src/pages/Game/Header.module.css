@@ -2,7 +2,7 @@
 
 .header {
   /* 임시 배경색, 배경화면 지정 시 transparent로 변경 예정 */
-  width: 100%;
+  width: 95%;
   background-color: transparent;
   padding-top: 10px;
   padding-bottom: 10px;
@@ -22,5 +22,5 @@
 .timerAndExit {
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* 추가된 부분 */
+  justify-content: flex-end;
 }
