@@ -1,0 +1,12 @@
+.problemBox {
+  padding: 7px;
+  /* overflow-y: auto; 컴포넌트 전체에 스크롤 적용 */
+  /* background-color: white; 예시 색상, 필요에 따라 변경 */
+}
+
+.problem {
+  border-radius: 10px;
+  overflow: auto;
+  background-color: white; /* 예시 색상, 필요에 따라 변경 */
+  padding-left: 12px;
+}
