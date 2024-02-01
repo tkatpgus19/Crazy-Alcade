@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom"; // React Router v6에서는 useHistory 대신 useNavigate를 사용
 import styles from "./CreateRoomModal.module.css";
 
-// CreateRoomModal 컴포넌트를 정의합니다.
+// CreateRoomModal 컴포넌트 정의
 const CreateRoomModal = ({ closeModal, createRoom }) => {
+  // useNavigate 훅을 사용하여 navigate 함수를 얻습니다.
+  const navigate = useNavigate();
+
   // 방 정보를 담는 상태를 설정합니다.
   const [roomData, setRoomData] = useState({
     name: "",
@@ -29,6 +33,9 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
   const handleSubmit = () => {
     createRoom(roomData); // 방 만들기 함수 호출
     closeModal(); // 모달 닫기 함수 호출
+
+    // 방 만들기가 성공하면 "/room"으로 이동합니다.
+    navigate("/room");
   };
 
   // 풀이 언어 변경 핸들러 함수
@@ -48,6 +55,7 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
       <div className={styles.roomTitleContainer}>
         <div className={styles.roomTitle}>방 만들기</div>
       </div>
+
       {/* 방 이름 입력란 */}
       <label>방 이름:</label>
       <input
