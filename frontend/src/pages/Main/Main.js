@@ -12,6 +12,8 @@ class Main extends Component {
     isModalOpen: false,
     createRoomButtonPressed: false,
     isItemShopModalOpen: false,
+    chatInput: "", // 채팅 입력을 관리하는 상태
+    chatContent: [], // 채팅 내용을 관리하는 상태
   };
 
   openModal = () => {
@@ -34,6 +36,34 @@ class Main extends Component {
   createRoom = (roomData) => {
     console.log("방이 생성되었습니다:", roomData);
     this.setState({ createRoomButtonPressed: true });
+  };
+
+  // 채팅 입력이 변경될 때 호출되는 메서드
+  handleChatInputChange = (event) => {
+    this.setState({ chatInput: event.target.value });
+  };
+
+  // 메시지를 보내고 채팅 내용을 업데이트하는 메서드
+  handleSendMessage = () => {
+    const { chatInput, chatContent } = this.state;
+
+    // 채팅 입력이 비어 있지 않은지 확인
+    if (chatInput.trim() !== "") {
+      // 현재 날짜와 시간 가져오기
+      const currentDate = new Date();
+      const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
+
+      // 새로운 메시지 객체 생성
+      const newMessage = {
+        content: chatInput,
+        timestamp: formattedDate,
+        isBold: true, // 글씨를 두껍게 하려면 true로 설정
+      };
+
+      // 새로운 메시지로 채팅 내용을 업데이트
+      const newChatContent = [...chatContent, newMessage];
+      this.setState({ chatContent: newChatContent, chatInput: "" });
+    }
   };
 
   // 렌더 메서드
@@ -154,13 +184,13 @@ class Main extends Component {
               {/* 토글 방식으로 노말전, 아이템전 버튼 */}
               <button
                 className={`${styles.normalButton} ${this.state.normalMode ? styles.active : ""}`}
-                onClick={() => this.setState({ normalMode: true })}
+                onClick={this.toggleNormalMode}
               >
                 노말전
               </button>
               <button
                 className={`${styles.itemButton} ${!this.state.normalMode ? styles.active : ""}`}
-                onClick={() => this.setState({ normalMode: false })}
+                onClick={this.toggleNormalMode}
               >
                 아이템전
               </button>
@@ -257,14 +287,16 @@ class Main extends Component {
                 <div className={styles.roomDescription}>언어 : Python</div>
               </div>
             </div>
-            {/* <div className={styles.pageCircles}>
-              <div className={styles.pageCircle}></div>
-              <div className={styles.pageCircle}></div>
-              <div className={styles.pageCircle}></div>
-            </div> */}
+
             <div className={styles.backandforthPage}>
-              <div className={styles.backPage}></div>
-              <div className={styles.forthPage}></div>
+              <div
+                className={styles.backPage}
+                // onClick={this.handleBackPage}
+              ></div>
+              <div
+                className={styles.forthPage}
+                // onClick={this.handleForthPage}
+              ></div>
             </div>
           </div>
 
@@ -272,15 +304,41 @@ class Main extends Component {
           <div className={styles.chatPage}>
             <button className={styles.chatPageButton}>전체</button>
             <div className={styles.chatContent}>
-              {/* 채팅 내용이 들어갈 부분 */}
+              {/* 채팅 내용 표시 */}
+              {this.state.chatContent.map((message, index) => (
+                <div key={index}>
+                  {/* 닉네임과 현재 날짜 및 시간 표시 */}
+                  <p className={styles.messageInfo}>
+                    <span className={styles.nickname}>닉네임 </span>
+                    <span className={styles.timestamp}>
+                      {message.timestamp}
+                    </span>
+                  </p>
+                  {/* 메시지 내용 표시 (글씨 두껍게 여부에 따라 스타일 조정) */}
+                  <div
+                    className={`${styles.messageContent} ${message.isBold ? styles.bold : ""}`}
+                  >
+                    {message.content}
+                  </div>
+                </div>
+              ))}
             </div>
+            {/* 수정된 스타일을 적용한 부분 */}
+
             <div className={styles.chatInputContainer}>
               <input
                 className={styles.chatInput}
                 type="text"
                 placeholder="채팅을 입력하세요"
+                value={this.state.chatInput}
+                onChange={this.handleChatInputChange}
               />
-              <button className={styles.sendButton}>전송</button>
+              <button
+                className={styles.sendButton}
+                onClick={this.handleSendMessage}
+              >
+                전송
+              </button>{" "}
             </div>
           </div>
         </div>

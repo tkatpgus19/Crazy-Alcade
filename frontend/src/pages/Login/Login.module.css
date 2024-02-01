@@ -1,0 +1,41 @@
+/* Login.module.css */
+
+.loginmainContainer {
+  display: flex;
+  justify-content: column; /* 수평 가운데 정렬 */
+  align-items: center; /* 수직 가운데 정렬 */
+  height: 740px;
+}
+
+.loginlogo {
+  margin-top: 200px;
+  margin-bottom: 50px; /* 로고를 가운데에서 조금 더 위에 위치하도록 음수 값으로 조절 */
+  margin-left: 150px;
+}
+
+.loginlogoImg {
+  width: 70%; /* 로고 크기를 조절하기 위해 width 값을 조절 (증가 또는 감소) */
+  height: auto;
+}
+
+/* 로그인 스타일 시트에 아래 스타일을 추가하세요 */
+
+.kakaoButton {
+  background-color: yellow;
+  color: black;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.googleButton {
+  background-color: white;
+  color: blue;
+  padding: 10px;
+  margin-top: 30px;
+  border: 1px solid black;
+  border-radius: 5px;
+  cursor: pointer;
+}
