@@ -11,6 +11,7 @@ import com.eni.backend.problem.repository.TestcaseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.eni.backend.common.response.BaseResponseStatus.DATABASE_ERROR;
 import static com.eni.backend.common.response.BaseResponseStatus.PROBLEM_NOT_FOUND;
@@ -23,6 +24,7 @@ public class TestcaseService {
     private final TestcaseRepository testcaseRepository;
     private final ProblemRepository problemRepository;
 
+    @Transactional
     public PostTestcaseResponse post(PostTestcaseRequest request) {
         // 문제
         Problem problem = findProblemById(request.getProblemId());
