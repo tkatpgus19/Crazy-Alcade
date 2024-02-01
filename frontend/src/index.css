@@ -4,7 +4,6 @@ html {
   padding: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden; /* 스크롤 바 숨기기 */
 }
 
 /* 폰트 적용 */
