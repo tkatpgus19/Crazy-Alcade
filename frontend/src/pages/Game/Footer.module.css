@@ -7,6 +7,39 @@
   margin: auto;
 }
 
-/* 또는 필요한 경우에는 버튼에도 스타일을 적용할 수 있습니다. */
+/* 내 아이템 영역 스타일 */
+.itemContainer {
+  display: flex; /* 가로로 배치되도록 설정 */
+  background-color: #0777d2;
+  padding: 5px;
+
+  border-radius: 5px;
+  color: #fff;
+  align-items: center; /* 세로 중앙 정렬을 위해 추가 */
+}
+
+.itemHeader {
+  font-size: 16px;
+  -webkit-text-stroke: 1px black;
+  font-family: "DNFBitBitv2";
+}
+
+/* 각 버튼 스타일 */
 .button {
+  background-color: #00396c;
+  color: #fff;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.itemButton {
+  background-color: #00396c;
+  color: #fff;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  cursor: pointer;
 }
