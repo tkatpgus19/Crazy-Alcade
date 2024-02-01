@@ -2,7 +2,7 @@
 
 .header {
   /* 임시 배경색, 배경화면 지정 시 transparent로 변경 예정 */
-  width: 95%;
+  width: 100%;
   background-color: transparent;
   padding-top: 10px;
   padding-bottom: 10px;
@@ -12,7 +12,6 @@
   /* BOX의 border를 고려해 나가기 버튼 삐져나오는 현상 방지 */
   box-sizing: content-box;
   margin: auto;
-  overflow: hidden;
 }
 
 .roomInfo {
@@ -23,5 +22,5 @@
 .timerAndExit {
   display: flex;
   align-items: center;
-  /* margin-right: 10px; */
+  justify-content: flex-end; /* 추가된 부분 */
 }
