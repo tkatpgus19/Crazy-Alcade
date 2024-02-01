@@ -6,12 +6,23 @@ import GrayBox from "../../components/graybox/GrayBox";
 import styles from "./WaitingRoom.module.css";
 import MiniBox from "./MiniBox";
 import Status from "./Status";
+import { useNavigate } from "react-router-dom";
 
 const Room = () => {
+  const navigate = useNavigate();
+
+  const back = () => {
+    navigate("../");
+  };
+
+  const gamestart = () => {
+    navigate("../game");
+  };
+
   return (
     <Background>
       <RoomHeader roomTitle="1. 너만 오면 고" />
-      <RoomHeader2 onExitClick={() => alert("Exit clicked")} />
+      <RoomHeader2 onExitClick={back} />
       <GrayBox>
         <div className={styles.blue}>
           <div className={styles.miniBoxup}>
@@ -46,7 +57,9 @@ const Room = () => {
         <div className={styles.right}>
           <div className={styles.chat}></div>
           <div className={styles.button4}>
-            <div className={styles.start}>START</div>
+            <div className={styles.start} onClick={gamestart}>
+              START
+            </div>
             <div className={styles.button3}>
               <div className={styles.rightbutton}>
                 <p>버튼1</p>
