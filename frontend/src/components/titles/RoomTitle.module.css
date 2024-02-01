@@ -10,7 +10,7 @@
   /* box-shadow: 1px 1px 1px black; */
 
   margin-right: 8px;
-  margin-left: 30px;
+  /* margin-left: 30px; 공통 컴퍼넌트의 css는 따로 적용 부탁드립니다 - BRG*/
   padding: 0px 12px;
   border: 2px solid;
   border-color: black;
