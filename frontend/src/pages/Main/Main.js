@@ -1,26 +1,33 @@
 import React, { Component } from "react";
 import imgfile from "../../assets/images/logo.png";
 import background from "../../assets/images/mainback.png";
-import "./Main.module.css"; // Main 컴포넌트에서 사용하는 CSS 파일
+import "./Main.module.css";
 import styles from "./Main.module.css";
 import CreateRoomModal from "./CreateRoomModal";
+import ItemShopModal from "./ItemShopModal";
 
 // Main 컴포넌트를 정의합니다.
 class Main extends Component {
-  // 초기 상태를 설정합니다.
   state = {
     isModalOpen: false,
     createRoomButtonPressed: false,
+    isItemShopModalOpen: false,
   };
 
-  // 모달 열기 메서드
   openModal = () => {
     this.setState({ isModalOpen: true });
   };
 
-  // 모달 닫기 메서드
   closeModal = () => {
     this.setState({ isModalOpen: false });
+  };
+
+  openItemShopModal = () => {
+    this.setState({ isItemShopModalOpen: true });
+  };
+
+  closeItemShopModal = () => {
+    this.setState({ isItemShopModalOpen: false });
   };
 
   // 방 만들기 메서드
@@ -107,7 +114,13 @@ class Main extends Component {
 
           {/* ItemShop, CreateRoom 버튼 그룹 */}
           <div className={styles.rightMiddle}>
-            <button className={styles.itemShopButton}>아이템상점</button>
+            {/* 아이템상점 버튼 */}
+            <button
+              className={styles.itemShopButton}
+              onClick={this.openItemShopModal}
+            >
+              아이템상점
+            </button>
             {/* 방 만들기 버튼 */}
             <button
               className={`${styles.createRoomButton} ${this.state.createRoomButtonPressed ? styles.createRoomButtonPressed : ""}`}
@@ -115,6 +128,14 @@ class Main extends Component {
             >
               방만들기
             </button>
+
+            {/* ItemShopModal */}
+            {this.state.isItemShopModalOpen && (
+              <div className={styles.overlay}>
+                <ItemShopModal closeModal={this.closeItemShopModal} />
+              </div>
+            )}
+
             {/* 모달이 열린 상태라면 CreateRoomModal을 렌더링합니다 */}
             {this.state.isModalOpen && (
               <div className={styles.overlay}>
@@ -144,21 +165,45 @@ class Main extends Component {
                 아이템전
               </button>
               {/* 사용 언어 드롭다운 */}
-              <select name="language" className={styles.optionButton}>
-                <option value="java">Java</option>
-                <option value="python">Python</option>
-              </select>
+              <div className={styles.optionButton}>
+                <label htmlFor="language">사용 언어</label>
+                <select
+                  name="language"
+                  id="language"
+                  onChange={this.handleLanguageChange}
+                >
+                  <option value="java">Java</option>
+                  <option value="python">Python</option>
+                </select>
+              </div>
+
               {/* 난이도 드롭다운 */}
-              <select name="difficulty" className={styles.optionButton}>
-                <option value="gold">Gold</option>
-                <option value="silver">Silver</option>
-                <option value="bronze">Bronze</option>
-              </select>
+              <div className={styles.optionButton}>
+                <label htmlFor="difficulty">난이도</label>
+                <select
+                  name="difficulty"
+                  id="difficulty"
+                  onChange={this.handleDifficultyChange}
+                >
+                  <option value="bronze">Bronze</option>
+                  <option value="silver">Silver</option>
+                  <option value="gold">Gold</option>
+                </select>
+              </div>
+
               {/* 코드 리뷰 드롭다운 */}
-              <select name="codeReview" className={styles.optionButton}>
-                <option value="o">o</option>
-                <option value="x">x</option>
-              </select>
+              <div className={styles.optionButton}>
+                <label htmlFor="codeReview">코드 리뷰</label>
+                <select
+                  name="codeReview"
+                  id="codeReview"
+                  onChange={this.handleCodeReviewChange}
+                >
+                  <option value="o">O</option>
+                  <option value="x">X</option>
+                </select>
+              </div>
+
               {/* 미해결 문제 체크박스 */}
               <div className={styles.optionButton}>
                 <input type="checkbox" id="unresolved" />
