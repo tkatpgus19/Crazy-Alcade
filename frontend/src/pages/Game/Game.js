@@ -77,7 +77,7 @@ function Game() {
           </div>
         </Resizable>
       </div>
-      <Footer onSave={handleSave} onRun={handleRun} onSubmit={handleSubmit} />
+      <Footer />
     </div>
   );
 }

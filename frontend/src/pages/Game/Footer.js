@@ -7,7 +7,7 @@ import ActionButton from "./components/ActionButton";
 const Footer = () => {
   const [octopusEffect, setOctopusEffect] = useState(false);
   const [chickEffect, setChickEffect] = useState(false);
-  const [submitEffect, setSubmitEffect] = useState(false);
+  const [submitEffect, setWaterBalloonEffect] = useState(false);
 
   // 아이템 사용 함수
   const handleUseItem = (item) => {
