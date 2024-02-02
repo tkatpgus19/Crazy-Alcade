@@ -1,8 +1,5 @@
 package com.eni.backend.problem.dto.request;
 
-import com.eni.backend.common.entity.ProblemPlatform;
-import com.eni.backend.problem.entity.Problem;
-import com.eni.backend.problem.entity.Tier;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
