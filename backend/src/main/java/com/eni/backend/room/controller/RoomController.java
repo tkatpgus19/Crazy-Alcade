@@ -1,0 +1,39 @@
+package com.eni.backend.room.controller;
+
+import com.eni.backend.room.dto.ChatDto;
+import com.eni.backend.room.dto.RoomDto;
+import com.eni.backend.room.service.RoomService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+@CrossOrigin("*")
+@RequestMapping("/rooms")
+public class RoomController {
+    private final SimpMessageSendingOperations template;
+
+    private final RoomService roomService;
+
+    // 방 등록
+    @PostMapping("")
+    public ResponseEntity<?> makeRoom(@RequestBody RoomDto roomDto){
+        log.info("roomInfo {}", roomDto);
+        roomService.save(roomDto);
+        template.convertAndSend("/sub/normal/room-list", roomService.getNormalRoomList());
+        template.convertAndSend("/sub/item/room-list", roomService.getItemRoomList());
+
+        log.info("normalRoom Info: {}", roomService.getNormalRoomList());
+        log.info("itemRoom info: {}", roomService.getItemRoomList());
+        return new ResponseEntity<>(roomDto.getRoomId(), HttpStatus.OK);
+    }
+
+}
