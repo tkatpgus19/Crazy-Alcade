@@ -1,8 +1,10 @@
 // Footer.js
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styles from "./Footer.module.css";
 import ItemButton from "./components/ItemButton";
 import ActionButton from "./components/ActionButton";
+
+import { useSpring, animated } from "@react-spring/web";
 
 const Footer = () => {
   const [octopusEffect, setOctopusEffect] = useState(false);
@@ -48,8 +50,22 @@ const Footer = () => {
     console.log("코드 제출");
   };
 
+  const springs = useSpring({
+    from: { x: 0 },
+    to: { x: 100 },
+  });
+
   return (
     <div className={styles.footer}>
+      <animated.div
+        style={{
+          width: 80,
+          height: 40,
+          background: "#ff6d6d",
+          borderRadius: 8,
+          ...springs,
+        }}
+      />
       {/* 내 아이템 영역 */}
       <div className={styles.itemContainer}>
         <div className={styles.itemHeader}>내 아이템</div>
