@@ -6,7 +6,7 @@
   flex-direction: row; /* 가로 방향으로 배치 */
   margin: auto; /* 원하는 간격으로 조절 */
   width: 95%; /* 가로의 95%를 차지하도록 설정 */
-  height: 69vh;
+  height: 68vh;
 }
 
 .problemArea,

@@ -1,14 +1,51 @@
 // Footer.js
-import React from "react";
-import PropTypes from "prop-types";
+import React, { useState, useEffect } from "react";
 import styles from "./Footer.module.css";
-import ItemButton from "./components/ItemButton"; // ItemButton 컴포넌트 임포트
+import ItemButton from "./components/ItemButton";
 import ActionButton from "./components/ActionButton";
 
-const Footer = ({ onSave, onRun, onSubmit, onUseItem }) => {
-  const handleItemUse = (item) => {
-    // 사용할 아이템에 따라 처리 로직 추가
-    onUseItem(item);
+const Footer = () => {
+  const [octopusEffect, setOctopusEffect] = useState(false);
+  const [chickEffect, setChickEffect] = useState(false);
+  const [submitEffect, setSubmitEffect] = useState(false);
+
+  // 아이템 사용 함수
+  const handleUseItem = (item) => {
+    console.log(`아이템 사용: ${item}`);
+
+    // 각 아이템에 대한 효과 로직 추가
+    if (item === "아이템1") {
+      setOctopusEffect(true);
+      setTimeout(() => {
+        setOctopusEffect(false);
+        firework(); // 아이템1 사용 시 firework 함수 호출
+      }, 3000);
+    } else if (item === "아이템2") {
+      setChickEffect(true);
+      setTimeout(() => {
+        setChickEffect(false);
+      }, 3000);
+    } else if (item === "아이템3") {
+      setWaterBalloonEffect(true);
+      setTimeout(() => {
+        setWaterBalloonEffect(false);
+      }, 3000);
+    }
+  };
+
+  // 임시 저장 함수
+  const handleSave = () => {
+    console.log("임시 저장");
+  };
+
+  // 코드 실행 함수
+  const handleRun = () => {
+    console.log("코드 실행");
+  };
+
+  // 코드 제출 함수
+  const handleSubmit = () => {
+    console.log("코드 제출");
   };
 
   return (
@@ -17,9 +54,18 @@ const Footer = ({ onSave, onRun, onSubmit, onUseItem }) => {
       <div className={styles.itemContainer}>
         <div className={styles.itemHeader}>내 아이템</div>
         {/* 각각의 아이템 버튼을 ItemButton 컴포넌트로 대체 */}
-        <ItemButton itemName="아이템1" onUseItem={onUseItem} />
-        <ItemButton itemName="아이템2" onUseItem={onUseItem} />
-        <ItemButton itemName="아이템3" onUseItem={onUseItem} />
+        <ItemButton
+          itemName="아이템1"
+          onUseItem={() => handleUseItem("아이템1")}
+        />
+        <ItemButton
+          itemName="아이템2"
+          onUseItem={() => handleUseItem("아이템2")}
+        />
+        <ItemButton
+          itemName="아이템3"
+          onUseItem={() => handleUseItem("아이템3")}
+        />
       </div>
 
       {/* 기존 버튼들 유지 */}
@@ -27,29 +73,24 @@ const Footer = ({ onSave, onRun, onSubmit, onUseItem }) => {
         className={styles.button}
         color="#3498db"
         text="임시 저장"
-        onClick={onSave}
+        onClick={handleSave}
       />
       <ActionButton
         className={styles.button}
         color="#27ae60"
         text="코드 실행"
-        onClick={onRun}
+        onClick={handleRun}
       />
       <ActionButton
         className={styles.button}
         color="#e74c3c"
         text="코드 제출"
-        onClick={onSubmit}
+        onClick={handleSubmit}
       />
     </div>
   );
 };
 
-Footer.propTypes = {
-  onSave: PropTypes.func.isRequired,
-  onRun: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  onUseItem: PropTypes.func.isRequired,
-};
+Footer.propTypes = {}; // 필요한 경우에만 prop-types를 추가
 
 export default Footer;
