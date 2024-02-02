@@ -1,9 +1,9 @@
 package com.eni.backend.auth.oauth2.service;
 
-import com.eni.backend.auth.oauth2.exception.OAuth2AuthenticationProcessingException;
 import com.eni.backend.auth.oauth2.user.OAuth2UserInfo;
 import com.eni.backend.auth.oauth2.user.OAuth2UserInfoFactory;
 import com.eni.backend.common.entity.Language;
+import com.eni.backend.common.exception.CustomUnauthorizedException;
 import com.eni.backend.member.dto.request.MemberRequestDto;
 import com.eni.backend.member.entity.Member;
 import com.eni.backend.member.service.MemberService;
@@ -20,6 +20,8 @@ import org.springframework.util.StringUtils;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Optional;
+
+import static com.eni.backend.common.response.BaseResponseStatus.SOCIAL_EMAIL_NOT_FOUND;
 
 
 /*
@@ -63,7 +65,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         // OAuth2UserInfo field value validation
         if (!StringUtils.hasText(oAuth2UserInfo.getEmail())) {
-            throw new OAuth2AuthenticationProcessingException("OAuth2 Provider(구글, 카카오)에서 해당 email을 찾을 수 없습니다.");
+            throw new CustomUnauthorizedException(SOCIAL_EMAIL_NOT_FOUND);
         }
 
         String email = oAuth2UserInfo.getEmail();

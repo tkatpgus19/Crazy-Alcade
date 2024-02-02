@@ -43,15 +43,22 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(CustomBadRequestException.class)
-    protected BaseErrorResponse handleCustomException(CustomBadRequestException e) {
+    protected BaseErrorResponse handleCustomBadRequestException(CustomBadRequestException e) {
         log.error("[CustomBadRequestException]");
         return new BaseErrorResponse(e.getBaseResponseStatus());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(CustomServerErrorException.class)
-    public BaseErrorResponse handleDatabaseException(CustomServerErrorException e) {
+    public BaseErrorResponse handleCustomServerErrorException(CustomServerErrorException e) {
         log.error("[CustomServerErrorException]", e);
+        return new BaseErrorResponse(e.getBaseResponseStatus());
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(CustomUnauthorizedException.class)
+    public BaseErrorResponse handleCustomUnauthorizedException(CustomUnauthorizedException e) {
+        log.error("[CustomUnauthorizedException]", e);
         return new BaseErrorResponse(e.getBaseResponseStatus());
     }
 

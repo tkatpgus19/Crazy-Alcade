@@ -1,11 +1,9 @@
 package com.eni.backend.auth.jwt;
 
-import com.eni.backend.auth.oauth2.exception.GlobalExceptionCode;
-import com.eni.backend.auth.oauth2.exception.JwtCustomException;
+import com.eni.backend.common.exception.CustomUnauthorizedException;
 import com.eni.backend.member.dto.SecurityMemberDto;
 import com.eni.backend.member.entity.Member;
 import com.eni.backend.member.service.MemberService;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +18,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
+import static com.eni.backend.common.response.BaseResponseStatus.EXPIRED_TOKEN;
+import static com.eni.backend.common.response.BaseResponseStatus.INVALID_TOKEN;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -46,9 +47,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             JwtStatus jwtStatus = jwtUtil.validateToken(tokenValue);
 
             switch (jwtStatus) {
-                case FAIL -> throw new JwtCustomException(GlobalExceptionCode.INVALID_TOKEN_VALUE);
+                case FAIL -> throw new CustomUnauthorizedException(INVALID_TOKEN);
                 case ACCESS -> successValidatedToken(tokenValue);
-                case EXPIRED -> throw new JwtException("Access Token 만료!");
+                case EXPIRED -> throw new CustomUnauthorizedException(EXPIRED_TOKEN);
             }
         }
 

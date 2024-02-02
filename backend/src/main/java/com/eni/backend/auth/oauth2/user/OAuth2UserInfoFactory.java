@@ -1,8 +1,11 @@
 package com.eni.backend.auth.oauth2.user;
 
 import com.eni.backend.auth.oauth2.exception.OAuth2AuthenticationProcessingException;
+import com.eni.backend.common.exception.CustomUnauthorizedException;
 
 import java.util.Map;
+
+import static com.eni.backend.common.response.BaseResponseStatus.PROVIDER_NOT_SUPPORTED;
 
 public class OAuth2UserInfoFactory {
 
@@ -13,7 +16,7 @@ public class OAuth2UserInfoFactory {
         } else if (OAuth2Provider.KAKAO.getRegistrationId().equals(registrationId)) {
             return KakaoOAuth2UserInfo.of(accessToken, attributes);
         } else {
-            throw new OAuth2AuthenticationProcessingException("Login with " + registrationId + " is not supported");
+            throw new CustomUnauthorizedException(PROVIDER_NOT_SUPPORTED);
         }
     }
 }
