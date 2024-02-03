@@ -8,6 +8,7 @@ import com.eni.backend.problem.entity.Testcase;
 import com.eni.backend.problem.repository.TestcaseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -51,8 +52,7 @@ public class JavaCodeService {
         }
 
         // 파일 삭제
-        deleteFile(getCompileFile(dirPath));
-        deleteFile(dirPath);
+        deleteFolder(dirPath);
 
         return responses;
     }
@@ -68,14 +68,10 @@ public class JavaCodeService {
         Process process = pb.start();
         process.waitFor();
 
-        // 파일 삭제
-        deleteFile(codePath);
-
         // 실패
         if (process.exitValue() != 0) {
             // 파일 삭제
-            deleteFile(getCompileFile(dirPath));
-            deleteFile(dirPath);
+            deleteFolder(dirPath);
             // 결과값
             result = false;
         }
@@ -133,9 +129,7 @@ public class JavaCodeService {
         String outputPath = createOutputFile(dirPath, no, testcase.getOutput());
         if (outputPath == null) {
             process.destroyForcibly();
-            deleteFile(inputPath);
-            deleteFile(getCompileFile(dirPath));
-            deleteFile(dirPath);
+            deleteFolder(dirPath);
             throw new CustomServerErrorException(SERVER_ERROR);
         }
 
@@ -146,13 +140,8 @@ public class JavaCodeService {
                 output.append(sc.nextLine()).append("\n");
             }
         } catch (Exception e) {
-            // 파일 삭제
-            deleteFile(getCompileFile(dirPath));
-            deleteFile(inputPath);
-            deleteFile(outputPath);
-            deleteFile(dirPath);
-            // 프로세스 파괴
             process.destroyForcibly();
+            deleteFolder(dirPath);
             throw new CustomServerErrorException(SERVER_ERROR);
         }
 
@@ -187,7 +176,7 @@ public class JavaCodeService {
         throw new CustomServerErrorException(SERVER_ERROR);
     }
 
-    private String createJavaFile(String dirPath, String content) {
+    private String createJavaFile(String dirPath, String content) throws IOException {
         // 파일 생성
         String path = dirPath + "Solution.java";
         File file = new File(path);
@@ -196,6 +185,7 @@ public class JavaCodeService {
         try (FileWriter writer = new FileWriter(file)) {
             writer.write(content);
         } catch (Exception e) {
+            deleteFolder(dirPath);
             throw new CustomServerErrorException(SERVER_ERROR);
         }
 
@@ -204,7 +194,7 @@ public class JavaCodeService {
         return path;
     }
 
-    private String createInputFile(String dirPath, int no, String input) {
+    private String createInputFile(String dirPath, int no, String input) throws IOException {
         // 파일 생성
         String path = dirPath + no + "input.txt";
         File file = new File(path);
@@ -213,9 +203,7 @@ public class JavaCodeService {
         try (FileWriter writer = new FileWriter(file)) {
             writer.write(input);
         } catch (Exception e) {
-            deleteFile(getCompileFile(dirPath));
-            deleteFile(path);
-            deleteFile(dirPath);
+            deleteFolder(dirPath);
             throw new CustomServerErrorException(SERVER_ERROR);
         }
 
@@ -242,8 +230,9 @@ public class JavaCodeService {
         return path;
     }
 
-    private String getCompileFile(String dirPath) {
-        return dirPath + "Solution.class";
+    private void deleteFolder(String path) throws IOException {
+        FileUtils.cleanDirectory(new File(path));
+        deleteFile(path);
     }
 
     private void deleteFile(String path) {

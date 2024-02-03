@@ -175,7 +175,7 @@ public class PythonCodeService {
         throw new CustomServerErrorException(SERVER_ERROR);
     }
 
-    private String createPythonFile(String dirPath, String content) {
+    private String createPythonFile(String dirPath, String content) throws IOException {
         // 파일 생성
         String path = dirPath + "Solution.py";
         File file = new File(path);
@@ -184,6 +184,7 @@ public class PythonCodeService {
         try (FileWriter writer = new FileWriter(file)) {
             writer.write(content);
         } catch (Exception e) {
+            deleteFolder(dirPath);
             throw new CustomServerErrorException(SERVER_ERROR);
         }
 
