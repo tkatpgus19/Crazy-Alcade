@@ -1,79 +1,66 @@
 // 로그인 컴포넌트 업데이트
 
-import React, { Component } from "react";
+import React, { useState } from "react";
 import imgfile from "../../assets/images/loginlogo.png";
 import background from "../../assets/images/loginback.PNG";
 import NicknameModal from "./NicknameModal";
 import "./Login.module.css";
 import styles from "./Login.module.css";
 
-class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isKakaoModalOpen: false,
-      isGoogleModalOpen: false,
-    };
-  }
+const Login = () => {
+  // useState 훅을 사용하여 상태를 선언합니다.
+  const [isKakaoModalOpen, setKakaoModalOpen] = useState(false);
+  const [isGoogleModalOpen, setGoogleModalOpen] = useState(false);
 
-  openKakaoModal = () => {
-    this.setState({ isKakaoModalOpen: true });
+  const openKakaoModal = () => {
+    setKakaoModalOpen(true);
   };
 
-  openGoogleModal = () => {
-    this.setState({ isGoogleModalOpen: true });
+  const openGoogleModal = () => {
+    setGoogleModalOpen(true);
   };
 
-  closeModals = () => {
-    this.setState({
-      isKakaoModalOpen: false,
-      isGoogleModalOpen: false,
-    });
+  const closeModals = () => {
+    setKakaoModalOpen(false);
+    setGoogleModalOpen(false);
   };
 
-  render() {
-    const backgroundStyle = {
-      backgroundImage: `url(${background})`,
-      backgroundRepeat: "no-repeat",
-      backgroundSize: "cover",
-      height: "740px",
-      display: "flex",
-      flexDirection: "column", // 수정: 세로 방향으로 정렬
-      alignItems: "center", // 수정: 수직 가운데 정렬
-    };
+  const backgroundStyle = {
+    backgroundImage: `url(${background})`,
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
+    height: "740px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  };
 
-    // logoStyle 변수를 여기에 정의합니다.
-    const logoStyle = {
-      // 로고에 대한 추가적인 스타일을 필요에 따라 정의합니다.
-    };
+  const logoStyle = {
+    // 로고에 대한 추가적인 스타일을 필요에 따라 정의합니다.
+  };
 
-    return (
-      <div className={styles.loginmainContainer} style={backgroundStyle}>
-        {/* 로그인 내용은 여기에 넣으세요 */}
-        <div className={styles.loginlogo} style={logoStyle}>
-          <img className={styles.loginlogoImg} src={imgfile} alt="로고" />
-        </div>
-
-        {/* 카카오 로그인 버튼 */}
-        <button onClick={this.openKakaoModal} className={styles.kakaoButton}>
-          카카오로 로그인하기
-        </button>
-
-        {/* 구글 로그인 버튼 */}
-        <button onClick={this.openGoogleModal} className={styles.googleButton}>
-          구글로 로그인하기
-        </button>
-
-        {/* 모달 */}
-        {this.state.isKakaoModalOpen && (
-          <NicknameModal onClose={this.closeModals} />
-        )}
-        {this.state.isGoogleModalOpen && (
-          <NicknameModal onClose={this.closeModals} />
-        )}
+  return (
+    <div className={styles.loginmainContainer} style={backgroundStyle}>
+      {/* 로그인 내용은 여기에 넣으세요 */}
+      <div className={styles.loginlogo} style={logoStyle}>
+        <img className={styles.loginlogoImg} src={imgfile} alt="로고" />
       </div>
-    );
-  }
-}
+
+      {/* 카카오 로그인 버튼 */}
+      <button onClick={openKakaoModal} className={styles.kakaoButton}>
+        카카오로 로그인하기
+      </button>
+
+      {/* 구글 로그인 버튼 */}
+      <button onClick={openGoogleModal} className={styles.googleButton}>
+        구글로 로그인하기
+      </button>
+
+      {/* 모달 */}
+      {isKakaoModalOpen && <NicknameModal onClose={closeModals} />}
+      {isGoogleModalOpen && <NicknameModal onClose={closeModals} />}
+    </div>
+  );
+};
 
 export default Login;
