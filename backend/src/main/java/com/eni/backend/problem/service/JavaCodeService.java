@@ -50,6 +50,10 @@ public class JavaCodeService {
             responses.add(judge(dirPath,i+1, testcases.get(i)));
         }
 
+        // 파일 삭제
+        deleteFile(getCompileFile(dirPath));
+        deleteFile(dirPath);
+
         return responses;
     }
 
@@ -111,9 +115,7 @@ public class JavaCodeService {
             log.info("런타임 에러 {}", result);
 
             process.destroyForcibly();
-            deleteFile(getCompileFile(dirPath));
             deleteFile(inputPath);
-            deleteFile(dirPath);
 
             return PostCodeResponse.of(no, CodeStatus.RUNTIME_ERROR.getStatus());
         }
@@ -129,6 +131,14 @@ public class JavaCodeService {
 
         // 테스트케이스 output 생성
         String outputPath = createOutputFile(dirPath, no, testcase.getOutput());
+        if (outputPath == null) {
+            process.destroyForcibly();
+            deleteFile(inputPath);
+            deleteFile(getCompileFile(dirPath));
+            deleteFile(dirPath);
+            throw new CustomServerErrorException(SERVER_ERROR);
+        }
+
         // String 변환
         StringBuilder output = new StringBuilder();
         try (Scanner sc = new Scanner(new File(outputPath))) {
@@ -136,14 +146,19 @@ public class JavaCodeService {
                 output.append(sc.nextLine()).append("\n");
             }
         } catch (Exception e) {
+            // 파일 삭제
+            deleteFile(getCompileFile(dirPath));
+            deleteFile(inputPath);
+            deleteFile(outputPath);
+            deleteFile(dirPath);
+            // 프로세스 파괴
+            process.destroyForcibly();
             throw new CustomServerErrorException(SERVER_ERROR);
         }
 
         // 파일 삭제
-        deleteFile(getCompileFile(dirPath));
         deleteFile(inputPath);
         deleteFile(outputPath);
-        deleteFile(dirPath);
         // 프로세스 파괴
         process.destroyForcibly();
 
@@ -198,6 +213,9 @@ public class JavaCodeService {
         try (FileWriter writer = new FileWriter(file)) {
             writer.write(input);
         } catch (Exception e) {
+            deleteFile(getCompileFile(dirPath));
+            deleteFile(path);
+            deleteFile(dirPath);
             throw new CustomServerErrorException(SERVER_ERROR);
         }
 
@@ -215,7 +233,8 @@ public class JavaCodeService {
         try (FileWriter writer = new FileWriter(file)) {
             writer.write(output);
         } catch (Exception e) {
-            throw new CustomServerErrorException(SERVER_ERROR);
+            log.info("output{} 생성 실패", no);
+            return null;
         }
 
         log.info("output{} 생성 {}", no, path);
