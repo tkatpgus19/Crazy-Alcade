@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.eni.backend.common.response.BaseResponseStatus.GET_TIER_LIST_SUCCESS;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -19,7 +21,7 @@ public class TierController {
     @GetMapping("")
     public BaseSuccessResponse<?> getList() {
         log.info("TierController.getList");
-        return BaseSuccessResponse.of(tierService.getList());
+        return BaseSuccessResponse.of(GET_TIER_LIST_SUCCESS, tierService.getList());
     }
 
 }

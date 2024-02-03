@@ -9,7 +9,14 @@ import org.springframework.http.HttpStatus;
 public enum BaseResponseStatus {
 
     // SUCCESS
-    SUCCESS(HttpStatus.OK, "요청에 성공하였습니다."),
+    POST_PROBLEM_SUCCESS(HttpStatus.OK, "문제 생성에 성공하였습니다."),
+    POST_TESTCASE_SUCCESS(HttpStatus.OK, "테스트케이스 생성에 성공하였습니다."),
+    EXECUTE_CODE_SUCCESS(HttpStatus.OK, "코드 실행에 성공하였습니다."),
+    SUBMIT_CODE_SUCCESS(HttpStatus.OK, "코드 제출에 성공하였습니다."),
+    GET_PROBLEM_LIST_SUCCESS(HttpStatus.OK, "문제 리스트 조회에 성공하였습니다."),
+    GET_PROBLEM_RANDOM_PROCESS(HttpStatus.OK, "랜덤 문제 조회에 성공하였습니다."),
+    GET_PROBLEM_DETAIL_SUCCESS(HttpStatus.OK, "문제 정보 조회에 성공하였습니다."),
+    GET_TIER_LIST_SUCCESS(HttpStatus.OK, "티어 리스트 조회에 성공하였습니다."),
 
     // BAD_REQUEST
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "유효하지 않은 요청입니다."),

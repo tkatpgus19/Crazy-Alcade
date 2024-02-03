@@ -3,8 +3,6 @@ package com.eni.backend.common.response;
 import lombok.Builder;
 import lombok.Getter;
 
-import static com.eni.backend.common.response.BaseResponseStatus.SUCCESS;
-
 @Getter
 public class BaseSuccessResponse<T> {
 
@@ -19,10 +17,10 @@ public class BaseSuccessResponse<T> {
         this.result = result;
     }
 
-    public static <T> BaseSuccessResponse<T> of(T result) {
+    public static <T> BaseSuccessResponse<T> of(BaseResponseStatus baseResponseStatus, T result) {
         return BaseSuccessResponse.<T>builder()
-                .code(SUCCESS.getStatus().value())
-                .message(SUCCESS.getMessage())
+                .code(baseResponseStatus.getStatus().value())
+                .message(baseResponseStatus.getMessage())
                 .result(result)
                 .build();
     }

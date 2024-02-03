@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.eni.backend.common.response.BaseResponseStatus.BAD_REQUEST;
+import static com.eni.backend.common.response.BaseResponseStatus.POST_TESTCASE_SUCCESS;
 import static com.eni.backend.common.util.BindingResultUtils.getErrorMessages;
 
 @Slf4j
@@ -35,7 +36,7 @@ public class TestcaseController {
             throw new CustomBadRequestException(BAD_REQUEST, getErrorMessages(bindingResult));
         }
 
-        return BaseSuccessResponse.of(testcaseService.post(request));
+        return BaseSuccessResponse.of(POST_TESTCASE_SUCCESS, testcaseService.post(request));
     }
 
 }
