@@ -83,7 +83,7 @@ public class Problem extends BaseTime {
     }
 
     public String getStringPlatform() {
-        return this.platform.name();
+        return this.platform.getPlatformName();
     }
 
     public String getStringTime() {
