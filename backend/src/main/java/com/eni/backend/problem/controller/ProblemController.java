@@ -9,6 +9,7 @@ import com.eni.backend.problem.entity.Problem;
 import com.eni.backend.problem.service.CodeService;
 import com.eni.backend.problem.service.JavaCodeService;
 import com.eni.backend.problem.service.ProblemService;
+import com.eni.backend.problem.service.PythonCodeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,7 @@ public class ProblemController {
     private final ProblemService problemService;
     private final CodeService codeService;
     private final JavaCodeService javaCodeService;
+    private final PythonCodeService pythonCodeService;
 
     @PostMapping("")
     public BaseSuccessResponse<?> post(@RequestBody @Valid PostProblemRequest request, BindingResult bindingResult) {
@@ -99,7 +101,7 @@ public class ProblemController {
 
         // 파이썬 실행 결과
         if (language == Language.PYTHON) {
-
+            return BaseSuccessResponse.of(pythonCodeService.execute(problem, request.getContent()));
         }
 
         throw new CustomBadRequestException(LANGUAGE_NOT_SUPPORTED);
