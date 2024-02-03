@@ -41,6 +41,9 @@ public class PythonCodeService {
     private final MemberRepository memberRepository;
 
     public Object judge(Long memberId, Problem problem, String code, Boolean isHidden) throws IOException, InterruptedException {
+        // 멤버
+        Member member = findMemberById(memberId);
+
         // 파일을 저장할 디렉토리 생성
         UUID uuid = UUID.randomUUID();
         String dirPath = createDirectory(uuid);
@@ -71,7 +74,6 @@ public class PythonCodeService {
                 }
             }
             // 코드 저장
-            Member member = findMemberById(memberId);
             try {
                 codeRepository.save(Code.of(code, Language.PYTHON, result, member, problem));
             } catch (Exception e) {

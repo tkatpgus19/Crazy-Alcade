@@ -74,7 +74,7 @@ public class ProblemController {
     public BaseSuccessResponse<?> code(@PathVariable(name = "problem-id") Long problemId,
                                               @PathVariable String type,
                                               @RequestBody @Valid PostCodeRequest request, BindingResult bindingResult) throws IOException, InterruptedException {
-        log.info("ProblemController.codeExecute");
+        log.info("ProblemController.code");
 
         Long memberId = 1L; // 임시
 

@@ -20,10 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.eni.backend.common.response.BaseResponseStatus.*;
@@ -41,6 +38,9 @@ public class JavaCodeService {
     private final MemberRepository memberRepository;
 
     public Object judge(Long memberId, Problem problem, String code, Boolean isHidden) throws IOException, InterruptedException {
+        // 멤버
+        Member member = findMemberById(memberId);
+
         // 파일을 저장할 디렉토리 생성
         UUID uuid = UUID.randomUUID();
         String dirPath = createDirectory(uuid);
@@ -71,7 +71,6 @@ public class JavaCodeService {
                 }
             }
             // 코드 저장
-            Member member = findMemberById(memberId);
             try {
                 codeRepository.save(Code.of(code, Language.JAVA, result, member, problem));
             } catch (Exception e) {
