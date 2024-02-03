@@ -1,6 +1,5 @@
 package com.eni.backend.auth.oauth2.user;
 
-import com.eni.backend.auth.oauth2.exception.OAuth2AuthenticationProcessingException;
 import com.eni.backend.common.exception.CustomUnauthorizedException;
 
 import java.util.Map;

@@ -1,8 +1,10 @@
 package com.eni.backend.auth.oauth2.user;
 
-import com.eni.backend.auth.oauth2.exception.OAuth2AuthenticationProcessingException;
+import com.eni.backend.common.exception.CustomUnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import static com.eni.backend.common.response.BaseResponseStatus.PROVIDER_NOT_SUPPORTED;
 
 @RequiredArgsConstructor
 @Component
@@ -19,8 +21,7 @@ public class OAuth2UserUnlinkManager {
             kakaoOAuth2UserUnlink.unlink(accessToken);
         }
         else {
-            throw new OAuth2AuthenticationProcessingException(
-                    "Unlink with " + provider.getRegistrationId() + " is not supported");
+            throw new CustomUnauthorizedException(PROVIDER_NOT_SUPPORTED);
         }
     }
 }
