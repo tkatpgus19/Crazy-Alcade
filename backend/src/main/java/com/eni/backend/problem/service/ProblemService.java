@@ -1,6 +1,6 @@
 package com.eni.backend.problem.service;
 
-import com.eni.backend.common.entity.ProblemPlatform;
+import com.eni.backend.problem.entity.ProblemPlatform;
 import com.eni.backend.common.exception.CustomBadRequestException;
 import com.eni.backend.common.exception.CustomServerErrorException;
 import com.eni.backend.problem.dto.request.PostProblemRequest;

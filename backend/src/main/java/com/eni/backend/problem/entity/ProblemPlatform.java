@@ -1,4 +1,4 @@
-package com.eni.backend.common.entity;
+package com.eni.backend.problem.entity;
 
 public enum ProblemPlatform {
     BOJ

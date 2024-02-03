@@ -1,8 +1,6 @@
 package com.eni.backend.problem.entity;
 
-import com.eni.backend.code.entity.Code;
-import com.eni.backend.common.entity.BaseTimeEntity;
-import com.eni.backend.common.entity.ProblemPlatform;
+import com.eni.backend.common.entity.BaseTime;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -15,7 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Problem extends BaseTimeEntity {
+public class Problem extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

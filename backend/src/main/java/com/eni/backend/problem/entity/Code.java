@@ -1,10 +1,8 @@
-package com.eni.backend.code.entity;
+package com.eni.backend.problem.entity;
 
-import com.eni.backend.common.entity.BaseTimeEntity;
-import com.eni.backend.common.entity.CodeStatus;
-import com.eni.backend.common.entity.Language;
+import com.eni.backend.common.entity.BaseTime;
+import com.eni.backend.member.entity.Language;
 import com.eni.backend.member.entity.Member;
-import com.eni.backend.problem.entity.Problem;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -15,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "code")
 @Entity
-public class Code extends BaseTimeEntity {
+public class Code extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

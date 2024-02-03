@@ -1,8 +1,7 @@
 package com.eni.backend.member.entity;
 
-import com.eni.backend.code.entity.Code;
-import com.eni.backend.common.entity.BaseTimeEntity;
-import com.eni.backend.common.entity.Language;
+import com.eni.backend.problem.entity.Code;
+import com.eni.backend.common.entity.BaseTime;
 import com.eni.backend.item.entity.MemberItem;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -18,7 +17,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member extends BaseTimeEntity {
+public class Member extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

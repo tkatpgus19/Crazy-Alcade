@@ -13,7 +13,7 @@ import java.time.format.FormatStyle;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class BaseTimeEntity {
+public class BaseTime {
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
