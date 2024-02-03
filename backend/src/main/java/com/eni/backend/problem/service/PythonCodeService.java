@@ -1,7 +1,7 @@
 package com.eni.backend.problem.service;
 
 import com.eni.backend.common.exception.CustomServerErrorException;
-import com.eni.backend.problem.dto.response.PostCodeResponse;
+import com.eni.backend.problem.dto.response.CodeExecuteResponse;
 import com.eni.backend.problem.entity.CodeStatus;
 import com.eni.backend.problem.entity.Problem;
 import com.eni.backend.problem.entity.Testcase;
@@ -43,7 +43,7 @@ public class PythonCodeService {
 
         log.info("컴파일 성공");
 
-        List<PostCodeResponse> responses = new ArrayList<>();
+        List<CodeExecuteResponse> responses = new ArrayList<>();
         List<Testcase> testcases = testcaseRepository.findAllByProblemIdAndIsHidden(problem.getId(), false);
 
         // 각 테스트케이스 별 실행 결과
@@ -80,7 +80,7 @@ public class PythonCodeService {
         return result;
     }
 
-    private PostCodeResponse judge(String dirPath, Integer no, Testcase testcase) throws IOException, InterruptedException {
+    private CodeExecuteResponse judge(String dirPath, Integer no, Testcase testcase) throws IOException, InterruptedException {
         // 테스트 케이스 input 생성
         String inputPath = createInputFile(dirPath, no, testcase.getInput());
 
@@ -112,7 +112,7 @@ public class PythonCodeService {
             process.destroyForcibly();
             deleteFile(inputPath);
 
-            return PostCodeResponse.of(no, CodeStatus.RUNTIME_ERROR.getStatus());
+            return CodeExecuteResponse.of(no, CodeStatus.RUNTIME_ERROR.getStatus());
         }
 
         // 실행 결과
@@ -152,11 +152,11 @@ public class PythonCodeService {
 
         // 실패
         if (!result.toString().equals(output.toString())) {
-            return PostCodeResponse.of(no, CodeStatus.FAIL.getStatus());
+            return CodeExecuteResponse.of(no, CodeStatus.FAIL.getStatus());
         }
 
         // 성공
-        return PostCodeResponse.of(no, CodeStatus.SUCCESS.getStatus());
+        return CodeExecuteResponse.of(no, CodeStatus.SUCCESS.getStatus());
     }
 
     private String createDirectory(UUID uuid) {

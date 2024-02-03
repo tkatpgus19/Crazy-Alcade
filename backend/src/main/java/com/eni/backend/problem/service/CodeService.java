@@ -2,8 +2,6 @@ package com.eni.backend.problem.service;
 
 import com.eni.backend.common.exception.CustomBadRequestException;
 import com.eni.backend.member.entity.Language;
-import com.eni.backend.problem.dto.request.PostCodeRequest;
-import com.eni.backend.problem.dto.response.PostCodeResponse;
 import com.eni.backend.problem.entity.Problem;
 import com.eni.backend.problem.repository.ProblemRepository;
 import lombok.RequiredArgsConstructor;

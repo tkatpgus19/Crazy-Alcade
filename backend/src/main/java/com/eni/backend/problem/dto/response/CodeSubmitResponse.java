@@ -6,21 +6,27 @@ import lombok.ToString;
 
 @ToString
 @Getter
-public class PostCodeResponse {
+public class CodeSubmitResponse {
 
     private Integer testcaseNo;
     private String codeStatus;
+    private String time;
+    private String memory;
 
     @Builder
-    private PostCodeResponse(Integer testcaseNo, String codeStatus) {
+    private CodeSubmitResponse(Integer testcaseNo, String codeStatus, String time, String memory) {
         this.testcaseNo = testcaseNo;
         this.codeStatus = codeStatus;
+        this.time = time;
+        this.memory = memory;
     }
 
-    public static PostCodeResponse of(Integer testcaseNo, String codeStatus) {
+    public static CodeSubmitResponse of(Integer testcaseNo, String codeStatus, Long time, Long memory) {
         return builder()
                 .testcaseNo(testcaseNo)
                 .codeStatus(codeStatus)
+                .time(time + "ms")
+                .memory(memory + "KB")
                 .build();
     }
 

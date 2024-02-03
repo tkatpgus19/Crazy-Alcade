@@ -49,42 +49,46 @@ public class ProblemController {
     }
 
     @GetMapping("")
-    public BaseSuccessResponse<?> getList(@RequestParam(required = false, name = "tier-id") Long tierId) {
+    public BaseSuccessResponse<?> getList(@RequestParam(name = "tier-id") Long tierId) {
         log.info("ProblemController.getList");
-
-        // 쿼리 파라미터 null 체크
-        nullCheck(tierId);
-
         return BaseSuccessResponse.of(problemService.getList(tierId));
     }
 
     @GetMapping("/random")
-    public BaseSuccessResponse<?> getRandom(@RequestParam(required = false, name = "tier-id") Long tierId) {
+    public BaseSuccessResponse<?> getRandom(@RequestParam(name = "tier-id") Long tierId) {
         log.info("ProblemController.getRandom");
-
-        // 쿼리 파라미터 null 체크
-        nullCheck(tierId);
-
         return BaseSuccessResponse.of(problemService.getRandom(tierId));
     }
 
     @GetMapping("/{problem-id}")
-    public BaseSuccessResponse<?> get(@PathVariable(required = false, name = "problem-id") Long problemId) {
+    public BaseSuccessResponse<?> get(@PathVariable(name = "problem-id") Long problemId) {
         log.info("ProblemController.get");
-
-        // Path Variable null 체크
-        nullCheck(problemId);
-
         return BaseSuccessResponse.of(problemService.get(problemId));
     }
 
-    @PostMapping("/{problem-id}/codes/execute")
-    public BaseSuccessResponse<?> codeExecute(@PathVariable(required = false, name = "problem-id") Long problemId,
+    /**
+     * 토큰 검사 필요함.
+     * 임시로 memberId=1 이용.
+     */
+    @PostMapping("/{problem-id}/codes/{type}")
+    public BaseSuccessResponse<?> code(@PathVariable(name = "problem-id") Long problemId,
+                                              @PathVariable String type,
                                               @RequestBody @Valid PostCodeRequest request, BindingResult bindingResult) throws IOException, InterruptedException {
         log.info("ProblemController.codeExecute");
 
-        // Path Variable null 체크
-        nullCheck(problemId);
+        Long memberId = 1L; // 임시
+
+        /**
+         * save 처리 필요함.
+         */
+        boolean isHidden;
+        if (type.equals("execute")) {
+            isHidden = false;
+        } else if (type.equals("submit")) {
+            isHidden = true;
+        } else {
+            throw new CustomBadRequestException(URL_NOT_FOUND);
+        }
 
         // validation 오류
         if (bindingResult.hasErrors()) {
@@ -96,7 +100,7 @@ public class ProblemController {
 
         // 자바 실행 결과
         if (language == Language.JAVA) {
-            return BaseSuccessResponse.of(javaCodeService.execute(problem, request.getContent()));
+            return BaseSuccessResponse.of(javaCodeService.post(memberId, problem, request.getContent(), isHidden));
         }
 
         // 파이썬 실행 결과
@@ -105,12 +109,6 @@ public class ProblemController {
         }
 
         throw new CustomBadRequestException(LANGUAGE_NOT_SUPPORTED);
-    }
-
-    private void nullCheck(Long id) {
-        if (ObjectUtils.isEmpty(id)) {
-            throw new CustomBadRequestException(QUERY_PARAMS_OR_PATH_VARIABLE_NOT_FOUND);
-        }
     }
 
 }

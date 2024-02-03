@@ -27,11 +27,11 @@ public class Code extends BaseTime {
     @Column(nullable = false)
     private Language lang;
 
-    @Column
-    private Integer time;
-
-    @Column
-    private Integer memory;
+//    @Column
+//    private Long time;
+//
+//    @Column
+//    private Long memory;
 
     @Enumerated(EnumType.STRING)
     private CodeStatus status;
@@ -45,13 +45,22 @@ public class Code extends BaseTime {
     private Problem problem;
 
     @Builder
-    public Code(String content, Language lang, Integer time, Integer memory, CodeStatus status, Member member, Problem problem) {
+    private Code(String content, Language lang, CodeStatus status, Member member, Problem problem) {
         this.content = content;
         this.lang = lang;
-        this.time = time;
-        this.memory = memory;
         this.status = status;
         this.member = member;
         this.problem = problem;
     }
+
+    public static Code of(String content, Language lang, CodeStatus status, Member member, Problem problem) {
+        return builder()
+                .content(content)
+                .lang(lang)
+                .status(status)
+                .member(member)
+                .problem(problem)
+                .build();
+    }
+
 }

@@ -8,5 +8,6 @@ import java.util.List;
 public interface TestcaseRepository extends JpaRepository<Testcase, Long> {
 
     List<Testcase> findAllByProblemIdAndIsHidden(Long problemId, boolean isHidden);
+    List<Testcase> findAllByProblemId(Long problemId);
 
 }
