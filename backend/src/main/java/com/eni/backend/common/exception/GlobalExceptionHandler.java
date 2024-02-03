@@ -21,12 +21,22 @@ import static com.eni.backend.common.response.BaseResponseStatus.*;
 public class GlobalExceptionHandler {
 
     /**
+     * Bad Request Error
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BadRequestException.class)
+    public BaseErrorResponse handleBadRequest(Exception e) {
+        log.error("[BadRequestException]", e);
+        return BaseErrorResponse.of(BAD_REQUEST);
+    }
+
+    /**
      * URL Not Found Error
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({BadRequestException.class, NoHandlerFoundException.class, TypeMismatchException.class})
-    public BaseErrorResponse handleBadRequest(Exception e) {
-        log.error("[BadRequestException]", e);
+    @ExceptionHandler({NoHandlerFoundException.class, TypeMismatchException.class})
+    public BaseErrorResponse handleUrlNotFoundException(Exception e) {
+        log.error("[UrlNotFoundException]", e);
         return BaseErrorResponse.of(URL_NOT_FOUND);
     }
 

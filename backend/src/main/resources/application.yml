@@ -11,9 +11,12 @@ spring:
     password: ${DATASOURCE_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     properties:
       hibernate:
         format_sql: true
         show-sql: true
     database-platform: org.hibernate.dialect.MariaDBDialect
+
+code:
+  base-path: ${BASE_PATH}

@@ -37,6 +37,10 @@ public enum BaseResponseStatus {
 
     // TIER
     TIER_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당하는 티어가 없습니다."),
+
+    // CODE
+    LANGUAGE_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "지원하지 않는 언어입니다."),
+
     ;
 
 
