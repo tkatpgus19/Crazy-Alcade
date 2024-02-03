@@ -28,3 +28,44 @@
 .webIDE {
   margin-left: 8px; /* 문제와 Web IDE 간의 간격을 조절 */
 }
+
+/* 문어 흔들림 애니메이션 */
+@keyframes shake {
+  0%,
+  100% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+
+/* 문어 먹물 뿌리기 애니메이션 */
+@keyframes inkSpray {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.inkImage.fadeOut {
+  animation: fadeOut 1s forwards; /* 1초 동안 애니메이션 실행 후 사라짐 */
+}
+
+.inkImage {
+  width: 100px; /* 문어 이미지 크기 조정 */
+  animation: shake 1s infinite; /* 흔들림 효과 */
+  position: fixed; /* 화면에 고정 */
+  z-index: 1000; /* 다른 요소들 위에 표시 */
+}

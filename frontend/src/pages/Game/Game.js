@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import Header from "./Header"; // Header 컴포넌트의 경로에 맞게 수정하세요.
 import VideoScreen from "./VideoScreen";
@@ -9,9 +9,43 @@ import WebIDE from "./WebIDE";
 
 import { Resizable } from "re-resizable";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+import octopusImage from "../../assets/images/octopus.png"; // 문어 이미지의 경로를 정확히 설정하세요.
 
 function Game() {
   const navigate = useNavigate();
+  const isSprayingInk = useSelector((state) => state.octopus.isSprayingInk);
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    if (isSprayingInk) {
+      setShow(true);
+      setTimeout(() => setShow(false), 5000); // 5초 후 사라짐
+    }
+  }, [isSprayingInk]);
+
+  const octopusImages = Array(10)
+    .fill(null)
+    .map((_, index) => {
+      // 무작위 위치 생성
+      const style = {
+        position: "absolute",
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        transform: `translate(-50%, -50%)`, // 중앙 정렬
+      };
+
+      return (
+        <img
+          key={index}
+          src={octopusImage}
+          alt={`Spraying Octopus ${index + 1}`}
+          className={styles.inkImage}
+          style={style}
+        />
+      );
+    });
 
   const handleExitClick = () => {
     // "/"로 이동하는 코드
@@ -46,7 +80,7 @@ function Game() {
         <div className={styles.problemArea}>
           <Problem />
         </div>
-
+        {/* 드래그 컨트롤 */}
         <Resizable
           defaultSize={{ width: "60%", height: "100%" }}
           minWidth={"30%"}
@@ -78,6 +112,7 @@ function Game() {
         </Resizable>
       </div>
       <Footer />
+      {show && octopusImages}
     </div>
   );
 }

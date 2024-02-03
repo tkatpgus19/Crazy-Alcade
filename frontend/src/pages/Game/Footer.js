@@ -5,11 +5,11 @@ import ItemButton from "./components/ItemButton";
 import ActionButton from "./components/ActionButton";
 
 import { useSpring, animated } from "@react-spring/web";
+import { toggleInkSpraying } from "./slices/octopusSlice";
+import { useDispatch } from "react-redux";
 
 const Footer = () => {
-  const [octopusEffect, setOctopusEffect] = useState(false);
-  const [chickEffect, setChickEffect] = useState(false);
-  const [submitEffect, setWaterBalloonEffect] = useState(false);
+  const dispatch = useDispatch();
 
   // 아이템 사용 함수
   const handleUseItem = (item) => {
@@ -17,21 +17,9 @@ const Footer = () => {
 
     // 각 아이템에 대한 효과 로직 추가
     if (item === "아이템1") {
-      setOctopusEffect(true);
-      setTimeout(() => {
-        setOctopusEffect(false);
-        firework(); // 아이템1 사용 시 firework 함수 호출
-      }, 3000);
+      dispatch(toggleInkSpraying());
     } else if (item === "아이템2") {
-      setChickEffect(true);
-      setTimeout(() => {
-        setChickEffect(false);
-      }, 3000);
     } else if (item === "아이템3") {
-      setWaterBalloonEffect(true);
-      setTimeout(() => {
-        setWaterBalloonEffect(false);
-      }, 3000);
     }
   };
 
