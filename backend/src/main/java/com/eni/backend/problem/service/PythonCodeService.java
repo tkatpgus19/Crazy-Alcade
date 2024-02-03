@@ -1,10 +1,17 @@
 package com.eni.backend.problem.service;
 
+import com.eni.backend.common.exception.CustomBadRequestException;
 import com.eni.backend.common.exception.CustomServerErrorException;
+import com.eni.backend.member.entity.Language;
+import com.eni.backend.member.entity.Member;
+import com.eni.backend.member.repository.MemberRepository;
 import com.eni.backend.problem.dto.response.CodeExecuteResponse;
+import com.eni.backend.problem.dto.response.CodeSubmitResponse;
+import com.eni.backend.problem.entity.Code;
 import com.eni.backend.problem.entity.CodeStatus;
 import com.eni.backend.problem.entity.Problem;
 import com.eni.backend.problem.entity.Testcase;
+import com.eni.backend.problem.repository.CodeRepository;
 import com.eni.backend.problem.repository.TestcaseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
-import static com.eni.backend.common.response.BaseResponseStatus.SERVER_ERROR;
+import static com.eni.backend.common.response.BaseResponseStatus.*;
 
 @Slf4j
 @Service
@@ -28,9 +36,11 @@ public class PythonCodeService {
     @Value("${code.base-path}")
     private String BASE_PATH;
 
+    private final CodeRepository codeRepository;
     private final TestcaseRepository testcaseRepository;
+    private final MemberRepository memberRepository;
 
-    public Object execute(Problem problem, String code) throws IOException, InterruptedException {
+    public Object judge(Long memberId, Problem problem, String code, Boolean isHidden) throws IOException, InterruptedException {
         // 파일을 저장할 디렉토리 생성
         UUID uuid = UUID.randomUUID();
         String dirPath = createDirectory(uuid);
@@ -43,12 +53,39 @@ public class PythonCodeService {
 
         log.info("컴파일 성공");
 
-        List<CodeExecuteResponse> responses = new ArrayList<>();
-        List<Testcase> testcases = testcaseRepository.findAllByProblemIdAndIsHidden(problem.getId(), false);
+        List<Object> responses = new ArrayList<>();
+        List<Testcase> testcases;
 
-        // 각 테스트케이스 별 실행 결과
-        for (int i=0; i<testcases.size(); i++) {
-            responses.add(judge(dirPath,i+1, testcases.get(i)));
+        // 채점
+        if (isHidden) {
+            testcases = testcaseRepository.findAllByProblemId(problem.getId());
+            CodeSubmitResponse response;
+            CodeStatus result = CodeStatus.SUCCESS;
+            // 각 테스트케이스 별 실행 결과
+            for (int i=0; i<testcases.size(); i++) {
+                response = submit(dirPath, problem,i+1, testcases.get(i));
+                responses.add(response);
+                // 해당 코드 상태를 실패로 변경
+                if (!response.getCodeStatus().equals(CodeStatus.SUCCESS.getStatus())) {
+                    result = CodeStatus.FAIL;
+                }
+            }
+            // 코드 저장
+            Member member = findMemberById(memberId);
+            try {
+                codeRepository.save(Code.of(code, Language.PYTHON, result, member, problem));
+            } catch (Exception e) {
+                deleteFolder(dirPath);
+                throw new CustomServerErrorException(DATABASE_ERROR);
+            }
+        }
+        // 실행
+        else {
+            testcases = testcaseRepository.findAllByProblemIdAndIsHidden(problem.getId(), isHidden);
+            // 각 테스트케이스 별 실행 결과
+            for (int i=0; i<testcases.size(); i++) {
+                responses.add(execute(dirPath,i+1, testcases.get(i)));
+            }
         }
 
         // 파일 삭제
@@ -80,7 +117,7 @@ public class PythonCodeService {
         return result;
     }
 
-    private CodeExecuteResponse judge(String dirPath, Integer no, Testcase testcase) throws IOException, InterruptedException {
+    private CodeExecuteResponse execute(String dirPath, Integer no, Testcase testcase) throws IOException, InterruptedException {
         // 테스트 케이스 input 생성
         String inputPath = createInputFile(dirPath, no, testcase.getInput());
 
@@ -157,6 +194,111 @@ public class PythonCodeService {
 
         // 성공
         return CodeExecuteResponse.of(no, CodeStatus.SUCCESS.getStatus());
+    }
+
+    private CodeSubmitResponse submit(String dirPath, Problem problem, Integer no, Testcase testcase) throws IOException, InterruptedException {
+        // 테스트 케이스 input 생성
+        String inputPath = createInputFile(dirPath, no, testcase.getInput());
+
+        // 코드 실행
+        ProcessBuilder pb = new ProcessBuilder("python3", dirPath + "Solution.py")
+                .redirectInput(new File(inputPath)); // 테스트 케이스 input
+
+        // 표준 에러를 표준 출력으로 redirect
+//        pb.redirectErrorStream(true);
+
+        // 시작 시간
+        long start = System.currentTimeMillis();
+
+        // 채점 시작
+        Process process = pb.start();
+
+        // 메모리
+        long memory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 3);
+        // 시간 초과
+        boolean timeover = process.waitFor(problem.getTime(), TimeUnit.SECONDS);
+
+        // 종료 시간
+        long end = System.currentTimeMillis();
+        // 소요 시간
+        long time = end - start;
+
+        // 시간 초과
+        if (!timeover) {
+            process.destroyForcibly();
+            deleteFile(inputPath);
+            return CodeSubmitResponse.of(no, CodeStatus.TIME_OVER.getStatus(), time, memory);
+        }
+
+        // 메모리 초과
+        if (memory > problem.getMemory() * 1024) {
+            process.destroyForcibly();
+            deleteFile(inputPath);
+            return CodeSubmitResponse.of(no, CodeStatus.MEMORY_OVER.getStatus(), time, memory);
+        }
+
+        BufferedReader outputReader;
+        StringBuilder result;
+        String line;
+
+        // 런타임 에러
+        if (process.exitValue() != 0) {
+            outputReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            result = new StringBuilder();
+            while ((line = outputReader.readLine()) != null) {
+                result.append(line).append(" ");
+            }
+
+            log.info("런타임 에러 {}", result);
+
+            process.destroyForcibly();
+            deleteFile(inputPath);
+
+            return CodeSubmitResponse.of(no, CodeStatus.RUNTIME_ERROR.getStatus(), null, null);
+        }
+
+        // 실행 결과
+        outputReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        result = new StringBuilder();
+        while ((line = outputReader.readLine()) != null) {
+            result.append(line).append("\n");
+        }
+
+        log.info("실행 결과 {}", result);
+
+        // 테스트케이스 output 생성
+        String outputPath = createOutputFile(dirPath, no, testcase.getOutput());
+        if (outputPath == null) {
+            process.destroyForcibly();
+            deleteFolder(dirPath);
+            throw new CustomServerErrorException(SERVER_ERROR);
+        }
+
+        // String 변환
+        StringBuilder output = new StringBuilder();
+        try (Scanner sc = new Scanner(new File(outputPath))) {
+            while (sc.hasNextLine()) {
+                output.append(sc.nextLine()).append("\n");
+            }
+        } catch (Exception e) {
+            process.destroyForcibly();
+            deleteFolder(dirPath);
+            throw new CustomServerErrorException(SERVER_ERROR);
+        }
+
+        // 파일 삭제
+        deleteFile(inputPath);
+        deleteFile(outputPath);
+        // 프로세스 파괴
+        process.destroyForcibly();
+
+        // 실패
+        if (!result.toString().equals(output.toString())) {
+            return CodeSubmitResponse.of(no, CodeStatus.FAIL.getStatus(), time, memory);
+        }
+
+        // 성공
+        return CodeSubmitResponse.of(no, CodeStatus.SUCCESS.getStatus(), time, memory);
     }
 
     private String createDirectory(UUID uuid) {
@@ -237,6 +379,11 @@ public class PythonCodeService {
     private void deleteFile(String path) {
         File file = new File(path);
         file.delete();
+    }
+
+    private Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomBadRequestException(MEMBER_NOT_FOUND));
     }
 
 }

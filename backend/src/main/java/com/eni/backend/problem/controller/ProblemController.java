@@ -100,12 +100,12 @@ public class ProblemController {
 
         // 자바 실행 결과
         if (language == Language.JAVA) {
-            return BaseSuccessResponse.of(javaCodeService.post(memberId, problem, request.getContent(), isHidden));
+            return BaseSuccessResponse.of(javaCodeService.judge(memberId, problem, request.getContent(), isHidden));
         }
 
         // 파이썬 실행 결과
         if (language == Language.PYTHON) {
-            return BaseSuccessResponse.of(pythonCodeService.execute(problem, request.getContent()));
+            return BaseSuccessResponse.of(pythonCodeService.judge(memberId, problem, request.getContent(), isHidden));
         }
 
         throw new CustomBadRequestException(LANGUAGE_NOT_SUPPORTED);

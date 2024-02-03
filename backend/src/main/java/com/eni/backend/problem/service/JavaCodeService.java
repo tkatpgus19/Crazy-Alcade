@@ -40,7 +40,7 @@ public class JavaCodeService {
     private final TestcaseRepository testcaseRepository;
     private final MemberRepository memberRepository;
 
-    public Object post(Long memberId, Problem problem, String code, Boolean isHidden) throws IOException, InterruptedException {
+    public Object judge(Long memberId, Problem problem, String code, Boolean isHidden) throws IOException, InterruptedException {
         // 파일을 저장할 디렉토리 생성
         UUID uuid = UUID.randomUUID();
         String dirPath = createDirectory(uuid);
@@ -71,8 +71,9 @@ public class JavaCodeService {
                 }
             }
             // 코드 저장
+            Member member = findMemberById(memberId);
             try {
-                codeRepository.save(Code.of(code, Language.JAVA, result, findMemberById(memberId), problem));
+                codeRepository.save(Code.of(code, Language.JAVA, result, member, problem));
             } catch (Exception e) {
                 deleteFolder(dirPath);
                 throw new CustomServerErrorException(DATABASE_ERROR);
