@@ -7,7 +7,7 @@ import lombok.ToString;
 
 @ToString
 @Getter
-public class GetLevelListResponse {
+public class GetLevelListResponseDto {
 
     private Integer levelId;
     private String image;
@@ -15,14 +15,14 @@ public class GetLevelListResponse {
     private Integer coin;
 
     @Builder
-    private GetLevelListResponse(Integer levelId, String image, Integer exp, Integer coin) {
+    private GetLevelListResponseDto(Integer levelId, String image, Integer exp, Integer coin) {
         this.levelId = levelId;
         this.image = image;
         this.exp = exp;
         this.coin = coin;
     }
 
-    public static GetLevelListResponse of(Level level) {
+    public static GetLevelListResponseDto of(Level level) {
         return builder()
                 .levelId(level.getId())
                 .image(level.getImage())

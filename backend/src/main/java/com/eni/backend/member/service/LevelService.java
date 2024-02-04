@@ -1,6 +1,6 @@
 package com.eni.backend.member.service;
 
-import com.eni.backend.member.dto.response.GetLevelListResponse;
+import com.eni.backend.member.dto.response.GetLevelListResponseDto;
 import com.eni.backend.member.repository.LevelRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +16,9 @@ public class LevelService {
 
     private final LevelRepository levelRepository;
 
-    public List<GetLevelListResponse> getList() {
+    public List<GetLevelListResponseDto> getList() {
         return levelRepository.findAll()
-                .stream().map(GetLevelListResponse::of)
+                .stream().map(GetLevelListResponseDto::of)
                 .collect(Collectors.toList());
     }
 }
