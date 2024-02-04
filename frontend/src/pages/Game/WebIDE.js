@@ -57,11 +57,7 @@ const WebIDE = () => {
       return <div className={styles.loading}>Loading...</div>;
     }
     if (!executionResult || !executionResult.result) {
-      return (
-        <div className={styles.resultContainer}>
-          No execution results available.
-        </div>
-      );
+      return <div className={styles.resultContainer}>실행결과</div>;
     }
 
     return (
