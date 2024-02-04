@@ -6,10 +6,35 @@ import ActionButton from "./components/ActionButton";
 
 import { useSpring, animated } from "@react-spring/web";
 import { toggleInkSpraying } from "./slices/octopusSlice";
+import { toggleChickenWalking } from "./slices/featureSlice";
 import { useDispatch } from "react-redux";
+import waterBalloonImage from "../../assets/images/waterBalloon.png"; // 물풍선 이미지 경로
 
 const Footer = () => {
   const dispatch = useDispatch();
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  // 애니메이션 상태에 따른 스프링 정의
+  const animProps = useSpring({
+    to: async (next, cancel) => {
+      if (isAnimating) {
+        await next({
+          transform: "translateY(-100px)",
+          config: { duration: 1000 },
+        });
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+
+        await next({
+          transform: "translateY(0px)",
+          config: { duration: 300 },
+        });
+      }
+    },
+    from: { transform: "translateY(0px)" },
+    reset: isAnimating,
+    reverse: isAnimating,
+    onRest: () => setIsAnimating(false),
+  });
 
   // 아이템 사용 함수
   const handleUseItem = (item) => {
@@ -19,7 +44,9 @@ const Footer = () => {
     if (item === "아이템1") {
       dispatch(toggleInkSpraying());
     } else if (item === "아이템2") {
+      dispatch(toggleChickenWalking());
     } else if (item === "아이템3") {
+      setIsAnimating(true);
     }
   };
 
@@ -45,7 +72,7 @@ const Footer = () => {
 
   return (
     <div className={styles.footer}>
-      <animated.div
+      {/* <animated.div
         style={{
           width: 80,
           height: 40,
@@ -53,7 +80,7 @@ const Footer = () => {
           borderRadius: 8,
           ...springs,
         }}
-      />
+      /> */}
       {/* 내 아이템 영역 */}
       <div className={styles.itemContainer}>
         <div className={styles.itemHeader}>내 아이템</div>
@@ -71,26 +98,34 @@ const Footer = () => {
           onUseItem={() => handleUseItem("아이템3")}
         />
       </div>
-
-      {/* 기존 버튼들 유지 */}
-      <ActionButton
-        className={styles.button}
-        color="#3498db"
-        text="임시 저장"
-        onClick={handleSave}
-      />
-      <ActionButton
-        className={styles.button}
-        color="#27ae60"
-        text="코드 실행"
-        onClick={handleRun}
-      />
-      <ActionButton
-        className={styles.button}
-        color="#e74c3c"
-        text="코드 제출"
-        onClick={handleSubmit}
-      />
+      {/* 액션 버튼들 */}
+      <animated.div style={animProps} className={styles.buttonContainer}>
+        {isAnimating && (
+          <img
+            src={waterBalloonImage}
+            alt="Water Balloon"
+            className={styles.waterBalloon}
+          />
+        )}
+        <ActionButton
+          className={styles.button}
+          color="#3498db"
+          text="임시 저장"
+          onClick={() => {}}
+        />
+        <ActionButton
+          className={styles.button}
+          color="#27ae60"
+          text="코드 실행"
+          onClick={() => {}}
+        />
+        <ActionButton
+          className={styles.button}
+          color="#e74c3c"
+          text="코드 제출"
+          onClick={() => {}}
+        />
+      </animated.div>
     </div>
   );
 };

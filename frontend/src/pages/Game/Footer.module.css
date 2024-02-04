@@ -25,6 +25,10 @@
 }
 
 /* 각 버튼 스타일 */
+
+.animProps {
+  display: flex;
+}
 .button {
   background-color: #00396c;
   color: #fff;
@@ -42,4 +46,21 @@
   border-radius: 5px;
   margin-bottom: 5px;
   cursor: pointer;
+}
+
+/* Footer.module.css */
+.buttonContainer {
+  position: relative;
+  display: flex;
+}
+
+.waterBalloon {
+  position: absolute;
+  top: -50px; /* 버튼 위에 위치 */
+  left: 183px;
+  right: 0;
+  margin: auto; /* 가운데 정렬 */
+  width: 120px; /* 이미지 크기 조정 */
+  height: auto;
+  z-index: 2; /* 버튼 위에 렌더링 */
 }

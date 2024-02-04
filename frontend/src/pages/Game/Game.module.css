@@ -64,8 +64,14 @@
 }
 
 .inkImage {
-  width: 100px; /* 문어 이미지 크기 조정 */
+  width: 200px;
   animation: shake 1s infinite; /* 흔들림 효과 */
   position: fixed; /* 화면에 고정 */
+  z-index: 1000; /* 다른 요소들 위에 표시 */
+}
+
+.chicken {
+  position: fixed; /* 화면에 고정 */
+  width: 200px; /* 병아리 이미지 크기 조정 */
   z-index: 1000; /* 다른 요소들 위에 표시 */
 }
