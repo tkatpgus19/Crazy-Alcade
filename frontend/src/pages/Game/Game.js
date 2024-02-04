@@ -119,21 +119,6 @@ function Game() {
     navigate("/");
   };
 
-  const handleSave = () => {
-    // 임시 저장 로직
-    alert("임시 저장");
-  };
-
-  const handleRun = () => {
-    // 코드 실행 로직
-    alert("코드 실행");
-  };
-
-  const handleSubmit = () => {
-    // 코드 제출 로직
-    alert("코드 제출");
-  };
-
   return (
     <div className={styles.backgroundStyle}>
       <Header
