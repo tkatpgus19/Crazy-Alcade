@@ -64,9 +64,9 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
       </div>
 
       {/* 방 타입 체크박스 */}
-      <div className={styles.roomSectionTitle}>방 타입:</div>
-      <div className={styles.languageCheckbox}>
+      <div className={`${styles.roomSectionTitle} ${styles.languageCheckbox}`}>
         <label>
+          <span>방 타입 : </span>
           노말전
           <input
             type="checkbox"
@@ -89,18 +89,22 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
       </div>
 
       {/* 방 이름 입력란 */}
-      <div className={styles.roomSectionTitle}>방 이름:</div>
-      <input
-        type="text"
-        name="roomName"
-        value={roomData.name}
-        onChange={handleChange}
-      />
+      <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
+        <label>
+          <span>방 이름 : </span>
+          <input
+            type="text"
+            name="roomName"
+            value={roomData.name}
+            onChange={handleChange}
+          />
+        </label>
+      </div>
 
       {/* 비밀번호 입력란 */}
-      <div className={styles.roomSectionTitle}>
+      <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
         <label>
-          비밀번호:
+          <span>비밀번호 : </span>
           <input
             type="checkbox"
             name="hasPassword"
@@ -108,52 +112,68 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
             onChange={handleChange}
           />
         </label>
+        {roomData.hasPassword && (
+          <input
+            type="password"
+            name="roomPassword"
+            value={roomData.password}
+            onChange={handleChange}
+          />
+        )}
       </div>
-      {roomData.hasPassword && (
-        <input
-          type="password"
-          name="roomPassword"
-          value={roomData.password}
-          onChange={handleChange}
-        />
-      )}
 
       {/* 티어 선택 드롭다운 */}
-      <div className={styles.roomSectionTitle}>티어 선택:</div>
-      <select name="problemTier" value={roomData.tier} onChange={handleChange}>
-        <option value="">선택하세요</option>
-        <option value="bronze">Bronze</option>
-        <option value="silver">Silver</option>
-        <option value="gold">Gold</option>
-      </select>
+      <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
+        <label>
+          <span>티어 선택 : </span>
+          <select
+            name="problemTier"
+            value={roomData.tier}
+            onChange={handleChange}
+          >
+            <option value="">선택하세요</option>
+            <option value="bronze">Bronze</option>
+            <option value="silver">Silver</option>
+            <option value="gold">Gold</option>
+          </select>
+        </label>
+      </div>
 
       {/* 문제 번호 입력란 */}
-      <div className={styles.roomSectionTitle}>문제 번호:</div>
-      <input
-        type="text"
-        name="problemNo"
-        value={roomData.problemNumber}
-        onChange={handleChange}
-      />
+      <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
+        <label>
+          <span>문제 번호 : </span>
+          <input
+            type="text"
+            name="problemNo"
+            value={roomData.problemNumber}
+            onChange={handleChange}
+          />
+        </label>
+      </div>
 
       {/* 시간 제한 드롭다운 */}
-      <div className={styles.roomSectionTitle}>시간 제한:</div>
-      <select
-        name="timeLimit"
-        value={roomData.timeLimit}
-        onChange={handleChange}
-      >
-        <option value="">선택하세요</option>
-        <option value="1h">1시간</option>
-        <option value="1h30m">1시간 30분</option>
-        <option value="2h">2시간</option>
-        <option value="2h30m">2시간 30분</option>
-      </select>
+      <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
+        <label>
+          <span>시간 제한 : </span>
+          <select
+            name="timeLimit"
+            value={roomData.timeLimit}
+            onChange={handleChange}
+          >
+            <option value="">선택하세요</option>
+            <option value="1h">1시간</option>
+            <option value="1h30m">1시간 30분</option>
+            <option value="2h">2시간</option>
+            <option value="2h30m">2시간 30분</option>
+          </select>
+        </label>
+      </div>
 
       {/* 풀이 언어 체크박스 */}
-      <div className={styles.roomSectionTitle}>풀이 언어:</div>
-      <div className={styles.languageCheckbox}>
+      <div className={`${styles.roomSectionTitle} ${styles.languageCheckbox}`}>
         <label>
+          <span>풀이 언어 : </span>
           Java
           <input
             type="checkbox"
@@ -176,9 +196,11 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
       </div>
 
       {/* 코드 리뷰 체크박스 */}
-      <div className={styles.roomSectionTitle}>코드 리뷰:</div>
-      <div className={styles.codeReviewCheckbox}>
+      <div
+        className={`${styles.roomSectionTitle} ${styles.codeReviewCheckbox}`}
+      >
         <label>
+          <span>코드 리뷰 : </span>
           o
           <input
             type="checkbox"
@@ -211,8 +233,10 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
       {/* 추가적인 방 정보에 대한 유사한 입력 필드를 추가하세요 */}
 
       {/* 방 만들기 및 취소 버튼 */}
-      <button onClick={handleSubmit}>방 만들기</button>
-      <button onClick={closeModal}>취소</button>
+      <div className={styles.createActionButtons}>
+        <button onClick={handleSubmit}>방 만들기</button>
+        <button onClick={closeModal}>취소</button>
+      </div>
     </div>
   );
 };
