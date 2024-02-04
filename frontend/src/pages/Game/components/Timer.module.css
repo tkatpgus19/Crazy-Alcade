@@ -22,3 +22,9 @@
 .timer {
   user-select: none;
 }
+
+/* 60초 아래로 내려가면 글자색 빨강으로 변경. */
+.redTimer {
+  /* background-color: red; */
+  color: red;
+}
