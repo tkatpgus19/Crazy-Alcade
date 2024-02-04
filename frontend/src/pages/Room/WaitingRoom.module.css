@@ -109,7 +109,7 @@
 .roomheader1 {
   margin-bottom: 15px;
   padding-top: 15px;
-  padding-left: 11px;
+  padding-left: 41px;
 }
 
 /* 대기방 두번째 헤더 */
@@ -117,7 +117,7 @@
   display: flex;
   justify-content: space-between;
   padding-left: 11px;
-  padding-right: 9px;
+  padding-right: 42px;
 }
 
 /* 오른쪽 아래 3개 버튼 스타일  */
