@@ -21,23 +21,30 @@
 /* 로그인 스타일 시트에 아래 스타일을 추가하세요 */
 
 .kakaoButton {
-  background-color: yellow;
+  margin-bottom: 30px;
+  background-color: #ffeb00;
+  color: #231815;
+  border: 2px solid #231815;
+  padding: 10px 20px;
+  font-size: 16px;
   font-weight: bold;
-  color: black;
-  padding: 10px;
-  margin-top: 10px;
-  border: none;
-  border-radius: 5px;
   cursor: pointer;
+  border-radius: 5px; /* 버튼의 모서리를 둥글게 만듭니다. */
+  /* 추가적인 스타일링을 원하면 여기에 계속해서 추가하세요 */
+}
+
+.kakaoButton:hover {
+  background-color: #ffe100;
 }
 
 .googleButton {
   background-color: white;
+  font-size: 16px;
   font-weight: bold;
   color: blue;
-  padding: 10px;
+  padding: 10px 39px;
   margin-top: 30px;
-  border: 1px solid black;
+  border: 2px solid black;
   border-radius: 5px;
   cursor: pointer;
 }

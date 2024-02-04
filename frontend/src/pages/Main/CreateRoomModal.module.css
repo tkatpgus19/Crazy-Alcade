@@ -2,7 +2,7 @@
 
 /* 기본 스타일 */
 .createRoomModal {
-  height: 530px; /* 모달 높이 설정 */
+  height: 550px; /* 모달 높이 설정 */
   width: 400px; /* 모달 너비 설정 */
   position: fixed;
   top: 50%;
@@ -22,13 +22,22 @@
   border-radius: 10px 10px 0 0; /* 상단 모서리만 둥글게 설정 */
   padding: 10px;
   margin-bottom: 10px;
+  width: 150px;
 }
 
 .roomTitle {
-  margin: 0; /* 제목의 margin 초기화 */
+  margin: 0px; /* 제목의 margin 초기화 */
   font-size: 20px;
   color: #000000; /* 어두운 글자색 지정 */
   font-weight: bold;
+  text-align: center;
+}
+
+.roomSectionTitle {
+  margin-top: 5px;
+  font-size: 15px;
+  font-weight: bold;
+  color: #167bff; /* 파란색 */
 }
 
 /* 라벨 스타일 */
@@ -40,7 +49,7 @@
 .createRoomModal input,
 .createRoomModal select,
 .createRoomModal button {
-  margin-top: 5px; /* 입력 요소 및 버튼 간격 조정 */
+  margin-top: 8px; /* 입력 요소 및 버튼 간격 조정 */
 }
 
 /* 버튼 스타일 */
@@ -52,7 +61,7 @@
   cursor: pointer;
   border: none;
   border-radius: 5px; /* 모서리 둥글게 설정 */
-  margin-top: 15px; /* 버튼 간격 조정 */
+  margin-top: 7px; /* 버튼 간격 조정 */
 }
 
 /* 버튼 호버 효과 스타일 */

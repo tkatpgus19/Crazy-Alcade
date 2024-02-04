@@ -1,28 +1,21 @@
-// 로그인 컴포넌트 업데이트
-
 import React, { useState } from "react";
 import imgfile from "../../assets/images/loginlogo.png";
 import background from "../../assets/images/loginback.PNG";
-import NicknameModal from "./NicknameModal";
+import { GoogleLogin } from "@react-oauth/google";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./Login.module.css";
 import styles from "./Login.module.css";
 
 const Login = () => {
-  // useState 훅을 사용하여 상태를 선언합니다.
-  const [isKakaoModalOpen, setKakaoModalOpen] = useState(false);
-  const [isGoogleModalOpen, setGoogleModalOpen] = useState(false);
+  // Kakao 로그인을 위한 상수들
+  const KAKAO_REST_API_KEY = "e7b3942c338a483fd83097c16ceed087";
+  const KAKAO_REDIRECT_URI =
+    "http://192.168.123.109:3000/login/oauth2/code/kakao";
+  const KAKAO_LINK = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${KAKAO_REDIRECT_URI}&response_type=code`;
 
-  const openKakaoModal = () => {
-    setKakaoModalOpen(true);
-  };
-
-  const openGoogleModal = () => {
-    setGoogleModalOpen(true);
-  };
-
-  const closeModals = () => {
-    setKakaoModalOpen(false);
-    setGoogleModalOpen(false);
+  // Kakao 로그인 핸들러
+  const kakaoLoginHandler = () => {
+    window.location.href = KAKAO_LINK;
   };
 
   const backgroundStyle = {
@@ -46,19 +39,28 @@ const Login = () => {
         <img className={styles.loginlogoImg} src={imgfile} alt="로고" />
       </div>
 
-      {/* 카카오 로그인 버튼 */}
-      <button onClick={openKakaoModal} className={styles.kakaoButton}>
-        카카오로 로그인하기
+      {/* Kakao 로그인 버튼 */}
+      <button
+        type="button"
+        onClick={kakaoLoginHandler}
+        className={`${styles.kakaoButton} `}
+      >
+        카카오 계정으로 로그인
       </button>
 
-      {/* 구글 로그인 버튼 */}
-      <button onClick={openGoogleModal} className={styles.googleButton}>
-        구글로 로그인하기
-      </button>
-
-      {/* 모달 */}
-      {isKakaoModalOpen && <NicknameModal onClose={closeModals} />}
-      {isGoogleModalOpen && <NicknameModal onClose={closeModals} />}
+      {/* Google 로그인 버튼 */}
+      <GoogleOAuthProvider clientId="1085234842575-i7dg223j28dr0dg5tvrhq85s560ue06h.apps.googleusercontent.com">
+        <GoogleLogin
+          onSuccess={(res) => {
+            console.log(res);
+            // Google 로그인 성공 시 추가 작업 수행
+          }}
+          onFailure={(err) => {
+            console.log(err);
+            // Google 로그인 실패 시 추가 작업 수행
+          }}
+        />
+      </GoogleOAuthProvider>
     </div>
   );
 };

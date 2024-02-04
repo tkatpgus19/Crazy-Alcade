@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import imgfile from "../../assets/images/logo.png";
 import background from "../../assets/images/mainback.png";
@@ -6,8 +6,42 @@ import "./Main.module.css";
 import styles from "./Main.module.css";
 import CreateRoomModal from "./CreateRoomModal";
 import ItemShopModal from "./ItemShopModal";
+import axios from "axios";
+import SockJS from "sockjs-client";
+import { Stomp } from "@stomp/stompjs";
 
 const Main = () => {
+  useEffect(() => {
+    axios.get("http://172.30.1.37:8080/rooms/normal").then((res) => {
+      setRoomList(res.data);
+    });
+
+    connectSession();
+  }, []);
+
+  const client = useRef();
+
+  const connectSession = () => {
+    const socket = new SockJS("http://172.30.1.37:8080/ws-stomp");
+    client.current = Stomp.over(socket);
+    client.current.connect({}, onConnected, onError);
+  };
+
+  function onConnected() {
+    client.current.subscribe(
+      `/sub/${normalMode ? "normal" : "item"}/room-list`,
+      onRoomInforReceived
+    );
+  }
+
+  function onError(error) {
+    alert("error");
+  }
+
+  function onRoomInforReceived(payload) {
+    setRoomList(JSON.parse(payload.body));
+  }
+
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [createRoomButtonPressed, setCreateRoomButtonPressed] = useState(false);
@@ -15,6 +49,7 @@ const Main = () => {
   const [chatInput, setChatInput] = useState("");
   const [chatContent, setChatContent] = useState([]);
   const [normalMode, setNormalMode] = useState(true);
+  const [roomList, setRoomList] = useState([]);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -34,7 +69,15 @@ const Main = () => {
 
   const createRoom = (roomData) => {
     console.log("방이 생성되었습니다:", roomData);
-    setCreateRoomButtonPressed(true);
+    axios
+      .post("http://172.30.1.37:8080/rooms", roomData)
+      .then((res) => {
+        alert("성공");
+      })
+      .catch((err) => {
+        alert("실패");
+      });
+    // setCreateRoomButtonPressed(true);/
   };
 
   const handleLanguageChange = (event) => {
@@ -70,8 +113,8 @@ const Main = () => {
     }
   };
 
-  const toggleNormalMode = () => {
-    setNormalMode(!normalMode);
+  const toggleNormalMode = (mode) => {
+    setNormalMode(mode);
   };
 
   const backgroundStyle = {
@@ -193,13 +236,13 @@ const Main = () => {
             {/* 토글 방식으로 노말전, 아이템전 버튼 */}
             <button
               className={`${styles.normalButton} ${normalMode ? styles.active : ""}`}
-              onClick={toggleNormalMode}
+              onClick={() => toggleNormalMode(true)}
             >
               노말전
             </button>
             <button
               className={`${styles.itemButton} ${!normalMode ? styles.active : ""}`}
-              onClick={toggleNormalMode}
+              onClick={() => toggleNormalMode(false)}
             >
               아이템전
             </button>
@@ -253,47 +296,26 @@ const Main = () => {
           {/* 게임 대기 화면 방 */}
           <div className={styles.gameRoomList}>
             {/* 방 하나하나 */}
-            <div className={styles.room}>
-              {/* 방 안의 제목 */}
-              <div className={styles.roomBlueBox}>
-                <p>너만 오면 고</p>
-              </div>
-              <div className={styles.playingText}> playing </div>
-              <div className={styles.roomDescription}>백준 1001.A+B</div>
-              <div className={styles.roomDescription}>시간 : 1h 30m</div>
-              <div className={styles.roomDescription}>언어 : Python</div>
-            </div>
-            <div className={styles.room}>
-              <div className={styles.roomBlueBox}>
-                <p>안들어오면 지상렬</p>
-              </div>
-              <div className={styles.playingText}> playing </div>
-              <div className={styles.roomDescription}>백준 16023.아기상어</div>
-              <div className={styles.roomDescription}>시간 : 1h 30m</div>
-              <div className={styles.roomDescription}>언어 : Python</div>
-            </div>
-            <div className={styles.room}>
-              <div className={styles.roomBlueBox}>
-                <p>현직개발자</p>
-              </div>
-              <div className={styles.waitingText}> waiting </div>
-              <div className={styles.roomDescription}>
-                백준 1557.왜 이렇게 빨리 끝나나요
-              </div>
-              <div className={styles.roomDescription}>시간 : 2h 30m</div>
-              <div className={styles.roomDescription}>언어 : Java</div>
-            </div>
-            <div className={styles.room}>
-              <div className={styles.roomBlueBox}>
-                <p>방 이름을 꼭 지어야해?</p>
-              </div>
-              <div className={styles.playingText}> playing </div>
-              <div className={styles.roomDescription}>
-                백준 1033.현직이의 미로찾기
-              </div>
-              <div className={styles.roomDescription}>시간 : 1h 30m</div>
-              <div className={styles.roomDescription}>언어 : Python</div>
-            </div>
+            {roomList.map((data, index) => {
+              return (
+                <div key={index} className={styles.room}>
+                  {/* 방 안의 제목 */}
+                  <div className={styles.roomBlueBox}>
+                    <p>{data.roomName}</p>
+                  </div>
+                  <div className={styles.playingText}> playing </div>
+                  <div className={styles.roomDescription}>
+                    백준 : {data.problemNo}
+                  </div>
+                  <div className={styles.roomDescription}>
+                    시간 : {data.timeLimit}
+                  </div>
+                  <div className={styles.roomDescription}>
+                    언어 : {data.language}
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
           <div className={styles.backandforthPage}>

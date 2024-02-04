@@ -10,14 +10,16 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
 
   // 방 정보를 담는 상태를 설정합니다.
   const [roomData, setRoomData] = useState({
-    name: "",
-    password: "",
-    tier: "",
-    problemNumber: "",
+    roomType: "normal",
+    roomName: "",
+    hasPassword: false,
+    roomPassword: "",
+    problemTier: "",
+    problemNo: "",
     timeLimit: "",
-    languages: { java: false, python: false },
-    codeReview: false,
-    codeReviewReject: false,
+    language: "java",
+    codeReview: true,
+    master: "김진영",
   });
 
   // 입력값이 변경될 때 호출되는 핸들러 함수를 정의합니다.
@@ -39,13 +41,18 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
   };
 
   // 풀이 언어 변경 핸들러 함수
-  const handleChangeLanguage = (e, language) => {
+  const handleChangeLanguage = (selectedLanguage) => {
     setRoomData((prevData) => ({
       ...prevData,
-      languages: {
-        ...prevData.languages,
-        [language]: e.target.checked,
-      },
+      language: selectedLanguage,
+    }));
+  };
+
+  // 방 타입 토글 함수
+  const handleChangeRoomType = (type) => {
+    setRoomData((prevData) => ({
+      ...prevData,
+      roomType: type,
     }));
   };
 
@@ -56,27 +63,64 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
         <div className={styles.roomTitle}>방 만들기</div>
       </div>
 
+      {/* 방 타입 체크박스 */}
+      <div className={styles.roomSectionTitle}>방 타입:</div>
+      <div className={styles.languageCheckbox}>
+        <label>
+          노말전
+          <input
+            type="checkbox"
+            name="roomType"
+            value="normal"
+            checked={roomData.roomType === "normal"}
+            onChange={() => handleChangeRoomType("normal")}
+          />
+        </label>
+        <label>
+          아이템전
+          <input
+            type="checkbox"
+            name="roomType"
+            value="item"
+            checked={roomData.roomType === "item"}
+            onChange={() => handleChangeRoomType("item")}
+          />
+        </label>
+      </div>
+
       {/* 방 이름 입력란 */}
-      <label>방 이름:</label>
+      <div className={styles.roomSectionTitle}>방 이름:</div>
       <input
         type="text"
-        name="name"
+        name="roomName"
         value={roomData.name}
         onChange={handleChange}
       />
 
       {/* 비밀번호 입력란 */}
-      <label>비밀번호:</label>
-      <input
-        type="password"
-        name="password"
-        value={roomData.password}
-        onChange={handleChange}
-      />
+      <div className={styles.roomSectionTitle}>
+        <label>
+          비밀번호:
+          <input
+            type="checkbox"
+            name="hasPassword"
+            checked={roomData.hasPassword}
+            onChange={handleChange}
+          />
+        </label>
+      </div>
+      {roomData.hasPassword && (
+        <input
+          type="password"
+          name="roomPassword"
+          value={roomData.password}
+          onChange={handleChange}
+        />
+      )}
 
       {/* 티어 선택 드롭다운 */}
-      <label>티어 선택:</label>
-      <select name="tier" value={roomData.tier} onChange={handleChange}>
+      <div className={styles.roomSectionTitle}>티어 선택:</div>
+      <select name="problemTier" value={roomData.tier} onChange={handleChange}>
         <option value="">선택하세요</option>
         <option value="bronze">Bronze</option>
         <option value="silver">Silver</option>
@@ -84,16 +128,16 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
       </select>
 
       {/* 문제 번호 입력란 */}
-      <label>문제 번호:</label>
+      <div className={styles.roomSectionTitle}>문제 번호:</div>
       <input
         type="text"
-        name="problemNumber"
+        name="problemNo"
         value={roomData.problemNumber}
         onChange={handleChange}
       />
 
       {/* 시간 제한 드롭다운 */}
-      <label>시간 제한:</label>
+      <div className={styles.roomSectionTitle}>시간 제한:</div>
       <select
         name="timeLimit"
         value={roomData.timeLimit}
@@ -107,40 +151,45 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
       </select>
 
       {/* 풀이 언어 체크박스 */}
-      <label>풀이 언어:</label>
+      <div className={styles.roomSectionTitle}>풀이 언어:</div>
       <div className={styles.languageCheckbox}>
         <label>
           Java
           <input
             type="checkbox"
-            name="languages"
+            name="language"
             value="java"
-            checked={roomData.languages.java}
-            onChange={(e) => handleChangeLanguage(e, "java")}
+            checked={roomData.language === "java"}
+            onChange={() => handleChangeLanguage("java")}
           />
         </label>
         <label>
           Python
           <input
             type="checkbox"
-            name="languages"
+            name="language"
             value="python"
-            checked={roomData.languages.python}
-            onChange={(e) => handleChangeLanguage(e, "python")}
+            checked={roomData.language === "python"}
+            onChange={() => handleChangeLanguage("python")}
           />
         </label>
       </div>
 
       {/* 코드 리뷰 체크박스 */}
-      <label>코드 리뷰:</label>
+      <div className={styles.roomSectionTitle}>코드 리뷰:</div>
       <div className={styles.codeReviewCheckbox}>
         <label>
           o
           <input
             type="checkbox"
             name="codeReview"
-            checked={roomData.codeReviewApprove}
-            onChange={handleChange}
+            checked={roomData.codeReview}
+            onChange={() =>
+              setRoomData((prevData) => ({
+                ...prevData,
+                codeReview: !prevData.codeReview,
+              }))
+            }
           />
         </label>
         <label>
@@ -148,8 +197,13 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
           <input
             type="checkbox"
             name="codeReviewReject"
-            checked={roomData.codeReviewReject}
-            onChange={handleChange}
+            checked={!roomData.codeReview}
+            onChange={() =>
+              setRoomData((prevData) => ({
+                ...prevData,
+                codeReview: !prevData.codeReview,
+              }))
+            }
           />
         </label>
       </div>
