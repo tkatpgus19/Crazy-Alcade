@@ -6,7 +6,7 @@ server:
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: ${DATASOURCE_URL}
+    url: ${DATASOURCE_URL}?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
   jpa:
@@ -16,3 +16,4 @@ spring:
       hibernate:
         format_sql: true
         show-sql: true
+    database-platform: org.hibernate.dialect.MariaDBDialect
