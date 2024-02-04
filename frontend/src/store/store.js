@@ -1,8 +1,15 @@
+// src/app/store.js
 import { configureStore } from "@reduxjs/toolkit";
-import counterReducer from "../utils/counter/counterSlice";
+import octopusReducer from "../pages/Game/slices/octopusSlice";
+import featureReducer from "../pages/Game/slices/featureSlice";
 
-export const store = configureStore({
+const store = configureStore({
   reducer: {
-    counter: counterReducer,
+    octopus: octopusReducer,
+    feature: featureReducer,
+
+    // 다른 리듀서가 있다면 여기에 추가하세요.
   },
 });
+
+export default store;

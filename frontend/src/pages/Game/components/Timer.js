@@ -17,7 +17,13 @@ const Timer = ({ initialTime }) => {
     return () => clearInterval(intervalId);
   }, [initialTime]); // initialTime이 변경될 때마다 useEffect 다시 실행
 
-  return <div className={styles.timer}>TIME {formatTime(remainingTime)}</div>;
+  return (
+    <div
+      className={`${styles.timer} ${remainingTime < 60 ? styles.redTimer : ""}`}
+    >
+      TIME {formatTime(remainingTime)}
+    </div>
+  );
 };
 
 Timer.propTypes = {
