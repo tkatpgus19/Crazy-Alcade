@@ -13,7 +13,14 @@ import static com.eni.backend.common.response.BaseResponseStatus.SUCCESS;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/levels")
+@RequestMapping("/levels")
 public class LevelController {
 
+    private final LevelService levelService;
+
+    @GetMapping("")
+    public BaseSuccessResponse<?> getList() {
+        log.info("LevelController.getList");
+        return BaseSuccessResponse.of(SUCCESS.getMessage(), levelService.getList());
+    }
 }
