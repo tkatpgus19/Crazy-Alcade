@@ -3,26 +3,28 @@ package com.eni.backend.common.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
+
+import static com.eni.backend.common.response.BaseResponseStatus.SUCCESS;
+
 @Getter
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BaseSuccessResponse<T> {
 
-    private final int statusCode; //http status code
-    private final String message; //response message
-    private final T data; //response data
+    private final int code;
+    private final String message;
+    private final T result;
 
     @Builder
-    private BaseSuccessResponse(int statusCode, String message, T data) {
-        this.statusCode = statusCode;
+    private BaseSuccessResponse(String message, T result) {
+        this.code = HttpStatus.OK.value();
         this.message = message;
-        this.data = data;
+        this.result = result;
     }
 
-    public static <T> BaseSuccessResponse<T> of(BaseResponseStatus baseResponseStatus, T data) {
+    public static <T> BaseSuccessResponse<T> of(String message, T result) {
         return BaseSuccessResponse.<T>builder()
-                .statusCode(baseResponseStatus.getStatus().value())
-                .message(baseResponseStatus.getMessage())
-                .data(data)
+                .message(message)
+                .result(result)
                 .build();
     }
 }

@@ -9,7 +9,7 @@ import java.util.Optional;
 @Repository
 public interface LevelRepository extends JpaRepository<Level, Integer> {
 
-    boolean existsLevelById(Integer level);
-    Optional<Level> findLevelById(Integer level);
+    boolean existsById(Integer levelId);
+    Optional<Level> findById(Integer levelId);
 }
 

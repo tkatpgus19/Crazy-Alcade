@@ -1,6 +1,5 @@
 package com.eni.backend.auth.jwt;
 
-import com.eni.backend.common.exception.CustomUnauthorizedException;
 import com.eni.backend.member.dto.SecurityMemberDto;
 import com.eni.backend.member.entity.Member;
 import com.eni.backend.member.service.MemberService;
@@ -10,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -19,38 +17,57 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static com.eni.backend.common.response.BaseResponseStatus.EXPIRED_TOKEN;
-import static com.eni.backend.common.response.BaseResponseStatus.INVALID_TOKEN;
-
 @Slf4j
 @RequiredArgsConstructor
 @Component
-@Lazy
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String BEARER_PREFIX = "Bearer ";
-
-    private final JwtUtil jwtUtil;
+    private static final String BEARER_PREFIX = "Bearer ";
+    private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getRequestURI().contains("api/auth/");
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return request.getRequestURI().contains("auth/");
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String tokenValue = resolveToken(request);
+        // 사용자가 보낸 토큰을 확인
+        String accessToken = resolveToken(request);
 
-        if (StringUtils.hasText(tokenValue)) {
-            JwtStatus jwtStatus = jwtUtil.validateToken(tokenValue);
+        // 토큰 검사 생략(모두 허용 URL의 경우 토큰 검사 통과)
+        if (!StringUtils.hasText(accessToken)) {
+            doFilter(request, response, filterChain);
+            return;
+        }
 
-            switch (jwtStatus) {
-                case FAIL -> throw new CustomUnauthorizedException(INVALID_TOKEN);
-                case ACCESS -> successValidatedToken(tokenValue);
-                case EXPIRED -> throw new CustomUnauthorizedException(EXPIRED_TOKEN);
-            }
+        // access token 이 유효
+        if (jwtTokenProvider.validateToken(accessToken) == JwtStatus.ACCESS) {
+            // memberId -> member 찾기
+            Member member = memberService.validateMemberByToken(jwtTokenProvider.getMemberId(accessToken));
+
+            //SecurityContext에 저장할 Member 객체 생성
+            SecurityMemberDto securityDto = SecurityMemberDto.of(member);
+
+            Authentication authentication = jwtTokenProvider.getAuthentication(securityDto);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+
+        // access token 이 만료
+        else if (jwtTokenProvider.validateToken(accessToken) == JwtStatus.EXPIRED) {
+            String refreshToken = null;
+
+            // access token -> memberId 를 찾고, refreshToken 을 탐색
+            Long memberId = jwtTokenProvider.getMemberIdFromExpiredToken(accessToken);
+//            refreshToken = jwtTokenProvider.getRefreshToken(memberId);
+
+            // refresh token 이 존재하고 유효하다면 access token 재발급
+
+            // refresh token 이 존재하지만 만료되었다면 예외 처리
+
+            // refresh token 이 존재하지 않으면 예외 처리
         }
 
         filterChain.doFilter(request, response);
@@ -66,14 +83,5 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         return null;
     }
 
-    private void successValidatedToken(String tokenValue) {
-        Member findMember = memberService.findByEmail(jwtUtil.getUid(tokenValue))
-                .orElseThrow(IllegalStateException::new);
-
-        SecurityMemberDto securityMemberDto = SecurityMemberDto.of(findMember.getId(), findMember.getOAuth2Provider(), findMember.getEmail(),
-                findMember.getNickname(), findMember.getProfile());
-
-        Authentication authentication = jwtUtil.getAuthentication(securityMemberDto);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
 }
+

@@ -14,11 +14,14 @@ import java.sql.Timestamp;
 @Getter
 public class MemberRequestDto {
 
-    @NotBlank(message = "email 아이디가 없습니다.")
+    @NotBlank(message = "Email 아이디가 없습니다.")
     private String email;
 
-    @NotBlank(message = "provider가 없습니다.")
-    private OAuth2Provider oAuth2Provider;
+    @NotBlank(message = "Provider가 없습니다.")
+    private OAuth2Provider provider;
+
+    @NotBlank(message = "Social ID가 없습니다.")
+    private String socialId;
 
     @NotBlank(message = "닉네임을 입력해주세요.")
     private String nickname;
@@ -45,9 +48,10 @@ public class MemberRequestDto {
     private Timestamp connectedAt;
 
     @Builder
-    private MemberRequestDto(String email, OAuth2Provider oAuth2Provider, String nickname, String profile, Integer coin, Integer exp, Language lang, Level level, Integer complaint, Timestamp connectedAt) {
+    private MemberRequestDto(String email, OAuth2Provider provider, String socialId, String nickname, String profile, Integer coin, Integer exp, Language lang, Level level, Integer complaint, Timestamp connectedAt) {
         this.email = email;
-        this.oAuth2Provider = oAuth2Provider;
+        this.provider = provider;
+        this.socialId = socialId;
         this.nickname = nickname;
         this.profile = profile;
         this.coin = coin;
@@ -59,10 +63,11 @@ public class MemberRequestDto {
 
     }
 
-    public static MemberRequestDto of(String email, OAuth2Provider oAuth2Provider, String nickname, String profile, Integer coin, Integer exp, Language lang, Level level, Integer complaint, Timestamp connectedAt) {
+    public static MemberRequestDto of(String email, OAuth2Provider provider, String socialId, String nickname, String profile, Integer coin, Integer exp, Language lang, Level level, Integer complaint, Timestamp connectedAt) {
         return builder()
                 .email(email)
-                .oAuth2Provider(oAuth2Provider)
+                .provider(provider)
+                .socialId(socialId)
                 .nickname(nickname)
                 .profile(profile)
                 .coin(coin)
@@ -77,7 +82,8 @@ public class MemberRequestDto {
     public Member toEntity() {
         return Member.builder()
                 .email(email)
-                .oAuth2Provider(oAuth2Provider)
+                .provider(provider)
+                .socialId(socialId)
                 .nickname(nickname)
                 .profile(profile)
                 .coin(coin)

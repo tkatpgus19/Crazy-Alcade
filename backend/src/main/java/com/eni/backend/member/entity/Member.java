@@ -1,6 +1,7 @@
 package com.eni.backend.member.entity;
 
 import com.eni.backend.auth.oauth2.user.OAuth2Provider;
+import com.eni.backend.auth.oauth2.user.OAuth2UserInfo;
 import com.eni.backend.code.entity.Code;
 import com.eni.backend.common.entity.BaseTimeEntity;
 import com.eni.backend.common.entity.Language;
@@ -28,9 +29,11 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 20)
     private String email;
 
-    @Column
     @Enumerated(EnumType.STRING)
-    private OAuth2Provider oAuth2Provider;
+    private OAuth2Provider provider;
+
+    @Column(nullable = false)
+    private String socialId;
 
     @Column(length = 8)
     private String nickname;
@@ -39,9 +42,11 @@ public class Member extends BaseTimeEntity {
     private String profile;
 
     @Column(nullable = false)
+    @ColumnDefault("0")
     private Integer coin;
 
     @Column(nullable = false)
+    @ColumnDefault("0")
     private Integer exp;
 
     @Enumerated(EnumType.STRING)
@@ -67,11 +72,12 @@ public class Member extends BaseTimeEntity {
     private List<MemberItem> memberItems = new ArrayList<>();
 
     @Builder
-    private Member(String email, OAuth2Provider oAuth2Provider, String nickname, String profile, Integer coin, Integer exp, Language lang, Level level, Integer complaint, Timestamp connectedAt) {
+    private Member(String email, OAuth2Provider provider, String socialId, String nickname, String profile, Integer coin, Integer exp, Language lang, Level level, Integer complaint, Timestamp connectedAt) {
+        this.email = email;
+        this.socialId = socialId;
+        this.provider = provider;
         this.nickname = nickname;
         this.profile = profile;
-        this.email = email;
-        this.oAuth2Provider = oAuth2Provider;
         this.coin = coin;
         this.exp = exp;
         this.lang = lang;
@@ -80,10 +86,11 @@ public class Member extends BaseTimeEntity {
         this.connectedAt = connectedAt;
     }
 
-    public static Member of(String email, OAuth2Provider oAuth2Provider, String nickname, String profile, Integer coin, Integer exp, Language lang, Level level, Integer complaint, Timestamp connectedAt) {
+    public static Member of(String email, OAuth2Provider provider, String socialId, String nickname, String profile, Integer coin, Integer exp, Language lang, Level level, Integer complaint, Timestamp connectedAt) {
         return builder()
                 .email(email)
-                .oAuth2Provider(oAuth2Provider)
+                .provider(provider)
+                .socialId(socialId)
                 .nickname(nickname)
                 .profile(profile)
                 .lang(lang)
@@ -95,9 +102,19 @@ public class Member extends BaseTimeEntity {
                 .build();
     }
 
-    public Member update(String email, OAuth2Provider oAuth2Provider) {
+    public static Member of(OAuth2UserInfo info) {
+        return builder()
+                .nickname(info.getProvider().getRegistrationId() + info.getId())
+                .socialId(info.getId())
+                .provider(info.getProvider())
+                .email(info.getEmail())
+                .connectedAt(new Timestamp(System.currentTimeMillis()))
+                .build();
+    }
+
+    public Member update(String email, OAuth2Provider provider) {
         this.email = email;
-        this.oAuth2Provider = oAuth2Provider;
+        this.provider = provider;
         return this;
     }
 

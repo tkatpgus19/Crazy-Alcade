@@ -1,5 +1,6 @@
-package com.eni.backend.auth.oauth2.service;
+package com.eni.backend.auth.jwt;
 
+import com.eni.backend.auth.oauth2.service.OAuth2UserPrincipal;
 import com.eni.backend.auth.oauth2.user.OAuth2UserInfo;
 import com.eni.backend.auth.oauth2.user.OAuth2UserInfoFactory;
 import com.eni.backend.common.exception.CustomUnauthorizedException;
@@ -16,7 +17,7 @@ import static com.eni.backend.common.response.BaseResponseStatus.EMAIL_NOT_FOUND
 
 @Slf4j
 @Service
-public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+public class JwtAuthTokenService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {

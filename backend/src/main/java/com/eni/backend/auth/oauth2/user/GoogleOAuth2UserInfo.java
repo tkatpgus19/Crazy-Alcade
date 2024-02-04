@@ -4,40 +4,33 @@ import lombok.Builder;
 
 import java.util.HashMap;
 import java.util.Map;
+
 public class GoogleOAuth2UserInfo implements OAuth2UserInfo {
 
     private final Map<String, Object> attributes;
-    private final String accessToken;
-    private final String id;
-    private final String email;
-    private final String name;
-    private final String profile;
+    private String id;
+    private String email;
+    private String accessToken;
 
     @Builder
-    private GoogleOAuth2UserInfo(String accessToken, Map<String, Object> attributes) {
+    private GoogleOAuth2UserInfo(Map<String, Object> attributes, String accessToken) {
         this.accessToken = accessToken;
         this.attributes = new HashMap<>();
         this.id = (String) attributes.get("sub");
         this.email = (String) attributes.get("email");
-        this.name = (String) attributes.get("name");
-        this.profile = (String) attributes.get("picture");
     }
 
-    public static GoogleOAuth2UserInfo of(String accessToken, Map<String, Object> attributes) {
+    public static GoogleOAuth2UserInfo of(Map<String, Object> attributes, String accessToken) {
         return builder()
                 .accessToken(accessToken)
                 .attributes(attributes)
                 .build();
+
     }
 
     @Override
     public OAuth2Provider getProvider() {
         return OAuth2Provider.GOOGLE;
-    }
-
-    @Override
-    public String getAccessToken() {
-        return accessToken;
     }
 
     @Override
@@ -56,12 +49,9 @@ public class GoogleOAuth2UserInfo implements OAuth2UserInfo {
     }
 
     @Override
-    public String getName() {
-        return name;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    @Override
-    public String getProfile() {
-        return profile;
-    }
 }
+

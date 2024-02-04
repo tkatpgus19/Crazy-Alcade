@@ -1,14 +1,15 @@
 package com.eni.backend.auth.jwt;
 
-import com.eni.backend.auth.redis.RedisProperties;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import com.eni.backend.auth.oauth2.user.OAuth2Provider;
+import com.eni.backend.member.entity.Member;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-@Repository
-public interface JwtTokenRepository extends CrudRepository<RedisProperties, String> {
+public interface JwtTokenRepository extends JpaRepository<Member, Long> {
 
-    // accessToken으로 RefreshToken을 찾아온다.
-    Optional<RedisProperties> findByAccessToken(String accessToken);
+    Optional<Member> findByProviderAndSocialId(OAuth2Provider provider, String socialId);
+    Optional<Member> findById(Long memberId);
+
 }
+

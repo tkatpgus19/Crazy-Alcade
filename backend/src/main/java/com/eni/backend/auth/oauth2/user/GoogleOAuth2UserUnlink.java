@@ -20,3 +20,4 @@ public class GoogleOAuth2UserUnlink implements OAuth2UserUnlink {
         restTemplate.postForObject(URL, params, String.class);
     }
 }
+

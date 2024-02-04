@@ -23,7 +23,8 @@ public class Level {
     private Integer coin;
 
     @Builder
-    public Level(String image, Integer exp, Integer coin) {
+    public Level(Integer id, String image, Integer exp, Integer coin) {
+        this.id = id;
         this.image = image;
         this.exp = exp;
         this.coin = coin;

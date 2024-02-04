@@ -1,33 +1,31 @@
 package com.eni.backend.member.dto;
 
 import com.eni.backend.auth.oauth2.user.OAuth2Provider;
+import com.eni.backend.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 public class SecurityMemberDto {
-    private final Long id;
-    private final OAuth2Provider oAuth2Provider;
-    private final String email;
-    private final String name;
-    private final String profile;
+
+    private OAuth2Provider provider;
+    private String id;
+    private String email;
 
     @Builder
-    public SecurityMemberDto(Long id, OAuth2Provider oAuth2Provider, String email, String name, String profile) {
+    private SecurityMemberDto(OAuth2Provider provider, String id, String email) {
+        this.provider = provider;
         this.id = id;
-        this.oAuth2Provider = oAuth2Provider;
         this.email = email;
-        this.name = name;
-        this.profile = profile;
     }
 
-    public static SecurityMemberDto of(Long id, OAuth2Provider oAuth2Provider, String email, String name, String profile) {
+    public static SecurityMemberDto of(Member member) {
         return builder()
-                .id(id)
-                .oAuth2Provider(oAuth2Provider)
-                .email(email)
-                .name(name)
-                .profile(profile)
+                .provider(member.getProvider())
+                .id(member.getSocialId())
+                .email(member.getEmail())
                 .build();
     }
+
 }
+
