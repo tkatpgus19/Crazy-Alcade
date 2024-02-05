@@ -1,23 +1,23 @@
-import React, { useState } from "react";
+import React from "react";
 import imgfile from "../../assets/images/loginlogo.png";
 import background from "../../assets/images/loginback.PNG";
-import { GoogleLogin } from "@react-oauth/google";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./Login.module.css";
 import styles from "./Login.module.css";
 
 const Login = () => {
-  // Kakao 로그인을 위한 상수들
-  const KAKAO_REST_API_KEY = "e7b3942c338a483fd83097c16ceed087";
-  const KAKAO_REDIRECT_URI =
-    "http://192.168.123.109:3000/login/oauth2/code/kakao";
-  const KAKAO_LINK = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${KAKAO_REDIRECT_URI}&response_type=code`;
-
   // Kakao 로그인 핸들러
   const kakaoLoginHandler = () => {
-    window.location.href = KAKAO_LINK;
+    window.location.href =
+      "http://192.168.100.147:8080/oauth2/authorization/kakao";
   };
 
+  // Google 로그인 핸들러
+  const googleLoginHandler = () => {
+    window.location.href =
+      "http://192.168.100.147:8080/oauth2/authorization/google";
+  };
+
+  // 페이지 배경 스타일
   const backgroundStyle = {
     backgroundImage: `url(${background})`,
     backgroundRepeat: "no-repeat",
@@ -28,6 +28,7 @@ const Login = () => {
     alignItems: "center",
   };
 
+  // 로고 스타일
   const logoStyle = {
     // 로고에 대한 추가적인 스타일을 필요에 따라 정의합니다.
   };
@@ -49,7 +50,17 @@ const Login = () => {
       </button>
 
       {/* Google 로그인 버튼 */}
-      <GoogleOAuthProvider clientId="1085234842575-i7dg223j28dr0dg5tvrhq85s560ue06h.apps.googleusercontent.com">
+      <button
+        type="button"
+        onClick={googleLoginHandler}
+        className={`${styles.googleButton} `}
+      >
+        구글 계정으로 로그인
+      </button>
+
+      {/* Google 로그인 버튼을 사용할 경우 아래 주석 부분을 활성화하세요 */}
+      {/* 
+      <GoogleOAuthProvider clientId="YourGoogleClientId">
         <GoogleLogin
           onSuccess={(res) => {
             console.log(res);
@@ -61,6 +72,7 @@ const Login = () => {
           }}
         />
       </GoogleOAuthProvider>
+      */}
     </div>
   );
 };

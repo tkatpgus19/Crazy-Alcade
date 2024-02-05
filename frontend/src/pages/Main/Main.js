@@ -9,29 +9,40 @@ import ItemShopModal from "./ItemShopModal";
 import axios from "axios";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faKey } from "@fortawesome/free-solid-svg-icons";
 
 const Main = () => {
+  const SERVER_URL =
+    "ec2-3-39-233-234.ap-northeast-2.compute.amazonaws.com:8080";
   useEffect(() => {
-    axios.get("http://172.30.1.37:8080/rooms/normal").then((res) => {
-      setRoomList(res.data);
-    });
+    getRoomList("normal");
 
     connectSession();
   }, []);
 
   const client = useRef();
 
+  const getRoomList = (roomType) => {
+    axios.get(`http://${SERVER_URL}/rooms/${roomType}`).then((res) => {
+      setRoomList(res.data);
+    });
+  };
+
   const connectSession = () => {
-    const socket = new SockJS("http://172.30.1.37:8080/ws-stomp");
+    const socket = new SockJS(`http://${SERVER_URL}/ws-stomp`);
     client.current = Stomp.over(socket);
     client.current.connect({}, onConnected, onError);
   };
 
   function onConnected() {
-    client.current.subscribe(
-      `/sub/${normalMode ? "normal" : "item"}/room-list`,
-      onRoomInforReceived
-    );
+    if (m) {
+      client.current.subscribe(`/sub/normal/room-list`, onRoomInforReceived);
+    } else {
+      client.current.subscribe(`/sub/item/room-list`, onRoomInforReceived);
+    }
+
+    client.current.subscribe(`/sub/chat/all`, onChatReceived);
   }
 
   function onError(error) {
@@ -40,6 +51,20 @@ const Main = () => {
 
   function onRoomInforReceived(payload) {
     setRoomList(JSON.parse(payload.body));
+  }
+  const chatContainerRef = useRef();
+  function onChatReceived(payload) {
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
+
+    const newMessage = {
+      content: JSON.parse(payload.body).message,
+      timestamp: formattedDate,
+      isBold: true,
+    };
+
+    setChatContent((chatContent) => [...chatContent, newMessage]);
+    chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
   }
 
   const navigate = useNavigate();
@@ -70,7 +95,7 @@ const Main = () => {
   const createRoom = (roomData) => {
     console.log("방이 생성되었습니다:", roomData);
     axios
-      .post("http://172.30.1.37:8080/rooms", roomData)
+      .post(`http://${SERVER_URL}/rooms`, roomData)
       .then((res) => {
         alert("성공");
       })
@@ -98,23 +123,38 @@ const Main = () => {
 
   const handleSendMessage = () => {
     if (chatInput.trim() !== "") {
-      const currentDate = new Date();
-      const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
-
-      const newMessage = {
-        content: chatInput,
-        timestamp: formattedDate,
-        isBold: true,
-      };
-
-      const newChatContent = [...chatContent, newMessage];
-      setChatContent(newChatContent);
+      client.current.send(
+        "/pub/chat/all/sendMessage",
+        {},
+        JSON.stringify({
+          roomId: "all",
+          sender: "닉네임1",
+          message: chatInput,
+          type: "TALK",
+          roomType: normalMode,
+        })
+      );
       setChatInput("");
     }
   };
 
+  const onKeyDown = (e) => {
+    if (e.keyCode === 13) {
+      handleSendMessage();
+    }
+  };
+
+  let m = true;
   const toggleNormalMode = (mode) => {
+    client.current.disconnect();
     setNormalMode(mode);
+    m = mode;
+    if (mode) {
+      getRoomList("normal");
+    } else {
+      getRoomList("item");
+    }
+    connectSession();
   };
 
   const backgroundStyle = {
@@ -311,7 +351,29 @@ const Main = () => {
                     시간 : {data.timeLimit}
                   </div>
                   <div className={styles.roomDescription}>
-                    언어 : {data.language}
+                    언어 : {data.language}{" "}
+                    <span>
+                      <FontAwesomeIcon
+                        icon={data.hasPassword ? faKey : null}
+                        rotation={data.hasPassword ? 220 : 0}
+                        style={
+                          data.hasPassword
+                            ? { color: "#FFD43B", marginLeft: "5px" }
+                            : null
+                        }
+                        className={styles.keyIcon}
+                      />
+                      <img
+                        src={
+                          data.codeReview
+                            ? "../images/speak.png"
+                            : "../images/unspeak.png"
+                        }
+                        alt="speak"
+                        className={styles.speakIcon}
+                      />
+                      {data.userCnt}/{data.maxUserCnt}
+                    </span>
                   </div>
                 </div>
               );
@@ -333,7 +395,7 @@ const Main = () => {
         {/* 채팅 부분 */}
         <div className={styles.chatPage}>
           <button className={styles.chatPageButton}>전체</button>
-          <div className={styles.chatContent}>
+          <div className={styles.chatContent} ref={chatContainerRef}>
             {/* 채팅 내용 표시 */}
             {chatContent.map((message, index) => (
               <div key={index}>
@@ -360,6 +422,7 @@ const Main = () => {
               placeholder="채팅을 입력하세요"
               value={chatInput}
               onChange={handleChatInputChange}
+              onKeyDown={onKeyDown}
             />
             <button className={styles.sendButton} onClick={handleSendMessage}>
               전송

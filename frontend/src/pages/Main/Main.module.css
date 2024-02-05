@@ -68,16 +68,6 @@
   line-height: 2;
 }
 
-/* 경험치 바 */
-.experienceBarContainer {
-  width: 100%;
-}
-
-.experienceBar {
-  height: 10px;
-  background-color: white; /* 바의 빈 부분에 대한 기본 색상 */
-}
-
 /* 스타일링 for 하단 흰색 네모 칸 4개 정렬 */
 .whiteBoxes {
   display: flex; /* Flex 컨테이너로 설정 */
@@ -385,6 +375,21 @@
   text-align: left;
   margin-left: 10px;
   letter-spacing: 2.5px; /* 원하는 글자 간격 설정 */
+}
+
+.keyIcon {
+  margin-right: 60px;
+  font-size: 20px;
+}
+
+.speakIcon {
+  margin-left: -50px;
+  margin-right: 5px;
+  font-size: 20px;
+}
+
+.roomDescription span {
+  margin-left: 230px;
 }
 
 .backPage,
