@@ -89,7 +89,7 @@ const VideoScreen = () => {
 
       const publisher = await OV.initPublisherAsync(undefined, {
         audioSource: undefined,
-        videoSource: undefined,
+        videoSource: "screen",
         publishAudio: true,
         publishVideo: true,
         resolution: "1920x1080",
@@ -132,6 +132,8 @@ const VideoScreen = () => {
     // 상태 초기화
     setSession(undefined);
     setSubscribers([]);
+    setMySessionId("SessionA");
+    setMyUserName("Participant" + Math.floor(Math.random() * 100));
     setMainStreamManager(undefined);
     setPublisher(undefined);
   };

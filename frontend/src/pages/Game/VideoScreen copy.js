@@ -16,8 +16,8 @@ const VideoScreen = () => {
   const [myUserName, setMyUserName] = useState("pangdoon");
   const [session, setSession] = useState(undefined);
   const [mainStreamManager, setMainStreamManager] = useState(undefined);
-  const [publisher, setPublisher] = useState(undefined); //방장
-  const [subscribers, setSubscribers] = useState([]); //참가자
+  const [publisher, setPublisher] = useState(undefined);
+  const [subscribers, setSubscribers] = useState([]);
 
   useEffect(() => {
     // 페이지가 언마운트되기 전에 이벤트 리스너 추가 및 정리
@@ -92,10 +92,10 @@ const VideoScreen = () => {
         videoSource: undefined,
         publishAudio: true,
         publishVideo: true,
-        resolution: "1920x1080",
+        resolution: "126x70", // 원하는 해상도로 설정
         frameRate: 30, // 초당 비디오 프레임 수
         insertMode: "APPEND",
-        mirror: false, // 거울 기능 켜주기
+        mirror: true, // 거울 기능 켜주기
       });
 
       newSession.publish(publisher);
@@ -132,6 +132,8 @@ const VideoScreen = () => {
     // 상태 초기화
     setSession(undefined);
     setSubscribers([]);
+    setMySessionId("SessionA");
+    setMyUserName("Participant" + Math.floor(Math.random() * 100));
     setMainStreamManager(undefined);
     setPublisher(undefined);
   };
@@ -169,72 +171,36 @@ const VideoScreen = () => {
       videoTracks.forEach((track) => (track.enabled = !track.enabled)); // forEach 를 사용하여 각 트랙의 enabled 속성을 토글하여 카메라를 끕니다.
     }
   };
+  const dummyUrl =
+    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+
+  const videoUrls = [dummyUrl, dummyUrl, dummyUrl, dummyUrl, dummyUrl];
 
   return (
-    <div>
-      <div className={styles.videoScreen}>
-        <div className={styles.userArea}>
-          <div className={styles.mainVideo}>
-            {mainStreamManager !== undefined ? (
-              <UserVideoComponent streamManager={mainStreamManager} />
-            ) : (
-              "로딩중 입니다"
-            )}
+    <div className={styles.videoScreen}>
+      <div className={styles.userArea}>
+        <div className={styles.userVideo}>
+          <div>
+            <UserVideoComponent streamManager={mainStreamManager} />
           </div>
         </div>
-        <div className={styles.iconContainer}>
-          <div className={styles.micIcon}>
-            <div>🎤</div>
-          </div>
-          <div className={styles.soundIcon}>
-            <div>🔊</div>
-          </div>
-          {/* Toggle Camera 버튼 추가 */}
-          <button
-            className="btn btn-primary"
-            id="toggle-camera"
-            onClick={toggleCamera}
-            value="카메라 끄기"
-          >
-            카메라 끄기
-          </button>
+        <div className="iconContainer">
+          <h1 className="micIcon">🎤</h1>
+          <h1 className="soundIcon">🔊</h1>
         </div>
-        <div className={styles.userVideo}>
-          {subscribers.length > 0 ? (
-            <UserVideoComponent streamManager={subscribers[0]} />
-          ) : (
-            "참가자 대기중"
-          )}
+      </div>
+      {videoUrls.map((url, index) => (
+        <div key={index} className="videoContainer">
+          <iframe
+            title={`Video ${index + 1}`}
+            src={`${dummyUrl}?autoplay=1`}
+            frameBorder="0"
+            allowFullScreen
+          ></iframe>
         </div>
-        <div className={styles.userVideo}>
-          {subscribers.length > 1 ? (
-            <UserVideoComponent streamManager={subscribers[1]} />
-          ) : (
-            "참가자 대기중"
-          )}
-        </div>
-        <div className={styles.userVideo}>
-          {subscribers.length > 2 ? (
-            <UserVideoComponent streamManager={subscribers[2]} />
-          ) : (
-            "참가자 대기중"
-          )}
-        </div>
-        <div className={styles.userVideo}>
-          {subscribers.length > 3 ? (
-            <UserVideoComponent streamManager={subscribers[3]} />
-          ) : (
-            "참가자 대기중"
-          )}
-        </div>
-        <div className={styles.userVideo}>
-          {subscribers.length > 4 ? (
-            <UserVideoComponent streamManager={subscribers[4]} />
-          ) : (
-            "참가자 대기중"
-          )}
-        </div>
-        <div className={styles.chaticon}>🗨️</div>
+      ))}
+      <div>
+        <h1 className="chat-icon">🗨️</h1>
       </div>
     </div>
   );
