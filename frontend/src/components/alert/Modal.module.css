@@ -1,0 +1,67 @@
+.modalStyle {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  padding: 50px;
+  border: 30px solid lightgrey;
+  border-radius: 20px;
+}
+
+.message {
+  border-radius: 8px;
+  border: 5px solid #026fc4;
+  padding: 50px;
+  margin-bottom: 40px;
+  margin-top: 40px;
+  font-size: 20px;
+  font-family: "DNFBitBitv2";
+}
+
+.modalContentStyle {
+  text-align: center;
+  display: flex;
+  justify-content: center; /* 기본값은 중앙으로 설정 */
+}
+
+.showCancelButton .modalContentStyle {
+  justify-content: space-between; /* showCancelButton이 true일 때 좌우로 정렬 */
+}
+
+.closeButtonStyle,
+.checkButtonStyle {
+  cursor: pointer;
+  font-size: 20px;
+  padding: 10px 15px;
+  width: 120px;
+  border-radius: 5px;
+  font-family: "DNFBitBitv2";
+}
+
+.closeButtonStyle {
+  background-color: #d00c0c;
+  color: white;
+  margin-right: 15px; /* 버튼 사이의 여백 조절 */
+}
+
+.checkButtonStyle {
+  background-color: #0c74d0;
+  color: white;
+  margin-left: 15px; /* 버튼 사이의 여백 조절 */
+}
+
+/* 추가된 부분: showCancelButton이 false일 때 checkButtonStyle을 가운데로 정렬 */
+.showCancelButton .checkButtonStyle {
+  margin: auto;
+  display: block;
+}
+
+.modalTitle {
+  justify-content: center;
+  text-align: center;
+  font-family: "DNFBitBitv2";
+  font-size: 32px;
+}
