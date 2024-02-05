@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/tiers")
+@RequestMapping("/api/tiers")
 public class TierController {
 
     private final TierService tierService;
