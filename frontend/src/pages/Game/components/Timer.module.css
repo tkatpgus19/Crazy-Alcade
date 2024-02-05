@@ -1,0 +1,24 @@
+.timer {
+  height: 35px;
+  width: 110px;
+  background-color: #0bbeff;
+  box-shadow: 1px 1px 1px black;
+
+  margin-right: 8px;
+  padding: 0px 6px;
+  border: 1px solid;
+  border-color: black;
+  border-radius: 5px;
+
+  font-size: 13px;
+  color: black;
+  font-family: "DNFBitBitv2";
+  text-align: center;
+  line-height: 35px; /* 높이와 동일하게 설정 */
+  -webkit-text-stroke: 0.5px white;
+  box-sizing: border-box;
+}
+
+.timer {
+  user-select: none;
+}
