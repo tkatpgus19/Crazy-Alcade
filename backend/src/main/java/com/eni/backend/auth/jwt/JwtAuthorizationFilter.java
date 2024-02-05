@@ -1,5 +1,6 @@
 package com.eni.backend.auth.jwt;
 
+import com.eni.backend.common.exception.CustomUnauthorizedException;
 import com.eni.backend.member.dto.SecurityMemberDto;
 import com.eni.backend.member.entity.Member;
 import com.eni.backend.member.service.MemberService;
@@ -16,6 +17,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
+import static com.eni.backend.common.response.BaseResponseStatus.EXPIRED_TOKEN;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,9 +46,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return;
         }
 
-        // access token 이 유효
+        // access token이 유효
         if (jwtTokenProvider.validateToken(accessToken) == JwtStatus.ACCESS) {
-            // memberId -> member 찾기
+            // memberId로 member 찾기
             Member member = memberService.validateMemberByToken(jwtTokenProvider.getMemberId(accessToken));
 
             //SecurityContext에 저장할 Member 객체 생성
@@ -58,20 +61,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         // access token 이 만료
         else if (jwtTokenProvider.validateToken(accessToken) == JwtStatus.EXPIRED) {
             //만료된 토큰이므로 Exception 던지기 -> 프론트에서 다시 토큰 재발급 요청
-//            throw new CustomUnauthorizedException(EXPIRED_TOKEN);
-
-//            String refreshToken = null;
-
-            // access token -> memberId 를 찾고, refreshToken 을 탐색
-//            Long memberId = jwtTokenProvider.getMemberIdFromExpiredToken(accessToken);
-//            refreshToken = jwtTokenProvider.getRefreshToken(memberId);
-
-            // refresh token 이 존재하고 유효하다면 access token 재발급
-
-            // refresh token 이 존재하지만 만료되었다면 예외 처리
-
-            // refresh token 이 존재하지 않으면 예외 처리
-
+            throw new CustomUnauthorizedException(EXPIRED_TOKEN);
         }
 
         filterChain.doFilter(request, response);

@@ -1,44 +1,23 @@
 package com.eni.backend.member.controller;
 
-import com.eni.backend.common.exception.CustomBadRequestException;
-import com.eni.backend.member.dto.request.PutNicknameRequestDto;
 import com.eni.backend.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.*;
-
-import static com.eni.backend.common.response.BaseResponseStatus.QUERY_PARAMS_OR_PATH_VARIABLE_NOT_FOUND;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/members")
+@RequestMapping("/api/members")
 @RequiredArgsConstructor
 public class MemberController {
     @Autowired
     private MemberService memberService;
 
-//    @GetMapping("")
-//    public String test() {
-//        return "ok";
-//    }
-
-    @PutMapping("/{memberId}/nickname")
-    public void changeNickname(@PathVariable Long memberId, @RequestBody String newNickname) {
-
-        nullCheck(memberId);
-
-        memberService.changeNickname(memberId, newNickname);
+    @GetMapping("")
+    public String test(Authentication authentication ) { //이거나 principal 쓰면 헤더에서 아이디값 꺼낼 수 있음
+        return "ok";
     }
 
-//    @PutMapping("/nickname")
-//    public void changeNickname(@RequestBody String newNickname) {
-//        String emailId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        memberService.changeNickname(emailId, requestDto.getNewNickname());
-//    }
-
-    private void nullCheck(Long id) {
-        if (ObjectUtils.isEmpty(id)) {
-            throw new CustomBadRequestException(QUERY_PARAMS_OR_PATH_VARIABLE_NOT_FOUND);
-        }
-    }
 }

@@ -7,16 +7,20 @@ import com.eni.backend.common.entity.BaseTimeEntity;
 import com.eni.backend.common.entity.Language;
 import com.eni.backend.item.entity.MemberItem;
 import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Table;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "member")
 @Getter
+@DynamicInsert
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseTimeEntity {
@@ -35,10 +39,10 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private String socialId;
 
-    @Column(length = 8)
+    @Column(nullable = false)
     private String nickname;
 
-    @Column
+    @Column(nullable = false)
     private String profile;
 
     @Column(nullable = false)
@@ -53,7 +57,7 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private Language lang;
 
-    @Column
+    @Column(nullable = false)
     @ColumnDefault("0")
     private Integer complaint;
 
@@ -72,61 +76,35 @@ public class Member extends BaseTimeEntity {
     private List<MemberItem> memberItems = new ArrayList<>();
 
     @Builder
-    private Member(String email, OAuth2Provider provider, String socialId, String nickname, String profile, Integer coin, Integer exp, Language lang, Level level, Integer complaint, Timestamp connectedAt) {
+    private Member(String email, OAuth2Provider provider, String socialId, String nickname) {
         this.email = email;
         this.socialId = socialId;
         this.provider = provider;
         this.nickname = nickname;
-        this.profile = profile;
-        this.coin = coin;
-        this.exp = exp;
-        this.lang = lang;
-        this.complaint = complaint;
-        this.level = level;
-        this.connectedAt = connectedAt;
+        this.connectedAt = Timestamp.valueOf(LocalDateTime.now());
+        this.profile = "https://lwi.nexon.com/ca/common/info/character/cha1.png";
     }
 
-    public static Member of(String email, OAuth2Provider provider, String socialId, String nickname, String profile, Integer coin, Integer exp, Language lang, Level level, Integer complaint, Timestamp connectedAt) {
+    public static Member of(String email, OAuth2Provider provider, String socialId, String nickname) {
         return builder()
                 .email(email)
                 .provider(provider)
                 .socialId(socialId)
                 .nickname(nickname)
-                .profile(profile)
-                .lang(lang)
-                .coin(coin)
-                .exp(exp)
-                .complaint(complaint)
-                .level(level)
-                .connectedAt(connectedAt)
                 .build();
     }
 
-    public static Member of(OAuth2UserInfo info) {
+    public static Member from(OAuth2UserInfo info) {
         return builder()
                 .nickname(info.getProvider().getRegistrationId() + info.getId())
                 .socialId(info.getId())
                 .provider(info.getProvider())
                 .email(info.getEmail())
-                .connectedAt(new Timestamp(System.currentTimeMillis()))
                 .build();
     }
 
-    public Member update(String email, OAuth2Provider provider) {
-        this.email = email;
-        this.provider = provider;
+    public Member updateConnectedAt(Timestamp timestamp) {
+        this.connectedAt = timestamp;
         return this;
-    }
-
-    public void updateNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public void updateLang(Language lang) {
-        this.lang = lang;
-    }
-
-    public void updateProfile(String profile) {
-        this.profile = profile;
     }
 }

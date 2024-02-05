@@ -3,8 +3,6 @@ package com.eni.backend.member.service;
 import com.eni.backend.auth.jwt.JwtTokenProvider;
 import com.eni.backend.auth.oauth2.service.OAuth2UserPrincipal;
 import com.eni.backend.auth.oauth2.user.OAuth2UserInfo;
-import com.eni.backend.common.entity.Language;
-import com.eni.backend.member.dto.request.MemberRequestDto;
 import com.eni.backend.member.dto.response.LoginResponseDto;
 import com.eni.backend.member.entity.Member;
 import com.eni.backend.member.repository.MemberRepository;
@@ -13,12 +11,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -26,38 +26,47 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
+    // true: 신규 회원, false: 기존 회원
+    private boolean isNew = true;
+
+    // true: 로그인 보상 O, false: 로그인 보상 X
+    private boolean isConnected = true;
+
     public LoginResponseDto login(Authentication authentication) {
         OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
 
         Member member = findMemberBySocial(principal.getUserInfo());
         String accessToken = jwtTokenProvider.generateAccessToken(authentication, member.getId());
 
-        return LoginResponseDto.of(member.getId(), accessToken);
+        //로그인 할 때 최종 접속시간 확인해서 로그인 보상 받을 수 있는지 확인
+        if(isNew) {
+            isConnected = true;
+        }
+        else {
+            isConnected = !Objects.equals(member.getConnectedAt().toLocalDateTime().toLocalDate(), LocalDate.now());
+        }
+
+        return LoginResponseDto.of(member.getId(), accessToken, isNew, isConnected);
     }
 
     @Transactional
     public Member findMemberBySocial(OAuth2UserInfo info) {
+
         // DB -> 회원 정보 있는지 확인
         Optional<Member> findMember = memberRepository.findByProviderAndSocialId(
                 info.getProvider(), info.getId());
 
-        if (findMember.isEmpty()) {
-            //회원이 존재하지 않는 경우
-            MemberRequestDto memberRequestDto = MemberRequestDto.of(info.getEmail(), info.getProvider(), info.getId(),
-                    null, "https://lwi.nexon.com/ca/common/info/character/cha1.png", 0, 0, Language.JAVA, null, 1,  Timestamp.valueOf(LocalDateTime.now()));
-
-
-
-            Member member = memberRequestDto.toEntity();
-            info.getAttributes().put("memberId",  memberRepository.save(member).getId());
-
+        // 회원 정보가 있으면 해당 회원 리턴
+        if (findMember.isPresent()) {
+            Member member = findMember.get();
+            member.updateConnectedAt(Timestamp.valueOf(LocalDateTime.now()));
+            isNew = false;
             return member;
-        } else {
-            //회원이 존재하는 경우
-            info.getAttributes().put("exist", true);
-            info.getAttributes().put("memberId", findMember.get().getId());
-
-            return findMember.get();
+        }
+        // 없으면 새로 생성해서 리턴
+        else {
+            isNew = true;
+            return memberRepository.save(Member.from(info));
         }
     }
 
@@ -78,33 +87,4 @@ public class MemberService {
         }
         return null;
     }
-
-
-//@Transactional
-//    public Long joinMember(MemberRequestDto memberRequestDto) {
-//
-//        Member member = memberRequestDto.toEntity();
-//
-//        //프로필이 없으면 기본 이미지 넣기
-//        if(!StringUtils.hasText(memberRequestDto.getProfile())) {
-//            member.updateProfile("https://lwi.nexon.com/ca/common/info/character/cha1.png");
-//        }
-//
-//        return memberRepository.save(member).getId();
-//    }
-
-    @Transactional
-    public String changeNickname(Long memberId, String newNickname) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("member Id에 해당하는 member가 없습니다."));
-
-        member.updateNickname(newNickname);
-        return memberRepository.save(member).getNickname();
-    }
-
-    public Optional<Member> findByEmail(String email) {
-        return memberRepository.findByEmail(email);
-    }
-
-
 }
