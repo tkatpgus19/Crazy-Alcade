@@ -58,13 +58,46 @@ public class Problem extends BaseTimeEntity {
     private Tier tier;
 
     @Builder
-    public Problem(ProblemPlatform platform, Integer no, String title, String input, String output, String description, Integer time, Integer memory, Tier tier) {
+    private Problem(ProblemPlatform platform, Integer no, String title, String description, String input, String output, Integer time, Integer memory, Tier tier) {
         this.platform = platform;
         this.no = no;
         this.title = title;
         this.description = description;
+        this.input = input;
+        this.output = output;
         this.time = time;
         this.memory = memory;
         this.tier = tier;
     }
+
+    public static Problem of(ProblemPlatform platform, Integer no, String title, String description, String input, String output, Integer time, Integer memory, Tier tier) {
+        return builder()
+                .platform(platform)
+                .no(no)
+                .title(title)
+                .description(description)
+                .input(input)
+                .output(output)
+                .time(time)
+                .memory(memory)
+                .tier(tier)
+                .build();
+    }
+
+    public String getStringPlatform() {
+        return this.platform.name();
+    }
+
+    public String getStringTime() {
+        return this.time + "초";
+    }
+
+    public String getStringMemory() {
+        return this.memory + "MB";
+    }
+
+    public String getStringTier() {
+        return this.tier.getStringTier();
+    }
+
 }

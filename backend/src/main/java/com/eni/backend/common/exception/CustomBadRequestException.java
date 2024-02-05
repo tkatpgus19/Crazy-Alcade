@@ -10,4 +10,9 @@ public class CustomBadRequestException extends RuntimeException {
 
     private final BaseResponseStatus baseResponseStatus;
 
+    public CustomBadRequestException(BaseResponseStatus baseResponseStatus, String message) {
+        super(message);
+        this.baseResponseStatus = baseResponseStatus;
+    }
+
 }
