@@ -18,6 +18,8 @@ const VideoScreen = () => {
   const [mainStreamManager, setMainStreamManager] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined); //방장
   const [subscribers, setSubscribers] = useState([]); //참가자
+  const [isMicrophoneOn, setIsMicrophoneOn] = useState(true); // 마이크 상태를 상태로 관리
+  const [isAudioMuted, setIsAudioMuted] = useState(false); // 음소거 상태
 
   useEffect(() => {
     // 페이지가 언마운트되기 전에 이벤트 리스너 추가 및 정리
@@ -170,6 +172,23 @@ const VideoScreen = () => {
     }
   };
 
+  // 마이크 토글 함수
+  const toggleMicrophone = () => {
+    if (publisher) {
+      const audioTracks = publisher.stream.getMediaStream().getAudioTracks();
+      audioTracks.forEach((track) => (track.enabled = !track.enabled));
+    }
+    setIsMicrophoneOn((prevState) => !prevState); // 마이크 상태를 토글
+  };
+
+  // 음소거 토글 함수
+  const toggleAudioMute = () => {
+    setIsAudioMuted(!isAudioMuted);
+    subscribers.forEach((subscriber) => {
+      subscriber.subscribeToAudio(!isAudioMuted);
+    });
+  };
+
   return (
     <div>
       <div className={styles.videoScreen}>
@@ -183,12 +202,13 @@ const VideoScreen = () => {
           </div>
         </div>
         <div className={styles.iconContainer}>
-          <div className={styles.micIcon}>
-            <div>🎤</div>
-          </div>
-          <div className={styles.soundIcon}>
-            <div>🔊</div>
-          </div>
+          <button className="btn btn-secondary" onClick={toggleMicrophone}>
+            {isMicrophoneOn ? "마이크 켜짐" : "마이크 꺼짐"}
+          </button>
+          {/* 음소거 토글 버튼 */}
+          <button className="btn btn-secondary" onClick={toggleAudioMute}>
+            {isAudioMuted ? "소리 켜기" : "소리 꺼짐"}
+          </button>
           {/* Toggle Camera 버튼 추가 */}
           <button
             className="btn btn-primary"
