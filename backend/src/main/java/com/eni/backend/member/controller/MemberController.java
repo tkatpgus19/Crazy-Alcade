@@ -11,11 +11,16 @@ import org.springframework.web.bind.annotation.*;
 import static com.eni.backend.common.response.BaseResponseStatus.QUERY_PARAMS_OR_PATH_VARIABLE_NOT_FOUND;
 
 @RestController
-@RequestMapping("api/members")
+@RequestMapping("/members")
 @RequiredArgsConstructor
 public class MemberController {
     @Autowired
     private MemberService memberService;
+
+//    @GetMapping("")
+//    public String test() {
+//        return "ok";
+//    }
 
     @PutMapping("/{memberId}/nickname")
     public void changeNickname(@PathVariable Long memberId, @RequestBody String newNickname) {

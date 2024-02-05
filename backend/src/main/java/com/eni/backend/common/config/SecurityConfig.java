@@ -42,7 +42,6 @@ public class SecurityConfig {
                         .requestMatchers("/members/**").authenticated()
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().permitAll())
-                //noauth 어노테이션
                 .sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2Login(configure ->
                         configure.userInfoEndpoint(config -> config.userService(customOAuth2UserService))

@@ -150,7 +150,7 @@ public class JwtTokenProvider implements InitializingBean {
             return getMemberId(token);
         } catch (ExpiredJwtException e) {
             // 만료된 토큰에서 사용자 ID를 추출
-            // access token 이 만료되었지만 refresh token 이 존재하는 경우
+            // access token이 만료되었지만 refresh token 이 존재하는 경우
             Claims expiredClaims = e.getClaims();
             return Long.parseLong(expiredClaims.get("memberId", String.class));
         }
