@@ -19,6 +19,13 @@ public class BaseSuccessResponse<T> {
         this.result = result;
     }
 
+    public static <T> BaseSuccessResponse<T> of(String message, T result) {
+        return BaseSuccessResponse.<T>builder()
+                .message(message)
+                .result(result)
+                .build();
+    }
+
     public static <T> BaseSuccessResponse<T> of(T result) {
         return BaseSuccessResponse.<T>builder()
                 .code(SUCCESS.getStatus().value())

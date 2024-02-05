@@ -80,4 +80,11 @@ public class GlobalExceptionHandler {
         return BaseErrorResponse.of(e.getBaseResponseStatus());
     }
 
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(CustomUnauthorizedException.class)
+    public BaseErrorResponse handleCustomUnauthorizedException(CustomUnauthorizedException e) {
+        log.error("[CustomUnauthorizedException]", e);
+        return BaseErrorResponse.of(e.getBaseResponseStatus());
+    }
+
 }
