@@ -11,16 +11,19 @@ import { toggleInkSpraying } from "./slices/octopusSlice";
 import { toggleChickenWalking } from "./slices/featureSlice";
 import { setExecutionResult } from "./slices/executionResultSlice"; // 올바른 경로로 수정
 import { setLoading } from "./slices/loadingSlice"; // 올바른 경로로 수정
-import { isResultExpanded } from "./slices/executionResultSlice"; // 올바른 경로로 수정
+import { toggleWebIDEFlip } from "./slices/webIDESlice";
+import { toggleWaterBalloonAnimation } from "./slices/waterBalloonSlice";
+import { toggleShield, resetShield } from "./slices/animationControlSlice";
 
 import waterBalloonImage from "../../assets/images/waterBalloon.png"; // 물풍선 이미지 경로
 
 const Footer = () => {
-  const dispatch = useDispatch();
   const code = useSelector((state) => state.code.content); // 코드 상태 선택
   const lang = useSelector((state) => state.code.lang); // 언어 상태 선택
 
-  const [isAnimating, setIsAnimating] = useState(false);
+  const dispatch = useDispatch();
+  const isAnimating = useSelector((state) => state.waterBalloon.isAnimating);
+  const isFlipped = useSelector((state) => state.webIDE.isFlipped); // 가정: webIDE 슬라이스에서 isFlipped 상태를 관리
 
   // 애니메이션 상태에 따른 스프링 정의
   const animProps = useSpring({
@@ -41,7 +44,7 @@ const Footer = () => {
     from: { transform: "translateY(0px)" },
     reset: isAnimating,
     reverse: isAnimating,
-    onRest: () => setIsAnimating(false),
+    onRest: () => toggleWaterBalloonAnimation(),
   });
 
   // 아이템 사용 함수
@@ -51,10 +54,32 @@ const Footer = () => {
     // 각 아이템에 대한 효과 로직 추가
     if (item === "아이템1") {
       dispatch(toggleInkSpraying());
+
+      setTimeout(() => {
+        dispatch(toggleInkSpraying());
+      }, 5000); // 5000ms = 5초
     } else if (item === "아이템2") {
       dispatch(toggleChickenWalking());
+
+      setTimeout(() => {
+        dispatch(toggleChickenWalking());
+      }, 5000); // 5000ms = 5초
     } else if (item === "아이템3") {
-      setIsAnimating(true);
+      dispatch(toggleWaterBalloonAnimation());
+
+      setTimeout(() => {
+        dispatch(toggleWaterBalloonAnimation());
+      }, 5000); // 5000ms = 5초
+    } else if (item === "아이템4") {
+      dispatch(toggleWebIDEFlip());
+      // setTimeout 콜백 내에서 isFlipped 상태를 확인
+      setTimeout(() => {
+        if (!isFlipped) dispatch(toggleWebIDEFlip());
+      }, 5000); // 5000ms = 5초
+    } else if (item === "아이템5") {
+      if (isFlipped) dispatch(toggleWebIDEFlip());
+      dispatch(toggleShield());
+      setTimeout(() => dispatch(resetShield()), 0); // 바로 상태를 리셋하여 다른 애니메이션에 영향을 주지 않음
     }
   };
 
@@ -94,10 +119,35 @@ const Footer = () => {
   };
 
   // 코드 제출 함수
-  const handleSubmit = () => {
-    console.log("코드 제출");
-  };
+  const handleSubmit = async () => {
+    dispatch(setLoading(true)); // 로딩 상태를 true로 설정
+    try {
+      const apiUrl = `${process.env.REACT_APP_API_BASE_URL}/problems/1/codes/submit`;
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          lang: lang, // 언어 설정
+          content: code,
+        }),
+      });
 
+      if (response.ok) {
+        const data = await response.json();
+        dispatch(setExecutionResult(data)); // 결과를 저장
+      } else {
+        console.error("서버에서 문제가 발생했습니다.");
+        dispatch(setExecutionResult({ message: "Error submitting code." })); // 오류 메시지 저장
+      }
+    } catch (error) {
+      console.error("요청 처리 중 에러 발생:", error);
+      dispatch(setExecutionResult({ message: "Error submitting code." }));
+    } finally {
+      dispatch(setLoading(false)); // 로딩 상태를 false로 설정
+    }
+  };
   const springs = useSpring({
     from: { x: 0 },
     to: { x: 100 },
@@ -119,16 +169,24 @@ const Footer = () => {
         <div className={styles.itemHeader}>내 아이템</div>
         {/* 각각의 아이템 버튼을 ItemButton 컴포넌트로 대체 */}
         <ItemButton
-          itemName="아이템1"
+          itemName="문어"
           onUseItem={() => handleUseItem("아이템1")}
         />
         <ItemButton
-          itemName="아이템2"
+          itemName="병아리"
           onUseItem={() => handleUseItem("아이템2")}
         />
         <ItemButton
-          itemName="아이템3"
+          itemName="물풍선"
           onUseItem={() => handleUseItem("아이템3")}
+        />
+        <ItemButton
+          itemName="요술봉"
+          onUseItem={() => handleUseItem("아이템4")}
+        />
+        <ItemButton
+          itemName="쉴드"
+          onUseItem={() => handleUseItem("아이템5")}
         />
       </div>
       {/* 액션 버튼들 */}
@@ -162,7 +220,5 @@ const Footer = () => {
     </div>
   );
 };
-
-Footer.propTypes = {}; // 필요한 경우에만 prop-types를 추가
 
 export default Footer;

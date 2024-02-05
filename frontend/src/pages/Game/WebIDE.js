@@ -16,6 +16,7 @@ const WebIDE = () => {
   const isResultExpanded = useSelector(
     (state) => state.executionResult.isResultExpanded
   );
+  const isFlipped = useSelector((state) => state.webIDE.isFlipped);
 
   useEffect(() => {
     // 컴포넌트가 마운트될 때 Redux 상태에 초기 코드 값 저장
@@ -60,40 +61,62 @@ const WebIDE = () => {
       return <div className={styles.resultContainer}>실행결과</div>;
     }
 
+    // 성공한 테스트 케이스의 수를 계산합니다.
+    const passedTests = executionResult.result.filter(
+      (testcase) => testcase.codeStatus === "맞았습니다."
+    ).length;
+    const allPassed = passedTests === executionResult.result.length;
+
     return (
-      <div
-        className={styles.resultContainer}
-        style={{
-          maxHeight: isResultExpanded ? "none" : "20px",
-          overflow: "hidden",
-        }}
-      >
+      <div className={styles.resultContainer}>
         <button onClick={toggleResultDisplay} className={styles.toggleButton}>
           {isResultExpanded ? "접기" : "펼치기"}
         </button>
-        <h3>{executionResult.message}</h3>
+
         {isResultExpanded && (
-          <ul>
-            {executionResult.result.map((testcase, index) => (
-              <li key={index}>
-                테스트 {testcase.testcaseNo}: {testcase.codeStatus}
-              </li>
-            ))}
-          </ul>
+          <div>
+            <h4>{executionResult.message}</h4>
+            <ul>
+              {executionResult.result.map((testcase, index) => (
+                <li key={index} className={styles.testcaseResult}>
+                  <span className={styles.testcaseNo}>
+                    테스트 {testcase.testcaseNo}:
+                  </span>
+                  <span className={styles.codeStatus}>
+                    {testcase.codeStatus}
+                  </span>
+                  <span className={styles.executionTime}>{testcase.time}</span>
+                  <span className={styles.executionMemory}>
+                    {testcase.memory}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            {/* 성공한 테스트 케이스 수를 표시합니다. */}
+            <h4
+              style={{
+                color: allPassed ? "blue" : "red", // 모든 테스트 케이스를 맞췄으면 파란색, 아니면 빨간색
+              }}
+            >
+              테스트 결과 (~˘▾˘)~ &nbsp; {passedTests}개 중{" "}
+              {executionResult.result.length}개 성공!
+            </h4>
+          </div>
         )}
       </div>
     );
   };
 
   return (
-    <div className={styles.webIDEContainer}>
-      <div>{renderExecutionResult()}</div>
-
+    <div
+      className={`${styles.webIDEContainer} ${isFlipped ? styles.flipped : ""}`}
+    >
       <AceEditor
         mode="java"
         theme="github"
         fontSize={fontSize}
         width="100%"
+        height="100%"
         showPrintMargin={true}
         showGutter={true}
         highlightActiveLine={true}
@@ -106,6 +129,7 @@ const WebIDE = () => {
           wrap: true,
         }}
       />
+      <div>{renderExecutionResult()}</div>
       <div className={styles.buttonContainer}>
         <button className={styles.floatButton} onClick={increaseFontSize}>
           +
