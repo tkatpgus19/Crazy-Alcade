@@ -6,6 +6,7 @@ import Problem from "./Problem";
 import styles from "./Game.module.css";
 import Footer from "./Footer";
 import WebIDE from "./WebIDE";
+import GameResults from "./GameResults"; // GameResults 컴포넌트를 import합니다.
 
 import { Resizable } from "re-resizable";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +25,34 @@ function Game() {
 
   const [show, setShow] = useState(false);
   const [chickens, setChickens] = useState([]); // 병아리 이미지 상태
+
+  const [timeRemaining, setTimeRemaining] = useState(10); // 게임 시간을 state로 관리
+  const [showResults, setShowResults] = useState(false);
+
+  // 타이머 로직
+  useEffect(() => {
+    // 시간이 0이 아닐 때만 타이머를 설정합니다.
+    if (timeRemaining > 0) {
+      // 1초마다 timeRemaining을 감소시킵니다.
+      const timer = setTimeout(() => {
+        setTimeRemaining(timeRemaining - 1);
+      }, 1000);
+
+      // timeRemaining이 0이 되면 결과창을 표시합니다.
+      if (timeRemaining === 1) {
+        setShowResults(true);
+      }
+
+      // 컴포넌트 언마운트 시 타이머를 정리합니다.
+      return () => clearTimeout(timer);
+    }
+  }, [timeRemaining]); // timeRemaining이 변경될 때마다 useEffect가 실행됩니다.
+
+  // 결과창 닫기 함수
+  const closeResults = () => {
+    setShowResults(false);
+    navigate("/"); // 결과창 닫을 때 홈으로 이동
+  };
 
   useEffect(() => {
     // "쉴드" 상태가 활성화되면 문어와 병아리 애니메이션을 즉시 제거
@@ -136,7 +165,7 @@ function Game() {
       <Header
         roomTitle="1. 너만 오면 고"
         language="Python"
-        initialTime={60} // 예시로 120초 설정
+        initialTime={10} // 예시로 120초 설정
         onExitClick={handleExitClick} // 수정된 부분
       />
       <VideoScreen />
@@ -178,6 +207,8 @@ function Game() {
       <Footer />
       {show && octopusImages}
       {chickenImages}
+      {/* 시간이 0이 되면 결과창을 렌더링 */}
+      {showResults && <GameResults onClose={() => setShowResults(false)} />}
     </div>
   );
 }
