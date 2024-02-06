@@ -2,6 +2,7 @@ package com.eni.backend.member.controller;
 
 import com.eni.backend.common.exception.CustomBadRequestException;
 import com.eni.backend.common.response.BaseSuccessResponse;
+import com.eni.backend.member.dto.request.PutCoinRequest;
 import com.eni.backend.member.dto.request.PutLanguageRequest;
 import com.eni.backend.member.dto.request.PutNicknameRequest;
 import com.eni.backend.member.service.MemberService;
@@ -45,7 +46,7 @@ public class MemberController {
         return BaseSuccessResponse.of(memberService.putNickname(authentication, putNicknameRequest));
     }
 
-    @PutMapping("lang")
+    @PutMapping("/lang")
     public BaseSuccessResponse<?> putLanguage(Authentication authentication, @RequestBody @Valid PutLanguageRequest putLanguageRequest, BindingResult bindingResult) {
         log.info("MemberController.language.put");
 
@@ -55,5 +56,29 @@ public class MemberController {
         }
 
         return BaseSuccessResponse.of(memberService.putLanguage(authentication, putLanguageRequest));
+    }
+
+    @PutMapping("/coin/add")
+    public BaseSuccessResponse<?> putCoinAdd(Authentication authentication, @RequestBody @Valid PutCoinRequest putCoinRequest, BindingResult bindingResult) {
+        log.info("MemberController.coin.add");
+
+        // validation 오류
+        if (bindingResult.hasErrors()) {
+            throw new CustomBadRequestException(BAD_REQUEST, getErrorMessages(bindingResult));
+        }
+
+        return BaseSuccessResponse.of(memberService.putCoin(authentication, putCoinRequest, true));
+    }
+
+    @PutMapping("/coin/sub")
+    public BaseSuccessResponse<?> putCoinSub(Authentication authentication, @RequestBody @Valid PutCoinRequest putCoinRequest, BindingResult bindingResult) {
+        log.info("MemberController.coin.sub");
+
+        // validation 오류
+        if (bindingResult.hasErrors()) {
+            throw new CustomBadRequestException(BAD_REQUEST, getErrorMessages(bindingResult));
+        }
+
+        return BaseSuccessResponse.of(memberService.putCoin(authentication, putCoinRequest, false));
     }
 }

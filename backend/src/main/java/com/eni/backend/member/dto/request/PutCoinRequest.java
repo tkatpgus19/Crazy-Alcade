@@ -1,6 +1,5 @@
 package com.eni.backend.member.dto.request;
 
-import com.eni.backend.common.entity.Language;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,8 +10,8 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class PutLanguageRequest {
+public class PutCoinRequest {
 
-    @NotNull(message = "선호 언어를 선택해주세요.")
-    private Language lang;
+    @NotNull(message = "변경할 코인값을 입력해주세요.")
+    private Integer putValue;
 }

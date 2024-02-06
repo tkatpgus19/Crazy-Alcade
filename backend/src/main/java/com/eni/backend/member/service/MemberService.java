@@ -5,12 +5,10 @@ import com.eni.backend.auth.oauth2.service.OAuth2UserPrincipal;
 import com.eni.backend.auth.oauth2.user.OAuth2UserInfo;
 import com.eni.backend.common.exception.CustomServerErrorException;
 import com.eni.backend.member.dto.SecurityMemberDto;
+import com.eni.backend.member.dto.request.PutCoinRequest;
 import com.eni.backend.member.dto.request.PutLanguageRequest;
 import com.eni.backend.member.dto.request.PutNicknameRequest;
-import com.eni.backend.member.dto.response.GetMemberListResponse;
-import com.eni.backend.member.dto.response.LoginResponse;
-import com.eni.backend.member.dto.response.PutLanguageResponse;
-import com.eni.backend.member.dto.response.PutNicknameResponse;
+import com.eni.backend.member.dto.response.*;
 import com.eni.backend.member.entity.Level;
 import com.eni.backend.member.entity.Member;
 import com.eni.backend.member.repository.LevelRepository;
@@ -143,6 +141,16 @@ public class MemberService {
         }
 
         return PutLanguageResponse.of(member.getId());
+    }
+
+    public PutCoinResponse putCoin(Authentication authentication, PutCoinRequest putCoinRequest, boolean operator) {
+        Member member = findMemberByAuthentication(authentication);
+
+        if (member != null) {
+            member.updateCoin(putCoinRequest, operator);
+        }
+
+        return PutCoinResponse.of(member.getId());
     }
 
     public Member findMemberByAuthentication(Authentication authentication) {

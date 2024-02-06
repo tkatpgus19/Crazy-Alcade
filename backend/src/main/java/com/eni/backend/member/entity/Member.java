@@ -6,14 +6,13 @@ import com.eni.backend.code.entity.Code;
 import com.eni.backend.common.entity.BaseTimeEntity;
 import com.eni.backend.common.entity.Language;
 import com.eni.backend.item.entity.MemberItem;
+import com.eni.backend.member.dto.request.PutCoinRequest;
 import com.eni.backend.member.dto.request.PutLanguageRequest;
 import com.eni.backend.member.dto.request.PutNicknameRequest;
-import com.eni.backend.member.dto.response.PutNicknameResponse;
 import jakarta.persistence.*;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Table;
 import lombok.*;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -121,5 +120,13 @@ public class Member extends BaseTimeEntity {
 
     public void updateLanguage(PutLanguageRequest putLanguageRequest) {
         this.lang = putLanguageRequest.getLang();
+    }
+
+    public void updateCoin(PutCoinRequest putCoinRequest, boolean operator) {
+        if (operator) {
+            this.coin += putCoinRequest.getPutValue();
+        } else {
+            this.coin -= putCoinRequest.getPutValue();
+        }
     }
 }
