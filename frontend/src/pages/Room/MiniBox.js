@@ -1,12 +1,14 @@
+// MiniBox.js
+
 import React from "react";
 import PropTypes from "prop-types";
-import "./MiniBox.css"; // 해당 컴포넌트의 스타일을 적용하는 CSS 파일
+import styles from "./MiniBox.module.css"; // Import the modular CSS file
 
 const MiniBox = ({ children, image }) => {
   return (
-    <div className="minibox">
+    <div className={styles.minibox}>
       <div>
-        <img src={image} alt="이미지" />
+        <img className={styles.img} src={image} alt="이미지" />
       </div>
       {children}
     </div>
@@ -15,7 +17,7 @@ const MiniBox = ({ children, image }) => {
 
 MiniBox.propTypes = {
   children: PropTypes.node,
-  image: PropTypes.string, // 이미지의 경로를 전달받는 prop 추가
+  image: PropTypes.string,
 };
 
 export default MiniBox;
