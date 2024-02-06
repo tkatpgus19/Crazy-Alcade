@@ -6,7 +6,11 @@ import Problem from "./Problem";
 import styles from "./Game.module.css";
 import Footer from "./Footer";
 import WebIDE from "./WebIDE";
+<<<<<<< PATCH SET (0c5044 Feat : 게임화면 - 결과창 구현)
+import GameResults from "./components/GameResults"; // Adjust the path according to your file structure
+=======
 import GameResults from "./GameResults"; // GameResults 컴포넌트를 import합니다.
+>>>>>>> BASE      (533457 Add : 게임화면 - 결과창 테스트)
 
 import { Resizable } from "re-resizable";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +29,28 @@ function Game() {
 
   const [show, setShow] = useState(false);
   const [chickens, setChickens] = useState([]); // 병아리 이미지 상태
+  const [time, setTime] = useState(1); // initialTime is now a state
+  const [showResults, setShowResults] = useState(false);
+
+  useEffect(() => {
+    // If time is already at 0, we don't do anything
+    if (time === 0) return;
+
+    // Decrease time by 1 every second
+    const timerId = setInterval(() => {
+      setTime((prevTime) => prevTime - 1);
+    }, 1000);
+
+    // Clean up the interval on unmount
+    return () => clearInterval(timerId);
+  }, []);
+
+  // Effect to show GameResults when time reaches 0
+  useEffect(() => {
+    if (time === 0) {
+      setShowResults(true); // When time is 0, show the GameResults component
+    }
+  }, [time]);
 
   const [timeRemaining, setTimeRemaining] = useState(10); // 게임 시간을 state로 관리
   const [showResults, setShowResults] = useState(false);
@@ -157,7 +183,7 @@ function Game() {
 
   const handleExitClick = () => {
     // "/"로 이동하는 코드
-    navigate("/");
+    navigate("/main");
   };
 
   return (
@@ -207,8 +233,16 @@ function Game() {
       <Footer />
       {show && octopusImages}
       {chickenImages}
+<<<<<<< PATCH SET (0c5044 Feat : 게임화면 - 결과창 구현)
+      {showResults && (
+        <div className={styles.gameResultsContainer}>
+          <GameResults />
+        </div>
+      )}
+=======
       {/* 시간이 0이 되면 결과창을 렌더링 */}
       {showResults && <GameResults onClose={() => setShowResults(false)} />}
+>>>>>>> BASE      (533457 Add : 게임화면 - 결과창 테스트)
     </div>
   );
 }
