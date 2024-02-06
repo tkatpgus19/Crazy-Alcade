@@ -6,6 +6,7 @@ import com.eni.backend.code.entity.Code;
 import com.eni.backend.common.entity.BaseTimeEntity;
 import com.eni.backend.common.entity.Language;
 import com.eni.backend.item.entity.MemberItem;
+import com.eni.backend.member.dto.request.PutLanguageRequest;
 import com.eni.backend.member.dto.request.PutNicknameRequest;
 import com.eni.backend.member.dto.response.PutNicknameResponse;
 import jakarta.persistence.*;
@@ -116,5 +117,9 @@ public class Member extends BaseTimeEntity {
 
     public void updateNickname(PutNicknameRequest putNicknameRequest) {
         this.nickname = putNicknameRequest.getNickname();
+    }
+
+    public void updateLanguage(PutLanguageRequest putLanguageRequest) {
+        this.lang = putLanguageRequest.getLang();
     }
 }

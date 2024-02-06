@@ -2,6 +2,7 @@ package com.eni.backend.member.controller;
 
 import com.eni.backend.common.exception.CustomBadRequestException;
 import com.eni.backend.common.response.BaseSuccessResponse;
+import com.eni.backend.member.dto.request.PutLanguageRequest;
 import com.eni.backend.member.dto.request.PutNicknameRequest;
 import com.eni.backend.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -25,20 +26,16 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
-    @GetMapping("/test")
-    public String test(Authentication authentication) {
-        return authentication.getPrincipal().toString();
-    }
-
     @GetMapping("")
     public BaseSuccessResponse<?> getList() {
-        log.info("LevelController.getList");
+        log.info("MemberController.getList");
+
         return BaseSuccessResponse.of(SUCCESS.getMessage(), memberService.getList());
     }
 
     @PutMapping("/nickname")
     public BaseSuccessResponse<?> putNickname(Authentication authentication, @RequestBody @Valid PutNicknameRequest putNicknameRequest, BindingResult bindingResult) {
-        log.info("MemberController.put");
+        log.info("MemberController.nickname.put");
 
         // validation 오류
         if (bindingResult.hasErrors()) {
@@ -48,4 +45,15 @@ public class MemberController {
         return BaseSuccessResponse.of(memberService.putNickname(authentication, putNicknameRequest));
     }
 
+    @PutMapping("lang")
+    public BaseSuccessResponse<?> putLanguage(Authentication authentication, @RequestBody @Valid PutLanguageRequest putLanguageRequest, BindingResult bindingResult) {
+        log.info("MemberController.language.put");
+
+        // validation 오류
+        if (bindingResult.hasErrors()) {
+            throw new CustomBadRequestException(BAD_REQUEST, getErrorMessages(bindingResult));
+        }
+
+        return BaseSuccessResponse.of(memberService.putLanguage(authentication, putLanguageRequest));
+    }
 }

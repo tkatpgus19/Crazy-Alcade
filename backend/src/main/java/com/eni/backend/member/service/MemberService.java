@@ -5,9 +5,11 @@ import com.eni.backend.auth.oauth2.service.OAuth2UserPrincipal;
 import com.eni.backend.auth.oauth2.user.OAuth2UserInfo;
 import com.eni.backend.common.exception.CustomServerErrorException;
 import com.eni.backend.member.dto.SecurityMemberDto;
+import com.eni.backend.member.dto.request.PutLanguageRequest;
 import com.eni.backend.member.dto.request.PutNicknameRequest;
 import com.eni.backend.member.dto.response.GetMemberListResponse;
 import com.eni.backend.member.dto.response.LoginResponse;
+import com.eni.backend.member.dto.response.PutLanguageResponse;
 import com.eni.backend.member.dto.response.PutNicknameResponse;
 import com.eni.backend.member.entity.Level;
 import com.eni.backend.member.entity.Member;
@@ -113,6 +115,7 @@ public class MemberService {
         if (principal instanceof OAuth2UserPrincipal) {
             return (OAuth2UserPrincipal) principal;
         }
+
         return null;
     }
 
@@ -130,6 +133,16 @@ public class MemberService {
         }
 
         return PutNicknameResponse.of(member.getId());
+    }
+
+    public PutLanguageResponse putLanguage(Authentication authentication, PutLanguageRequest putLanguageRequest) {
+        Member member = findMemberByAuthentication(authentication);
+
+        if (member != null) {
+            member.updateLanguage(putLanguageRequest);
+        }
+
+        return PutLanguageResponse.of(member.getId());
     }
 
     public Member findMemberByAuthentication(Authentication authentication) {
