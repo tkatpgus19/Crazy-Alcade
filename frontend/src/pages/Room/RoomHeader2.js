@@ -5,8 +5,8 @@ import styles from "./WaitingRoom.module.css";
 
 const RoomHeader2 = ({ onExitClick }) => {
   return (
-    <div className="header">
-      <div className="room-info">
+    <div className={styles.roomheader2}>
+      <div>
         <div className={styles.gametitle}>1557. 왜 이렇게 빨리 끝나나요</div>
       </div>
       <ExitButton onClick={onExitClick} /> {/* Use ExitButton component */}
