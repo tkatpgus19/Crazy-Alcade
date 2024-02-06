@@ -28,31 +28,78 @@ public class RoomController {
 
     // 방 등록
     @PostMapping("")
-    public ResponseEntity<?> makeRoom(@RequestBody RoomDto roomDto){
+    public ResponseEntity<?> makeRoom(@RequestBody RoomDto roomDto) {
         log.info("roomInfo {}", roomDto);
         roomService.save(roomDto);
-        template.convertAndSend("/sub/normal/room-list", roomService.getNormalRoomList());
-        template.convertAndSend("/sub/item/room-list", roomService.getItemRoomList());
+        template.convertAndSend("/sub/normal/room-list", roomService.getNormalRoomList(null, null, 1));
+        template.convertAndSend("/sub/item/room-list", roomService.getItemRoomList(null, null, 1));
 
-        log.info("normalRoom Info: {}", roomService.getNormalRoomList());
-        log.info("itemRoom info: {}", roomService.getItemRoomList());
+        log.info("normalRoom Info: {}", roomService.getNormalRoomList(null, null, 1));
+        log.info("itemRoom info: {}", roomService.getItemRoomList(null, null, 1));
         return new ResponseEntity<>(roomDto.getRoomId(), HttpStatus.OK);
     }
 
     // 노멀전 방 리스트 조회
     @GetMapping("/normal")
-    public ResponseEntity<?> getNormalRoomList(){
-        log.warn("노말룸 정보: {}", roomService.getNormalRoomList());
-        return new ResponseEntity<>(roomService.getNormalRoomList(), HttpStatus.OK);
+    public ResponseEntity<?> getNormalRoomList(@RequestParam(value = "language", required = false) String language,
+                                               @RequestParam(value = "tier", required = false) String tier,
+                                               @RequestParam(value = "page", required = false) Integer page) {
+        log.warn("노말룸 정보: {}", roomService.getNormalRoomList(language, tier, page));
+        return new ResponseEntity<>(roomService.getNormalRoomList(language, tier, page), HttpStatus.OK);
     }
 
     // 아이템전 방 리스트 조회
     @GetMapping("/item")
-    public ResponseEntity<?> getItemRoomList(){
-        return new ResponseEntity<>(roomService.getItemRoomList(), HttpStatus.OK);
+    public ResponseEntity<?> getItemRoomList(@RequestParam(value = "language", required = false) String language,
+                                             @RequestParam(value = "tier", required = false) String tier,
+                                             @RequestParam(value = "page", required = false) Integer page) {
+        log.warn("아이템 정보: {}", roomService.getItemRoomList(language, tier, page));
+        return new ResponseEntity<>(roomService.getItemRoomList(language, tier, page), HttpStatus.OK);
     }
 
-    // 방 입장
+    // 게임방 정보 조회
+    @GetMapping("/info")
+    public ResponseEntity<?> getRoomInfo(@RequestParam("roomType") String roomType, @RequestParam("roomId") String roomId) {
+        return new ResponseEntity<>(roomService.getRoomInfo(roomType, roomId), HttpStatus.OK);
+    }
+
+    // 유저 퇴장 시에는 EventListener 을 통해서 유저 퇴장을 확인
+    @EventListener
+    public void webSocketDisconnectListener(SessionDisconnectEvent event) {
+        log.info("DisConnEvent {}", event);
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+
+        // stomp 세션에 있던 uuid 와 roomId 를 확인해서 채팅방 유저 리스트와 room 에서 해당 유저를 삭제
+        String userUUID = (String) headerAccessor.getSessionAttributes().get("userUUID");
+        String roomId = (String) headerAccessor.getSessionAttributes().get("roomId");
+        String roomType = (String) headerAccessor.getSessionAttributes().get("roomType");
+
+        log.info("headAccessor {}", headerAccessor);
+
+        // 채팅방 유저 리스트에서 UUID 유저 닉네임 조회 및 리스트에서 유저 삭제
+
+        String username = roomService.getUserName(roomType, roomId, userUUID);
+        roomService.delUser(roomType, roomId, userUUID);
+
+        if (username != null) {
+            log.info("User Disconnected : " + username);
+
+            // builder 어노테이션 활용
+            ChatDto chat = ChatDto.builder()
+                    .type(ChatDto.MessageType.LEAVE)
+                    .sender(username)
+                    .message(username + " 님 퇴장!!")
+                    .build();
+
+            template.convertAndSend("/sub/chat/room/" + roomId, chat);
+            template.convertAndSend("/sub/normal/room-list", roomService.getNormalRoomList(null, null, 1));
+            template.convertAndSend("/sub/item/room-list", roomService.getItemRoomList(null, null, 1));
+            if (roomService.getUserStatus(roomType, roomId) != null) {
+                template.convertAndSend("/sub/room/" + roomId + "/status", roomService.getUserStatus(roomType, roomId));
+            }
+        }
+    }
+
     @MessageMapping("/chat/enterUser")
     public void enterUser(@Payload ChatDto chat, SimpMessageHeaderAccessor headerAccessor) {
         // 채팅방에 유저 추가 및 UserUUID 반환
@@ -65,8 +112,45 @@ public class RoomController {
 
         chat.setMessage(chat.getSender() + " 님 입장!!");
         template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
+        template.convertAndSend("/sub/room/" + chat.getRoomId() + "/status", roomService.getUserStatus(chat.getRoomType(), chat.getRoomId()));
 
-        template.convertAndSend("/sub/normal/room-list", roomService.getNormalRoomList());
-        template.convertAndSend("/sub/item/room-list", roomService.getItemRoomList());
+        template.convertAndSend("/sub/normal/room-list", roomService.getNormalRoomList(null, null, 1));
+        template.convertAndSend("/sub/item/room-list", roomService.getItemRoomList(null, null, 1));
+    }
+
+    // 게임에 참여한 유저 리스트 및 상태 반환
+    @GetMapping("/userStatus")
+    public ResponseEntity<?> userList(@RequestParam("roomType") String roomType, @RequestParam("roomId") String roomId) {
+        return new ResponseEntity<>(roomService.getUserStatus(roomType, roomId), HttpStatus.OK);
+    }
+
+    // 게임방 채팅
+    @MessageMapping("/chat/sendMessage")
+    public void sendMessage(@Payload ChatDto chat) {
+        log.info("개인 채팅 : " + chat.getMessage());
+        chat.setMessage(chat.getMessage());
+        template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
+    }
+
+    // 전체 채팅
+    @MessageMapping("/chat/all/sendMessage")
+    public void sendMessage2All(@Payload ChatDto chat) {
+        log.info("전체 채팅 : " + chat.getMessage());
+        chat.setMessage(chat.getMessage());
+        template.convertAndSend("/sub/chat/all", chat);
+    }
+
+    // 게임 준비
+    @PutMapping("/ready")
+    public void ready(@RequestBody ChatDto chat) {
+        roomService.ready(chat);
+        template.convertAndSend("/sub/room/" + chat.getRoomId() + "/status", roomService.getUserStatus(chat.getRoomType(), chat.getRoomId()));
+    }
+
+    // 채팅방 비밀번호 비교
+    // 넘어오는 roomPwd 를 비교하고 일치하는지 체크 후 boolean 값을 반환한다.
+    @PostMapping("/checkPwd")
+    public ResponseEntity<?> confirmPwd(@RequestParam("roomType") String roomType, @RequestParam("roomId") String roomId, @RequestParam("roomPwd") String roomPwd){
+        return new ResponseEntity<>(roomService.checkPwd(roomType, roomId, roomPwd), HttpStatus.OK);
     }
 }
