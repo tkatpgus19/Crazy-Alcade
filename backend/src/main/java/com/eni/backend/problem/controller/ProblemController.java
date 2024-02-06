@@ -28,7 +28,7 @@ import static com.eni.backend.common.util.BindingResultUtils.getErrorMessages;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/problems")
+@RequestMapping("/api/problems")
 public class ProblemController {
 
     private final ProblemService problemService;

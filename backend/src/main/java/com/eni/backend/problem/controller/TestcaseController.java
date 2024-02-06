@@ -22,7 +22,7 @@ import static com.eni.backend.common.util.BindingResultUtils.getErrorMessages;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/testcases")
+@RequestMapping("/api/testcases")
 public class TestcaseController {
 
     private final TestcaseService testcaseService;

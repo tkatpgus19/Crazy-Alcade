@@ -1,19 +1,19 @@
 package com.eni.backend.member.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Level {
 
     @Id
     @Column(name = "level_id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false)
     private String image;
@@ -24,10 +24,7 @@ public class Level {
     @Column(nullable = false)
     private Integer coin;
 
-    @Builder
-    public Level(String image, Integer exp, Integer coin) {
-        this.image = image;
-        this.exp = exp;
-        this.coin = coin;
-    }
+    @OneToMany(mappedBy = "level", cascade = CascadeType.REMOVE)
+    private List<Member> members = new ArrayList<>();
+
 }

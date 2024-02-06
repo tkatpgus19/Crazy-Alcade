@@ -28,6 +28,6 @@ public class BaseTime {
     }
 
     public String getUpdatedAt() {
-        return createdAt.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT));
+        return updatedAt.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT));
     }
 }
