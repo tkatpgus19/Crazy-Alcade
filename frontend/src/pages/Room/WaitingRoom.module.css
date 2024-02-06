@@ -39,15 +39,15 @@
 }
 
 .realchat {
-  background-color: white; /* 파란색 배경 */
   width: 88%; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
   height: 300px;
-  border-radius: 15px;
   margin-top: auto;
   margin-left: 30px;
   margin-right: auto;
-  border: 1.6px solid;
-  border-color: black;
+  overflow-x: hidden;
+  overflow-y: "scroll";
+  color: white;
+  font-family: "DNFBitBitv2";
 }
 
 .checkchat {
@@ -83,13 +83,7 @@
 }
 
 /* StartButton.css */
-
-.start {
-  background: linear-gradient(
-    to right,
-    orange,
-    darkorange
-  ); /* 주황색 그라데이션 효과 */
+.startbtn {
   border: none; /* 테두리 없애기 */
   color: white; /* 텍스트 색상은 흰색 */
   padding: 15px 32px; /* 패딩으로 버튼 크기 조절 */
@@ -108,6 +102,20 @@
   margin-left: 30px;
   color: white;
   font-family: "DNFBitBitv2";
+}
+.start {
+  background: linear-gradient(
+    to right,
+    orange,
+    darkorange
+  ); /* 주황색 그라데이션 효과 */
+}
+.ready {
+  background: linear-gradient(
+    to right,
+    #38d600,
+    #80f158
+  ); /* 주황색 그라데이션 효과 */
 }
 
 /* 오른쪽에 들어갈 버튼  */
@@ -130,12 +138,15 @@
 
 /* 3개의 상태창 스타일 위*/
 .miniBoxup {
-  display: flex;
-  justify-content: space-between;
+  /* 격자 방식으로 요소들을 배치하는 display */
+  display: grid;
+  /* 아래는 각각 열 행? 이 화면의 얼마만큼을 차지하게 할지 정하는 것 */
+  /* 참고로 1fr은 화면을 꽉채우는 비율 */
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
   width: 680px;
   height: 200px;
-  gap: 40px;
-  margin: 25px auto 50px auto;
+  margin: auto;
   /* 상 우 하 좌 순서 */
 }
 
@@ -238,7 +249,27 @@
   border-color: black;
 }
 
-.unready {
+.master {
+  background-color: #00396c;
+  border-radius: 8px;
+  border: 2px solid;
+  width: 170px;
+  height: 28px;
+  margin-top: 3px;
+  margin-left: 3px;
+  text-align: center; /* 텍스트 중앙 정렬 */
+  font-family: "DNFBitBitv2";
+  font-size: 18px;
+  color: #12deff;
+  border-color: black;
+  text-shadow:
+    1px 1px 0 #0c74d0,
+    -1px -1px 0 #0c74d0,
+    1px -1px 0 #0c74d0,
+    -1px 1px 0 #0c74d0;
+}
+
+.unreadytext {
   background-color: #00396c;
   border-radius: 8px;
   border: 2px solid;
@@ -258,7 +289,7 @@
     -1px 1px 0 #696969;
 }
 
-.ready {
+.readytext {
   background-color: #00396c;
   border-radius: 8px;
   border: 2px solid;
