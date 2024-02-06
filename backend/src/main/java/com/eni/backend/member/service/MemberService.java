@@ -6,6 +6,7 @@ import com.eni.backend.auth.oauth2.user.OAuth2UserInfo;
 import com.eni.backend.common.exception.CustomServerErrorException;
 import com.eni.backend.member.dto.SecurityMemberDto;
 import com.eni.backend.member.dto.request.PutCoinRequest;
+import com.eni.backend.member.dto.request.PutExpRequest;
 import com.eni.backend.member.dto.request.PutLanguageRequest;
 import com.eni.backend.member.dto.request.PutNicknameRequest;
 import com.eni.backend.member.dto.response.*;
@@ -148,6 +149,16 @@ public class MemberService {
 
         if (member != null) {
             member.updateCoin(putCoinRequest, operator);
+        }
+
+        return PutCoinResponse.of(member.getId());
+    }
+
+    public PutCoinResponse putExp(Authentication authentication, PutExpRequest putExpRequest) {
+        Member member = findMemberByAuthentication(authentication);
+
+        if (member != null) {
+            member.updateExp(putExpRequest);
         }
 
         return PutCoinResponse.of(member.getId());

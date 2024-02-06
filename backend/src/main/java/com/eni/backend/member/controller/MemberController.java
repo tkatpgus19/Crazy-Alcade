@@ -3,6 +3,7 @@ package com.eni.backend.member.controller;
 import com.eni.backend.common.exception.CustomBadRequestException;
 import com.eni.backend.common.response.BaseSuccessResponse;
 import com.eni.backend.member.dto.request.PutCoinRequest;
+import com.eni.backend.member.dto.request.PutExpRequest;
 import com.eni.backend.member.dto.request.PutLanguageRequest;
 import com.eni.backend.member.dto.request.PutNicknameRequest;
 import com.eni.backend.member.service.MemberService;
@@ -80,5 +81,17 @@ public class MemberController {
         }
 
         return BaseSuccessResponse.of(memberService.putCoin(authentication, putCoinRequest, false));
+    }
+
+    @PutMapping("/exp")
+    public BaseSuccessResponse<?> putExp(Authentication authentication, @RequestBody @Valid PutExpRequest putExpRequest, BindingResult bindingResult) {
+        log.info("MemberController.exp");
+
+        // validation 오류
+        if (bindingResult.hasErrors()) {
+            throw new CustomBadRequestException(BAD_REQUEST, getErrorMessages(bindingResult));
+        }
+
+        return BaseSuccessResponse.of(memberService.putExp(authentication, putExpRequest));
     }
 }
