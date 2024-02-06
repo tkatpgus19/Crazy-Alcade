@@ -1,7 +1,9 @@
 package com.eni.backend.problem.service;
 
+import com.eni.backend.auth.jwt.JwtTokenProvider;
 import com.eni.backend.common.exception.CustomBadRequestException;
 import com.eni.backend.common.exception.CustomServerErrorException;
+import com.eni.backend.member.dto.SecurityMemberDto;
 import com.eni.backend.member.entity.Language;
 import com.eni.backend.member.entity.Member;
 import com.eni.backend.member.repository.MemberRepository;
@@ -17,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -37,9 +40,11 @@ public class JavaCodeService {
     private final TestcaseRepository testcaseRepository;
     private final MemberRepository memberRepository;
 
-    public Object judge(Long memberId, Problem problem, String code, Boolean isHidden) throws IOException, InterruptedException {
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public Object judge(Authentication authentication, Problem problem, String code, Boolean isHidden) throws IOException, InterruptedException {
         // 멤버
-        Member member = findMemberById(memberId);
+        Member member = findMemberByAuth(authentication);
 
         // 파일을 저장할 디렉토리 생성
         UUID uuid = UUID.randomUUID();
@@ -382,9 +387,15 @@ public class JavaCodeService {
         file.delete();
     }
 
+    private Member findMemberByAuth(Authentication authentication) {
+        SecurityMemberDto member = jwtTokenProvider.getSecurityMemberDto(authentication);
+        return findMemberById(member.getId());
+    }
+
     private Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomBadRequestException(MEMBER_NOT_FOUND));
     }
+
 
 }

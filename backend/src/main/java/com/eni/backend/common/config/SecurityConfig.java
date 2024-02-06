@@ -40,6 +40,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/api/members/**").authenticated()
+                        .requestMatchers("/api/problems/{problem-id}/codes/**").authenticated()
                         .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().permitAll())
                 .sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

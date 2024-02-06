@@ -14,6 +14,7 @@ import com.eni.backend.problem.service.PythonCodeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,6 @@ import java.io.IOException;
 import static com.eni.backend.common.response.BaseResponseStatus.*;
 import static com.eni.backend.common.util.BindingResultUtils.getErrorMessages;
 
-@CrossOrigin(origins = { "*" }, methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE} , maxAge = 6000)
 @Slf4j
 @Validated
 @RestController
@@ -66,17 +66,12 @@ public class ProblemController {
         return BaseSuccessResponse.of(GET_PROBLEM_DETAIL_SUCCESS, problemService.get(problemId));
     }
 
-    /**
-     * 토큰 검사 필요함.
-     * 임시로 memberId=1 이용.
-     */
     @PostMapping("/{problem-id}/codes/{type}")
-    public BaseSuccessResponse<?> code(@PathVariable(name = "problem-id") Long problemId,
-                                              @PathVariable String type,
-                                              @RequestBody @Valid PostCodeRequest request, BindingResult bindingResult) throws IOException, InterruptedException {
+    public BaseSuccessResponse<?> code(Authentication authentication,
+                                       @PathVariable(name = "problem-id") Long problemId,
+                                       @PathVariable String type,
+                                       @RequestBody @Valid PostCodeRequest request, BindingResult bindingResult) throws IOException, InterruptedException {
         log.info("ProblemController.code");
-
-        Long memberId = 1L; // 임시
 
         /**
          * save 처리 필요함.
@@ -103,12 +98,12 @@ public class ProblemController {
 
         // 자바 실행 결과
         if (language == Language.JAVA) {
-            return BaseSuccessResponse.of(responseStatus, javaCodeService.judge(memberId, problem, request.getContent(), isHidden));
+            return BaseSuccessResponse.of(responseStatus, javaCodeService.judge(authentication, problem, request.getContent(), isHidden));
         }
 
         // 파이썬 실행 결과
         if (language == Language.PYTHON) {
-            return BaseSuccessResponse.of(responseStatus, pythonCodeService.judge(memberId, problem, request.getContent(), isHidden));
+            return BaseSuccessResponse.of(responseStatus, pythonCodeService.judge(authentication, problem, request.getContent(), isHidden));
         }
 
         throw new CustomBadRequestException(LANGUAGE_NOT_SUPPORTED);
