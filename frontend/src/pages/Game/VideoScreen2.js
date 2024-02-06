@@ -91,7 +91,7 @@ const VideoScreen = () => {
 
       const publisher = await OV.initPublisherAsync(undefined, {
         audioSource: undefined,
-        videoSource: undefined,
+        videoSource: "screen",
         publishAudio: true,
         publishVideo: true,
         resolution: "1920x1080",

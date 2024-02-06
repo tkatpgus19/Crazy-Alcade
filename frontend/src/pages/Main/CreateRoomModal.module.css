@@ -9,7 +9,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 20px;
-  background-color: #0ddfff;
+  background-color: #00b9ff;
   z-index: 1000;
   display: flex;
   flex-direction: column; /* 세로 방향으로 컨텐츠 정렬 */
@@ -19,15 +19,21 @@
 /* 방 만들기 제목 스타일 */
 .roomTitleContainer {
   background-color: #ffffffb8; /* 밝은 회색 배경색 지정 */
-  border-radius: 10px 10px 0 0; /* 상단 모서리만 둥글게 설정 */
+  border-radius: 10px; /* 상단 모서리만 둥글게 설정 */
   padding: 10px;
-  margin-bottom: 10px;
+  width: 150px;
 }
 
 .roomTitle {
-  margin: 0; /* 제목의 margin 초기화 */
   font-size: 20px;
   color: #000000; /* 어두운 글자색 지정 */
+  font-weight: bold;
+  text-align: center;
+}
+
+.roomSectionTitle {
+  font-size: 15px;
+  color: #fff; /* 흰색 글자색 설정 */
   font-weight: bold;
 }
 
@@ -40,7 +46,7 @@
 .createRoomModal input,
 .createRoomModal select,
 .createRoomModal button {
-  margin-top: 5px; /* 입력 요소 및 버튼 간격 조정 */
+  margin-top: 8px; /* 입력 요소 및 버튼 간격 조정 */
 }
 
 /* 버튼 스타일 */
@@ -52,7 +58,56 @@
   cursor: pointer;
   border: none;
   border-radius: 5px; /* 모서리 둥글게 설정 */
-  margin-top: 15px; /* 버튼 간격 조정 */
+  margin-top: 7px; /* 버튼 간격 조정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1; /* 버튼이 같은 너비를 가지도록 설정 */
+  margin: 0 30px; /* 좌우 간격 추가 */
+}
+
+/* 방 이름, roomPassword, 티어선택, 문제 번호, 시간제한 각각의 스타일 */
+.createRoomModal .roomSectionTitle {
+  display: flex;
+  align-items: center;
+  border-radius: 10px; /* 네모 박스의 둥글기를 위해 추가 */
+  padding: 10px; /* 네모 박스의 안쪽 여백 지정 *
+}
+
+.createRoomModal .inputField {
+  display: flex;
+  align-items: center;
+  margin-top: 5px; /* 간격 조절 */
+}
+
+.createRoomModal .inputField label {
+  margin-right: 10px; /* 간격 조절 */
+}
+
+.createRoomModal .roomSectionTitle span {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.createRoomModal .languageCheckbox,
+.createRoomModal .codeReviewCheckbox {
+  display: flex;
+  align-items: center;
+}
+
+.createRoomModal .languageCheckbox label {
+  margin-right: 10px; /* 간격 조절 */
+}
+
+.createRoomModal .codeReviewCheckbox label {
+  margin-right: 33px; /* 간격 조절 */
+}
+
+/* 방 만들기 및 취소 버튼 스타일 */
+.createActionButtons {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 30px;
 }
 
 /* 버튼 호버 효과 스타일 */

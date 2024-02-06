@@ -7,10 +7,9 @@ const Problem = () => {
 
   useEffect(() => {
     const getData = async () => {
+      const apiUrl = `${process.env.REACT_APP_API_BASE_URL}/problems/1`;
       try {
-        const response = await fetch(
-          "http://i10d104.p.ssafy.io:8080/problems/1"
-        );
+        const response = await fetch(apiUrl);
 
         if (!response || !response.ok) {
           throw new Error("서버 응답이 올바르지 않습니다.");
