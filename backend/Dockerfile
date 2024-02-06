@@ -17,5 +17,5 @@ COPY ${JAR_FILE} app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
 
 # timezone
-ENV TZ=Asia/Seoul
-RUN apt-get install -y tzdata
+# ENV TZ=Asia/Seoul
+# RUN apt-get install -y tzdata
