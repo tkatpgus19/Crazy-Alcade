@@ -14,7 +14,8 @@ import { faKey } from "@fortawesome/free-solid-svg-icons";
 
 const Main = () => {
   const SERVER_URL =
-    "ec2-3-39-233-234.ap-northeast-2.compute.amazonaws.com:8080";
+    // "ec2-3-39-233-234.ap-northeast-2.compute.amazonaws.com:8080";
+    "192.168.100.146:8080";
   useEffect(() => {
     getRoomList("normal");
 
@@ -24,9 +25,11 @@ const Main = () => {
   const client = useRef();
 
   const getRoomList = (roomType) => {
-    axios.get(`http://${SERVER_URL}/rooms/${roomType}`).then((res) => {
-      setRoomList(res.data);
-    });
+    axios
+      .get(`http://${SERVER_URL}/rooms/${roomType}?page=${page}`)
+      .then((res) => {
+        setRoomList(res.data);
+      });
   };
 
   const connectSession = () => {
@@ -75,6 +78,7 @@ const Main = () => {
   const [chatContent, setChatContent] = useState([]);
   const [normalMode, setNormalMode] = useState(true);
   const [roomList, setRoomList] = useState([]);
+  const [page, setPage] = useState(1);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -97,7 +101,13 @@ const Main = () => {
     axios
       .post(`http://${SERVER_URL}/rooms`, roomData)
       .then((res) => {
-        alert("성공");
+        navigate("/room", {
+          state: {
+            roomId: res.data,
+            nickname: "닉네임1",
+            roomType: roomData.roomType,
+          },
+        });
       })
       .catch((err) => {
         alert("실패");
@@ -142,6 +152,16 @@ const Main = () => {
     if (e.keyCode === 13) {
       handleSendMessage();
     }
+  };
+
+  const enterRoom = (data) => {
+    navigate("/room", {
+      state: {
+        roomId: data.roomId,
+        nickname: "닉네임1",
+        roomType: data.roomType,
+      },
+    });
   };
 
   let m = true;
@@ -338,7 +358,11 @@ const Main = () => {
             {/* 방 하나하나 */}
             {roomList.map((data, index) => {
               return (
-                <div key={index} className={styles.room}>
+                <div
+                  key={index}
+                  className={styles.room}
+                  onClick={() => enterRoom(data)}
+                >
                   {/* 방 안의 제목 */}
                   <div className={styles.roomBlueBox}>
                     <p>{data.roomName}</p>
