@@ -6,8 +6,8 @@ import Problem from "./Problem";
 import styles from "./Game.module.css";
 import Footer from "./Footer";
 import WebIDE from "./WebIDE";
-import GameResults from "./components/GameResults"; // Adjust the path according to your file structure
 
+import GameResults from "./components/GameResults"; // Adjust the path according to your file structure
 import { Resizable } from "re-resizable";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -159,7 +159,7 @@ function Game() {
       <Header
         roomTitle="1. 너만 오면 고"
         language="Python"
-        initialTime={60} // 예시로 120초 설정
+        initialTime={10} // 예시로 120초 설정
         onExitClick={handleExitClick} // 수정된 부분
       />
       <VideoScreen />
@@ -201,11 +201,9 @@ function Game() {
       <Footer />
       {show && octopusImages}
       {chickenImages}
-      {showResults && (
-        <div className={styles.gameResultsContainer}>
-          <GameResults />
-        </div>
-      )}
+
+      {/* 시간이 0이 되면 결과창을 렌더링 */}
+      {showResults && <GameResults onClose={() => setShowResults(false)} />}
     </div>
   );
 }
