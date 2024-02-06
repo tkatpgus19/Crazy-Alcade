@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Background from "../../components/Background";
 import RoomHeader from "./RoomHeader";
 import RoomHeader2 from "./RoomHeader2";
@@ -6,10 +6,15 @@ import GrayBox from "../../components/graybox/GrayBox";
 import styles from "./WaitingRoom.module.css";
 import MiniBox from "./MiniBox";
 import Status from "./Status";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Room = () => {
+  useEffect(() => {
+    console.log(roomId + nickname + roomType);
+  }, []);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { roomId, nickname, roomType } = location.state;
 
   const back = () => {
     navigate("../");
