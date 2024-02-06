@@ -7,7 +7,6 @@ import styles from "./WaitingRoom.module.css";
 import MiniBox from "./MiniBox";
 import Status from "./Status";
 import { useNavigate } from "react-router-dom";
-import ModalAlert from "../../components/alert/Modal";
 
 const Room = () => {
   const navigate = useNavigate();
@@ -57,7 +56,12 @@ const Room = () => {
         </div>
         <div className={styles.right}>
           <div className={styles.chat}>
-            <ModalAlert />
+            <p className={styles.chattext}>채팅창</p>
+            <div className={styles.realchat}></div>
+            <div className={styles.checkchat}>
+              <div className={styles.write}></div>
+              <div className={styles.buttonWithImage}></div>
+            </div>
           </div>
           <div className={styles.button4}>
             <div className={styles.start} onClick={gamestart}>
