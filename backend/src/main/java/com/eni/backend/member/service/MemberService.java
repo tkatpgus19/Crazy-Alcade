@@ -52,12 +52,11 @@ public class MemberService {
         String accessToken = jwtTokenProvider.generateAccessToken(authentication, member.getId());
 
         //로그인 할 때 최종 접속시간 확인해서 로그인 보상 받을 수 있는지 확인
-        if(isNew) {
+        if (isNew) {
             // 신규회원
             // 로그인 보상
             isConnected = true;
-        }
-        else {
+        } else {
             // 기존회원
             // 최종 접속일 확인 후 로그인 보상
             isConnected = !Objects.equals(member.getConnectedAt().toLocalDateTime().toLocalDate(), LocalDate.now());
@@ -124,18 +123,28 @@ public class MemberService {
     }
 
     public PutNicknameResponse putNickname(Authentication authentication, PutNicknameRequest putNicknameRequest) {
-        Object principalObject = authentication.getPrincipal();
+        Member member = findMemberByAuthentication(authentication);
 
-        if (principalObject instanceof SecurityMemberDto) {
-            SecurityMemberDto securityMemberDto = (SecurityMemberDto) principalObject;
-
-            Optional<Member> optionalMember = findMemberById(securityMemberDto.getId());
-            Member member = optionalMember.get();
-
+        if (member != null) {
             member.updateNickname(putNicknameRequest);
-            return PutNicknameResponse.of(member.getId());
         }
 
-        throw new CustomServerErrorException(MEMBER_NOT_FOUND);
+        return PutNicknameResponse.of(member.getId());
+    }
+
+    public Member findMemberByAuthentication(Authentication authentication) {
+        Object principalObject = authentication.getPrincipal();
+
+        if (principalObject instanceof SecurityMemberDto securityMemberDto) {
+
+            try {
+                Optional<Member> optionalMember = findMemberById(securityMemberDto.getId());
+                return optionalMember.get();
+            } catch (Exception e) {
+                throw new CustomServerErrorException(MEMBER_NOT_FOUND);
+            }
+        }
+
+        return null;
     }
 }
