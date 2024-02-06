@@ -1,14 +1,13 @@
 package com.eni.backend.problem.service;
 
+import com.eni.backend.problem.dto.request.PostTestcaseRequest;
+import com.eni.backend.problem.dto.response.*;
 import com.eni.backend.problem.entity.ProblemPlatform;
 import com.eni.backend.common.exception.CustomBadRequestException;
 import com.eni.backend.common.exception.CustomServerErrorException;
 import com.eni.backend.problem.dto.request.PostProblemRequest;
-import com.eni.backend.problem.dto.response.GetExampleResponse;
-import com.eni.backend.problem.dto.response.GetProblemListResponse;
-import com.eni.backend.problem.dto.response.GetProblemResponse;
-import com.eni.backend.problem.dto.response.PostProblemResponse;
 import com.eni.backend.problem.entity.Problem;
+import com.eni.backend.problem.entity.Testcase;
 import com.eni.backend.problem.entity.Tier;
 import com.eni.backend.problem.repository.ProblemRepository;
 import com.eni.backend.problem.repository.TestcaseRepository;
@@ -104,6 +103,28 @@ public class ProblemService {
 
         // 반환
         return get(problemId);
+    }
+
+    @Transactional
+    public PostTestcaseResponse postTestcase(Long problemId, PostTestcaseRequest request) {
+        // 문제
+        Problem problem = findProblemById(problemId);
+
+        // 테스트케이스
+        Testcase testcase = Testcase.of(request.getInput(),
+                request.getOutput(),
+                request.getIsHidden(),
+                problem);
+
+        // 저장
+        try {
+            testcaseRepository.save(testcase);
+        } catch (Exception e) {
+            throw new CustomServerErrorException(DATABASE_ERROR);
+        }
+
+        // 생성된 ID 값 반환
+        return PostTestcaseResponse.of(testcase.getId());
     }
 
     private ProblemPlatform getProblemPlatform(String platform) {

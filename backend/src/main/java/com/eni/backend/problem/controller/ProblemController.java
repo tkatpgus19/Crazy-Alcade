@@ -6,6 +6,7 @@ import com.eni.backend.common.response.BaseSuccessResponse;
 import com.eni.backend.member.entity.Language;
 import com.eni.backend.problem.dto.request.PostCodeRequest;
 import com.eni.backend.problem.dto.request.PostProblemRequest;
+import com.eni.backend.problem.dto.request.PostTestcaseRequest;
 import com.eni.backend.problem.entity.Problem;
 import com.eni.backend.problem.service.CodeService;
 import com.eni.backend.problem.service.JavaCodeService;
@@ -107,6 +108,20 @@ public class ProblemController {
         }
 
         throw new CustomBadRequestException(LANGUAGE_NOT_SUPPORTED);
+    }
+
+    @PostMapping("/{problem-id}/testcases")
+    public BaseSuccessResponse<?> postTestcase(@PathVariable(name = "problem-id") Long problemId,
+                                       @RequestBody @Valid PostTestcaseRequest request,
+                                       BindingResult bindingResult) {
+        log.info("ProblemController.postTestcase");
+
+        // validation 오류
+        if (bindingResult.hasErrors()) {
+            throw new CustomBadRequestException(BAD_REQUEST, getErrorMessages(bindingResult));
+        }
+
+        return BaseSuccessResponse.of(POST_TESTCASE_SUCCESS, problemService.postTestcase(problemId, request));
     }
 
 }
