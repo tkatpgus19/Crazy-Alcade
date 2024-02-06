@@ -14,18 +14,18 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
-          {/* <Route
+          <Route
             exact
             path="/login/oauth2/code/kakao"
             // path="/oauth2/kakao"
             element={<KakaoRedirection />}
-          /> */}
-          {/* <Route
+          />
+          <Route
             exact
             path="/login/oauth2/code/google"
             // path="/oauth2/kakao"
             element={<GoogleRedirection />}
-          /> */}
+          />
           <Route path="/main" element={<Main />} />
           <Route path="/room" element={<Room />} />
           <Route path="/game" element={<Game />} />

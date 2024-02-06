@@ -15,7 +15,7 @@ import { faKey } from "@fortawesome/free-solid-svg-icons";
 const Main = () => {
   const SERVER_URL =
     // "ec2-3-39-233-234.ap-northeast-2.compute.amazonaws.com:8080";
-    "192.168.100.146:8080";
+    "192.168.123.112:8080";
   useEffect(() => {
     getRoomList("normal");
 
@@ -55,7 +55,9 @@ const Main = () => {
   function onRoomInforReceived(payload) {
     setRoomList(JSON.parse(payload.body));
   }
+
   const chatContainerRef = useRef();
+
   function onChatReceived(payload) {
     const currentDate = new Date();
     const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
@@ -155,13 +157,26 @@ const Main = () => {
   };
 
   const enterRoom = (data) => {
-    navigate("/room", {
-      state: {
-        roomId: data.roomId,
-        nickname: "닉네임1",
-        roomType: data.roomType,
-      },
-    });
+    if (data.hasPassword) {
+      const password = prompt("비밀번호를 입력하세요");
+      axios
+        .post(
+          `http://${SERVER_URL}/rooms/checkPwd?roomType=${data.roomType}&roomId=${data.roomId}&roomPwd=${password}`
+        )
+        .then((res) => {
+          if (res.data) {
+            navigate("/room", {
+              state: {
+                roomId: data.roomId,
+                nickname: "닉네임1",
+                roomType: data.roomType,
+              },
+            });
+          } else {
+            alert("비밀번호가 달라요");
+          }
+        });
+    }
   };
 
   let m = true;
