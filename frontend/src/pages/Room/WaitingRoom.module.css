@@ -16,7 +16,7 @@
 .chat {
   background-color: #0777d2; /* 파란색 배경 */
   width: 93.4%; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
-  height: 520px;
+  height: 150px;
   border-radius: 15px;
   margin-top: auto;
   margin-left: 30px;
@@ -24,6 +24,62 @@
   border: 1.6px solid;
   border-color: black;
   padding-bottom: 300px;
+}
+
+.chattext {
+  font-size: 20px;
+  text-align: center; /* 텍스트 중앙 정렬 */
+  color: white;
+  font-family: "DNFBitBitv2";
+  text-shadow:
+    1px 1px 0 black,
+    -1px -1px 0 black,
+    1px -1px 0 black,
+    -1px 1px 0 black;
+}
+
+.realchat {
+  background-color: white; /* 파란색 배경 */
+  width: 88%; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
+  height: 300px;
+  border-radius: 15px;
+  margin-top: auto;
+  margin-left: 30px;
+  margin-right: auto;
+  border: 1.6px solid;
+  border-color: black;
+}
+
+.checkchat {
+  display: flex;
+}
+
+.write {
+  background-color: white; /* 파란색 배경 */
+  width: 75%; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
+  height: 40px;
+  border-radius: 10px;
+  margin-top: 15px;
+  margin-left: 30px;
+  border: 1.6px solid;
+  border-color: black;
+}
+
+.buttonWithImage {
+  background-color: #0bbeff;
+  background-image: url("../../../public/images/chat.png");
+  background-size: cover;
+  background-size: contain; /* 이미지가 버튼에 맞게 조절됩니다. */
+  background-repeat: no-repeat;
+  background-position: center; /* 이미지를 가로 및 세로 정중앙에 배치합니다. */
+  width: 10%;
+  height: 40px;
+  border-radius: 10px;
+  margin-top: 15px;
+  margin-left: 11px;
+  margin-right: auto;
+  border: 1.6px solid;
+  border-color: black;
 }
 
 /* StartButton.css */
@@ -180,6 +236,26 @@
   font-size: 18px;
   color: white;
   border-color: black;
+}
+
+.unready {
+  background-color: #00396c;
+  border-radius: 8px;
+  border: 2px solid;
+  width: 170px;
+  height: 28px;
+  margin-top: 3px;
+  margin-left: 3px;
+  text-align: center; /* 텍스트 중앙 정렬 */
+  font-family: "DNFBitBitv2";
+  font-size: 18px;
+  color: #d3d3d3; /* Light grey color */
+  border-color: black;
+  text-shadow:
+    1px 1px 0 #696969,
+    -1px -1px 0 #696969,
+    1px -1px 0 #696969,
+    -1px 1px 0 #696969;
 }
 
 .ready {
