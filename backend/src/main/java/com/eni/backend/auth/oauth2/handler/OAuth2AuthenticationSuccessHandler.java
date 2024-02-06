@@ -1,7 +1,7 @@
 package com.eni.backend.auth.oauth2.handler;
 
 import com.eni.backend.common.response.BaseSuccessResponse;
-import com.eni.backend.member.dto.response.LoginResponseDto;
+import com.eni.backend.member.dto.response.LoginResponse;
 import com.eni.backend.member.service.MemberService;
 import com.nimbusds.jose.shaded.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,9 +26,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
 
-        LoginResponseDto loginResponseDto = memberService.login(authentication);
+        LoginResponse loginResponse = memberService.login(authentication);
         // 로그인 응답 객체 생성
-        BaseSuccessResponse<?> result = BaseSuccessResponse.of("소셜 로그인에 성공하였습니다.", loginResponseDto);
+        BaseSuccessResponse<?> result = BaseSuccessResponse.of("소셜 로그인에 성공하였습니다.", loginResponse);
 //        String acceessToken = loginResponseDto.getAccessToken();
 
         // response
