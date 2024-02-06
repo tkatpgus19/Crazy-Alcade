@@ -18,9 +18,20 @@ function Game() {
   const navigate = useNavigate();
   const isSprayingInk = useSelector((state) => state.octopus.isSprayingInk);
   const isChickenWalking = useSelector((state) => state.feature.chickenWalking); // 병아리 걸음 상태
+  const isShieldActive = useSelector(
+    (state) => state.animationControl.isShieldActive
+  );
 
   const [show, setShow] = useState(false);
   const [chickens, setChickens] = useState([]); // 병아리 이미지 상태
+
+  useEffect(() => {
+    // "쉴드" 상태가 활성화되면 문어와 병아리 애니메이션을 즉시 제거
+    if (isShieldActive) {
+      setShow(false);
+      setChickens([]);
+    }
+  }, [isShieldActive]);
 
   useEffect(() => {
     if (isSprayingInk) {
@@ -34,12 +45,12 @@ function Game() {
 
     if (isChickenWalking) {
       // 병아리가 걸어다니는 상태가 활성화되면 병아리를 생성
-      const initialChickens = Array(30)
+      const initialChickens = Array(20)
         .fill(null)
         .map((_, index) => ({
           id: index,
-          left: Math.random() * window.innerWidth,
-          top: Math.random() * window.innerHeight,
+          left: Math.random() * window.innerWidth - 100,
+          top: Math.random() * window.innerHeight - 100,
         }));
 
       setChickens(initialChickens);
@@ -48,18 +59,18 @@ function Game() {
       intervalId = setInterval(() => {
         setChickens((chickens) =>
           chickens.map((chicken) => {
-            const speed = 20; // 이동 속도 조정
+            const speed = 100; // 이동 속도 조정
             let newLeft = chicken.left + (Math.random() - 0.5) * speed;
             let newTop = chicken.top + (Math.random() - 0.5) * speed;
 
             // 화면 경계 처리
-            newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - 50)); // 병아리 이미지의 너비 고려
-            newTop = Math.max(0, Math.min(newTop, window.innerHeight - 50)); // 병아리 이미지의 높이 고려
+            newLeft = Math.max(100, Math.min(newLeft, window.innerWidth - 100)); // 병아리 이미지의 너비 고려
+            newTop = Math.max(100, Math.min(newTop, window.innerHeight - 100)); // 병아리 이미지의 높이 고려
 
             return { ...chicken, left: newLeft, top: newTop };
           })
         );
-      }, 10); // 200ms 마다 위치 업데이트
+      }, 200); // 200ms 마다 위치 업데이트
 
       // 5초 후 병아리 숨김 및 위치 업데이트 중단
       setTimeout(() => {
@@ -76,6 +87,7 @@ function Game() {
     };
   }, [isChickenWalking]);
 
+  // 문어 이미지 렌더링 로직
   const octopusImages = Array(5)
     .fill(null)
     .map((_, index) => {
@@ -84,8 +96,8 @@ function Game() {
         position: "absolute",
         left: `${Math.random() * 50 + 30}%`,
         top: `${Math.random() * 50 + 10}%`,
-        // transform: `translate(-50%, -50%)`, // 중앙 정렬
-        width: `${Math.random() * 10 + 20}%`,
+        transform: `translate(-50%, -50%)`, // 중앙 정렬
+        width: `${Math.random() * 5 + 10}%`,
       };
 
       return (
@@ -117,21 +129,6 @@ function Game() {
   const handleExitClick = () => {
     // "/"로 이동하는 코드
     navigate("/");
-  };
-
-  const handleSave = () => {
-    // 임시 저장 로직
-    alert("임시 저장");
-  };
-
-  const handleRun = () => {
-    // 코드 실행 로직
-    alert("코드 실행");
-  };
-
-  const handleSubmit = () => {
-    // 코드 제출 로직
-    alert("코드 제출");
   };
 
   return (

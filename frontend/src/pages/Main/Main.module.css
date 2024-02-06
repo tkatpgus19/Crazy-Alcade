@@ -270,18 +270,19 @@
 .normalButton {
   width: 100px;
   height: 35px;
-  background-color: #12deff;
   border-radius: 5px;
   font-weight: bold;
   text-align: center;
   line-height: 30px;
   margin-bottom: -5px;
 }
+.active {
+  background-color: #12deff;
+}
 
 .itemButton {
   width: 100px;
   height: 35px;
-  background-color: #d9d9d9;
   border-radius: 5px;
   font-weight: bold;
   text-align: center;
@@ -315,7 +316,7 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 15px;
   margin-top: 15px; /* room-page 아래에 여백 추가 */
-  height: 200px;
+  height: 100px;
   width: 950px;
   border-radius: 10px;
 }
@@ -341,7 +342,7 @@
   border-radius: 10px;
   position: relative;
   top: -20px;
-  padding-left: 5px;
+  padding-left: 10px;
   font-size: 20px;
   margin-bottom: -15px;
 }
@@ -372,6 +373,23 @@
   font-size: 15px;
   font-weight: bold;
   text-align: left;
+  margin-left: 10px;
+  letter-spacing: 2.5px; /* 원하는 글자 간격 설정 */
+}
+
+.keyIcon {
+  margin-right: 60px;
+  font-size: 20px;
+}
+
+.speakIcon {
+  margin-left: -50px;
+  margin-right: 5px;
+  font-size: 20px;
+}
+
+.roomDescription span {
+  margin-left: 230px;
 }
 
 .backPage,
@@ -388,7 +406,7 @@
   margin: 0 40px; /*간격 조절*/
   font-weight: bold;
   line-height: 20px;
-  margin-top: 75px;
+  margin-top: 170px;
 }
 
 .backandforthPage {
@@ -442,7 +460,7 @@
 }
 
 .chatInputContainer {
-  position: absolute;
+  position: sticky;
   bottom: 0;
   left: 0;
   width: 970px;
