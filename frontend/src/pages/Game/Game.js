@@ -25,7 +25,7 @@ function Game() {
 
   const [show, setShow] = useState(false);
   const [chickens, setChickens] = useState([]); // 병아리 이미지 상태
-  const [time, setTime] = useState(1); // initialTime is now a state
+  const [time, setTime] = useState(100); // initialTime is now a state
   const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
