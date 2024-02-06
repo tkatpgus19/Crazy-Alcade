@@ -3,7 +3,12 @@ package com.eni.backend.member.service;
 import com.eni.backend.auth.jwt.JwtTokenProvider;
 import com.eni.backend.auth.oauth2.service.OAuth2UserPrincipal;
 import com.eni.backend.auth.oauth2.user.OAuth2UserInfo;
+import com.eni.backend.common.exception.CustomServerErrorException;
+import com.eni.backend.member.dto.SecurityMemberDto;
+import com.eni.backend.member.dto.request.PutNicknameRequest;
+import com.eni.backend.member.dto.response.GetMemberListResponse;
 import com.eni.backend.member.dto.response.LoginResponse;
+import com.eni.backend.member.dto.response.PutNicknameResponse;
 import com.eni.backend.member.entity.Level;
 import com.eni.backend.member.entity.Member;
 import com.eni.backend.member.repository.LevelRepository;
@@ -17,14 +22,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static com.eni.backend.common.response.BaseResponseStatus.MEMBER_NOT_FOUND;
 
 @Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class MemberService {
+
     private final MemberRepository memberRepository;
     private final LevelRepository levelRepository;
     private final JwtTokenProvider jwtTokenProvider;
@@ -38,7 +48,7 @@ public class MemberService {
     public LoginResponse login(Authentication authentication) {
         OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
 
-        Member member = findMemberBySocial(principal.getUserInfo());
+        Member member = findOrSaveMember(principal.getUserInfo());
         String accessToken = jwtTokenProvider.generateAccessToken(authentication, member.getId());
 
         //로그인 할 때 최종 접속시간 확인해서 로그인 보상 받을 수 있는지 확인
@@ -57,7 +67,7 @@ public class MemberService {
     }
 
     @Transactional
-    public Member findMemberBySocial(OAuth2UserInfo info) {
+    public Member findOrSaveMember(OAuth2UserInfo info) {
 
         // DB에서 회원 정보 있는지 확인
         Optional<Member> findMember = memberRepository.findByProviderAndSocialId(
@@ -94,6 +104,7 @@ public class MemberService {
     }
 
     private Optional<Member> findMemberById(Long memberId) {
+
         return memberRepository.findById(memberId);
     }
 
@@ -104,5 +115,27 @@ public class MemberService {
             return (OAuth2UserPrincipal) principal;
         }
         return null;
+    }
+
+    public List<GetMemberListResponse> getList() {
+        return memberRepository.findAll()
+                .stream().map(GetMemberListResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public PutNicknameResponse putNickname(Authentication authentication, PutNicknameRequest putNicknameRequest) {
+        Object principalObject = authentication.getPrincipal();
+
+        if (principalObject instanceof SecurityMemberDto) {
+            SecurityMemberDto securityMemberDto = (SecurityMemberDto) principalObject;
+
+            Optional<Member> optionalMember = findMemberById(securityMemberDto.getId());
+            Member member = optionalMember.get();
+
+            member.updateNickname(putNicknameRequest);
+            return PutNicknameResponse.of(member.getId());
+        }
+
+        throw new CustomServerErrorException(MEMBER_NOT_FOUND);
     }
 }

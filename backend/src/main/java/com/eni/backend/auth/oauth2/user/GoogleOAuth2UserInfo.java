@@ -25,7 +25,6 @@ public class GoogleOAuth2UserInfo implements OAuth2UserInfo {
                 .accessToken(accessToken)
                 .attributes(attributes)
                 .build();
-
     }
 
     @Override
@@ -54,4 +53,3 @@ public class GoogleOAuth2UserInfo implements OAuth2UserInfo {
     }
 
 }
-

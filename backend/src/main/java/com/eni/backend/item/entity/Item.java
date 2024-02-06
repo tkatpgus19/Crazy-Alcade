@@ -28,14 +28,18 @@ public class Item {
     @Column(nullable = false)
     private Integer price;
 
+    @Column(nullable = false)
+    private Integer duration;
+
     @OneToMany(mappedBy = "item", cascade = CascadeType.REMOVE)
     private List<MemberItem> memberItems = new ArrayList<>();
 
     @Builder
-    public Item(String name, String description, Integer price) {
+    public Item(String name, String description, Integer price, Integer duration) {
         this.name = name;
         this.description = description;
         this.price  = price;
+        this.duration = duration;
     }
 
 }
