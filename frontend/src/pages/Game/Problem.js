@@ -7,7 +7,7 @@ const Problem = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const apiUrl = `${process.env.REACT_APP_API_BASE_URL}/problems/1`;
+      const apiUrl = `${process.env.REACT_APP_API_BASE_URL}kiuyku`;
       try {
         const response = await fetch(apiUrl);
 
