@@ -43,15 +43,7 @@ public class ProblemService {
         Tier tier = findTierById(request.getTierId());
 
         // 문제
-        Problem problem = Problem.of(platform,
-                request.getNo(),
-                request.getTitle(),
-                request.getDescription(),
-                request.getInput(),
-                request.getOutput(),
-                request.getTime(),
-                request.getMemory(),
-                tier);
+        Problem problem = Problem.from(platform, request, tier);
 
         // 저장
         try {
@@ -111,10 +103,7 @@ public class ProblemService {
         Problem problem = findProblemById(problemId);
 
         // 테스트케이스
-        Testcase testcase = Testcase.of(request.getInput(),
-                request.getOutput(),
-                request.getIsHidden(),
-                problem);
+        Testcase testcase = Testcase.from(request, problem);
 
         // 저장
         try {
