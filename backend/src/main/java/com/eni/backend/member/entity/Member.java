@@ -103,8 +103,11 @@ public class Member extends BaseTimeEntity {
                 .build();
     }
 
-    public Member updateConnectedAt(Timestamp timestamp) {
+    public void updateConnectedAt(Timestamp timestamp) {
         this.connectedAt = timestamp;
-        return this;
+    }
+
+    public void updateDefaultLevel(Level level) {
+        this.level = level;
     }
 }

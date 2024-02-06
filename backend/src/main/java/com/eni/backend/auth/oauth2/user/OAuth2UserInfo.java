@@ -13,6 +13,3 @@ public interface OAuth2UserInfo {
     String getAccessToken();
 
 }
-
-
-
