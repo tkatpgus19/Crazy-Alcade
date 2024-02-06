@@ -62,7 +62,7 @@ public class ProblemService {
 
         // 조회
         return problemRepository.findAllByTierId(tierId)
-                .stream().map(GetProblemListResponse::of)
+                .stream().map(GetProblemListResponse::from)
                 .collect(Collectors.toList());
     }
 
@@ -74,12 +74,12 @@ public class ProblemService {
         List<GetExampleResponse> examples = getExamples(problemId);
 
         // dto로 변환해서 반환
-        return GetProblemResponse.of(problem, examples);
+        return GetProblemResponse.from(problem, examples);
     }
 
     private List<GetExampleResponse> getExamples(Long problemId) {
         return testcaseRepository.findAllByProblemIdAndIsHidden(problemId, false) // 예제 테스트케이스
-                .stream().map(GetExampleResponse::of)
+                .stream().map(GetExampleResponse::from)
                 .collect(Collectors.toList());
     }
 
