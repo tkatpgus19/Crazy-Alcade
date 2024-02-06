@@ -14,6 +14,7 @@
   display: flex;
   flex-direction: column; /* 세로 방향으로 컨텐츠 정렬 */
   border-radius: 10px;
+  font-family: "DNFBitBitv2";
 }
 
 /* 방 만들기 제목 스타일 */
@@ -22,19 +23,20 @@
   border-radius: 10px; /* 상단 모서리만 둥글게 설정 */
   padding: 10px;
   width: 150px;
+  font-family: "DNFBitBitv2";
 }
 
 .roomTitle {
   font-size: 20px;
   color: #000000; /* 어두운 글자색 지정 */
-  font-weight: bold;
   text-align: center;
+  font-family: "DNFBitBitv2";
 }
 
 .roomSectionTitle {
   font-size: 15px;
   color: #fff; /* 흰색 글자색 설정 */
-  font-weight: bold;
+  font-family: "DNFBitBitv2";
 }
 
 /* 라벨 스타일 */
@@ -47,13 +49,13 @@
 .createRoomModal select,
 .createRoomModal button {
   margin-top: 8px; /* 입력 요소 및 버튼 간격 조정 */
+  font-family: "DNFBitBitv2";
 }
 
 /* 버튼 스타일 */
 .createRoomModal button {
   background-color: #ffffff; /* 배경색 설정 */
   color: #000000; /* 글자색 설정 */
-  font-weight: bold; /* 글자 두께 설정 */
   padding: 10px; /* 안쪽 여백 설정 */
   cursor: pointer;
   border: none;
@@ -85,7 +87,6 @@
 }
 
 .createRoomModal .roomSectionTitle span {
-  font-weight: bold;
   margin-right: 10px;
 }
 
@@ -107,7 +108,7 @@
 .createActionButtons {
   display: flex;
   justify-content: space-evenly;
-  margin-top: 30px;
+  margin-top: 15px;
 }
 
 /* 버튼 호버 효과 스타일 */

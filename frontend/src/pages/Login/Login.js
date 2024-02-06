@@ -1,4 +1,6 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../store/authSlice";
 import imgfile from "../../assets/images/loginlogo.png";
 import background from "../../assets/images/loginback.PNG";
 import "./Login.module.css";
@@ -6,9 +8,26 @@ import styles from "./Login.module.css";
 
 const Login = () => {
   // Kakao 로그인 핸들러
-  const kakaoLoginHandler = () => {
-    window.location.href =
-      "http://192.168.100.147:8080/oauth2/authorization/kakao";
+  const dispatch = useDispatch();
+
+  const kakaoLoginHandler = async () => {
+    try {
+      const response = await fetch(
+        "http://i10d104.p.ssafy.io/oauth2/authorization/kakao"
+      );
+      const contentType = response.headers.get("content-type");
+
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("서버에서 JSON 형식의 데이터를 반환하지 않았습니다.");
+      }
+
+      const data = await response.json();
+      dispatch(loginSuccess(data)); // 로그인 성공 시 액션 디스패치
+      console.log(response);
+    } catch (error) {
+      console.error("Kakao 로그인 중 오류 발생:", error);
+      // 적절한 오류 처리
+    }
   };
 
   // Google 로그인 핸들러
