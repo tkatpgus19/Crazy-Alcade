@@ -25,17 +25,9 @@ const Footer = () => {
   const isAnimating = useSelector((state) => state.waterBalloon.isAnimating);
   const isFlipped = useSelector((state) => state.webIDE.isFlipped); // 가정: webIDE 슬라이스에서 isFlipped 상태를 관리
 
-  // 애니메이션 상태에 따른 스프링 정의
   const animProps = useSpring({
-    to: { transform: isAnimating ? "translateY(-100px)" : "translateY(0px)" },
-    from: { transform: "translateY(0px)" },
+    transform: isAnimating ? "translateY(-100px)" : "translateY(0px)",
     config: { duration: isAnimating ? 3000 : 300 },
-    onRest: () => {
-      if (isAnimating) {
-        // 애니메이션이 완료되면 isAnimating 상태를 false로 설정
-        dispatch(toggleWaterBalloonAnimation(false));
-      }
-    },
   });
 
   // 아이템 사용 함수
@@ -56,11 +48,12 @@ const Footer = () => {
         dispatch(toggleChickenWalking());
       }, 5000); // 5000ms = 5초
     } else if (item === "아이템3") {
-      dispatch(toggleWaterBalloonAnimation());
+      dispatch(toggleWaterBalloonAnimation(true)); // 애니메이션 시작
 
       setTimeout(() => {
-        dispatch(toggleWaterBalloonAnimation());
-      }, 5000); // 5000ms = 5초
+        // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
+        dispatch(toggleWaterBalloonAnimation(false));
+      }, 5000);
     } else if (item === "아이템4") {
       dispatch(toggleWebIDEFlip());
       // setTimeout 콜백 내에서 isFlipped 상태를 확인
@@ -139,22 +132,9 @@ const Footer = () => {
       dispatch(setLoading(false)); // 로딩 상태를 false로 설정
     }
   };
-  const springs = useSpring({
-    from: { x: 0 },
-    to: { x: 100 },
-  });
 
   return (
     <div className={styles.footer}>
-      {/* <animated.div
-        style={{
-          width: 80,
-          height: 40,
-          background: "#ff6d6d",
-          borderRadius: 8,
-          ...springs,
-        }}
-      /> */}
       {/* 내 아이템 영역 */}
       <div className={styles.itemContainer}>
         <div className={styles.itemHeader}>내 아이템</div>

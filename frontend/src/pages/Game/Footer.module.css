@@ -56,11 +56,12 @@
 
 .waterBalloon {
   position: absolute;
-  top: -50px; /* 버튼 위에 위치 */
-  left: 183px;
+  top: -45px; /* 버튼 위에 위치 */
+  left: 180px;
   right: 0;
   margin: auto; /* 가운데 정렬 */
   width: 120px; /* 이미지 크기 조정 */
   height: auto;
   z-index: 2; /* 버튼 위에 렌더링 */
+  opacity: 50%;
 }

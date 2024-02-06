@@ -39,7 +39,7 @@ function Game() {
     roomPassword: "",
     problemTier: "골드1",
     problemNo: 1001,
-    timeLimit: 5,
+    timeLimit: 60,
     language: "JAVA",
     codeReview: false,
     maxUserCnt: 6,
