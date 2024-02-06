@@ -37,7 +37,6 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
     closeModal(); // 모달 닫기 함수 호출
 
     // 방 만들기가 성공하면 "/room"으로 이동합니다.
-    navigate("/room");
   };
 
   // 풀이 언어 변경 핸들러 함수
