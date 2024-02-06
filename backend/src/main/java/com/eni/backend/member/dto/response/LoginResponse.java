@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class LoginResponseDto {
+public class LoginResponse {
 
     private Long memberId;
     private String accessToken;
@@ -13,14 +13,14 @@ public class LoginResponseDto {
 
 
     @Builder
-    private LoginResponseDto(Long memberId, String accessToken, boolean isNew, boolean isConnected) {
+    private LoginResponse(Long memberId, String accessToken, boolean isNew, boolean isConnected) {
         this.memberId = memberId;
         this.accessToken = accessToken;
         this.isNew = isNew;
         this.isConnected = isConnected;
     }
 
-    public static LoginResponseDto of(Long memberId, String accessToken, boolean isNew, boolean isConnected) {
+    public static LoginResponse of(Long memberId, String accessToken, boolean isNew, boolean isConnected) {
         return builder()
                 .memberId(memberId)
                 .accessToken(accessToken)

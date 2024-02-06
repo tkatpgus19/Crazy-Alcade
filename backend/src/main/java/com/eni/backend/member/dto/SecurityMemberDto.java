@@ -9,20 +9,23 @@ import lombok.Getter;
 public class SecurityMemberDto {
 
     private OAuth2Provider provider;
-    private String id;
+    private Long id;
+    private String socialId;
     private String email;
 
     @Builder
-    private SecurityMemberDto(OAuth2Provider provider, String id, String email) {
+    private SecurityMemberDto(OAuth2Provider provider, Long id, String socialId, String email) {
         this.provider = provider;
         this.id = id;
+        this.socialId = socialId;
         this.email = email;
     }
 
     public static SecurityMemberDto of(Member member) {
         return builder()
                 .provider(member.getProvider())
-                .id(member.getSocialId())
+                .id(member.getId())
+                .socialId(member.getSocialId())
                 .email(member.getEmail())
                 .build();
     }

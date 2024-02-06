@@ -6,6 +6,8 @@ import com.eni.backend.code.entity.Code;
 import com.eni.backend.common.entity.BaseTimeEntity;
 import com.eni.backend.common.entity.Language;
 import com.eni.backend.item.entity.MemberItem;
+import com.eni.backend.member.dto.request.PutNicknameRequest;
+import com.eni.backend.member.dto.response.PutNicknameResponse;
 import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Table;
@@ -20,6 +22,7 @@ import java.util.List;
 @Entity
 @Table(name = "member")
 @Getter
+@ToString
 @DynamicInsert
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -65,7 +68,7 @@ public class Member extends BaseTimeEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp connectedAt;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "level_id")
     private Level level;
 
@@ -103,8 +106,15 @@ public class Member extends BaseTimeEntity {
                 .build();
     }
 
-    public Member updateConnectedAt(Timestamp timestamp) {
+    public void updateConnectedAt(Timestamp timestamp) {
         this.connectedAt = timestamp;
-        return this;
+    }
+
+    public void updateDefaultLevel(Level level) {
+        this.level = level;
+    }
+
+    public void updateNickname(PutNicknameRequest putNicknameRequest) {
+        this.nickname = putNicknameRequest.getNickname();
     }
 }
