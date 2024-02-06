@@ -6,6 +6,7 @@ import Problem from "./Problem";
 import styles from "./Game.module.css";
 import Footer from "./Footer";
 import WebIDE from "./WebIDE";
+import GameResults from "./components/GameResults"; // Adjust the path according to your file structure
 
 import { Resizable } from "re-resizable";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +25,28 @@ function Game() {
 
   const [show, setShow] = useState(false);
   const [chickens, setChickens] = useState([]); // 병아리 이미지 상태
+  const [time, setTime] = useState(1); // initialTime is now a state
+  const [showResults, setShowResults] = useState(false);
+
+  useEffect(() => {
+    // If time is already at 0, we don't do anything
+    if (time === 0) return;
+
+    // Decrease time by 1 every second
+    const timerId = setInterval(() => {
+      setTime((prevTime) => prevTime - 1);
+    }, 1000);
+
+    // Clean up the interval on unmount
+    return () => clearInterval(timerId);
+  }, []);
+
+  // Effect to show GameResults when time reaches 0
+  useEffect(() => {
+    if (time === 0) {
+      setShowResults(true); // When time is 0, show the GameResults component
+    }
+  }, [time]);
 
   useEffect(() => {
     // "쉴드" 상태가 활성화되면 문어와 병아리 애니메이션을 즉시 제거
@@ -128,7 +151,7 @@ function Game() {
 
   const handleExitClick = () => {
     // "/"로 이동하는 코드
-    navigate("/");
+    navigate("/main");
   };
 
   return (
@@ -178,6 +201,11 @@ function Game() {
       <Footer />
       {show && octopusImages}
       {chickenImages}
+      {showResults && (
+        <div className={styles.gameResultsContainer}>
+          <GameResults />
+        </div>
+      )}
     </div>
   );
 }
