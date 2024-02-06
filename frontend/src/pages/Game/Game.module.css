@@ -46,16 +46,6 @@
   }
 }
 
-/* 문어 먹물 뿌리기 애니메이션 */
-@keyframes inkSpray {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 @keyframes fadeOut {
   from {
     opacity: 1;
@@ -63,6 +53,10 @@
   to {
     opacity: 0;
   }
+}
+
+.octopusImage {
+  animation: shake 1s ease-in-out infinite;
 }
 
 .inkImage.fadeOut {

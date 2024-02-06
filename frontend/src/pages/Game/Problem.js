@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Problem.module.css";
+import PropTypes from "prop-types"; // prop-types 임포트
 
-const Problem = () => {
+const Problem = ({ problemNo, problemTier }) => {
   const [problemData, setProblemData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getData = async () => {
-      const apiUrl = `${process.env.REACT_APP_API_BASE_URL}kiuyku`;
+      const apiUrl = `${process.env.REACT_APP_API_BASE_URL}/problems/${problemNo}`;
       try {
         const response = await fetch(apiUrl);
 
@@ -98,6 +99,11 @@ const renderProblem = (data) => {
       </div>
     </div>
   );
+};
+
+Problem.propTypes = {
+  problemNo: PropTypes.number.isRequired, // roomId는 문자열이며 필수
+  problemTier: PropTypes.string.isRequired, // problemTier는 문자열이지만 필수는 아님
 };
 
 export default Problem;

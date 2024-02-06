@@ -129,6 +129,7 @@ const WebIDE = () => {
           wrap: true,
         }}
       />
+
       <div>{renderExecutionResult()}</div>
       <div className={styles.buttonContainer}>
         <button className={styles.floatButton} onClick={increaseFontSize}>

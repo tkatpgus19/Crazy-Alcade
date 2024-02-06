@@ -27,24 +27,15 @@ const Footer = () => {
 
   // 애니메이션 상태에 따른 스프링 정의
   const animProps = useSpring({
-    to: async (next, cancel) => {
+    to: { transform: isAnimating ? "translateY(-100px)" : "translateY(0px)" },
+    from: { transform: "translateY(0px)" },
+    config: { duration: isAnimating ? 3000 : 300 },
+    onRest: () => {
       if (isAnimating) {
-        await next({
-          transform: "translateY(-100px)",
-          config: { duration: 1000 },
-        });
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-
-        await next({
-          transform: "translateY(0px)",
-          config: { duration: 300 },
-        });
+        // 애니메이션이 완료되면 isAnimating 상태를 false로 설정
+        dispatch(toggleWaterBalloonAnimation(false));
       }
     },
-    from: { transform: "translateY(0px)" },
-    reset: isAnimating,
-    reverse: isAnimating,
-    onRest: () => toggleWaterBalloonAnimation(),
   });
 
   // 아이템 사용 함수
