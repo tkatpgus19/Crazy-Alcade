@@ -4,11 +4,13 @@
   background-image: url("../../assets/images/mainback.png"); /* Adjust the path as necessary */
   background-size: cover; /* Cover the entire area */
   background-position: center; /* Center the background image */
+  overflow-y: hidden;
 }
 
 .container {
   display: flex;
   overflow: hidden;
+
   flex-direction: row; /* 가로 방향으로 배치 */
   margin: auto; /* 원하는 간격으로 조절 */
   width: 95%; /* 가로의 95%를 차지하도록 설정 */

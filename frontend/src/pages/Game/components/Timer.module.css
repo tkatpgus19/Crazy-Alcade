@@ -15,7 +15,7 @@
   font-family: "DNFBitBitv2";
   text-align: center;
   line-height: 35px; /* 높이와 동일하게 설정 */
-  -webkit-text-stroke: 0.5px white;
+  -webkit-text-stroke: 0.3px white; /* 가독성 위해 0.5 => 0.3 */
   box-sizing: border-box;
 }
 

@@ -59,7 +59,7 @@ const WebIDE = () => {
       return <div className={styles.loading}>Loading...</div>;
     }
     if (!executionResult || !executionResult.result) {
-      return <div className={styles.resultContainer}>실행결과</div>;
+      return <div className={styles.resultContainer}>실행 결과</div>;
     }
 
     // 성공한 테스트 케이스의 수를 계산합니다.
