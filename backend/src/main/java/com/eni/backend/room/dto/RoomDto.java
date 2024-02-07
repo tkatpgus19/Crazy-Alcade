@@ -3,6 +3,7 @@ package com.eni.backend.room.dto;
 import lombok.Data;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.UUID;
 
 @Data
@@ -14,18 +15,20 @@ public class RoomDto {
     private String roomPassword;
     private String problemTier;
     private int problemNo;
-    private int timeLimit;
+    private String timeLimit;
     private String language;
-    private boolean hasReview;
+    private boolean codeReview;
     private int UserCnt;
     private int maxUserCnt;
     private String master;
+    private boolean isStarted;
 
-    private HashMap<String, String> userList = new HashMap<>();
-    private HashMap<String, String> readyList = new HashMap<>();
+    private LinkedHashMap<String, String> userList = new LinkedHashMap<>();
+    private LinkedHashMap<String, String> readyList = new LinkedHashMap<>();
 
     public RoomDto() {
         this.roomId = UUID.randomUUID().toString();
         this.maxUserCnt = 6;
+        this.isStarted = false;
     }
 }

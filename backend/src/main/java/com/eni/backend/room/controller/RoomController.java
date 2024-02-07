@@ -1,6 +1,7 @@
 package com.eni.backend.room.controller;
 
 import com.eni.backend.room.dto.ChatDto;
+import com.eni.backend.room.dto.ItemDto;
 import com.eni.backend.room.dto.RoomDto;
 import com.eni.backend.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class RoomController {
 
     // 방 등록
     @PostMapping("")
-    public ResponseEntity<?> makeRoom(@RequestBody RoomDto roomDto) {
+    public ResponseEntity<?> makeRoom(@RequestBody RoomDto roomDto){
         log.info("roomInfo {}", roomDto);
         roomService.save(roomDto);
         template.convertAndSend("/sub/normal/room-list", roomService.getNormalRoomList(null, null, 1));
@@ -43,7 +44,7 @@ public class RoomController {
     @GetMapping("/normal")
     public ResponseEntity<?> getNormalRoomList(@RequestParam(value = "language", required = false) String language,
                                                @RequestParam(value = "tier", required = false) String tier,
-                                               @RequestParam(value = "page", required = false) Integer page) {
+                                               @RequestParam(value = "page", required = false) Integer page){
         log.warn("노말룸 정보: {}", roomService.getNormalRoomList(language, tier, page));
         return new ResponseEntity<>(roomService.getNormalRoomList(language, tier, page), HttpStatus.OK);
     }
@@ -52,16 +53,17 @@ public class RoomController {
     @GetMapping("/item")
     public ResponseEntity<?> getItemRoomList(@RequestParam(value = "language", required = false) String language,
                                              @RequestParam(value = "tier", required = false) String tier,
-                                             @RequestParam(value = "page", required = false) Integer page) {
+                                             @RequestParam(value = "page", required = false) Integer page){
         log.warn("아이템 정보: {}", roomService.getItemRoomList(language, tier, page));
         return new ResponseEntity<>(roomService.getItemRoomList(language, tier, page), HttpStatus.OK);
     }
 
     // 게임방 정보 조회
     @GetMapping("/info")
-    public ResponseEntity<?> getRoomInfo(@RequestParam("roomType") String roomType, @RequestParam("roomId") String roomId) {
+    public ResponseEntity<?> getRoomInfo(@RequestParam("roomType") String roomType, @RequestParam("roomId") String roomId){
         return new ResponseEntity<>(roomService.getRoomInfo(roomType, roomId), HttpStatus.OK);
     }
+
 
     // 유저 퇴장 시에는 EventListener 을 통해서 유저 퇴장을 확인
     @EventListener
@@ -94,7 +96,7 @@ public class RoomController {
             template.convertAndSend("/sub/chat/room/" + roomId, chat);
             template.convertAndSend("/sub/normal/room-list", roomService.getNormalRoomList(null, null, 1));
             template.convertAndSend("/sub/item/room-list", roomService.getItemRoomList(null, null, 1));
-            if (roomService.getUserStatus(roomType, roomId) != null) {
+            if(roomService.getUserStatus(roomType, roomId) != null) {
                 template.convertAndSend("/sub/room/" + roomId + "/status", roomService.getUserStatus(roomType, roomId));
             }
         }
@@ -112,7 +114,7 @@ public class RoomController {
 
         chat.setMessage(chat.getSender() + " 님 입장!!");
         template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
-        template.convertAndSend("/sub/room/" + chat.getRoomId() + "/status", roomService.getUserStatus(chat.getRoomType(), chat.getRoomId()));
+        template.convertAndSend("/sub/room/"+chat.getRoomId()+"/status", roomService.getUserStatus(chat.getRoomType(), chat.getRoomId()));
 
         template.convertAndSend("/sub/normal/room-list", roomService.getNormalRoomList(null, null, 1));
         template.convertAndSend("/sub/item/room-list", roomService.getItemRoomList(null, null, 1));
@@ -142,9 +144,9 @@ public class RoomController {
 
     // 게임 준비
     @PutMapping("/ready")
-    public void ready(@RequestBody ChatDto chat) {
+    public void ready(@RequestBody ChatDto chat){
         roomService.ready(chat);
-        template.convertAndSend("/sub/room/" + chat.getRoomId() + "/status", roomService.getUserStatus(chat.getRoomType(), chat.getRoomId()));
+        template.convertAndSend("/sub/room/"+chat.getRoomId()+"/status", roomService.getUserStatus(chat.getRoomType(), chat.getRoomId()));
     }
 
     // 채팅방 비밀번호 비교
@@ -152,5 +154,43 @@ public class RoomController {
     @PostMapping("/checkPwd")
     public ResponseEntity<?> confirmPwd(@RequestParam("roomType") String roomType, @RequestParam("roomId") String roomId, @RequestParam("roomPwd") String roomPwd){
         return new ResponseEntity<>(roomService.checkPwd(roomType, roomId, roomPwd), HttpStatus.OK);
+    }
+
+    // 인원 수 체크
+    @GetMapping("/personnel/check")
+    public ResponseEntity<?> checkPersonnel(@RequestParam("roomType") String roomType, @RequestParam("roomId") String roomId){
+        return new ResponseEntity<>(roomService.checkPersonnel(roomType, roomId), HttpStatus.OK);
+    }
+
+    // 게임 시작
+    @GetMapping("/start")
+    public ResponseEntity<?> start(@RequestParam("roomType") String roomType, @RequestParam("roomId") String roomId){
+        RoomDto result = roomService.checkReady(roomType, roomId);
+        if(result == null){
+            return new ResponseEntity<>(false, HttpStatus.OK);
+        }
+        template.convertAndSend("/sub/room/"+roomId+"/start", result);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    @MessageMapping("/item/use")
+    public void sendMessage(@Payload ItemDto itemDto) {
+        log.info("공격 상황 : " + itemDto);
+        template.convertAndSend("/sub/game/" + itemDto.getRoomId(), itemDto);
+    }
+
+    @GetMapping("/set-timer")
+    public void startTimer(@RequestParam("roomId") String roomId){
+        long timerValue;
+        for (int i = 10; i >= 0; i--) {
+            timerValue = i;
+            template.convertAndSend("/sub/timer/"+roomId, timerValue);
+            log.warn("초: " + timerValue);
+            try {
+                Thread.sleep(1000); // 1초 대기
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

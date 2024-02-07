@@ -128,8 +128,13 @@ public class RoomService {
                 room.setUserCnt(room.getUserCnt() - 1);
                 String user = room.getUserList().get(userUUID);
 
+                if(room.getReadyList().get(user).equals("MASTER") && room.getUserCnt() != 0){
+                    room.getReadyList().remove(user);
+                    Map.Entry<String, String> firstEntry = room.getReadyList().entrySet().iterator().next();
+                    room.getReadyList().replace(firstEntry.getKey(), "MASTER");
+                    room.setMaster(firstEntry.getKey());
+                }
                 room.getUserList().remove(userUUID);
-                room.getReadyList().remove(user);
 
                 if (room.getUserCnt() == 0) {
                     roomRepository.getNormalRoomMap().remove(roomId);
@@ -150,7 +155,7 @@ public class RoomService {
     }
 
     // 게임방 참여인원 조회
-    public HashMap<String, String> getUserStatus(String roomType, String roomId){
+    public LinkedHashMap<String, String> getUserStatus(String roomType, String roomId){
         if(roomType.equals("normal")){
             if(roomRepository.getNormalRoomMap().getOrDefault(roomId, null) != null) {
                 return roomRepository.getNormalRoomMap().get(roomId).getReadyList();
@@ -227,29 +232,54 @@ public class RoomService {
         }
     }
 
-    public List<RoomDto> findRoomList(String roomType, String lang, String tier){
-        List<RoomDto> list = new ArrayList<>();
-
+    public Boolean checkPersonnel(String roomType, String roomId){
         if(roomType.equals("normal")){
-            Map<String, RoomDto> map = roomRepository.getNormalRoomMap();
-            if(lang != null){
-                map.forEach((key, value)->{
-                    if(value.getLanguage().equals(lang)){
-                        list.add(value);
-                    }
-                });
-            }
-            if(tier != null){
-                List<RoomDto> result = new ArrayList<>();
-                list.forEach((data)->{
-                    if(data.getProblemTier().equals(tier)){
-                        result.add(data);
-                    }
-                });
-                return result;
-            }
-            return list;
+            RoomDto room = roomRepository.getNormalRoomMap().get(roomId);
+            return room.getUserCnt() != room.getMaxUserCnt();
         }
-        return null;
+        else{
+            RoomDto room = roomRepository.getItemRoomMap().get(roomId);
+            return room.getUserCnt() != room.getMaxUserCnt();
+        }
+    }
+
+    public RoomDto checkReady(String roomType, String roomId){
+        int cnt = 0;
+        if(roomType.equals("normal")){
+            RoomDto room = roomRepository.getNormalRoomMap().get(roomId);
+            List<String> list = room
+                    .getReadyList()
+                    .values()
+                    .stream()
+                    .toList();
+            for(String status: list){
+                if(status.equals("READY")){
+                    cnt++;
+                }
+            }
+            if(cnt == room.getUserCnt()-1){
+                room.setStarted(true);
+                return room;
+            }
+            return null;
+
+        }
+        else{
+            RoomDto room = roomRepository.getItemRoomMap().get(roomId);
+            List<String> list = room
+                    .getReadyList()
+                    .values()
+                    .stream()
+                    .toList();
+            for(String status: list){
+                if(status.equals("READY")){
+                    cnt++;
+                }
+            }
+            if(cnt == room.getUserCnt()-1){
+                return room;
+            }
+            return null;
+        }
     }
 }
