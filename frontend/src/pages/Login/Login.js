@@ -25,16 +25,13 @@ const Login = () => {
   const fetchAccessToken = async (code) => {
     try {
       // 서버에 코드를 보내고 액세스 토큰을 요청하는 URL과 방식을 확인하세요.
-      const response = await fetch(
-        "http://192.168.123.111:8080/login/oauth2/code/kakao",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ code }),
-        }
-      );
+      const response = await fetch(process.env.REACT_APP_KAKAO_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ code }),
+      });
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -61,13 +58,11 @@ const Login = () => {
   };
 
   const kakaoLoginHandler = () => {
-    window.location.href =
-      "http://192.168.123.111:8080/oauth2/authorization/kakao";
+    window.location.href = process.env.REACT_APP_KAKAO_URL;
   };
 
   const googleLoginHandler = () => {
-    window.location.href =
-      "http://192.168.123.111:8080/oauth2/authorization/google";
+    window.location.href = process.env.REACT_APP_GOOGLE_URL;
   };
 
   const navigateToMain = () => {
