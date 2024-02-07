@@ -32,7 +32,7 @@ public class MemberController {
     public BaseSuccessResponse<?> getList() {
         log.info("MemberController.getList");
 
-        return BaseSuccessResponse.of(SUCCESS.getMessage(), memberService.getList());
+        return BaseSuccessResponse.of(SUCCESS, memberService.getList());
     }
 
     @PutMapping("/nickname")
@@ -56,7 +56,7 @@ public class MemberController {
             throw new CustomBadRequestException(BAD_REQUEST, getErrorMessages(bindingResult));
         }
 
-        return BaseSuccessResponse.of(memberService.putLanguage(authentication, putLanguageRequest));
+        return BaseSuccessResponse.of(SUCCESS, memberService.putLanguage(authentication, putLanguageRequest));
     }
 
     @PutMapping("/coin/add")
@@ -68,7 +68,7 @@ public class MemberController {
             throw new CustomBadRequestException(BAD_REQUEST, getErrorMessages(bindingResult));
         }
 
-        return BaseSuccessResponse.of(memberService.putCoin(authentication, putCoinRequest, true));
+        return BaseSuccessResponse.of(SUCCESS, memberService.putCoin(authentication, putCoinRequest, true));
     }
 
     @PutMapping("/coin/sub")
@@ -80,7 +80,7 @@ public class MemberController {
             throw new CustomBadRequestException(BAD_REQUEST, getErrorMessages(bindingResult));
         }
 
-        return BaseSuccessResponse.of(memberService.putCoin(authentication, putCoinRequest, false));
+        return BaseSuccessResponse.of(SUCCESS, memberService.putCoin(authentication, putCoinRequest, false));
     }
 
     @PutMapping("/reward")
@@ -92,6 +92,6 @@ public class MemberController {
             throw new CustomBadRequestException(BAD_REQUEST, getErrorMessages(bindingResult));
         }
 
-        return BaseSuccessResponse.of(memberService.putReward(authentication, putRewardRequest));
+        return BaseSuccessResponse.of(SUCCESS, memberService.putReward(authentication, putRewardRequest));
     }
 }
