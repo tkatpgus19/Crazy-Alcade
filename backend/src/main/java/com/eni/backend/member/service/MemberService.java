@@ -6,7 +6,7 @@ import com.eni.backend.auth.oauth2.user.OAuth2UserInfo;
 import com.eni.backend.common.exception.CustomServerErrorException;
 import com.eni.backend.member.dto.SecurityMemberDto;
 import com.eni.backend.member.dto.request.PutCoinRequest;
-import com.eni.backend.member.dto.request.PutExpRequest;
+import com.eni.backend.member.dto.request.PutRewardRequest;
 import com.eni.backend.member.dto.request.PutLanguageRequest;
 import com.eni.backend.member.dto.request.PutNicknameRequest;
 import com.eni.backend.member.dto.response.*;
@@ -154,14 +154,14 @@ public class MemberService {
         return PutCoinResponse.of(member.getId());
     }
 
-    public PutCoinResponse putExp(Authentication authentication, PutExpRequest putExpRequest) {
+    public PutRewardResponse putReward(Authentication authentication, PutRewardRequest putRewardRequest) {
         Member member = findMemberByAuthentication(authentication);
 
         if (member != null) {
-            member.updateExp(putExpRequest);
+            member.putReward(putRewardRequest);
         }
 
-        return PutCoinResponse.of(member.getId());
+        return PutRewardResponse.of(member.getId());
     }
 
     public Member findMemberByAuthentication(Authentication authentication) {

@@ -7,7 +7,7 @@ import com.eni.backend.common.entity.BaseTimeEntity;
 import com.eni.backend.common.entity.Language;
 import com.eni.backend.item.entity.MemberItem;
 import com.eni.backend.member.dto.request.PutCoinRequest;
-import com.eni.backend.member.dto.request.PutExpRequest;
+import com.eni.backend.member.dto.request.PutRewardRequest;
 import com.eni.backend.member.dto.request.PutLanguageRequest;
 import com.eni.backend.member.dto.request.PutNicknameRequest;
 import jakarta.persistence.*;
@@ -131,7 +131,8 @@ public class Member extends BaseTimeEntity {
         }
     }
 
-    public void updateExp(PutExpRequest putExpRequest) {
-        this.exp += putExpRequest.getPutValue();
+    public void putReward(PutRewardRequest putRewardRequest) {
+        this.coin += putRewardRequest.getPutCoinValue();
+        this.exp += putRewardRequest.getPutExpValue();
     }
 }

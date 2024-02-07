@@ -10,9 +10,12 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class PutExpRequest {
+public class PutRewardRequest {
+
+    @NotNull(message = "변경할 코인값을 입력해주세요.")
+    private Integer putCoinValue;
 
     @NotNull(message = "변경할 exp값을 입력해주세요.")
-    private Integer putValue;
+    private Integer putExpValue;
 
 }

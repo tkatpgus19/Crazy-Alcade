@@ -6,16 +6,16 @@ import lombok.ToString;
 
 @ToString
 @Getter
-public class PutExpResponse {
+public class PutRewardResponse {
 
     private Long memberId;
 
     @Builder
-    private PutExpResponse(Long memberId) {
+    private PutRewardResponse(Long memberId) {
         this.memberId = memberId;
     }
 
-    public static PutExpResponse of(Long memberId) {
+    public static PutRewardResponse of(Long memberId) {
         return builder()
                 .memberId(memberId)
                 .build();
