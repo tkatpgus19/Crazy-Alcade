@@ -44,7 +44,7 @@ public class MemberController {
             throw new CustomBadRequestException(BAD_REQUEST, getErrorMessages(bindingResult));
         }
 
-        return BaseSuccessResponse.of(memberService.putNickname(authentication, putNicknameRequest));
+        return BaseSuccessResponse.of(SUCCESS, memberService.putNickname(authentication, putNicknameRequest));
     }
 
     @PutMapping("/lang")

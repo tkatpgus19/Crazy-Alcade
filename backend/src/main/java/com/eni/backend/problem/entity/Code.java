@@ -1,10 +1,8 @@
-package com.eni.backend.code.entity;
+package com.eni.backend.problem.entity;
 
-import com.eni.backend.common.entity.BaseTimeEntity;
-import com.eni.backend.common.entity.CodeStatus;
-import com.eni.backend.common.entity.Language;
+import com.eni.backend.common.entity.BaseTime;
+import com.eni.backend.member.entity.Language;
 import com.eni.backend.member.entity.Member;
-import com.eni.backend.problem.entity.Problem;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -15,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "code")
 @Entity
-public class Code extends BaseTimeEntity {
+public class Code extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,11 +27,11 @@ public class Code extends BaseTimeEntity {
     @Column(nullable = false)
     private Language lang;
 
-    @Column
-    private Integer time;
-
-    @Column
-    private Integer memory;
+//    @Column
+//    private Long time;
+//
+//    @Column
+//    private Long memory;
 
     @Enumerated(EnumType.STRING)
     private CodeStatus status;
@@ -47,13 +45,22 @@ public class Code extends BaseTimeEntity {
     private Problem problem;
 
     @Builder
-    public Code(String content, Language lang, Integer time, Integer memory, CodeStatus status, Member member, Problem problem) {
+    private Code(String content, Language lang, CodeStatus status, Member member, Problem problem) {
         this.content = content;
         this.lang = lang;
-        this.time = time;
-        this.memory = memory;
         this.status = status;
         this.member = member;
         this.problem = problem;
     }
+
+    public static Code of(String content, Language lang, CodeStatus status, Member member, Problem problem) {
+        return builder()
+                .content(content)
+                .lang(lang)
+                .status(status)
+                .member(member)
+                .problem(problem)
+                .build();
+    }
+
 }

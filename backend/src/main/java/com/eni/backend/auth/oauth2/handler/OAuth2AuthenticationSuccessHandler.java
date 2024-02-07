@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+import static com.eni.backend.common.response.BaseResponseStatus.LOGIN_SUCCESS;
+
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -28,7 +30,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         LoginResponse loginResponse = memberService.login(authentication);
         // 로그인 응답 객체 생성
-        BaseSuccessResponse<?> result = BaseSuccessResponse.of("소셜 로그인에 성공하였습니다.", loginResponse);
+        BaseSuccessResponse<?> result = BaseSuccessResponse.of(LOGIN_SUCCESS, loginResponse);
 //        String acceessToken = loginResponseDto.getAccessToken();
 
         // response
