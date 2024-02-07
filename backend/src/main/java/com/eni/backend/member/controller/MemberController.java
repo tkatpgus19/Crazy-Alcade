@@ -19,11 +19,11 @@ import static com.eni.backend.common.response.BaseResponseStatus.BAD_REQUEST;
 import static com.eni.backend.common.response.BaseResponseStatus.SUCCESS;
 import static com.eni.backend.common.util.BindingResultUtils.getErrorMessages;
 
+@CrossOrigin(origins = { "*" }, methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE} , maxAge = 6000)
 @Slf4j
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
-@CrossOrigin
 public class MemberController {
     @Autowired
     private MemberService memberService;
