@@ -1,21 +1,52 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
+
 import PropTypes from "prop-types";
 import styles from "./Timer.module.css";
+import axios from "axios";
 
-const Timer = ({ initialTime }) => {
-  const [remainingTime, setRemainingTime] = useState(initialTime);
+import SockJS from "sockjs-client";
+import { Stomp } from "@stomp/stompjs";
+import { resetTimer } from "../slices/timerSlice";
+
+const Timer = ({ roomId }) => {
+  const dispatch = useDispatch();
+
+  const [remainingTime, setRemainingTime] = useState();
+  const client = useRef();
 
   useEffect(() => {
-    setRemainingTime(initialTime); // 컴포넌트가 마운트될 때 초기값으로 설정
+    axios.get(
+      `${process.env.REACT_APP_BASE_URL}/rooms/set-timer?roomId=${roomId}`
+    );
+    connectSession();
+  }, []);
 
-    // 1초마다 remainingTime을 1씩 감소
-    const intervalId = setInterval(() => {
-      setRemainingTime((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
-    }, 1000);
+  function connectSession() {
+    const socket = new SockJS(`${process.env.REACT_APP_BASE_URL}/ws-stomp`);
+    client.current = Stomp.over(socket);
+    client.current.connect({}, onConnected, onError);
+  }
 
-    // 컴포넌트가 언마운트되면 clearInterval을 통해 interval 정리
-    return () => clearInterval(intervalId);
-  }, [initialTime]); // initialTime이 변경될 때마다 useEffect 다시 실행
+  function onConnected() {
+    client.current.subscribe(`/sub/timer/` + roomId, onTimerReceived);
+  }
+
+  function onError() {
+    alert("error");
+  }
+
+  function onTimerReceived(payload) {
+    setRemainingTime(JSON.parse(payload.body));
+  }
+
+  // Game.js로 쏴라
+  useEffect(() => {
+    if (remainingTime === 0) {
+      dispatch(resetTimer()); // 게임 종료 알림.
+      client.current.disconnect();
+    }
+  }, [remainingTime]);
 
   return (
     <div
@@ -27,7 +58,7 @@ const Timer = ({ initialTime }) => {
 };
 
 Timer.propTypes = {
-  initialTime: PropTypes.number.isRequired,
+  roomId: PropTypes.string.isRequired,
 };
 
 // 남은 시간을 '분:초' 형식으로 변환하는 함수

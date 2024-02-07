@@ -94,8 +94,7 @@ const Footer = () => {
     console.log("코드 실행");
 
     const apiUrl = `${process.env.REACT_APP_BASE_URL}/api/problems/1/codes/execute`;
-    const token =
-      "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwicHJvdmlkZXIiOiJLQUtBTyIsInNvY2lhbElkIjoiMzMyNTM2OTU0OCIsImlhdCI6MTcwNzI4MzQ0OSwiZXhwIjoxNzA3Mjk1NDQ5fQ.pikLFHBe-zVpuxITcaCfnzwhKsslQTgyXYYzgYYFjdk"; // 실제 토큰 값으로 대체해야 합니다.
+    const token = process.env.REACT_APP_TOKEN;
 
     const response = await fetch(apiUrl, {
       method: "POST",
@@ -125,9 +124,7 @@ const Footer = () => {
   // 코드 제출 함수
   const handleSubmit = async () => {
     dispatch(setLoading(true)); // 로딩 상태를 true로 설정
-    const token =
-      "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwicHJvdmlkZXIiOiJLQUtBTyIsInNvY2lhbElkIjoiMzMyNTM2OTU0OCIsImlhdCI6MTcwNzI4MzQ0OSwiZXhwIjoxNzA3Mjk1NDQ5fQ.pikLFHBe-zVpuxITcaCfnzwhKsslQTgyXYYzgYYFjdk"; // 실제 토큰 값으로 대체해야 합니다.
-
+    const token = process.env.REACT_APP_TOKEN;
     try {
       const apiUrl = `${process.env.REACT_APP_BASE_URL}/api/problems/1/codes/submit`;
       const response = await fetch(apiUrl, {
@@ -142,13 +139,15 @@ const Footer = () => {
         }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        dispatch(setExecutionResult(data)); // 결과를 저장
-      } else {
-        console.error("서버에서 문제가 발생했습니다.");
-        dispatch(setExecutionResult({ message: "Error submitting code." })); // 오류 메시지 저장
-      }
+      // if (response.ok) {
+      const data = await response.json();
+      dispatch(setExecutionResult(data)); // 결과를 저장
+      console.log(data);
+      // } else {
+      //   console.error("서버에서 문제가 발생했습니다.");
+      //   console.error(response);
+      //   dispatch(setExecutionResult({ message: "Error submitting code." })); // 오류 메시지 저장
+      // }
     } catch (error) {
       console.error("요청 처리 중 에러 발생:", error);
       dispatch(setExecutionResult({ message: "Error submitting code." }));

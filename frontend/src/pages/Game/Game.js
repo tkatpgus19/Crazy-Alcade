@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Header from "./Header"; // Header 컴포넌트의 경로에 맞게 수정하세요.
 import VideoScreen from "./VideoScreen";
@@ -6,6 +6,7 @@ import Problem from "./Problem";
 import styles from "./Game.module.css";
 import Footer from "./Footer";
 import WebIDE from "./WebIDE";
+import axios from "axios";
 
 import GameResults from "./components/GameResults"; // Adjust the path according to your file structure
 import { Resizable } from "re-resizable";
@@ -24,6 +25,7 @@ function Game() {
   const isShieldActive = useSelector(
     (state) => state.animationControl.isShieldActive
   );
+  const timeCompleted = useSelector((state) => state.timer.timeCompleted);
 
   let location = useLocation();
 
@@ -31,8 +33,6 @@ function Game() {
 
   const [showOctopus, setOctopus] = useState(false);
   const [chickens, setChickens] = useState([]); // 병아리 이미지 상태
-  const [time, setTime] = useState(); // initialTime is now a state
-  const [showResults, setShowResults] = useState(false);
   const [inkSpots, setInkSpots] = useState([]); // 먹물 이미지 상태
 
   // 더미 방 데이터.
@@ -57,24 +57,17 @@ function Game() {
 
   // 타이머 실행
   useEffect(() => {
-    setTime(dummyRoomInfo.timeLimit);
-    if (time === 0) return;
-
-    // Decrease time by 1 every second
-    const timerId = setInterval(() => {
-      setTime((prevTime) => prevTime - 1);
-    }, 1000);
-
+    // setTime(dummyRoomInfo.timeLimit);
+    // if (time === 0) return;
+    // // Decrease time by 1 every second
+    // const timerId = setInterval(() => {
+    //   setTime((prevTime) => prevTime - 1);
+    // }, 1000);
     // Clean up the interval on unmount
-    return () => clearInterval(timerId);
+    // return () => clearInterval(timerId);
   }, []);
 
   // 0초가 되면 결과창 표시
-  useEffect(() => {
-    if (time === 0) {
-      setShowResults(true); // When time is 0, show the GameResults component
-    }
-  }, [time]);
 
   // 쉴드
   useEffect(() => {
@@ -219,14 +212,14 @@ function Game() {
       <Header
         roomTitle={dummyRoomInfo.roomName}
         language={dummyRoomInfo.language}
-        initialTime={dummyRoomInfo.timeLimit} // 예시로 120초 설정
+        roomId={roomId}
         onExitClick={handleExitClick} // 수정된 부분
       />
       <VideoScreen
         roomId={roomId}
         nickname={nickname}
         roomType={roomType}
-        userList={userList}
+        userList={[userList]}
       />
       <div className={styles.container}>
         <div className={styles.problemArea}>
@@ -272,7 +265,7 @@ function Game() {
       {chickenImages}
 
       {/* 시간이 0이 되면 결과창을 렌더링 */}
-      {showResults && (
+      {timeCompleted && (
         <div className={styles.gameResultsContainer}>
           <GameResults />
         </div>
