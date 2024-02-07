@@ -1,6 +1,6 @@
 package com.eni.backend.member.dto.request;
 
-import com.eni.backend.common.entity.Language;
+import com.eni.backend.member.entity.Language;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
