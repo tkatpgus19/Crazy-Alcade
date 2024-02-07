@@ -10,7 +10,7 @@ import WebIDE from "./WebIDE";
 import GameResults from "./components/GameResults"; // Adjust the path according to your file structure
 import { Resizable } from "re-resizable";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import octopusImage from "../../assets/images/octopus.png"; // 문어 이미지의 경로
 import inkImage from "../../assets/images/muk.png"; // 먹물 이미지의 경로
@@ -38,7 +38,7 @@ function Game() {
     hasPassword: false,
     roomPassword: "",
     problemTier: "골드1",
-    problemNo: 1001,
+    problemNo: 1000,
     timeLimit: 60,
     language: "JAVA",
     codeReview: false,
@@ -85,19 +85,19 @@ function Game() {
   useEffect(() => {
     if (isSprayingInk && inkSpots.length === 0) {
       setOctopus(true); // 문어 이미지를 표시
+
+      // 1초 후에 먹물 이미지의 위치를 한 번만 무작위로 계산하여 상태에 저장
+      const newInkSpots = Array(10)
+        .fill(null)
+        .map((_, index) => ({
+          id: index,
+          left: `${Math.random() * 51 + 35}%`, // 초기 위치 계산
+          top: `${Math.random() * 51 + 15}%`, // 초기 위치 계산
+          width: `${Math.random() * 4 + 10}%`, // 초기 크기 계산
+        }));
+      setInkSpots(newInkSpots);
       setTimeout(() => {
-        // 1초 후에 먹물 이미지의 위치를 한 번만 무작위로 계산하여 상태에 저장
-        const newInkSpots = Array(20)
-          .fill(null)
-          .map((_, index) => ({
-            id: index,
-            left: `${Math.random() * 50 + 35}%`, // 초기 위치 계산
-            top: `${Math.random() * 50 + 20}%`, // 초기 위치 계산
-            width: `${Math.random() * 10 + 10}%`, // 초기 크기 계산
-          }));
-        setInkSpots(newInkSpots);
-      }, 1200);
-      setTimeout(() => {
+        // useDispatch(resetInkSpraying);
         setInkSpots([]);
         setOctopus(false); // 필요한 경우 문어 이미지 숨김
       }, 5000);

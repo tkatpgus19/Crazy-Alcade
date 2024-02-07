@@ -8,7 +8,7 @@ const Problem = ({ problemNo, problemTier }) => {
 
   useEffect(() => {
     const getData = async () => {
-      const apiUrl = `${process.env.REACT_APP_API_BASE_URL}/problems/${problemNo}`;
+      const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/${problemNo}`;
       try {
         const response = await fetch(apiUrl);
 
@@ -102,7 +102,7 @@ const renderProblem = (data) => {
 };
 
 Problem.propTypes = {
-  problemNo: PropTypes.number.isRequired, // roomId는 문자열이며 필수
+  problemNo: PropTypes.number.isRequired, // problemNo는 숫자이며 필수
   problemTier: PropTypes.string.isRequired, // problemTier는 문자열이지만 필수는 아님
 };
 

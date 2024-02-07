@@ -23,17 +23,18 @@ const WebIDE = () => {
     dispatch(
       setCode(`import java.util.Scanner;
  
-    public class Solution {
-     
-      public static void main(String[] args) {
-     
-        Scanner in = new Scanner(System.in);
-        int A = in.nextInt();
-        int B = in.nextInt();
-        
-        System.out.println(A+B);
-      }
-    }`)
+  public class Solution {
+         
+    public static void main(String[] args) {
+         
+      Scanner in = new Scanner(System.in);
+          
+      int A = in.nextInt();
+      int B = in.nextInt();
+            
+      System.out.println(A+B);
+    }
+  }`)
     );
   }, [dispatch]); // dispatch를 의존성 배열에 추가
 
