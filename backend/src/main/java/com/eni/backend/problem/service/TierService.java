@@ -18,7 +18,7 @@ public class TierService {
 
     public List<GetTierListResponse> getList() {
         return tierRepository.findAll()
-                .stream().map(GetTierListResponse::of)
+                .stream().map(GetTierListResponse::from)
                 .collect(Collectors.toList());
     }
 

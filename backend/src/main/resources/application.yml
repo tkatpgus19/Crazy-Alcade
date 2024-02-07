@@ -55,3 +55,6 @@ jwt:
 #  host: ${REDIS_HOST}
 #  port: 6379
 #  password: ${REDIS_PASSWD}
+
+code:
+  base-path: ${BASE_PATH}

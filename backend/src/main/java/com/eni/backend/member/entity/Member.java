@@ -1,10 +1,10 @@
 package com.eni.backend.member.entity;
 
+
+import com.eni.backend.problem.entity.Code;
+import com.eni.backend.common.entity.BaseTime;
 import com.eni.backend.auth.oauth2.user.OAuth2Provider;
 import com.eni.backend.auth.oauth2.user.OAuth2UserInfo;
-import com.eni.backend.code.entity.Code;
-import com.eni.backend.common.entity.BaseTimeEntity;
-import com.eni.backend.common.entity.Language;
 import com.eni.backend.item.entity.MemberItem;
 import com.eni.backend.member.dto.request.PutCoinRequest;
 import com.eni.backend.member.dto.request.PutRewardRequest;
@@ -27,7 +27,7 @@ import java.util.List;
 @DynamicInsert
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member extends BaseTimeEntity {
+public class Member extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

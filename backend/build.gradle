@@ -41,7 +41,7 @@ dependencies {
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
-	//Test
+	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 
@@ -55,6 +55,9 @@ dependencies {
 
     // Redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// File
+	implementation 'commons-io:commons-io:2.11.0'
 }
 
 tasks.named('test') {

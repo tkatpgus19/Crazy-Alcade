@@ -1,7 +1,6 @@
 package com.eni.backend.problem.dto.response;
 
 import com.eni.backend.problem.entity.Problem;
-import com.eni.backend.problem.entity.Testcase;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -39,7 +38,7 @@ public class GetProblemResponse {
         this.examples = examples;
     }
 
-    public static GetProblemResponse of(Problem problem, List<GetExampleResponse> examples) {
+    public static GetProblemResponse from(Problem problem, List<GetExampleResponse> examples) {
         return builder()
                 .problemId(problem.getId())
                 .tier(problem.getStringTier())
