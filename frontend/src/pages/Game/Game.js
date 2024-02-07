@@ -9,7 +9,7 @@ import WebIDE from "./WebIDE";
 
 import GameResults from "./components/GameResults"; // Adjust the path according to your file structure
 import { Resizable } from "re-resizable";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import octopusImage from "../../assets/images/octopus.png"; // 문어 이미지의 경로
@@ -23,6 +23,10 @@ function Game() {
   const isShieldActive = useSelector(
     (state) => state.animationControl.isShieldActive
   );
+
+  let location = useLocation();
+
+  const { roomId, nickname, userList, roomType } = location.state; // 대기방에서 넘긴 데이터들을 받아왔다.
 
   const [showOctopus, setOctopus] = useState(false);
   const [chickens, setChickens] = useState([]); // 병아리 이미지 상태
@@ -218,7 +222,12 @@ function Game() {
         initialTime={dummyRoomInfo.timeLimit} // 예시로 120초 설정
         onExitClick={handleExitClick} // 수정된 부분
       />
-      <VideoScreen />
+      <VideoScreen
+        roomId={roomId}
+        nickname={nickname}
+        roomType={roomType}
+        userList={userList}
+      />
       <div className={styles.container}>
         <div className={styles.problemArea}>
           <Problem
