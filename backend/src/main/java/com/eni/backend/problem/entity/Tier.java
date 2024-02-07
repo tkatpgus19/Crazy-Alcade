@@ -1,9 +1,7 @@
 package com.eni.backend.problem.entity;
 
-import com.eni.backend.common.entity.TierValue;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

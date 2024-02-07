@@ -1,7 +1,7 @@
 package com.eni.backend.member.dto.response;
 
 import com.eni.backend.auth.oauth2.user.OAuth2Provider;
-import com.eni.backend.common.entity.Language;
+import com.eni.backend.member.entity.Language;
 import com.eni.backend.member.entity.Level;
 import com.eni.backend.member.entity.Member;
 import lombok.Builder;

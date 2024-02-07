@@ -18,7 +18,7 @@ public class GetExampleResponse {
         this.output = output;
     }
 
-    public static GetExampleResponse of(Testcase testcase) {
+    public static GetExampleResponse from(Testcase testcase) {
         return builder()
                 .input(testcase.getInput())
                 .output(testcase.getOutput())

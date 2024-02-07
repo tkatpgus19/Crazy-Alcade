@@ -1,6 +1,7 @@
 package com.eni.backend.common.exception;
 
 import com.eni.backend.common.response.BaseErrorResponse;
+import jakarta.annotation.Priority;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,21 +13,33 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import static com.eni.backend.common.response.BaseResponseStatus.*;
 
 @Slf4j
+@EnableWebMvc
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
     /**
+     * Bad Request Error
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BadRequestException.class)
+    public BaseErrorResponse handleBadRequest(Exception e) {
+        log.error("[BadRequestException]", e);
+        return BaseErrorResponse.of(BAD_REQUEST);
+    }
+
+    /**
      * URL Not Found Error
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({BadRequestException.class, NoHandlerFoundException.class, TypeMismatchException.class})
-    public BaseErrorResponse handleBadRequest(Exception e) {
-        log.error("[BadRequestException]", e);
+    @ExceptionHandler({NoHandlerFoundException.class, TypeMismatchException.class})
+    public BaseErrorResponse handleUrlNotFoundException(Exception e) {
+        log.error("[UrlNotFoundException]", e);
         return BaseErrorResponse.of(URL_NOT_FOUND);
     }
 
@@ -63,6 +76,7 @@ public class GlobalExceptionHandler {
     /**
      * Custom Bad Request
      */
+    @Priority(0)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(CustomBadRequestException.class)
     protected BaseErrorResponse handleCustomBadRequestException(CustomBadRequestException e) {
@@ -73,6 +87,7 @@ public class GlobalExceptionHandler {
     /**
      * Custom Internal Server Error
      */
+    @Priority(0)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(CustomServerErrorException.class)
     public BaseErrorResponse handleCustomServerErrorException(CustomServerErrorException e) {
@@ -80,6 +95,10 @@ public class GlobalExceptionHandler {
         return BaseErrorResponse.of(e.getBaseResponseStatus());
     }
 
+    /**
+     * Custom Unauthorized Error
+     */
+    @Priority(0)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(CustomUnauthorizedException.class)
     public BaseErrorResponse handleCustomUnauthorizedException(CustomUnauthorizedException e) {

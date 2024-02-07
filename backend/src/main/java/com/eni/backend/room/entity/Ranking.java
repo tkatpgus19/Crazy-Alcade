@@ -1,6 +1,5 @@
 package com.eni.backend.room.entity;
 
-import com.eni.backend.common.entity.PlayMode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
