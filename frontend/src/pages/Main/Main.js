@@ -4,18 +4,15 @@ import imgfile from "../../assets/images/logo.png";
 import background from "../../assets/images/mainback.png";
 import "./Main.module.css";
 import styles from "./Main.module.css";
+
 import CreateRoomModal from "./CreateRoomModal";
 import ItemShopModal from "./ItemShopModal";
 import axios from "axios";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
-import waterBalloonImg from "../../assets/images/waterBalloon.png";
-import octopusImg from "../../assets/images/octopus.png";
-import chickImg from "../../assets/images/chick.png";
-import magicImg from "../../assets/images/magic.png";
-import shieldImg from "../../assets/images/shield.png";
 
 const Main = () => {
   const SERVER_URL = process.env.REACT_APP_SERVER_URL;
@@ -72,7 +69,6 @@ const Main = () => {
     };
 
     setChatContent((chatContent) => [...chatContent, newMessage]);
-    chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
   }
 
   const navigate = useNavigate();
@@ -84,43 +80,6 @@ const Main = () => {
   const [normalMode, setNormalMode] = useState(true);
   const [roomList, setRoomList] = useState([]);
   const [page, setPage] = useState(1);
-  const [items, setItems] = useState([
-    {
-      name: "물풍선",
-      description: "알록달록 물풍선입니다",
-      count: 5,
-      img: waterBalloonImg,
-      itemcoin: 60,
-    },
-    {
-      name: "문어야끼",
-      description: "먹물 뿌리는 문어입니다",
-      count: 5,
-      img: octopusImg,
-      itemcoin: 40,
-    },
-    {
-      name: "병아리",
-      description: "이리저리 돌아다니는걸 좋아하는 병아리입니다",
-      count: 5,
-      img: chickImg,
-      itemcoin: 20,
-    },
-    {
-      name: "요술봉",
-      description: "뒤집어지도록 하는 요술봉입니다",
-      count: 5,
-      img: magicImg,
-      itemcoin: 100,
-    },
-    {
-      name: "쉴드",
-      description: "모든 아이템들을 방어하는 쉴드입니다",
-      count: 5,
-      img: shieldImg,
-      itemcoin: 80,
-    },
-  ]);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -322,11 +281,7 @@ const Main = () => {
           {/* ItemShopModal */}
           {isItemShopModalOpen && (
             <div className={styles.overlay}>
-              <ItemShopModal
-                closeModal={closeItemShopModal}
-                items={items}
-                coins={150}
-              />
+              <ItemShopModal closeModal={closeItemShopModal} coins={150} />
             </div>
           )}
 

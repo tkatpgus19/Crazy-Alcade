@@ -5,7 +5,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100%;
-  max-width: 550px;
+  max-width: 480px;
   background: #0ddfff;
   border-radius: 10px;
   padding: 20px;
@@ -47,14 +47,16 @@
   background-color: #f0f0f0;
   border-radius: 10px;
   margin-right: 20px;
-  background-size: cover; /* 이미지가 div를 꽉 채우도록 */
+  background-size: 70%; /* 이미지가 div를 꽉 채우도록 */
   background-position: center; /* 이미지를 중앙에 위치시킴 */
+  background-repeat: no-repeat; /* 이미지가 반복되지 않도록 설정 */
 }
 
 .itemCoin {
   margin-top: 5px; /* 코인 가격과 설명 사이의 간격 */
   font-size: 12px; /* 코인 가격의 폰트 크기 */
   color: black; /* 코인 가격의 색상 */
+  margin-left: 3px;
 }
 
 .itemsContainer {
