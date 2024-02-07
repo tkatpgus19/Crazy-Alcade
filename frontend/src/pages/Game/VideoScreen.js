@@ -6,14 +6,15 @@ import { useState, useEffect } from "react";
 import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
 import UserVideoComponent from "./UserVideoComponent";
+import PropTypes from "prop-types";
 
 // OpenVidu 서버의 URL을 환경에 따라 설정
 const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === "production" ? "" : "http://localhost:5000/";
+  process.env.NODE_ENV === "production" ? "" : "http://192.168.100.146:8080/";
 
-const VideoScreen = () => {
-  const [mySessionId, setMySessionId] = useState("D104");
-  const [myUserName, setMyUserName] = useState("pangdoon");
+const VideoScreen = ({ roomId, nickname, userList, roomType }) => {
+  const [mySessionId, setMySessionId] = useState(roomId);
+  const [myUserName, setMyUserName] = useState(nickname);
   const [session, setSession] = useState(undefined);
   const [mainStreamManager, setMainStreamManager] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined); //방장
@@ -24,6 +25,7 @@ const VideoScreen = () => {
   useEffect(() => {
     // 페이지가 언마운트되기 전에 이벤트 리스너 추가 및 정리
     window.addEventListener("beforeunload", onBeforeUnload);
+    console.log(roomType + "//" + userList + "//" + nickname + "//" + roomId);
     return () => window.removeEventListener("beforeunload", onBeforeUnload);
   }, []);
 
@@ -258,6 +260,13 @@ const VideoScreen = () => {
       </div>
     </div>
   );
+};
+
+VideoScreen.propTypes = {
+  roomId: PropTypes.string.isRequired,
+  nickname: PropTypes.string.isRequired,
+  userList: PropTypes.array.isRequired,
+  roomType: PropTypes.string.isRequired,
 };
 
 export default VideoScreen;
