@@ -6,12 +6,14 @@ import com.eni.backend.common.entity.BaseTime;
 import com.eni.backend.auth.oauth2.user.OAuth2Provider;
 import com.eni.backend.auth.oauth2.user.OAuth2UserInfo;
 import com.eni.backend.item.entity.MemberItem;
+import com.eni.backend.member.dto.request.PutCoinRequest;
+import com.eni.backend.member.dto.request.PutRewardRequest;
+import com.eni.backend.member.dto.request.PutLanguageRequest;
 import com.eni.backend.member.dto.request.PutNicknameRequest;
 import jakarta.persistence.*;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Table;
 import lombok.*;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -115,5 +117,22 @@ public class Member extends BaseTime {
 
     public void updateNickname(PutNicknameRequest putNicknameRequest) {
         this.nickname = putNicknameRequest.getNickname();
+    }
+
+    public void updateLanguage(PutLanguageRequest putLanguageRequest) {
+        this.lang = putLanguageRequest.getLang();
+    }
+
+    public void updateCoin(PutCoinRequest putCoinRequest, boolean operator) {
+        if (operator) {
+            this.coin += putCoinRequest.getPutValue();
+        } else {
+            this.coin -= putCoinRequest.getPutValue();
+        }
+    }
+
+    public void putReward(PutRewardRequest putRewardRequest) {
+        this.coin += putRewardRequest.getPutCoinValue();
+        this.exp += putRewardRequest.getPutExpValue();
     }
 }
