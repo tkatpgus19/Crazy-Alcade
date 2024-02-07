@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import octopusImage from "../../assets/images/octopus.png"; // 문어 이미지의 경로
 import inkImage from "../../assets/images/muk.png"; // 먹물 이미지의 경로
 import chickenImage from "../../assets/images/chick.png"; // 병아리 이미지 경로
+import { resetChickenWalking } from "./slices/featureSlice";
 
 function Game() {
   const navigate = useNavigate();
@@ -97,7 +98,6 @@ function Game() {
         }));
       setInkSpots(newInkSpots);
       setTimeout(() => {
-        // useDispatch(resetInkSpraying);
         setInkSpots([]);
         setOctopus(false); // 필요한 경우 문어 이미지 숨김
       }, 5000);

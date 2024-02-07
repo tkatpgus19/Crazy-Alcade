@@ -8,7 +8,10 @@ import ActionButton from "./components/ActionButton";
 
 import { useSpring, animated } from "@react-spring/web";
 import { toggleInkSpraying, resetInkSpraying } from "./slices/octopusSlice";
-import { toggleChickenWalking } from "./slices/featureSlice";
+import {
+  resetChickenWalking,
+  toggleChickenWalking,
+} from "./slices/featureSlice";
 import { setExecutionResult } from "./slices/executionResultSlice"; // 올바른 경로로 수정
 import { setLoading } from "./slices/loadingSlice"; // 올바른 경로로 수정
 import { toggleWebIDEFlip, resetWebIDEFlip } from "./slices/webIDESlice";
@@ -53,6 +56,10 @@ const Footer = () => {
       }, 5000);
     } else if (item === "아이템2") {
       if (!isChickenWalking) dispatch(toggleChickenWalking());
+      setTimeout(() => {
+        // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
+        dispatch(resetChickenWalking());
+      }, 5000);
     } else if (item === "아이템3") {
       if (!isAnimating) dispatch(toggleWaterBalloonAnimation(true)); // 애니메이션 시작
 
