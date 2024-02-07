@@ -18,7 +18,7 @@ public class GetTierListResponse {
         this.tierName = tierName;
     }
 
-    public static GetTierListResponse of(Tier tier) {
+    public static GetTierListResponse from(Tier tier) {
         return builder()
                 .tierId(tier.getId())
                 .tierName(tier.getStringTier())

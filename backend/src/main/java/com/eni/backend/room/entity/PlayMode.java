@@ -1,4 +1,4 @@
-package com.eni.backend.common.entity;
+package com.eni.backend.room.entity;
 
 public enum PlayMode {
     NORMAL, ITEM

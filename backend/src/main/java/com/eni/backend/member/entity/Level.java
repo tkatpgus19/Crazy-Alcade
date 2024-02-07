@@ -3,9 +3,11 @@ package com.eni.backend.member.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Level {
 
@@ -22,11 +24,7 @@ public class Level {
     @Column(nullable = false)
     private Integer coin;
 
-    @Builder
-    public Level(Integer id, String image, Integer exp, Integer coin) {
-        this.id = id;
-        this.image = image;
-        this.exp = exp;
-        this.coin = coin;
-    }
+    @OneToMany(mappedBy = "level", cascade = CascadeType.REMOVE)
+    private List<Member> members = new ArrayList<>();
+
 }

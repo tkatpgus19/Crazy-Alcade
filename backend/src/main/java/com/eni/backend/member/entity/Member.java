@@ -1,11 +1,12 @@
 package com.eni.backend.member.entity;
 
+
+import com.eni.backend.problem.entity.Code;
+import com.eni.backend.common.entity.BaseTime;
 import com.eni.backend.auth.oauth2.user.OAuth2Provider;
 import com.eni.backend.auth.oauth2.user.OAuth2UserInfo;
-import com.eni.backend.code.entity.Code;
-import com.eni.backend.common.entity.BaseTimeEntity;
-import com.eni.backend.common.entity.Language;
 import com.eni.backend.item.entity.MemberItem;
+import com.eni.backend.member.dto.request.PutNicknameRequest;
 import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Table;
@@ -20,10 +21,11 @@ import java.util.List;
 @Entity
 @Table(name = "member")
 @Getter
+@ToString
 @DynamicInsert
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member extends BaseTimeEntity {
+public class Member extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -65,7 +67,7 @@ public class Member extends BaseTimeEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp connectedAt;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "level_id")
     private Level level;
 
@@ -103,8 +105,15 @@ public class Member extends BaseTimeEntity {
                 .build();
     }
 
-    public Member updateConnectedAt(Timestamp timestamp) {
+    public void updateConnectedAt(Timestamp timestamp) {
         this.connectedAt = timestamp;
-        return this;
+    }
+
+    public void updateDefaultLevel(Level level) {
+        this.level = level;
+    }
+
+    public void updateNickname(PutNicknameRequest putNicknameRequest) {
+        this.nickname = putNicknameRequest.getNickname();
     }
 }
