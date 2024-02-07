@@ -71,12 +71,12 @@ const WebIDE = () => {
     return (
       <div className={styles.resultContainer}>
         <button onClick={toggleResultDisplay} className={styles.toggleButton}>
-          {isResultExpanded ? "접기" : "펼치기"}
+          {isResultExpanded ? "👇" : "👆"}
         </button>
+        <h4>{isResultExpanded && executionResult.message}</h4>
 
         {isResultExpanded && (
-          <div>
-            <h4>{executionResult.message}</h4>
+          <div className={styles.console}>
             <ul>
               {executionResult.result.map((testcase, index) => (
                 <li key={index} className={styles.testcaseResult}>

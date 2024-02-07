@@ -93,11 +93,15 @@ const Footer = () => {
     dispatch(setLoading(true)); // 로딩 시작
     console.log("코드 실행");
 
-    const apiUrl = `${process.env.REACT_APP_API_BASE_URL}/problems/1/codes/execute`;
+    const apiUrl = `${process.env.REACT_APP_BASE_URL}/api/problems/1/codes/execute`;
+    const token =
+      "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwicHJvdmlkZXIiOiJLQUtBTyIsInNvY2lhbElkIjoiMzMyNTM2OTU0OCIsImlhdCI6MTcwNzI4MzQ0OSwiZXhwIjoxNzA3Mjk1NDQ5fQ.pikLFHBe-zVpuxITcaCfnzwhKsslQTgyXYYzgYYFjdk"; // 실제 토큰 값으로 대체해야 합니다.
+
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Bearer 토큰 방식을 사용하는 경우
       },
       body: JSON.stringify({
         lang: lang,
@@ -121,12 +125,16 @@ const Footer = () => {
   // 코드 제출 함수
   const handleSubmit = async () => {
     dispatch(setLoading(true)); // 로딩 상태를 true로 설정
+    const token =
+      "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwicHJvdmlkZXIiOiJLQUtBTyIsInNvY2lhbElkIjoiMzMyNTM2OTU0OCIsImlhdCI6MTcwNzI4MzQ0OSwiZXhwIjoxNzA3Mjk1NDQ5fQ.pikLFHBe-zVpuxITcaCfnzwhKsslQTgyXYYzgYYFjdk"; // 실제 토큰 값으로 대체해야 합니다.
+
     try {
-      const apiUrl = `${process.env.REACT_APP_API_BASE_URL}/problems/1/codes/submit`;
+      const apiUrl = `${process.env.REACT_APP_BASE_URL}/api/problems/1/codes/submit`;
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Bearer 토큰 방식을 사용하는 경우
         },
         body: JSON.stringify({
           lang: lang, // 언어 설정
