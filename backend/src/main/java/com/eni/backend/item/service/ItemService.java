@@ -2,7 +2,6 @@ package com.eni.backend.item.service;
 
 import com.eni.backend.item.dto.response.GetItemListResponse;
 import com.eni.backend.item.repository.ItemRepository;
-import com.eni.backend.member.dto.response.GetLevelListResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,11 +1,7 @@
 package com.eni.backend.common.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
-
-import static com.eni.backend.common.response.BaseResponseStatus.SUCCESS;
 
 @Getter
 public class BaseSuccessResponse<T> {
@@ -15,16 +11,18 @@ public class BaseSuccessResponse<T> {
     private final T result;
 
     @Builder
-    private BaseSuccessResponse(String message, T result) {
-        this.code = HttpStatus.OK.value();
+    private BaseSuccessResponse(int code, String message, T result) {
+        this.code = code;
         this.message = message;
         this.result = result;
     }
 
-    public static <T> BaseSuccessResponse<T> of(String message, T result) {
+    public static <T> BaseSuccessResponse<T> of(BaseResponseStatus baseResponseStatus, T result) {
         return BaseSuccessResponse.<T>builder()
-                .message(message)
+                .code(baseResponseStatus.getStatus().value())
+                .message(baseResponseStatus.getMessage())
                 .result(result)
                 .build();
     }
+
 }

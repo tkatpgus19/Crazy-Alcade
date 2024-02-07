@@ -21,6 +21,6 @@ public class LevelController {
     @GetMapping("")
     public BaseSuccessResponse<?> getList() {
         log.info("LevelController.getList");
-        return BaseSuccessResponse.of(SUCCESS.getMessage(), levelService.getList());
+        return BaseSuccessResponse.of(SUCCESS, levelService.getList());
     }
 }

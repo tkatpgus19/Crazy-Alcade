@@ -44,6 +44,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                         accessToken,
                         oAuth2User.getAttributes());
 
+        log.info("OAuth2UserInfo");
         // 이메일 오류
         if (!StringUtils.hasText(oAuth2UserInfo.getEmail())) {
             throw new CustomUnauthorizedException(EMAIL_NOT_FOUND);

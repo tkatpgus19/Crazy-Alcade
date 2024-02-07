@@ -1,5 +1,6 @@
 package com.eni.backend.problem.entity;
 
+import com.eni.backend.problem.dto.request.PostTestcaseRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -30,10 +31,20 @@ public class Testcase {
     private Problem problem;
 
     @Builder
-    public Testcase(String input, String output, Boolean isHidden, Problem problem) {
+    private Testcase(String input, String output, Boolean isHidden, Problem problem) {
         this.input = input;
         this.output = output;
         this.isHidden = isHidden;
         this.problem = problem;
     }
+
+    public static Testcase from(PostTestcaseRequest request, Problem problem) {
+        return builder()
+                .input(request.getInput())
+                .output(request.getOutput())
+                .isHidden(request.getIsHidden())
+                .problem(problem)
+                .build();
+    }
+
 }

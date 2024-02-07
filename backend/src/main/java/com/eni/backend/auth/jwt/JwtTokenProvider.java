@@ -5,6 +5,8 @@ import com.eni.backend.auth.oauth2.user.OAuth2Provider;
 import com.eni.backend.common.exception.CustomBadRequestException;
 import com.eni.backend.common.exception.CustomUnauthorizedException;
 import com.eni.backend.member.dto.SecurityMemberDto;
+import com.eni.backend.member.dto.response.PutNicknameResponse;
+import com.eni.backend.member.entity.Member;
 import com.eni.backend.member.repository.MemberRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -22,6 +24,7 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Optional;
 
 import static com.eni.backend.common.response.BaseResponseStatus.*;
 
@@ -150,7 +153,7 @@ public class JwtTokenProvider implements InitializingBean {
             return getMemberId(token);
         } catch (ExpiredJwtException e) {
             // 만료된 토큰에서 사용자 ID를 추출
-            // access token 이 만료되었지만 refresh token 이 존재하는 경우
+            // access token이 만료되었지만 refresh token 이 존재하는 경우
             Claims expiredClaims = e.getClaims();
             return Long.parseLong(expiredClaims.get("memberId", String.class));
         }
@@ -162,7 +165,18 @@ public class JwtTokenProvider implements InitializingBean {
         if (principal instanceof OAuth2UserPrincipal) {
             return (OAuth2UserPrincipal) principal;
         }
-        return null;
+
+        throw new CustomUnauthorizedException(INVALID_TOKEN);
+    }
+
+    public SecurityMemberDto getSecurityMemberDto(Authentication authentication) {
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof SecurityMemberDto) {
+            return (SecurityMemberDto) principal;
+        }
+
+        throw new CustomUnauthorizedException(INVALID_TOKEN);
     }
 
 }

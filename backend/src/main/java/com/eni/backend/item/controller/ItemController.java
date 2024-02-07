@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.eni.backend.common.response.BaseResponseStatus.GET_ITEM_LIST_SUCCESS;
 import static com.eni.backend.common.response.BaseResponseStatus.SUCCESS;
 
 @Slf4j
@@ -22,6 +23,6 @@ public class ItemController {
     @GetMapping("")
     public BaseSuccessResponse<?> getList() {
         log.info("ItemController.getList");
-        return BaseSuccessResponse.of(SUCCESS.getMessage(), itemService.getList());
+        return BaseSuccessResponse.of(GET_ITEM_LIST_SUCCESS, itemService.getList());
     }
 }

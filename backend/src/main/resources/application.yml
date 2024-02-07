@@ -1,3 +1,5 @@
+server:
+    port: 8081
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
@@ -24,15 +26,16 @@ spring:
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_SECRET}
-            scope: email
-            redirect-uri: ${GOOGLE.REDIRECT_URI}
+            scope:
+              - email
+            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}" #${GOOGLE_REDIRECT_URI}
           kakao:
             client-id: ${KAKAO_CLIENT_ID} # 발급 받은 Client ID
             client-secret: ${KAKAO_SECRET} # 발급 받은 Client Secret
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
             scope: account_email
-            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}" #${KAKAO_REDIRECT_URI}
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
@@ -52,3 +55,6 @@ jwt:
 #  host: ${REDIS_HOST}
 #  port: 6379
 #  password: ${REDIS_PASSWD}
+
+code:
+  base-path: ${BASE_PATH}

@@ -15,6 +15,7 @@ public class KakaoOAuth2UserInfo implements OAuth2UserInfo {
     @Builder
     private KakaoOAuth2UserInfo(Map<String, Object> attributes, String accessToken) {
         this.accessToken = accessToken;
+
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
 
         this.attributes = new HashMap<>();
