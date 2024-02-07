@@ -1,14 +1,13 @@
 package com.eni.backend.problem.service;
 
-import com.eni.backend.common.entity.ProblemPlatform;
+import com.eni.backend.problem.dto.request.PostTestcaseRequest;
+import com.eni.backend.problem.dto.response.*;
+import com.eni.backend.problem.entity.ProblemPlatform;
 import com.eni.backend.common.exception.CustomBadRequestException;
 import com.eni.backend.common.exception.CustomServerErrorException;
 import com.eni.backend.problem.dto.request.PostProblemRequest;
-import com.eni.backend.problem.dto.response.GetExampleResponse;
-import com.eni.backend.problem.dto.response.GetProblemListResponse;
-import com.eni.backend.problem.dto.response.GetProblemResponse;
-import com.eni.backend.problem.dto.response.PostProblemResponse;
 import com.eni.backend.problem.entity.Problem;
+import com.eni.backend.problem.entity.Testcase;
 import com.eni.backend.problem.entity.Tier;
 import com.eni.backend.problem.repository.ProblemRepository;
 import com.eni.backend.problem.repository.TestcaseRepository;
@@ -44,15 +43,7 @@ public class ProblemService {
         Tier tier = findTierById(request.getTierId());
 
         // 문제
-        Problem problem = Problem.of(platform,
-                request.getNo(),
-                request.getTitle(),
-                request.getDescription(),
-                request.getInput(),
-                request.getOutput(),
-                request.getTime(),
-                request.getMemory(),
-                tier);
+        Problem problem = Problem.from(platform, request, tier);
 
         // 저장
         try {
@@ -71,7 +62,7 @@ public class ProblemService {
 
         // 조회
         return problemRepository.findAllByTierId(tierId)
-                .stream().map(GetProblemListResponse::of)
+                .stream().map(GetProblemListResponse::from)
                 .collect(Collectors.toList());
     }
 
@@ -83,12 +74,12 @@ public class ProblemService {
         List<GetExampleResponse> examples = getExamples(problemId);
 
         // dto로 변환해서 반환
-        return GetProblemResponse.of(problem, examples);
+        return GetProblemResponse.from(problem, examples);
     }
 
     private List<GetExampleResponse> getExamples(Long problemId) {
         return testcaseRepository.findAllByProblemIdAndIsHidden(problemId, false) // 예제 테스트케이스
-                .stream().map(GetExampleResponse::of)
+                .stream().map(GetExampleResponse::from)
                 .collect(Collectors.toList());
     }
 
@@ -104,6 +95,25 @@ public class ProblemService {
 
         // 반환
         return get(problemId);
+    }
+
+    @Transactional
+    public PostTestcaseResponse postTestcase(Long problemId, PostTestcaseRequest request) {
+        // 문제
+        Problem problem = findProblemById(problemId);
+
+        // 테스트케이스
+        Testcase testcase = Testcase.from(request, problem);
+
+        // 저장
+        try {
+            testcaseRepository.save(testcase);
+        } catch (Exception e) {
+            throw new CustomServerErrorException(DATABASE_ERROR);
+        }
+
+        // 생성된 ID 값 반환
+        return PostTestcaseResponse.of(testcase.getId());
     }
 
     private ProblemPlatform getProblemPlatform(String platform) {

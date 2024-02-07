@@ -1,6 +1,5 @@
 package com.eni.backend.member.entity;
 
-import com.eni.backend.code.entity.Code;
 import jakarta.persistence.*;
 import lombok.*;
 

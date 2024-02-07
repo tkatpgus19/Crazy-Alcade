@@ -33,7 +33,7 @@ public class MemberController {
     @GetMapping("")
     public BaseSuccessResponse<?> getList() {
         log.info("LevelController.getList");
-        return BaseSuccessResponse.of(SUCCESS.getMessage(), memberService.getList());
+        return BaseSuccessResponse.of(SUCCESS, memberService.getList());
     }
 
     @PutMapping("/nickname")
@@ -45,7 +45,7 @@ public class MemberController {
             throw new CustomBadRequestException(BAD_REQUEST, getErrorMessages(bindingResult));
         }
 
-        return BaseSuccessResponse.of(memberService.putNickname(authentication, putNicknameRequest));
+        return BaseSuccessResponse.of(SUCCESS, memberService.putNickname(authentication, putNicknameRequest));
     }
 
 }

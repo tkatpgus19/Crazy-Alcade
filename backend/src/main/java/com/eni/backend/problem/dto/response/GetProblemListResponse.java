@@ -22,7 +22,7 @@ public class GetProblemListResponse {
         this.title = title;
     }
 
-    public static GetProblemListResponse of(Problem problem) {
+    public static GetProblemListResponse from(Problem problem) {
         return builder()
                 .problemId(problem.getId())
                 .platform(problem.getStringPlatform())

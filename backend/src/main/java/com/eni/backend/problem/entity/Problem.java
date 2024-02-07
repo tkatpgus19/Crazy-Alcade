@@ -1,8 +1,7 @@
 package com.eni.backend.problem.entity;
 
-import com.eni.backend.code.entity.Code;
-import com.eni.backend.common.entity.BaseTimeEntity;
-import com.eni.backend.common.entity.ProblemPlatform;
+import com.eni.backend.common.entity.BaseTime;
+import com.eni.backend.problem.dto.request.PostProblemRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -15,7 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Problem extends BaseTimeEntity {
+public class Problem extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -70,22 +69,22 @@ public class Problem extends BaseTimeEntity {
         this.tier = tier;
     }
 
-    public static Problem of(ProblemPlatform platform, Integer no, String title, String description, String input, String output, Integer time, Integer memory, Tier tier) {
+    public static Problem from(ProblemPlatform platform, PostProblemRequest request, Tier tier) {
         return builder()
                 .platform(platform)
-                .no(no)
-                .title(title)
-                .description(description)
-                .input(input)
-                .output(output)
-                .time(time)
-                .memory(memory)
+                .no(request.getNo())
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .input(request.getInput())
+                .output(request.getOutput())
+                .time(request.getTime())
+                .memory(request.getMemory())
                 .tier(tier)
                 .build();
     }
 
     public String getStringPlatform() {
-        return this.platform.name();
+        return this.platform.getPlatformName();
     }
 
     public String getStringTime() {
