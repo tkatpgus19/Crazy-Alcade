@@ -1,14 +1,14 @@
 .exitButton {
   height: 35px;
   background-color: #ffac0b;
-  box-shadow: 1px 1px 1px black;
 
   padding: 0px 12px;
   border: 1px solid;
   border-color: black;
   border-radius: 5px;
 
-  font-size: 13px;
+  /* 글씨 크기 13 => 15 */
+  font-size: 15px;
   color: white;
   font-family: "DNFBitBitv2";
   text-align: center;
@@ -19,6 +19,8 @@
   /* margin-right: 35px; 공통 컴퍼넌트의 css는 따로 적용 부탁드립니다 - BRG */
 }
 
-.exit-button:hover {
-  opacity: 0.8;
+.exitButton:hover {
+  transform: scale(1.05);
+  /* transform: translateY(10px); 호버 시 약간 위로 이동 */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* 호버 시 그림자 강조 */
 }
