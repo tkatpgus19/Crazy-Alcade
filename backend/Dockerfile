@@ -1,9 +1,5 @@
 FROM openjdk:17-jdk
-
-WORKDIR /app
-
-COPY build/libs/*.jar application.jar
-
+VOLUME /tmp
 EXPOSE 8081
-
+COPY build/libs/*.jar application.jar
 CMD ["java", "-jar", "application.jar"]
