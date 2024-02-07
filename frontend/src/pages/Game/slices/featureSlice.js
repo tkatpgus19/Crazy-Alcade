@@ -10,9 +10,13 @@ export const featureSlice = createSlice({
     toggleChickenWalking: (state) => {
       state.chickenWalking = !state.chickenWalking;
     },
+    resetChickenWalking: (state) => {
+      state.chickenWalking = false;
+    },
   },
 });
 
-export const { toggleChickenWalking } = featureSlice.actions;
+export const { toggleChickenWalking, resetChickenWalking } =
+  featureSlice.actions;
 
 export default featureSlice.reducer;
