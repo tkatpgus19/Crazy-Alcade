@@ -23,7 +23,7 @@ const Main = () => {
   }, []);
 
   const client = useRef();
-
+  const nickname = "닉네임" + Math.floor(Math.random() * 100);
   const getRoomList = (roomType) => {
     axios
       .get(`http://${SERVER_URL}/rooms/${roomType}?page=${page}`)
@@ -104,7 +104,7 @@ const Main = () => {
         navigate("/room", {
           state: {
             roomId: res.data,
-            nickname: "닉네임1",
+            nickname: nickname,
             roomType: roomData.roomType,
           },
         });
@@ -138,7 +138,7 @@ const Main = () => {
         {},
         JSON.stringify({
           roomId: "all",
-          sender: "닉네임1",
+          sender: nickname,
           message: chatInput,
           type: "TALK",
           roomType: normalMode,
@@ -158,7 +158,7 @@ const Main = () => {
     navigate("/room", {
       state: {
         roomId: data.roomId,
-        nickname: "닉네임1",
+        nickname: nickname,
         roomType: data.roomType,
       },
     });
