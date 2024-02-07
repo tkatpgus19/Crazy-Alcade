@@ -7,44 +7,37 @@ import ItemButton from "./components/ItemButton";
 import ActionButton from "./components/ActionButton";
 
 import { useSpring, animated } from "@react-spring/web";
-import { toggleInkSpraying } from "./slices/octopusSlice";
+import { toggleInkSpraying, resetInkSpraying } from "./slices/octopusSlice";
 import { toggleChickenWalking } from "./slices/featureSlice";
 import { setExecutionResult } from "./slices/executionResultSlice"; // 올바른 경로로 수정
 import { setLoading } from "./slices/loadingSlice"; // 올바른 경로로 수정
-import { toggleWebIDEFlip } from "./slices/webIDESlice";
-import { toggleWaterBalloonAnimation } from "./slices/waterBalloonSlice";
+import { toggleWebIDEFlip, resetWebIDEFlip } from "./slices/webIDESlice";
+import {
+  resetWaterBalloonAnimation,
+  toggleWaterBalloonAnimation,
+} from "./slices/waterBalloonSlice";
 import { toggleShield, resetShield } from "./slices/animationControlSlice";
 
-import waterBalloonImage from "../../assets/images/waterBalloon.png"; // 물풍선 이미지 경로
+import octopusIcon from "../../assets/images/octopus.png";
+import chickIcon from "../../assets/images/chick.png";
+import balloonIcon from "../../assets/images/waterBalloon.png";
+import magicIcon from "../../assets/images/magic.png";
+import shieldIcon from "../../assets/images/shield.png";
 
 const Footer = () => {
   const code = useSelector((state) => state.code.content); // 코드 상태 선택
   const lang = useSelector((state) => state.code.lang); // 언어 상태 선택
 
   const dispatch = useDispatch();
+
+  const isSprayingInk = useSelector((state) => state.octopus.isSprayingInk);
+  const isChickenWalking = useSelector((state) => state.feature.chickenWalking);
   const isAnimating = useSelector((state) => state.waterBalloon.isAnimating);
   const isFlipped = useSelector((state) => state.webIDE.isFlipped); // 가정: webIDE 슬라이스에서 isFlipped 상태를 관리
 
-  // 애니메이션 상태에 따른 스프링 정의
   const animProps = useSpring({
-    to: async (next, cancel) => {
-      if (isAnimating) {
-        await next({
-          transform: "translateY(-100px)",
-          config: { duration: 1000 },
-        });
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-
-        await next({
-          transform: "translateY(0px)",
-          config: { duration: 300 },
-        });
-      }
-    },
-    from: { transform: "translateY(0px)" },
-    reset: isAnimating,
-    reverse: isAnimating,
-    onRest: () => toggleWaterBalloonAnimation(),
+    transform: isAnimating ? "translateY(-100px)" : "translateY(0px)",
+    config: { duration: isAnimating ? 3000 : 300 },
   });
 
   // 아이템 사용 함수
@@ -53,31 +46,31 @@ const Footer = () => {
 
     // 각 아이템에 대한 효과 로직 추가
     if (item === "아이템1") {
-      dispatch(toggleInkSpraying());
-
+      if (!isSprayingInk) dispatch(toggleInkSpraying());
       setTimeout(() => {
-        dispatch(toggleInkSpraying());
-      }, 5000); // 5000ms = 5초
+        // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
+        dispatch(resetInkSpraying());
+      }, 5000);
     } else if (item === "아이템2") {
-      dispatch(toggleChickenWalking());
-
-      setTimeout(() => {
-        dispatch(toggleChickenWalking());
-      }, 5000); // 5000ms = 5초
+      if (!isChickenWalking) dispatch(toggleChickenWalking());
     } else if (item === "아이템3") {
-      dispatch(toggleWaterBalloonAnimation());
+      if (!isAnimating) dispatch(toggleWaterBalloonAnimation(true)); // 애니메이션 시작
 
       setTimeout(() => {
-        dispatch(toggleWaterBalloonAnimation());
-      }, 5000); // 5000ms = 5초
+        // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
+        dispatch(resetWaterBalloonAnimation());
+      }, 5000);
     } else if (item === "아이템4") {
       dispatch(toggleWebIDEFlip());
       // setTimeout 콜백 내에서 isFlipped 상태를 확인
       setTimeout(() => {
-        if (!isFlipped) dispatch(toggleWebIDEFlip());
+        dispatch(resetWebIDEFlip());
       }, 5000); // 5000ms = 5초
     } else if (item === "아이템5") {
-      if (isFlipped) dispatch(toggleWebIDEFlip());
+      if (isSprayingInk == true) dispatch(toggleInkSpraying(false));
+      if (isChickenWalking == true) dispatch(toggleChickenWalking(false));
+      if (isAnimating == true) dispatch(toggleWaterBalloonAnimation(false));
+      if (isFlipped == true) dispatch(toggleWebIDEFlip(false));
       dispatch(toggleShield());
       setTimeout(() => dispatch(resetShield()), 0); // 바로 상태를 리셋하여 다른 애니메이션에 영향을 주지 않음
     }
@@ -148,43 +141,35 @@ const Footer = () => {
       dispatch(setLoading(false)); // 로딩 상태를 false로 설정
     }
   };
-  const springs = useSpring({
-    from: { x: 0 },
-    to: { x: 100 },
-  });
 
   return (
     <div className={styles.footer}>
-      {/* <animated.div
-        style={{
-          width: 80,
-          height: 40,
-          background: "#ff6d6d",
-          borderRadius: 8,
-          ...springs,
-        }}
-      /> */}
       {/* 내 아이템 영역 */}
       <div className={styles.itemContainer}>
         <div className={styles.itemHeader}>내 아이템</div>
         {/* 각각의 아이템 버튼을 ItemButton 컴포넌트로 대체 */}
         <ItemButton
+          icon={octopusIcon}
           itemName="문어"
           onUseItem={() => handleUseItem("아이템1")}
         />
         <ItemButton
+          icon={chickIcon}
           itemName="병아리"
           onUseItem={() => handleUseItem("아이템2")}
         />
         <ItemButton
+          icon={balloonIcon}
           itemName="물풍선"
           onUseItem={() => handleUseItem("아이템3")}
         />
         <ItemButton
+          icon={magicIcon}
           itemName="요술봉"
           onUseItem={() => handleUseItem("아이템4")}
         />
         <ItemButton
+          icon={shieldIcon}
           itemName="쉴드"
           onUseItem={() => handleUseItem("아이템5")}
         />
@@ -193,7 +178,7 @@ const Footer = () => {
       <animated.div style={animProps} className={styles.buttonContainer}>
         {isAnimating && (
           <img
-            src={waterBalloonImage}
+            src={balloonIcon}
             alt="Water Balloon"
             className={styles.waterBalloon}
           />

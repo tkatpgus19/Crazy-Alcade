@@ -9,10 +9,14 @@ export const octopusSlice = createSlice({
   reducers: {
     toggleInkSpraying: (state) => {
       state.isSprayingInk = !state.isSprayingInk;
+      console.log(`잉크 상태 : ${state.isSprayingInk} `);
+    },
+    resetInkSpraying: (state) => {
+      state.isSprayingInk = false;
     },
   },
 });
 
-export const { toggleInkSpraying } = octopusSlice.actions;
+export const { toggleInkSpraying, resetInkSpraying } = octopusSlice.actions;
 
 export default octopusSlice.reducer;
