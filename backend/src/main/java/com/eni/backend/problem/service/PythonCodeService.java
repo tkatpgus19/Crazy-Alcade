@@ -21,6 +21,7 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class PythonCodeService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    @Transactional
     public Object judge(Authentication authentication, Problem problem, String code, Boolean isHidden) throws IOException, InterruptedException {
         // 멤버
         Member member = findMemberByAuth(authentication);
