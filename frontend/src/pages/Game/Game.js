@@ -87,7 +87,7 @@ function Game() {
       setOctopus(true); // 문어 이미지를 표시
 
       // 1초 후에 먹물 이미지의 위치를 한 번만 무작위로 계산하여 상태에 저장
-      const newInkSpots = Array(10)
+      const newInkSpots = Array(15)
         .fill(null)
         .map((_, index) => ({
           id: index,
@@ -110,7 +110,7 @@ function Game() {
 
     if (isChickenWalking) {
       // 병아리가 걸어다니는 상태가 활성화되면 병아리를 생성
-      const initialChickens = Array(30)
+      const initialChickens = Array(50)
         .fill(null)
         .map((_, index) => ({
           id: index,
@@ -125,8 +125,8 @@ function Game() {
         setChickens((chickens) =>
           chickens.map((chicken) => {
             const speed = 50; // 이동 속도 조정
-            let newLeft = chicken.left + (Math.random() - 0.5) * speed;
-            let newTop = chicken.top + (Math.random() - 0.5) * speed;
+            let newLeft = chicken.left + (Math.random() - 0.25) * speed;
+            let newTop = chicken.top + (Math.random() - 0.45) * speed;
 
             // 화면 경계 처리
             newLeft = Math.max(50, Math.min(newLeft, window.innerWidth - 100)); // 병아리 이미지의 너비 고려
@@ -246,7 +246,7 @@ function Game() {
               width: "5px",
               height: "95%",
               left: "-2px",
-              backgroundColor: "#d1d5db",
+              backgroundColor: "#c3c8d0",
               marginTop: "10px",
               borderRadius: "30px",
             },
