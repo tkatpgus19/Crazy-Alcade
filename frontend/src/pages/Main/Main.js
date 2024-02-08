@@ -26,7 +26,7 @@ const Main = () => {
     axios
       .get(`http://${SERVER_URL}/rooms/${roomType}?page=${page}`)
       .then((res) => {
-        setRoomList(res.data);
+        setRoomList(res.data.result);
       });
   };
 
@@ -110,7 +110,7 @@ const Main = () => {
       .then((res) => {
         navigate("/room", {
           state: {
-            roomId: res.data,
+            roomId: res.data.result.roomId,
             nickname: "닉네임1",
             roomType: roomData.roomType,
           },
@@ -172,7 +172,7 @@ const Main = () => {
           if (res.data) {
             navigate("/room", {
               state: {
-                roomId: data.roomId,
+                roomId: res.data.result.roomId,
                 nickname: "닉네임1",
                 roomType: data.roomType,
               },
