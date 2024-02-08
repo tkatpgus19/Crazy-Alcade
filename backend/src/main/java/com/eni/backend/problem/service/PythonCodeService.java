@@ -316,7 +316,7 @@ public class PythonCodeService {
             return path;
         }
 
-        if (file.mkdir()) {
+        if (file.mkdirs()) {
             log.info("폴더 생성 {}", path);
             return path;
         }
