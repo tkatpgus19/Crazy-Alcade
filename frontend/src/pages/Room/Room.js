@@ -14,8 +14,9 @@ import axios from "axios";
 const Room = () => {
   const SERVER_URL =
     // "ec2-3-39-233-234.ap-northeast-2.compute.amazonaws.com:8080";
-    // "192.168.100.146:8080";
     "192.168.100.146:8080";
+
+  const messagesEndRef = useRef(null); // messages 참조 생성
 
   useEffect(() => {
     connectRoom();
@@ -153,7 +154,10 @@ const Room = () => {
         `http://${SERVER_URL}/rooms/start?roomType=${roomType}&roomId=${roomId}`
       )
       .then((res) => {
-        if (!res.data) {
+        if (res.data) {
+          console.log("되는거니..?");
+          axios.get(`http://${SERVER_URL}/rooms/set-timer?roomId=${roomId}`);
+        } else {
           alert("준비가 되지 않았습니다.");
         }
       });
@@ -181,6 +185,16 @@ const Room = () => {
     }
   };
 
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      // 스크롤을 컨테이너의 맨 아래로 이동시킵니다.
+      const scrollHeight = messagesEndRef.current.scrollHeight;
+      const height = messagesEndRef.current.clientHeight;
+      const maxScrollTop = scrollHeight - height;
+      messagesEndRef.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+    }
+  }, [chatContent]); // chatContent가 변경될 때마다 이 로직을 실행합니다.
+
   return (
     <Background>
       <RoomHeader roomTitle="1. 너만 오면 고" />
@@ -207,7 +221,7 @@ const Room = () => {
         <div className={styles.right}>
           <div className={styles.chat}>
             <p className={styles.chattext}>채팅창</p>
-            <div className={styles.realchat}>
+            <div className={styles.realchat} ref={messagesEndRef}>
               {chatContent.map((message, index) => {
                 return (
                   <>
