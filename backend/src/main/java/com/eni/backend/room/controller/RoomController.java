@@ -1,9 +1,13 @@
 package com.eni.backend.room.controller;
 
+import com.eni.backend.common.exception.CustomBadRequestException;
+import com.eni.backend.common.response.BaseSuccessResponse;
 import com.eni.backend.room.dto.ChatDto;
 import com.eni.backend.room.dto.ItemDto;
 import com.eni.backend.room.dto.RoomDto;
+import com.eni.backend.room.dto.request.PostRoomRequest;
 import com.eni.backend.room.service.RoomService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -14,9 +18,14 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+import static com.eni.backend.common.response.BaseResponseStatus.BAD_REQUEST;
+import static com.eni.backend.common.response.BaseResponseStatus.POST_ROOM_SUCCESS;
+import static com.eni.backend.common.util.BindingResultUtils.getErrorMessages;
 
 @Slf4j
 @Validated
@@ -30,15 +39,15 @@ public class RoomController {
 
     // 방 등록
     @PostMapping("")
-    public ResponseEntity<?> makeRoom(@RequestBody RoomDto roomDto){
-        log.info("roomInfo {}", roomDto);
-        roomService.save(roomDto);
-        template.convertAndSend("/sub/normal/room-list", roomService.getNormalRoomList(null, null, 1));
-        template.convertAndSend("/sub/item/room-list", roomService.getItemRoomList(null, null, 1));
+    public BaseSuccessResponse<?> post(@RequestBody @Valid PostRoomRequest request, BindingResult bindingResult){
+        log.info("RoomController.post\nRoomInfo: {}" ,request);
 
-        log.info("normalRoom Info: {}", roomService.getNormalRoomList(null, null, 1));
-        log.info("itemRoom info: {}", roomService.getItemRoomList(null, null, 1));
-        return new ResponseEntity<>(roomDto.getRoomId(), HttpStatus.OK);
+        // validation 오류
+        if(bindingResult.hasErrors()){
+            throw new CustomBadRequestException(BAD_REQUEST, getErrorMessages(bindingResult));
+        }
+
+        return BaseSuccessResponse.of(POST_ROOM_SUCCESS, roomService.post(request));
     }
 
     // 노멀전 방 리스트 조회

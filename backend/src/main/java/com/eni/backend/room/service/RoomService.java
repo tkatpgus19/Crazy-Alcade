@@ -2,9 +2,12 @@ package com.eni.backend.room.service;
 
 import com.eni.backend.room.dto.ChatDto;
 import com.eni.backend.room.dto.RoomDto;
+import com.eni.backend.room.dto.request.PostRoomRequest;
+import com.eni.backend.room.dto.response.PostRoomResponse;
 import com.eni.backend.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -15,15 +18,17 @@ import java.util.*;
 public class RoomService {
 
     private final RoomRepository roomRepository;
+    private final SimpMessageSendingOperations template;
 
     // 방 등록
-    public void save(RoomDto roomDto){
-        if(roomDto.getRoomType().equals("normal")){
-            roomRepository.getNormalRoomMap().put(roomDto.getRoomId(), roomDto);
-        }
-        else{
-            roomRepository.getItemRoomMap().put(roomDto.getRoomId(), roomDto);
-        }
+    public PostRoomResponse post(PostRoomRequest request){
+        String roomId = roomRepository.save(request);
+
+        template.convertAndSend("/sub/normal/room-list", getNormalRoomList(null, null, 1));
+        template.convertAndSend("/sub/item/room-list", getItemRoomList(null, null, 1));
+
+        // 생성된 방 ID 값 반환
+        return PostRoomResponse.of(roomId);
     }
 
     // 노말전 방 리스트 조회

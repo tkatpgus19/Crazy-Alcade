@@ -1,6 +1,7 @@
 package com.eni.backend.room.repository;
 
 import com.eni.backend.room.dto.RoomDto;
+import com.eni.backend.room.dto.request.PostRoomRequest;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -20,5 +21,28 @@ public class RoomRepository {
     private void init(){
         normalRoomMap = new LinkedHashMap<>();
         itemRoomMap = new LinkedHashMap<>();
+    }
+
+    public String save(PostRoomRequest request){
+        RoomDto room = RoomDto.builder()
+                .roomType(request.getRoomType())
+                .roomName(request.getRoomName())
+                .hasPassword(request.getHasPassword())
+                .roomPassword(request.getRoomPassword())
+                .problemTier(request.getProblemTier())
+                .problemNo(request.getProblemNo())
+                .timeLimit(request.getTimeLimit())
+                .language(request.getLanguage())
+                .codeReview(request.getCodeReview())
+                .master(request.getMaster())
+                .build();
+
+        if(request.getRoomType().equals("normal")){
+            normalRoomMap.put(room.getRoomId(), room);
+        }
+        else{
+            itemRoomMap.put(room.getRoomId(), room);
+        }
+        return room.getRoomId();
     }
 }
