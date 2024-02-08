@@ -313,6 +313,8 @@ public class JavaCodeService {
         String path = BASE_PATH + uuid + File.separator;
         File file = new File(path);
 
+        log.info("make directory path {}", path);
+
         if (file.exists()) {
             return path;
         }
