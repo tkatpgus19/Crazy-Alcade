@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom"; // React Router v6에서는 useHistory 대신 useNavigate를 사용
 import styles from "./CreateRoomModal.module.css";
@@ -22,6 +23,42 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
     master: "김진영",
   });
 
+  const [problems, setProblems] = useState([]); // 문제 목록을 저장할 상태
+  const [tiers, setTiers] = useState([]); // 티어 정보 상태 추가
+
+  useEffect(() => {
+    const fetchProblems = async () => {
+      try {
+        const response = await axios.get(
+          "https://i10d104.p.ssafy.io/api/problems?tier-id=1"
+        );
+        // 'result' 배열을 상태에 저장
+        setProblems(response.data.result);
+      } catch (error) {
+        console.error("문제 목록을 불러오는 데 실패했습니다.", error);
+        setProblems([]); // 오류 발생 시 빈 배열 설정
+      }
+    };
+
+    fetchProblems();
+
+    // 티어 정보를 불러오는 함수
+    const fetchTiers = async () => {
+      try {
+        const response = await axios.get(
+          "https://i10d104.p.ssafy.io/api/tiers"
+        );
+        // API 응답에서 'result' 배열을 추출하여 'tiers' 상태에 설정
+        setTiers(response.data.result || []); // 'result'가 없는 경우 빈 배열을 기본값으로 사용
+      } catch (error) {
+        console.error("티어 정보를 불러오는 데 실패했습니다.", error);
+        setTiers([]); // 오류 발생 시 빈 배열 설정
+      }
+    };
+
+    fetchTiers();
+  }, []);
+
   // 입력값이 변경될 때 호출되는 핸들러 함수를 정의합니다.
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -33,6 +70,7 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
 
   // 폼을 제출할 때 호출되는 핸들러 함수를 정의합니다.
   const handleSubmit = () => {
+    console.log(roomData);
     createRoom(roomData); // 방 만들기 함수 호출
     closeModal(); // 모달 닫기 함수 호출
 
@@ -127,27 +165,35 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
           <span>티어 선택 : </span>
           <select
             name="problemTier"
-            value={roomData.tier}
+            value={roomData.problemTier}
             onChange={handleChange}
           >
             <option value="">선택하세요</option>
-            <option value="bronze">Bronze</option>
-            <option value="silver">Silver</option>
-            <option value="gold">Gold</option>
+            {tiers.map((tier, index) => (
+              <option key={index} value={tier.tierId}>
+                {tier.tierName}
+              </option>
+            ))}
           </select>
         </label>
       </div>
 
-      {/* 문제 번호 입력란 */}
+      {/* 문제 번호 선택 드롭다운 */}
       <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
         <label>
           <span>문제 번호 : </span>
-          <input
-            type="text"
+          <select
             name="problemNo"
-            value={roomData.problemNumber}
+            value={roomData.problemNo}
             onChange={handleChange}
-          />
+          >
+            <option value="">문제를 선택하세요</option>
+            {problems.map((problem, index) => (
+              <option key={index} value={problem.problemId}>
+                {problem.platform} {problem.no} {problem.title}
+              </option>
+            ))}
+          </select>
         </label>
       </div>
 

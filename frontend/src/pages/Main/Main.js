@@ -22,8 +22,6 @@ const Main = () => {
     connectSession();
   }, []);
 
-  const client = useRef();
-
   const getRoomList = (roomType) => {
     axios
       .get(`http://${SERVER_URL}/rooms/${roomType}?page=${page}`)
@@ -56,7 +54,7 @@ const Main = () => {
     setRoomList(JSON.parse(payload.body));
   }
 
-  const chatContainerRef = useRef();
+  // const chatContainerRef = useRef();
 
   function onChatReceived(payload) {
     const currentDate = new Date();
@@ -80,6 +78,14 @@ const Main = () => {
   const [normalMode, setNormalMode] = useState(true);
   const [roomList, setRoomList] = useState([]);
   const [page, setPage] = useState(1);
+
+  const client = useRef();
+
+  const messagesEndRef = useRef(null); // messages 참조 생성
+
+  const handleGameIntroClick = () => {
+    navigate("/game-introduction");
+  };
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -211,6 +217,16 @@ const Main = () => {
     navigate("/");
   };
 
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      // 스크롤을 컨테이너의 맨 아래로 이동시킵니다.
+      const scrollHeight = messagesEndRef.current.scrollHeight;
+      const height = messagesEndRef.current.clientHeight;
+      const maxScrollTop = scrollHeight - height;
+      messagesEndRef.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+    }
+  }, [chatContent]); // chatContent가 변경될 때마다 이 로직을 실행합니다.
+
   return (
     <div className={styles.mainContainer} style={backgroundStyle}>
       {/* 왼쪽 부분 (my-page) */}
@@ -263,7 +279,9 @@ const Main = () => {
       <div className={styles.rightSide}>
         {/* 오른쪽 상단 버튼들 */}
         <div className={styles.rightTop}>
-          <button className={styles.introButton}>게임 소개</button>
+          <button className={styles.introButton} onClick={handleGameIntroClick}>
+            게임 소개
+          </button>
           <button className={styles.logoutButton} onClick={handleLogout}>
             로그아웃
           </button>
@@ -434,23 +452,27 @@ const Main = () => {
         {/* 채팅 부분 */}
         <div className={styles.chatPage}>
           <button className={styles.chatPageButton}>전체</button>
-          <div className={styles.chatContent} ref={chatContainerRef}>
+          <div className={styles.chatContent} ref={messagesEndRef}>
             {/* 채팅 내용 표시 */}
-            {chatContent.map((message, index) => (
-              <div key={index}>
-                {/* 닉네임과 현재 날짜 및 시간 표시 */}
-                <p className={styles.messageInfo}>
-                  <span className={styles.nickname}>닉네임 </span>
-                  <span className={styles.timestamp}>{message.timestamp}</span>
-                </p>
-                {/* 메시지 내용 표시 (글씨 두껍게 여부에 따라 스타일 조정) */}
-                <div
-                  className={`${styles.messageContent} ${message.isBold ? styles.bold : ""}`}
-                >
-                  {message.content}
+            {chatContent.map((message, index) => {
+              return (
+                <div key={index}>
+                  {/* 닉네임과 현재 날짜 및 시간 표시 */}
+                  <p className={styles.messageInfo}>
+                    <span className={styles.nickname}>닉네임 </span>
+                    <span className={styles.timestamp}>
+                      {message.timestamp}
+                    </span>
+                  </p>
+                  {/* 메시지 내용 표시 (글씨 두껍게 여부에 따라 스타일 조정) */}
+                  <div
+                    className={`${styles.messageContent} ${message.isBold ? styles.bold : ""}`}
+                  >
+                    {message.content}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           {/* 수정된 스타일을 적용한 부분 */}
 

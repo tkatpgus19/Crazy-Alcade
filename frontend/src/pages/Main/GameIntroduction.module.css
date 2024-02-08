@@ -1,0 +1,44 @@
+.mainContainer {
+  /* Use flexbox to organize content vertically */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align items to the start of the flex container */
+  justify-content: flex-start; /* Align items to the top */
+  height: 740px; /* Adjust height as needed */
+  background-image: url("../../assets/images/mainback.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.header {
+  /* Style your header here */
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px; /* Add padding as needed */
+}
+
+.logoImg {
+  margin-top: 10px;
+  margin-left: 50px;
+}
+
+.gameIntroductionContainer {
+  width: 100%; /* Adjust width as needed */
+  margin-top: 30px; /* Add space between header and this container */
+  display: flex;
+  justify-content: flex-start; /* Align items to the left */
+  padding-left: 20px; /* Add padding to align with the logo above */
+}
+
+/* Style your buttons here */
+.introButton,
+.itemDexButton,
+.expTableButton {
+  margin-right: 10px; /* Space between buttons */
+}
+
+/* Adjust this as needed based on your content layout */
+.contentArea {
+  /* This is where you'll show your content when a button is clicked */
+}
