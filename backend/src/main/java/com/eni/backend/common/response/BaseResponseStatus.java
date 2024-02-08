@@ -70,6 +70,8 @@ public enum BaseResponseStatus {
     // CODE
     LANGUAGE_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "지원하지 않는 언어입니다."),
 
+    // ROOM
+    POST_ROOM_SUCCESS(HttpStatus.OK, "방 생성에 성공하였습니다."),
     ;
 
 
