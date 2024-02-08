@@ -13,10 +13,14 @@ export const webIDESlice = createSlice({
       state.isFlipped = !state.isFlipped;
       console.log("toggle!");
     },
+    resetWebIDEFlip: (state) => {
+      state.isFlipped = false;
+      console.log("reset IDE!");
+    },
   },
 });
 
 // 액션과 리듀서를 내보냅니다.
-export const { toggleWebIDEFlip } = webIDESlice.actions;
+export const { toggleWebIDEFlip, resetWebIDEFlip } = webIDESlice.actions;
 
 export default webIDESlice.reducer;

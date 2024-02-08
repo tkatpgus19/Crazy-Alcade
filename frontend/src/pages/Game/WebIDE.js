@@ -23,17 +23,18 @@ const WebIDE = () => {
     dispatch(
       setCode(`import java.util.Scanner;
  
-    public class Solution {
-     
-      public static void main(String[] args) {
-     
-        Scanner in = new Scanner(System.in);
-        int A = in.nextInt();
-        int B = in.nextInt();
-        
-        System.out.println(A+B);
-      }
-    }`)
+  public class Solution {
+         
+    public static void main(String[] args) {
+         
+      Scanner in = new Scanner(System.in);
+          
+      int A = in.nextInt();
+      int B = in.nextInt();
+            
+      System.out.println(A+B);
+    }
+  }`)
     );
   }, [dispatch]); // dispatch를 의존성 배열에 추가
 
@@ -58,7 +59,7 @@ const WebIDE = () => {
       return <div className={styles.loading}>Loading...</div>;
     }
     if (!executionResult || !executionResult.result) {
-      return <div className={styles.resultContainer}>실행결과</div>;
+      return <div className={styles.resultContainer}>실행 결과</div>;
     }
 
     // 성공한 테스트 케이스의 수를 계산합니다.
@@ -129,6 +130,7 @@ const WebIDE = () => {
           wrap: true,
         }}
       />
+
       <div>{renderExecutionResult()}</div>
       <div className={styles.buttonContainer}>
         <button className={styles.floatButton} onClick={increaseFontSize}>

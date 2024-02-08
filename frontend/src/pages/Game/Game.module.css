@@ -1,8 +1,16 @@
 /* MainContent.css */
 
+.backgroundStyle {
+  background-image: url("../../assets/images/mainback.png"); /* Adjust the path as necessary */
+  background-size: cover; /* Cover the entire area */
+  background-position: center; /* Center the background image */
+  overflow-y: hidden;
+}
+
 .container {
   display: flex;
   overflow: hidden;
+
   flex-direction: row; /* 가로 방향으로 배치 */
   margin: auto; /* 원하는 간격으로 조절 */
   width: 95%; /* 가로의 95%를 차지하도록 설정 */
@@ -40,16 +48,6 @@
   }
 }
 
-/* 문어 먹물 뿌리기 애니메이션 */
-@keyframes inkSpray {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 @keyframes fadeOut {
   from {
     opacity: 1;
@@ -57,6 +55,10 @@
   to {
     opacity: 0;
   }
+}
+
+.octopusImage {
+  animation: shake 1s ease-in-out infinite;
 }
 
 .inkImage.fadeOut {
@@ -74,4 +76,12 @@
   position: fixed; /* 화면에 고정 */
   width: 200px; /* 병아리 이미지 크기 조정 */
   z-index: 1000; /* 다른 요소들 위에 표시 */
+}
+
+.gameResultsContainer {
+  position: fixed; /* Fixed position to place it over other content */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center the component */
+  z-index: 1000; /* Ensure it's above other content */
 }
