@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 
 import PropTypes from "prop-types";
 import styles from "./Timer.module.css";
-import axios from "axios";
 
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
@@ -16,9 +15,10 @@ const Timer = ({ roomId }) => {
   const client = useRef();
 
   useEffect(() => {
-    axios.get(
-      `${process.env.REACT_APP_BASE_URL}/rooms/set-timer?roomId=${roomId}`
-    );
+    // 방장이 요청으로 변경
+    // axios.get(
+    //   `${process.env.REACT_APP_BASE_URL}/rooms/set-timer?roomId=${roomId}`
+    // );
     connectSession();
   }, []);
 
@@ -52,7 +52,7 @@ const Timer = ({ roomId }) => {
     <div
       className={`${styles.timer} ${remainingTime < 60 ? styles.redTimer : ""}`}
     >
-      TIME {formatTime(remainingTime)}
+      TIME {remainingTime ? formatTime(remainingTime) : "?? : ??"}
     </div>
   );
 };

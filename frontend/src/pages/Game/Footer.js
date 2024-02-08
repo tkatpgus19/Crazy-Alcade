@@ -1,6 +1,7 @@
 // Footer.js
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import PropTypes from "prop-types";
 
 import styles from "./Footer.module.css";
 import ItemButton from "./components/ItemButton";
@@ -27,16 +28,25 @@ import balloonIcon from "../../assets/images/waterBalloon.png";
 import magicIcon from "../../assets/images/magic.png";
 import shieldIcon from "../../assets/images/shield.png";
 
-const Footer = () => {
+const Footer = ({ roomType }) => {
+  const dispatch = useDispatch();
+
+  const [isItem, setItem] = useState(false);
+
   const code = useSelector((state) => state.code.content); // 코드 상태 선택
   const lang = useSelector((state) => state.code.lang); // 언어 상태 선택
-
-  const dispatch = useDispatch();
 
   const isSprayingInk = useSelector((state) => state.octopus.isSprayingInk);
   const isChickenWalking = useSelector((state) => state.feature.chickenWalking);
   const isAnimating = useSelector((state) => state.waterBalloon.isAnimating);
   const isFlipped = useSelector((state) => state.webIDE.isFlipped); // 가정: webIDE 슬라이스에서 isFlipped 상태를 관리
+
+  useEffect(() => {
+    if (roomType === "item") {
+      setItem(true);
+      console.log("아이템전입니다");
+    }
+  }, []);
 
   const animProps = useSpring({
     transform: isAnimating ? "translateY(-100px)" : "translateY(0px)",
@@ -159,35 +169,37 @@ const Footer = () => {
   return (
     <div className={styles.footer}>
       {/* 내 아이템 영역 */}
-      <div className={styles.itemContainer}>
-        <div className={styles.itemHeader}>내 아이템</div>
-        {/* 각각의 아이템 버튼을 ItemButton 컴포넌트로 대체 */}
-        <ItemButton
-          icon={octopusIcon}
-          itemName="문어"
-          onUseItem={() => handleUseItem("아이템1")}
-        />
-        <ItemButton
-          icon={chickIcon}
-          itemName="병아리"
-          onUseItem={() => handleUseItem("아이템2")}
-        />
-        <ItemButton
-          icon={balloonIcon}
-          itemName="물풍선"
-          onUseItem={() => handleUseItem("아이템3")}
-        />
-        <ItemButton
-          icon={magicIcon}
-          itemName="요술봉"
-          onUseItem={() => handleUseItem("아이템4")}
-        />
-        <ItemButton
-          icon={shieldIcon}
-          itemName="쉴드"
-          onUseItem={() => handleUseItem("아이템5")}
-        />
-      </div>
+      {isItem && (
+        <div className={styles.itemContainer}>
+          <div className={styles.itemHeader}>내 아이템</div>
+          {/* 각각의 아이템 버튼을 ItemButton 컴포넌트로 대체 */}
+          <ItemButton
+            icon={octopusIcon}
+            itemName="문어"
+            onUseItem={() => handleUseItem("아이템1")}
+          />
+          <ItemButton
+            icon={chickIcon}
+            itemName="병아리"
+            onUseItem={() => handleUseItem("아이템2")}
+          />
+          <ItemButton
+            icon={balloonIcon}
+            itemName="물풍선"
+            onUseItem={() => handleUseItem("아이템3")}
+          />
+          <ItemButton
+            icon={magicIcon}
+            itemName="요술봉"
+            onUseItem={() => handleUseItem("아이템4")}
+          />
+          <ItemButton
+            icon={shieldIcon}
+            itemName="쉴드"
+            onUseItem={() => handleUseItem("아이템5")}
+          />
+        </div>
+      )}
       {/* 액션 버튼들 */}
       <animated.div style={animProps} className={styles.buttonContainer}>
         {isAnimating && (
@@ -218,6 +230,10 @@ const Footer = () => {
       </animated.div>
     </div>
   );
+};
+
+Footer.propTypes = {
+  roomType: PropTypes.string.isRequired,
 };
 
 export default Footer;

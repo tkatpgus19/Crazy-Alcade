@@ -29,6 +29,7 @@ function App() {
           <Route path="/main" element={<Main />} />
           <Route path="/room" element={<Room />} />
           <Route path="/game" element={<Game />} />
+          <Route path="/*" element={<h1>비정상적인 접근입니다.</h1>} />
         </Routes>
       </BrowserRouter>
     </div>

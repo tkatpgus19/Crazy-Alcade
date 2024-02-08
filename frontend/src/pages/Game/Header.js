@@ -7,12 +7,13 @@ import LanguageBox from "./components/LanguageBox.js";
 import Timer from "./components/Timer.js";
 import ExitButton from "../../components/buttons/ExitButton.js";
 
-const Header = ({ roomTitle, language, roomId, onExitClick }) => {
+const Header = ({ roomTitle, language, roomType, roomId, onExitClick }) => {
   return (
     <div className={styles.header}>
       <div className={styles.roomInfo}>
         <RoomTitle title={roomTitle} />
         <LanguageBox language={language} />
+        <LanguageBox language={roomType} />
       </div>
       <div className={styles.timerAndExit}>
         <Timer roomId={roomId} />
@@ -26,6 +27,7 @@ const Header = ({ roomTitle, language, roomId, onExitClick }) => {
 Header.propTypes = {
   roomTitle: PropTypes.string.isRequired,
   language: PropTypes.string.isRequired,
+  roomType: PropTypes.string.isRequired,
   roomId: PropTypes.string.isRequired,
   onExitClick: PropTypes.func.isRequired,
 };

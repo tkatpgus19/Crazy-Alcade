@@ -16,7 +16,8 @@ import { useDispatch, useSelector } from "react-redux";
 import octopusImage from "../../assets/images/octopus.png"; // 문어 이미지의 경로
 import inkImage from "../../assets/images/muk.png"; // 먹물 이미지의 경로
 import chickenImage from "../../assets/images/chick.png"; // 병아리 이미지 경로
-import { resetChickenWalking } from "./slices/featureSlice";
+const normalBackgroundImage = "../../assets/images/normalBackground.webp";
+const itemBackgroundImage = "../../assets/images/normalBackground.webp";
 
 function Game() {
   const navigate = useNavigate();
@@ -29,7 +30,16 @@ function Game() {
 
   let location = useLocation();
 
-  const { roomId, nickname, userList, roomType } = location.state; // 대기방에서 넘긴 데이터들을 받아왔다.
+  // 대기 방에서 넘어 온 정보들.
+  const roomId = location.state ? location.state.roomId : null;
+  const nickname = location.state ? location.state.nickname : null;
+  const userList = location.state ? location.state.userList : null;
+  const roomType = location.state ? location.state.roomType : "normal"; // 기본값을 "normal"로 설정
+
+  const backgroundStyle =
+    roomType === "item"
+      ? styles.normalBackgroundStyle
+      : styles.itemBackgroundStyle;
 
   const [showOctopus, setOctopus] = useState(false);
   const [chickens, setChickens] = useState([]); // 병아리 이미지 상태
@@ -43,7 +53,7 @@ function Game() {
     hasPassword: false,
     roomPassword: "",
     problemTier: "골드1",
-    problemNo: 1000,
+    problemNo: 1,
     timeLimit: 60,
     language: "JAVA",
     codeReview: false,
@@ -55,16 +65,11 @@ function Game() {
     userCnt: 0,
   };
 
-  // 타이머 실행
+  // 비정상인 접근 차단. 개발 후 살리기.
   useEffect(() => {
-    // setTime(dummyRoomInfo.timeLimit);
-    // if (time === 0) return;
-    // // Decrease time by 1 every second
-    // const timerId = setInterval(() => {
-    //   setTime((prevTime) => prevTime - 1);
-    // }, 1000);
-    // Clean up the interval on unmount
-    // return () => clearInterval(timerId);
+    // if (!(roomId && nickname)) navigate("/error");
+    // roomId를 이용해 API로 세부 방 정보 가져오기.
+    //REACT_APP_SERVER_URL
   }, []);
 
   // 0초가 되면 결과창 표시
@@ -208,10 +213,11 @@ function Game() {
   };
 
   return (
-    <div className={styles.backgroundStyle}>
+    <div className={backgroundStyle}>
       <Header
         roomTitle={dummyRoomInfo.roomName}
         language={dummyRoomInfo.language}
+        roomType={dummyRoomInfo.roomType}
         roomId={roomId}
         onExitClick={handleExitClick} // 수정된 부분
       />
@@ -249,6 +255,7 @@ function Game() {
               height: "95%",
               left: "-2px",
               backgroundColor: "#c3c8d0",
+
               marginTop: "10px",
               borderRadius: "30px",
             },
@@ -259,7 +266,7 @@ function Game() {
           </div>
         </Resizable>
       </div>
-      <Footer />
+      <Footer roomType={dummyRoomInfo.roomType} />
       {showOctopus && <OctopusImage />}
       {inkSpotImages}
       {chickenImages}
