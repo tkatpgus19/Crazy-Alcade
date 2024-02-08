@@ -15,6 +15,14 @@ public enum BaseResponseStatus {
     LOGIN_SUCCESS(HttpStatus.OK,"로그인에 성공하였습니다."),
     LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃에 성공하였습니다."),
 
+    GET_MEMBER_LIST_SUCCESS(HttpStatus.OK, "회원 목록 조회에 성공하였습니다."),
+    PUT_NICKNAME_SUCCESS(HttpStatus.OK, "닉네임 변경에 성공하였습니다."),
+    PUT_LANGUAGE_SUCCESS(HttpStatus.OK, "닉네임 변경에 성공하였습니다."),
+    PUT_COIN_ADD_SUCCESS(HttpStatus.OK, "코인 획득에 성공하였습니다."),
+    PUT_COIN_SUB_SUCCESS(HttpStatus.OK, "코인 차감에 성공하였습니다."),
+    REWARD_ADD_SUCCESS(HttpStatus.OK, "코인과 EXP 획득에 성공하였습니다."),
+
+
     POST_PROBLEM_SUCCESS(HttpStatus.OK, "문제 생성에 성공하였습니다."),
     POST_TESTCASE_SUCCESS(HttpStatus.OK, "테스트케이스 생성에 성공하였습니다."),
     EXECUTE_CODE_SUCCESS(HttpStatus.OK, "코드 실행에 성공하였습니다."),

@@ -15,8 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import static com.eni.backend.common.response.BaseResponseStatus.BAD_REQUEST;
-import static com.eni.backend.common.response.BaseResponseStatus.SUCCESS;
+import static com.eni.backend.common.response.BaseResponseStatus.*;
 import static com.eni.backend.common.util.BindingResultUtils.getErrorMessages;
 
 @Slf4j
@@ -32,7 +31,7 @@ public class MemberController {
     public BaseSuccessResponse<?> getList() {
         log.info("MemberController.getList");
 
-        return BaseSuccessResponse.of(SUCCESS.getMessage(), memberService.getList());
+        return BaseSuccessResponse.of(GET_MEMBER_LIST_SUCCESS, memberService.getList());
     }
 
     @PutMapping("/nickname")
@@ -44,7 +43,7 @@ public class MemberController {
             throw new CustomBadRequestException(BAD_REQUEST, getErrorMessages(bindingResult));
         }
 
-        return BaseSuccessResponse.of(SUCCESS, memberService.putNickname(authentication, putNicknameRequest));
+        return BaseSuccessResponse.of(PUT_NICKNAME_SUCCESS, memberService.putNickname(authentication, putNicknameRequest));
     }
 
     @PutMapping("/lang")
@@ -56,7 +55,7 @@ public class MemberController {
             throw new CustomBadRequestException(BAD_REQUEST, getErrorMessages(bindingResult));
         }
 
-        return BaseSuccessResponse.of(memberService.putLanguage(authentication, putLanguageRequest));
+        return BaseSuccessResponse.of(PUT_LANGUAGE_SUCCESS, memberService.putLanguage(authentication, putLanguageRequest));
     }
 
     @PutMapping("/coin/add")
@@ -68,7 +67,7 @@ public class MemberController {
             throw new CustomBadRequestException(BAD_REQUEST, getErrorMessages(bindingResult));
         }
 
-        return BaseSuccessResponse.of(memberService.putCoin(authentication, putCoinRequest, true));
+        return BaseSuccessResponse.of(PUT_COIN_ADD_SUCCESS, memberService.putCoin(authentication, putCoinRequest, true));
     }
 
     @PutMapping("/coin/sub")
@@ -80,7 +79,7 @@ public class MemberController {
             throw new CustomBadRequestException(BAD_REQUEST, getErrorMessages(bindingResult));
         }
 
-        return BaseSuccessResponse.of(memberService.putCoin(authentication, putCoinRequest, false));
+        return BaseSuccessResponse.of(PUT_COIN_SUB_SUCCESS, memberService.putCoin(authentication, putCoinRequest, false));
     }
 
     @PutMapping("/reward")
@@ -92,6 +91,6 @@ public class MemberController {
             throw new CustomBadRequestException(BAD_REQUEST, getErrorMessages(bindingResult));
         }
 
-        return BaseSuccessResponse.of(memberService.putReward(authentication, putRewardRequest));
+        return BaseSuccessResponse.of(REWARD_ADD_SUCCESS, memberService.putReward(authentication, putRewardRequest));
     }
 }
