@@ -319,16 +319,10 @@ public class JavaCodeService {
             return path;
         }
 
-        try {
-            file.mkdir();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (file.mkdirs()) {
+            log.info("폴더 생성 {}", path);
+            return path;
         }
-
-//        if (file.mkdir()) {
-//            log.info("폴더 생성 {}", path);
-//            return path;
-//        }
 
         throw new CustomServerErrorException(SERVER_ERROR);
     }
