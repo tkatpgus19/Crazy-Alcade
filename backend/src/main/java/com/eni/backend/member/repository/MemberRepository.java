@@ -9,7 +9,6 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByProviderAndSocialId(OAuth2Provider provider, String socialId);
-    Optional<Member> findMemberBySocialId(String socialId);
     Optional<Member> findById(Long memberId);
-
+    Optional<Member> findBySocialIdAndProvider(String socialId, OAuth2Provider provider);
 }

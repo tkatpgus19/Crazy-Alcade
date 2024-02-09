@@ -1,7 +1,8 @@
 package com.eni.backend.member.service;
 
-import com.eni.backend.auth.jwt.JwtTokenProvider;
 import com.eni.backend.auth.oauth2.service.OAuth2UserPrincipal;
+import com.eni.backend.auth.oauth2.user.LoginInfo;
+import com.eni.backend.auth.oauth2.user.OAuth2Provider;
 import com.eni.backend.auth.oauth2.user.OAuth2UserInfo;
 import com.eni.backend.common.exception.CustomBadRequestException;
 import com.eni.backend.common.exception.CustomServerErrorException;
@@ -29,6 +30,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.eni.backend.common.response.BaseResponseStatus.DATABASE_ERROR;
 import static com.eni.backend.common.response.BaseResponseStatus.MEMBER_NOT_FOUND;
 import static com.eni.backend.common.response.BaseResponseStatus.TOKEN_MISMATCH;
 
@@ -40,66 +42,36 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final LevelRepository levelRepository;
-    private final JwtTokenProvider jwtTokenProvider;
-
-    // true: 신규 회원, false: 기존 회원
-    private boolean isNew = true;
-
-    // true: 로그인 보상 O, false: 로그인 보상 X
-    private boolean isConnected = true;
-
-    public LoginResponse login(Authentication authentication) {
-        OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
-
-        Member member = findOrSaveMember(principal.getUserInfo());
-        String accessToken = jwtTokenProvider.generateAccessToken(authentication, member.getId());
-
-        //로그인 할 때 최종 접속시간 확인해서 로그인 보상 받을 수 있는지 확인
-        if (isNew) {
-            // 신규회원
-            // 로그인 보상
-            isConnected = true;
-        } else {
-            // 기존회원
-            // 최종 접속일 확인 후 로그인 보상
-            isConnected = !Objects.equals(member.getConnectedAt().toLocalDateTime().toLocalDate(), LocalDate.now());
-        }
-
-        return LoginResponse.of(member.getId(), accessToken, isNew, isConnected);
-    }
-
+    
     @Transactional
-    public Member findOrSaveMember(OAuth2UserInfo info) {
+    public LoginInfo loginOrJoinMember(Member member, boolean flag) {
 
-        // DB에서 회원 정보 있는지 확인
-        Optional<Member> findMember = memberRepository.findByProviderAndSocialId(
-                info.getProvider(), info.getId());
-
-        Member member;
+        LoginInfo loginInfo;
 
         // 회원 정보가 있으면 해당 회원 리턴
-        if (findMember.isPresent()) {
-            isNew = false;
-            member = findMember.get();
-
-            // 회원 탐색할 때 최종 접속시간 갱신
+        if (flag) {
+            // 회원이 로그인할 때 최종 접속시간 갱신
             member.updateConnectedAt(Timestamp.valueOf(LocalDateTime.now()));
 
-            return member;
+            loginInfo = LoginInfo.of(member.getId(), false, Objects.equals(member.getConnectedAt().toLocalDateTime().toLocalDate(), LocalDate.now()));
         }
         // 없으면 새로 생성해서 리턴
         else {
-            isNew = true;
-            member = Member.from(info);
-
             //레벨을 기본값을 1로 설정
             Optional<Level> defaultLevel = levelRepository.findById(1);
             defaultLevel.ifPresent(member::updateDefaultLevel);
 
-            return memberRepository.save(member);
+            try {
+                Long memberId = memberRepository.save(member).getId();
+                loginInfo = LoginInfo.of(memberId, true, false);
+            } catch (Exception e) {
+                throw new CustomServerErrorException(DATABASE_ERROR);
+            }
         }
-    }
 
+        return loginInfo;
+    }
+    
     public Member validateMemberByToken(Long memberId) {
         return findMemberById(memberId)
                 .orElseThrow(() -> new CustomBadRequestException(TOKEN_MISMATCH));
@@ -110,14 +82,8 @@ public class MemberService {
         return memberRepository.findById(memberId);
     }
 
-    private OAuth2UserPrincipal getOAuth2UserPrincipal(Authentication authentication) {
-        Object principal = authentication.getPrincipal();
-
-        if (principal instanceof OAuth2UserPrincipal) {
-            return (OAuth2UserPrincipal) principal;
-        }
-
-        return null;
+    public Optional<Member> findBySocialIdAndProvider(String socialId, OAuth2Provider provider) {
+        return memberRepository.findBySocialIdAndProvider(socialId, provider);
     }
 
     public List<GetMemberListResponse> getList() {
