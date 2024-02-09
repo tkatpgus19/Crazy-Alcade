@@ -24,16 +24,16 @@ public class RoomService {
     public PostRoomResponse post(PostRoomRequest request){
         String roomId = roomRepository.save(request);
 
-        template.convertAndSend("/sub/normal/room-list", getNormalRoomList(null, null, 1));
-        template.convertAndSend("/sub/item/room-list", getItemRoomList(null, null, 1));
+        template.convertAndSend("/sub/normal/room-list", getRoomList("normal"));
+        template.convertAndSend("/sub/item/room-list", getRoomList("item"));
 
         // 생성된 방 ID 값 반환
         return PostRoomResponse.of(roomId);
     }
 
-    // 노말전 방 리스트 조회
-    public List<RoomDto> getNormalRoomList(String language, String tier, Integer page){
-        List<RoomDto> resultList = roomRepository.getNormalRoomMap().values().stream().toList();
+    // 조건에 부합하는 방 리스트 조회
+    public List<RoomDto> getSortedRoomList(String roomType, String language, String tier, Boolean codeReview, Boolean isSolved, Integer page){
+        List<RoomDto> resultList = roomRepository.getRoomListByRoomType(roomType);
         if(language != null){
             resultList = resultList
                     .stream()
@@ -46,6 +46,13 @@ public class RoomService {
                     .filter(entry -> entry.getProblemTier().equals(tier))
                     .toList();
         }
+        if(codeReview != null){
+            resultList = resultList
+                    .stream()
+                    .filter(entry -> entry.getCodeReview() == codeReview)
+                    .toList();
+        }
+
         if(resultList.size() > (page-1)*4){
             if(resultList.size()<(page-1)*4+4){
                 resultList = resultList.subList((page-1)*4, resultList.size());
@@ -60,33 +67,9 @@ public class RoomService {
         return resultList;
     }
 
-    // 아이템전 방 리스트 조회
-    public List<RoomDto> getItemRoomList(String language, String tier, Integer page){
-        List<RoomDto> resultList = roomRepository.getItemRoomMap().values().stream().toList();
-        if(language != null){
-            resultList = resultList
-                    .stream()
-                    .filter(entry -> entry.getLanguage().equals(language))
-                    .toList();
-        }
-        if(tier != null){
-            resultList = resultList
-                    .stream()
-                    .filter(entry -> entry.getProblemTier().equals(tier))
-                    .toList();
-        }
-//        if(resultList.size() > (page-1)*4){
-//            if(resultList.size()<(page-1)*4+4){
-//                resultList = resultList.subList((page-1)*4, resultList.size());
-//            }
-//            else{
-//                resultList = resultList.subList((page-1)*4, (page-1)*4+4);
-//            }
-//        }
-//        else{
-//            return Collections.emptyList();
-//        }
-        return resultList;
+    // 방 리스트 조회
+    public List<RoomDto> getRoomList(String roomType){
+        return roomRepository.getRoomListByRoomType(roomType);
     }
 
     // 방에 인원 추가
@@ -263,7 +246,7 @@ public class RoomService {
                 }
             }
             if(cnt == room.getUserCnt()-1){
-                room.setStarted(true);
+                room.setIsStarted(true);
                 return room;
             }
             return null;
