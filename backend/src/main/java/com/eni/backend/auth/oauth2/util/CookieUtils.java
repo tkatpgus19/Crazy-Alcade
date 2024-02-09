@@ -17,12 +17,9 @@ public class CookieUtils {
         Cookie[] cookies = request.getCookies();
 
         if (cookies != null) {
-            log.info("여기까지는 오니");
             for (Cookie cookie : cookies) {
                 if(cookie.getName().equals(name))
-                    log.info("여기까지는 오니 쿠키야{}", cookie.getName());{
                     return Optional.of(cookie);
-                }
             }
         }
 
