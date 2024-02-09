@@ -22,6 +22,7 @@
   font-size: 16px;
   -webkit-text-stroke: 1px black;
   font-family: "DNFBitBitv2";
+  margin: 0px 10px;
 }
 
 /* 각 버튼 스타일 */
@@ -56,11 +57,12 @@
 
 .waterBalloon {
   position: absolute;
-  top: -50px; /* 버튼 위에 위치 */
-  left: 183px;
+  top: -150px; /* 버튼 위에 위치 */
+  left: -30px;
   right: 0;
   margin: auto; /* 가운데 정렬 */
-  width: 120px; /* 이미지 크기 조정 */
+  width: 360px; /* 이미지 크기 조정 */
   height: auto;
   z-index: 2; /* 버튼 위에 렌더링 */
+  opacity: 80%;
 }

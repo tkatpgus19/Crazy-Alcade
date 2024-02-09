@@ -14,8 +14,9 @@ import axios from "axios";
 const Room = () => {
   const SERVER_URL =
     // "ec2-3-39-233-234.ap-northeast-2.compute.amazonaws.com:8080";
-    // "192.168.100.146:8080";
-    "192.168.123.112:8080";
+    "192.168.100.146:8080";
+
+  const messagesEndRef = useRef(null); // messages 참조 생성
 
   useEffect(() => {
     connectRoom();
@@ -44,6 +45,10 @@ const Room = () => {
     navigate(-1);
   };
 
+  const onSignalReceived = (payload) => {
+    enterGame(JSON.parse(payload.body));
+  };
+
   const onConnected = () => {
     client.current.subscribe("/sub/chat/room/" + roomId, onChatReceived); // 이 url 이 붙은 것을 계속 구독하겠습니다. 고유한 url 만들기
     client.current.subscribe(
@@ -60,6 +65,10 @@ const Room = () => {
         roomType: roomType,
       })
     ); // 입장 이벤트 처리
+    client.current.subscribe(
+      "/sub/room/" + roomId + "/start",
+      onSignalReceived
+    );
   };
 
   const onError = (error) => {
@@ -133,9 +142,37 @@ const Room = () => {
     // navigate("../");
   };
 
-  const gamestart = () => {
+  const onReadyClicked = () => {
     getReady();
+
     // navigate("../game");
+  };
+  const onStartClicked = () => {
+    // 게임시작을 하기위해서 불러오는 API
+    axios
+      .get(
+        `http://${SERVER_URL}/rooms/start?roomType=${roomType}&roomId=${roomId}`
+      )
+      .then((res) => {
+        if (res.data) {
+          console.log("되는거니..?");
+          axios.get(`http://${SERVER_URL}/rooms/set-timer?roomId=${roomId}`);
+        } else {
+          alert("준비가 되지 않았습니다.");
+        }
+      });
+  };
+
+  const enterGame = (data) => {
+    // 게임방 입장을 위한 로직
+    navigate("/game", {
+      state: {
+        roomId: data.roomId,
+        nickname: nickname,
+        userList: data.userList,
+        roomType: data.roomType,
+      },
+    });
   };
 
   const onChage = (e) => {
@@ -147,6 +184,16 @@ const Room = () => {
       sendChat();
     }
   };
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      // 스크롤을 컨테이너의 맨 아래로 이동시킵니다.
+      const scrollHeight = messagesEndRef.current.scrollHeight;
+      const height = messagesEndRef.current.clientHeight;
+      const maxScrollTop = scrollHeight - height;
+      messagesEndRef.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+    }
+  }, [chatContent]); // chatContent가 변경될 때마다 이 로직을 실행합니다.
 
   return (
     <Background>
@@ -174,7 +221,7 @@ const Room = () => {
         <div className={styles.right}>
           <div className={styles.chat}>
             <p className={styles.chattext}>채팅창</p>
-            <div className={styles.realchat}>
+            <div className={styles.realchat} ref={messagesEndRef}>
               {chatContent.map((message, index) => {
                 return (
                   <>
@@ -211,7 +258,11 @@ const Room = () => {
                   ? styles.start + " " + styles.startbtn
                   : styles.ready + " " + styles.startbtn
               }
-              onClick={gamestart}
+              onClick={
+                userStatus[nickname] === "MASTER"
+                  ? onStartClicked
+                  : onReadyClicked
+              }
             >
               {userStatus[nickname] === "MASTER" ? "START" : "READY"}
             </div>

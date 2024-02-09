@@ -40,8 +40,13 @@
   flex-direction: column;
 }
 
-.micIcon,
-.soundIcon,
 .chaticon {
   font-size: 22px;
+}
+
+.btnIcon {
+  width: 30px; /* 버튼의 너비 */
+  background-color: transparent; /* 버튼의 배경색 투명 */
+  cursor: pointer; /* 마우스 오버 시 커서 변경 */
+  margin: 1px;
 }

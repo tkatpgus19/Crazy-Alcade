@@ -9,9 +9,13 @@ export const waterBalloonSlice = createSlice({
     toggleWaterBalloonAnimation: (state) => {
       state.isAnimating = !state.isAnimating;
     },
+    resetWaterBalloonAnimation: (state) => {
+      state.isAnimating = false;
+    },
   },
 });
 
-export const { toggleWaterBalloonAnimation } = waterBalloonSlice.actions;
+export const { toggleWaterBalloonAnimation, resetWaterBalloonAnimation } =
+  waterBalloonSlice.actions;
 
 export default waterBalloonSlice.reducer;

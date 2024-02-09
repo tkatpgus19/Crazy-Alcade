@@ -6,24 +6,33 @@ import { useState, useEffect } from "react";
 import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
 import UserVideoComponent from "./UserVideoComponent";
+import PropTypes from "prop-types";
+import micOnImage from "../../assets/images/MIC-ON.png";
+import micOffImage from "../../assets/images/MIC-OFF.png";
+import soundOnImage from "../../assets/images/SOUND-ON.png";
+import soundOffImage from "../../assets/images/SOUND-OFF.png";
+import screenOnImage from "../../assets/images/SCREEN-ON.png";
+import screenOffImage from "../../assets/images/SCREEN-OFF.png";
 
 // OpenVidu 서버의 URL을 환경에 따라 설정
 const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === "production" ? "" : "http://localhost:5000/";
+  process.env.NODE_ENV === "production" ? "" : "http://192.168.100.146:8080/";
 
-const VideoScreen = () => {
-  const [mySessionId, setMySessionId] = useState("D104");
-  const [myUserName, setMyUserName] = useState("pangdoon");
+const VideoScreen = ({ roomId, nickname, userList, roomType }) => {
+  const [mySessionId, setMySessionId] = useState(roomId);
+  const [myUserName, setMyUserName] = useState(nickname);
   const [session, setSession] = useState(undefined);
   const [mainStreamManager, setMainStreamManager] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined); //방장
   const [subscribers, setSubscribers] = useState([]); //참가자
   const [isMicrophoneOn, setIsMicrophoneOn] = useState(true); // 마이크 상태를 상태로 관리
-  const [isAudioMuted, setIsAudioMuted] = useState(false); // 음소거 상태
+  const [isAudioMuted, setIsAudioMuted] = useState(true); // 음소거 상태
+  const [isCameraOn, setIsCameraOn] = useState(true); // 카메라가 기본적으로 켜져 있다고 가정
 
   useEffect(() => {
     // 페이지가 언마운트되기 전에 이벤트 리스너 추가 및 정리
     window.addEventListener("beforeunload", onBeforeUnload);
+    console.log(roomType + "//" + userList + "//" + nickname + "//" + roomId);
     return () => window.removeEventListener("beforeunload", onBeforeUnload);
   }, []);
 
@@ -167,8 +176,10 @@ const VideoScreen = () => {
   // 카메라 끄고 키는 버튼
   const toggleCamera = () => {
     if (publisher) {
-      const videoTracks = publisher.stream.getMediaStream().getVideoTracks(); // 이 것들을 통해 비디오 트랙 목록을 얻습니다.
-      videoTracks.forEach((track) => (track.enabled = !track.enabled)); // forEach 를 사용하여 각 트랙의 enabled 속성을 토글하여 카메라를 끕니다.
+      const videoTracks = publisher.stream.getMediaStream().getVideoTracks();
+      const isCurrentlyOn = videoTracks[0].enabled;
+      videoTracks.forEach((track) => (track.enabled = !isCurrentlyOn));
+      setIsCameraOn(!isCurrentlyOn); // 카메라 상태 업데이트
     }
   };
 
@@ -202,22 +213,27 @@ const VideoScreen = () => {
           </div>
         </div>
         <div className={styles.iconContainer}>
-          <button className="btn btn-secondary" onClick={toggleMicrophone}>
-            {isMicrophoneOn ? "마이크 켜짐" : "마이크 꺼짐"}
-          </button>
-          {/* 음소거 토글 버튼 */}
-          <button className="btn btn-secondary" onClick={toggleAudioMute}>
-            {isAudioMuted ? "소리 켜기" : "소리 꺼짐"}
-          </button>
-          {/* Toggle Camera 버튼 추가 */}
-          <button
-            className="btn btn-primary"
-            id="toggle-camera"
+          {/* 마이크 토글 이미지 버튼 */}
+          <img
+            src={isMicrophoneOn ? micOnImage : micOffImage}
+            className={styles.btnIcon}
+            onClick={toggleMicrophone}
+            alt="마이크 토글"
+          />
+          {/* 음소거 토글 이미지 버튼 */}
+          <img
+            src={isAudioMuted ? soundOnImage : soundOffImage}
+            className={styles.btnIcon}
+            onClick={toggleAudioMute}
+            alt="음소거 토글"
+          />
+          {/* 카메라 토글 이미지 버튼 */}
+          <img
+            src={isCameraOn ? screenOnImage : screenOffImage}
+            className={styles.btnIcon}
             onClick={toggleCamera}
-            value="카메라 끄기"
-          >
-            카메라 끄기
-          </button>
+            alt="카메라 토글"
+          />
         </div>
         <div className={styles.userVideo}>
           {subscribers.length > 0 ? (
@@ -258,6 +274,13 @@ const VideoScreen = () => {
       </div>
     </div>
   );
+};
+
+VideoScreen.propTypes = {
+  roomId: PropTypes.string.isRequired,
+  nickname: PropTypes.string.isRequired,
+  userList: PropTypes.array.isRequired,
+  roomType: PropTypes.string.isRequired,
 };
 
 export default VideoScreen;

@@ -1,0 +1,18 @@
+.itemButton {
+  margin: 0px 5px; /* 변경된 부분 */
+  padding: 3px 5px;
+  cursor: pointer;
+  border: none;
+  color: #00396c;
+  border-radius: 5px;
+  transition:
+    background-color 0.3s,
+    color 0.3s,
+    box-shadow 0.3s; /* 부드러운 전환 효과 */
+}
+
+.itemButton:hover {
+  background-color: whitesmoke; /* 마우스 호버 시 배경색 변경 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* 마우스 호버 시 그림자 효과 추가 */
+  transform: scale(1.1); /* 호버 시 약간 확대 */
+}
