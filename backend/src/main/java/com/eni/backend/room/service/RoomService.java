@@ -72,6 +72,11 @@ public class RoomService {
         return roomRepository.getRoomListByRoomType(roomType);
     }
 
+    // 게임방 정보 조회
+    public RoomDto getRoomInfo(String roomId){
+        return roomRepository.getRoomInfoById(roomId);
+    }
+
     // 방에 인원 추가
     public String addUser(ChatDto chatDto){
         String userUUID = UUID.randomUUID().toString();

@@ -34,6 +34,7 @@ public enum BaseResponseStatus {
 
     POST_ROOM_SUCCESS(HttpStatus.OK, "방 생성에 성공하였습니다."),
     GET_ROOM_LIST_SUCCESS(HttpStatus.OK, "방 목록 조회에 성공하였습니다."),
+    GET_ROOM_INFO_SUCCESS(HttpStatus.OK, "방 정보 조회에 성공하였습니다."),
 
     // BAD_REQUEST
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "유효하지 않은 요청입니다."),

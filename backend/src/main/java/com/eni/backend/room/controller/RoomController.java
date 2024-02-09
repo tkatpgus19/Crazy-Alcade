@@ -70,8 +70,8 @@ public class RoomController {
 
     // 게임방 정보 조회
     @GetMapping("/info")
-    public ResponseEntity<?> getRoomInfo(@RequestParam("roomType") String roomType, @RequestParam("roomId") String roomId){
-        return new ResponseEntity<>(roomService.getRoomInfo(roomType, roomId), HttpStatus.OK);
+    public BaseSuccessResponse<?> getRoom(@RequestParam("roomId") String roomId){
+        return BaseSuccessResponse.of(GET_ROOM_INFO_SUCCESS, roomService.getRoomInfo(roomId));
     }
 
 
