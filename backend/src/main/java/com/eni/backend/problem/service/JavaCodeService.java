@@ -43,6 +43,9 @@ public class JavaCodeService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    private long resultTime = Long.MAX_VALUE;
+    private long resultMemory = Long.MAX_VALUE;
+    
     @Transactional
     public Object judge(Authentication authentication, Problem problem, String code, Boolean isHidden) throws IOException, InterruptedException {
         // 멤버
@@ -79,7 +82,7 @@ public class JavaCodeService {
             }
             // 코드 저장
             try {
-                codeRepository.save(Code.of(code, Language.JAVA, result, member, problem));
+                codeRepository.save(Code.of(code, Language.JAVA, resultTime, resultMemory, result, member, problem));
             } catch (Exception e) {
                 deleteFolder(dirPath);
                 throw new CustomServerErrorException(DATABASE_ERROR);
@@ -300,6 +303,17 @@ public class JavaCodeService {
         // 프로세스 파괴
         process.destroyForcibly();
 
+        // 코드 효율 구하기
+        if (time < resultTime) {
+            resultTime = time;
+            resultMemory = memory;
+        }
+        else if (time == resultTime) {
+            if (resultMemory > memory) {
+                resultMemory = memory;
+            }
+        }
+
         // 실패
         if (!result.toString().equals(output.toString())) {
             return CodeSubmitResponse.of(no, CodeStatus.FAIL.getStatus(), time, memory);
@@ -401,3 +415,4 @@ public class JavaCodeService {
 
 
 }
+

@@ -3,6 +3,7 @@ package com.eni.backend.member.service;
 import com.eni.backend.auth.jwt.JwtTokenProvider;
 import com.eni.backend.auth.oauth2.service.OAuth2UserPrincipal;
 import com.eni.backend.auth.oauth2.user.OAuth2UserInfo;
+import com.eni.backend.common.exception.CustomBadRequestException;
 import com.eni.backend.common.exception.CustomServerErrorException;
 import com.eni.backend.member.dto.SecurityMemberDto;
 import com.eni.backend.member.dto.request.PutCoinRequest;
@@ -29,6 +30,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.eni.backend.common.response.BaseResponseStatus.MEMBER_NOT_FOUND;
+import static com.eni.backend.common.response.BaseResponseStatus.TOKEN_MISMATCH;
 
 @Slf4j
 @Service
@@ -100,7 +102,7 @@ public class MemberService {
 
     public Member validateMemberByToken(Long memberId) {
         return findMemberById(memberId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new CustomBadRequestException(TOKEN_MISMATCH));
     }
 
     private Optional<Member> findMemberById(Long memberId) {
