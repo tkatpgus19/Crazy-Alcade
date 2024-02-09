@@ -71,6 +71,7 @@ public class RoomController {
     // 게임방 정보 조회
     @GetMapping("/info")
     public BaseSuccessResponse<?> getRoom(@RequestParam("roomId") String roomId){
+        log.warn("조회된 방 정보: {}", roomService.getRoomInfo(roomId));
         return BaseSuccessResponse.of(GET_ROOM_INFO_SUCCESS, roomService.getRoomInfo(roomId));
     }
 
