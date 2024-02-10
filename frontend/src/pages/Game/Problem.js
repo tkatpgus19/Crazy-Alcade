@@ -8,7 +8,7 @@ const Problem = ({ problemNo, problemTier }) => {
 
   useEffect(() => {
     const getData = async () => {
-      const apiUrl = `${process.env.REACT_APP_BASE_URL}/api/problems/${problemNo}`;
+      const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/${problemNo}`;
 
       try {
         const response = await fetch(apiUrl);

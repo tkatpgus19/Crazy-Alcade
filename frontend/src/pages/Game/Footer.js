@@ -102,33 +102,32 @@ const Footer = ({ roomType }) => {
   const handleRun = async () => {
     dispatch(setLoading(true)); // 로딩 시작
     console.log("코드 실행");
+    try {
+      const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/1/codes/execute`;
+      const token = process.env.REACT_APP_TOKEN;
 
-    const apiUrl = `${process.env.REACT_APP_BASE_URL}/api/problems/1/codes/execute`;
-    const token = process.env.REACT_APP_TOKEN;
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Bearer 토큰 방식을 사용하는 경우
+        },
+        body: JSON.stringify({
+          lang: lang,
+          content: code,
+        }),
+      });
 
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // Bearer 토큰 방식을 사용하는 경우
-      },
-      body: JSON.stringify({
-        lang: lang,
-        content: code,
-      }),
-    });
-
-    if (response.ok) {
       const data = await response.json();
       console.log(data); // 실행 결과 처리
       dispatch(setExecutionResult(data)); // Redux 상태 업데이트
-    } else {
+    } catch {
       // 오류 처리
       console.error("서버에서 문제가 발생했습니다.");
       dispatch(setExecutionResult("Error executing code.")); // 오류 메시지 저장
+    } finally {
+      dispatch(setLoading(false));
     }
-    // API 요청이 완료된 후 로딩 상태를 false로 설정
-    dispatch(setLoading(false));
   };
 
   // 코드 제출 함수
@@ -136,7 +135,7 @@ const Footer = ({ roomType }) => {
     dispatch(setLoading(true)); // 로딩 상태를 true로 설정
     const token = process.env.REACT_APP_TOKEN;
     try {
-      const apiUrl = `${process.env.REACT_APP_BASE_URL}/api/problems/1/codes/submit`;
+      const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/1/codes/submit`;
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
@@ -149,15 +148,9 @@ const Footer = ({ roomType }) => {
         }),
       });
 
-      // if (response.ok) {
       const data = await response.json();
       dispatch(setExecutionResult(data)); // 결과를 저장
       console.log(data);
-      // } else {
-      //   console.error("서버에서 문제가 발생했습니다.");
-      //   console.error(response);
-      //   dispatch(setExecutionResult({ message: "Error submitting code." })); // 오류 메시지 저장
-      // }
     } catch (error) {
       console.error("요청 처리 중 에러 발생:", error);
       dispatch(setExecutionResult({ message: "Error submitting code." }));

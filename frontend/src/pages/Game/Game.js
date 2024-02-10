@@ -16,8 +16,6 @@ import { useDispatch, useSelector } from "react-redux";
 import octopusImage from "../../assets/images/octopus.png"; // 문어 이미지의 경로
 import inkImage from "../../assets/images/muk.png"; // 먹물 이미지의 경로
 import chickenImage from "../../assets/images/chick.png"; // 병아리 이미지 경로
-const normalBackgroundImage = "../../assets/images/normalBackground.webp";
-const itemBackgroundImage = "../../assets/images/normalBackground.webp";
 
 function Game() {
   const navigate = useNavigate();
@@ -31,9 +29,9 @@ function Game() {
   let location = useLocation();
 
   // 대기 방에서 넘어 온 정보들.
-  const roomId = location.state ? location.state.roomId : null;
-  const nickname = location.state ? location.state.nickname : null;
-  const userList = location.state ? location.state.userList : null;
+  const roomId = location.state ? location.state.roomId : "roomId";
+  const nickname = location.state ? location.state.nickname : "nickname";
+  const userList = location.state ? location.state.userList : "userList";
   const roomType = location.state ? location.state.roomType : "normal"; // 기본값을 "normal"로 설정
 
   const backgroundStyle =
