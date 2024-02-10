@@ -41,6 +41,13 @@ public class MemberController {
         return BaseSuccessResponse.of(GET_MEMBER_SUCCESS, memberService.getMember(authentication));
     }
 
+    @GetMapping("/details")
+    public BaseSuccessResponse<?> getMemberDetails(Authentication authentication) {
+        log.info("MemberController.getMemberDetails");
+
+        return BaseSuccessResponse.of(GET_MEMBER_DETAILS_SUCCESS, memberService.getMemberDetails(authentication));
+    }
+
     @GetMapping("/coin")
     public BaseSuccessResponse<?> getCoin(Authentication authentication) {
         log.info("MemberController.getCoin");

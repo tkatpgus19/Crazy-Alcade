@@ -18,6 +18,8 @@ import com.eni.backend.member.entity.Level;
 import com.eni.backend.member.entity.Member;
 import com.eni.backend.member.repository.LevelRepository;
 import com.eni.backend.member.repository.MemberRepository;
+import com.eni.backend.problem.entity.Code;
+import com.eni.backend.problem.repository.CodeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -44,6 +46,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
     private final MemberItemRepository memberItemRepository;
+    private final CodeRepository codeRepository;
     private final LevelRepository levelRepository;
 
     @Transactional
@@ -126,6 +129,29 @@ public class MemberService {
         }
 
         return GetMemberResponse.from(member, getMemberItemListResponses);
+    }
+
+    public GetMemberDetailResponse getMemberDetails(Authentication authentication) {
+        Member member = findMemberByAuthentication(authentication);
+
+        if (member == null) {
+            throw new CustomBadRequestException(MEMBER_NOT_FOUND);
+        }
+
+        List<GetMemberProblemResponse> successProblems = new ArrayList<>();
+        List<GetMemberProblemResponse> failProblems = new ArrayList<>();
+
+        List<Code> codeList = codeRepository.findAllByMember(member);
+
+        for (Code code : codeList) {
+            if (code.getStatus().name().equals("SUCCESS")) {
+                successProblems.add(GetMemberProblemResponse.from(code));
+            } else if (code.getStatus().name().equals("FAIL")) {
+                failProblems.add(GetMemberProblemResponse.from(code));
+            }
+        }
+
+        return GetMemberDetailResponse.from(member, successProblems, failProblems);
     }
 
     public GetCoinResponse getCoin(Authentication authentication) {
