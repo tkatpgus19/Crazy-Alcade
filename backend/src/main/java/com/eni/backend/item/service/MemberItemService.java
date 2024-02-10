@@ -30,6 +30,7 @@ public class MemberItemService {
 
     @Transactional
     public PutMemberItemResponse putMemberItem(Authentication authentication, PutMemberItemRequest putMemberItemRequest, boolean operator) {
+
         // authentication으로 해당 Member를 찾는다.
         Member member = memberService.findMemberByAuthentication(authentication);
 
@@ -40,8 +41,10 @@ public class MemberItemService {
 
         // Member가 존재한다면
         else {
+            Long itemId = putMemberItemRequest.getItemId();
+
             // 바꾸고자 하는 itemId로 해당 Item을 찾는다.
-            Optional<Item> optionalItem = itemRepository.findById(putMemberItemRequest.getItemId());
+            Optional<Item> optionalItem = itemRepository.findById(itemId);
 
             // 해당 Item이 존재하지 않는다면 예외처리
             if (optionalItem.isEmpty()) {
@@ -53,32 +56,88 @@ public class MemberItemService {
                 // 해당 Item을 가져온다.
                 Item item = optionalItem.get();
 
-                // member가 가진 코인이 Item의 가격보다 많아야 구매 가능
-                if (member.getCoin() >= item.getPrice()) {
-                    // Member의 Item 구매 이력을 불러온다.
-                    Optional<MemberItem> optionalMemberItem = memberItemRepository.findMemberItemByMemberAndItem(member, item);
+                // Member의 Item 구매 이력을 불러온다.
+                Optional<MemberItem> optionalMemberItem = memberItemRepository.findMemberItemByMemberAndItem(member, item);
+                MemberItem memberItem;
 
-                    // MemberItem에 구매한 이력이 있다면,
-                    if (optionalMemberItem.isPresent()){
-                        MemberItem memberItem = optionalMemberItem.get();
+                // 구매 이력 있음
+                if (optionalMemberItem.isPresent()) {
+                    // 구매 이력 불러오기
+                    memberItem = optionalMemberItem.get();
 
-                        if (!memberItem.updateMemberItem(putMemberItemRequest, operator)) {
-                            throw new CustomBadRequestException(MEMBER_ITEM_USE_FAIL);
-                        }
+                    // Item 구매
+                    if (operator) {
+                        putMemberItemAdd(member, item, memberItem, putMemberItemRequest.getPutValue(), true);
                     }
 
-                    // 구매한 이력이 없다면, DB에 새로 넣어준다.
+                    // Item 사용
                     else {
-                        memberItemRepository.save(MemberItem.from(member, putMemberItemRequest, item));
+                        putMemberItemSub(memberItem, putMemberItemRequest.getPutValue());
                     }
                 }
-                // 코인이 부족하면 구매 실패
+
+                // 구매 이력 없음
                 else {
-                    throw new CustomBadRequestException(MEMBER_ITEM_PURCHASE_FAIL);
+                    // Item 구매
+                    if (operator) {
+                        memberItem = MemberItem.from(member, putMemberItemRequest.getPutValue(), item);
+                        putMemberItemAdd(member, item, memberItem, putMemberItemRequest.getPutValue(), false);
+                    }
+
+                    // Item 사용 : 구매 이력 없으면 아이템 사용 불가
+                    else {
+                        throw new CustomBadRequestException(MEMBER_ITEM_USE_FAIL);
+                    }
+
                 }
 
                 return PutMemberItemResponse.of(member.getId(), item.getId());
             }
+        }
+    }
+
+    @Transactional
+    public void putMemberItemAdd(Member member, Item item, MemberItem memberItem, Integer putValue, boolean isPresent) {
+
+        // member가 가진 코인이 Item의 가격보다 많거나 같아야 Item 구매 가능
+        if (member.getCoin() >= item.getPrice() && member.getCoin() > 0) {
+
+            // 코인 차감하기
+            member.updateCoin(item.getPrice());
+
+            // DB에 구매 이력이 존재한다면
+            if (isPresent) {
+                memberItem.updateMemberItem(putValue, true);
+            }
+
+            // 구매 이력이 존재하지 않는다면
+            else {
+                try {
+                    memberItemRepository.save(memberItem);     // DB에 넣어주기
+                } catch (Exception e) {
+                    throw new CustomBadRequestException(DATABASE_ERROR);         // DB 삽입 실패 -> 구매 실패
+                }
+            }
+        }
+
+        // 코인이 부족하면 구매 실패
+        else {
+            throw new CustomBadRequestException(MEMBER_ITEM_PURCHASE_FAIL);
+        }
+    }
+
+    @Transactional
+    public void putMemberItemSub(MemberItem memberItem, Integer putValue) {
+
+        // member가 가진 Item의 수가 사용하려는 수보다 많거나 같아야 Item 사용 가능
+        if (memberItem.getCount() >= putValue && memberItem.getCount() > 0) {
+            // 아이템 개수 변경(차감)
+            memberItem.updateMemberItem(putValue, false);
+        }
+
+        // Item 보유 개수 부족하면 사용 실패
+        else {
+            throw new CustomBadRequestException(MEMBER_ITEM_USE_FAIL);
         }
     }
 }

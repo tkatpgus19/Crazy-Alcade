@@ -5,7 +5,7 @@ import com.eni.backend.common.response.BaseSuccessResponse;
 import com.eni.backend.item.dto.request.PutMemberItemRequest;
 import com.eni.backend.item.service.ItemService;
 import com.eni.backend.item.service.MemberItemService;
-import com.eni.backend.member.dto.request.PutCoinRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -19,6 +19,7 @@ import static com.eni.backend.common.util.BindingResultUtils.getErrorMessages;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/items")
+@CrossOrigin
 public class ItemController {
 
     private final ItemService itemService;
@@ -31,7 +32,7 @@ public class ItemController {
     }
 
     @PutMapping("/members/add")
-    public BaseSuccessResponse<?> putItemAdd(Authentication authentication, PutMemberItemRequest putMemberItemRequest, BindingResult bindingResult) {
+    public BaseSuccessResponse<?> putItemAdd(Authentication authentication, @RequestBody @Valid PutMemberItemRequest putMemberItemRequest, BindingResult bindingResult) {
         log.info("ItemController.item.add");
 
         // validation 오류
@@ -43,7 +44,7 @@ public class ItemController {
     }
 
     @PutMapping("/members/sub")
-    public BaseSuccessResponse<?> putItemSub(Authentication authentication, PutMemberItemRequest putMemberItemRequest, BindingResult bindingResult) {
+    public BaseSuccessResponse<?> putItemSub(Authentication authentication, @RequestBody @Valid PutMemberItemRequest putMemberItemRequest, BindingResult bindingResult) {
         log.info("ItemController.item.sub");
 
         // validation 오류
