@@ -13,14 +13,16 @@ public class GetItemListResponse {
     private Integer price;
     private String description;
     private Integer duration;
+    private String image;
 
     @Builder
-    private GetItemListResponse(Long itemId, String name, Integer price, String description, Integer duration) {
+    private GetItemListResponse(Long itemId, String name, Integer price, String description, Integer duration, String image) {
         this.itemId = itemId;
         this.name = name;
         this.price = price;
         this.description = description;
         this.duration = duration;
+        this.image = image;
     }
 
     public static GetItemListResponse of(Item item) {
@@ -30,6 +32,7 @@ public class GetItemListResponse {
                 .price(item.getPrice())
                 .description(item.getDescription())
                 .duration(item.getDuration())
+                .image(item.getImage())
                 .build();
     }
 }

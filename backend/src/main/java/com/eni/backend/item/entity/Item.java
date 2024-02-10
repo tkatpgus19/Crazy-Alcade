@@ -31,14 +31,18 @@ public class Item {
     @Column(nullable = false)
     private Integer duration;
 
+    @Column(nullable = false)
+    private String image;
+
     @OneToMany(mappedBy = "item", cascade = CascadeType.REMOVE)
     private List<MemberItem> memberItems = new ArrayList<>();
 
     @Builder
-    public Item(String name, Integer price, String description, Integer duration) {
+    public Item(String name, Integer price, String description, Integer duration, String image) {
         this.name = name;
         this.price  = price;
         this.description = description;
         this.duration = duration;
+        this.image = image;
     }
 }
