@@ -15,18 +15,20 @@ public class GetInventoryResponse {
     private Integer itemPrice;
     private Integer itemDuration;
     private String itemDescription;
+    private String itemImage;
 
     @Builder
-    private GetInventoryResponse(Long memberId, Integer memberCount, Long itemId, Integer itemPrice, Integer itemDuration, String itemDescription) {
+    private GetInventoryResponse(Long memberId, Integer memberCount, Long itemId, Integer itemPrice, Integer itemDuration, String itemDescription, String itemImage) {
         this.memberId = memberId;
         this.memberCount = memberCount;
         this.itemId = itemId;
         this.itemPrice = itemPrice;
         this.itemDuration = itemDuration;
         this.itemDescription = itemDescription;
+        this.itemImage = itemImage;
     }
 
-    public static GetInventoryResponse of(Long memberId, Integer memberCount, Long itemId, Integer itemPrice, Integer itemDuration, String itemDescription) {
+    public static GetInventoryResponse of(Long memberId, Integer memberCount, Long itemId, Integer itemPrice, Integer itemDuration, String itemDescription, String itemImage) {
         return builder()
                 .memberId(memberId)
                 .memberCount(memberCount)
@@ -34,6 +36,7 @@ public class GetInventoryResponse {
                 .itemPrice(itemPrice)
                 .itemDuration(itemDuration)
                 .itemDescription(itemDescription)
+                .itemImage(itemImage)
                 .build();
     }
 
@@ -45,6 +48,7 @@ public class GetInventoryResponse {
                 .itemPrice(item.getPrice())
                 .itemDuration(item.getDuration())
                 .itemDescription(item.getDescription())
+                .itemImage(item.getImage())
                 .build();
     }
 }
