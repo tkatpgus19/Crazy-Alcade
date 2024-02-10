@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class ItemService {
 
     private final ItemRepository itemRepository;
+
     public List<GetItemListResponse> getList() {
         return itemRepository.findAll()
                 .stream().map(GetItemListResponse::of)

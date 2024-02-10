@@ -23,7 +23,8 @@ public enum BaseResponseStatus {
     REWARD_ADD_SUCCESS(HttpStatus.OK, "코인과 EXP 획득에 성공하였습니다."),
 
     GET_ITEM_LIST_SUCCESS(HttpStatus.OK, "아이템 목록 조회에 성공하였습니다."),
-
+    PUT_ITEM_ADD_SUCCESS(HttpStatus.OK, "아이템 구매에 성공하였습니다."),
+    PUT_ITEM_SUB_SUCCESS(HttpStatus.OK, "아이템 사용에 성공하였습니다."),
 
     POST_PROBLEM_SUCCESS(HttpStatus.OK, "문제 생성에 성공하였습니다."),
     POST_TESTCASE_SUCCESS(HttpStatus.OK, "테스트케이스 생성에 성공하였습니다."),
@@ -72,6 +73,12 @@ public enum BaseResponseStatus {
     // CODE
     LANGUAGE_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "지원하지 않는 언어입니다."),
 
+    // ITEM
+    ITEM_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당하는 아이템이 없습니다."),
+
+    // MEMBER ITEM
+    MEMBER_ITEM_PURCHASE_FAIL(HttpStatus.BAD_REQUEST, "코인 부족으로 아이템 구매에 실패하였습니다."),
+    MEMBER_ITEM_USE_FAIL(HttpStatus.BAD_REQUEST, "보유 개수 부족으로 아이템 구매에 실패하였습니다.")
     ;
 
 
