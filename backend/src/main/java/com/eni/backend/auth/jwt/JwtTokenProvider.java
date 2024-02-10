@@ -75,10 +75,6 @@ public class JwtTokenProvider implements InitializingBean {
         return generateToken(authentication, memberId, accessTokenValidTime);
     }
 
-//    public String generateRefreshToken(OAuth2UserPrincipal principal) {
-//        return generateToken(principal, refreshTokenValidTime);
-//    }
-
     private Claims getClaims(String token) {
         try {
             return Jwts.parserBuilder()
