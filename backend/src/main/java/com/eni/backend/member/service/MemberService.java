@@ -1,16 +1,18 @@
 package com.eni.backend.member.service;
 
-import com.eni.backend.auth.oauth2.service.OAuth2UserPrincipal;
 import com.eni.backend.auth.oauth2.user.LoginInfo;
 import com.eni.backend.auth.oauth2.user.OAuth2Provider;
-import com.eni.backend.auth.oauth2.user.OAuth2UserInfo;
 import com.eni.backend.common.exception.CustomBadRequestException;
 import com.eni.backend.common.exception.CustomServerErrorException;
+import com.eni.backend.item.entity.Item;
+import com.eni.backend.item.entity.MemberItem;
+import com.eni.backend.item.repository.ItemRepository;
+import com.eni.backend.item.repository.MemberItemRepository;
 import com.eni.backend.member.dto.SecurityMemberDto;
 import com.eni.backend.member.dto.request.PutCoinRequest;
-import com.eni.backend.member.dto.request.PutRewardRequest;
 import com.eni.backend.member.dto.request.PutLanguageRequest;
 import com.eni.backend.member.dto.request.PutNicknameRequest;
+import com.eni.backend.member.dto.request.PutRewardRequest;
 import com.eni.backend.member.dto.response.*;
 import com.eni.backend.member.entity.Level;
 import com.eni.backend.member.entity.Member;
@@ -25,14 +27,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.eni.backend.common.response.BaseResponseStatus.DATABASE_ERROR;
-import static com.eni.backend.common.response.BaseResponseStatus.MEMBER_NOT_FOUND;
-import static com.eni.backend.common.response.BaseResponseStatus.TOKEN_MISMATCH;
+import static com.eni.backend.common.response.BaseResponseStatus.*;
 
 @Slf4j
 @Service
@@ -41,8 +42,10 @@ import static com.eni.backend.common.response.BaseResponseStatus.TOKEN_MISMATCH;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final ItemRepository itemRepository;
+    private final MemberItemRepository memberItemRepository;
     private final LevelRepository levelRepository;
-    
+
     @Transactional
     public LoginInfo loginOrJoinMember(Member member, boolean flag) {
 
@@ -71,7 +74,7 @@ public class MemberService {
 
         return loginInfo;
     }
-    
+
     public Member validateMemberByToken(Long memberId) {
         return findMemberById(memberId)
                 .orElseThrow(() -> new CustomBadRequestException(TOKEN_MISMATCH));
@@ -90,6 +93,43 @@ public class MemberService {
         return memberRepository.findAll()
                 .stream().map(GetMemberListResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public GetCoinResponse getCoin(Authentication authentication) {
+        Member member = findMemberByAuthentication(authentication);
+
+        Optional<Member> optionalMember = memberRepository.findById(member.getId());
+
+        if (optionalMember.isEmpty()) {
+            throw new CustomBadRequestException(MEMBER_NOT_FOUND);
+        }
+
+        return GetCoinResponse.of(optionalMember.get().getCoin());
+    }
+
+    public List<GetInventoryResponse> getInventory(Authentication authentication) {
+        Member member = findMemberByAuthentication(authentication);
+        List<Item> itemList = itemRepository.findAll();
+        List<GetInventoryResponse> getInventoryResponseList = new ArrayList<>();
+
+        if (member != null) {
+            for (Item item : itemList) {
+
+                Integer memberCount;
+                Optional<MemberItem> optionalMemberItem = memberItemRepository.findMemberItemByMemberAndItem(member, item);
+
+                if (optionalMemberItem.isPresent()) {
+                    MemberItem memberItem = optionalMemberItem.get();
+                    memberCount = memberItem.getCount();
+                } else {
+                    memberCount = 0;
+                }
+
+                getInventoryResponseList.add(GetInventoryResponse.from(member, item, memberCount));
+            }
+        }
+
+        return getInventoryResponseList;
     }
 
     public PutNicknameResponse putNickname(Authentication authentication, PutNicknameRequest putNicknameRequest) {
