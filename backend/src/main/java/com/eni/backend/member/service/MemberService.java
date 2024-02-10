@@ -89,10 +89,43 @@ public class MemberService {
         return memberRepository.findBySocialIdAndProvider(socialId, provider);
     }
 
-    public List<GetMemberListResponse> getList() {
+    public List<GetMemberListResponse> getList(Authentication authentication) {
+        Member member = findMemberByAuthentication(authentication);
+
+        if (member == null) {
+            throw new CustomBadRequestException(MEMBER_NOT_FOUND);
+        }
+
         return memberRepository.findAll()
                 .stream().map(GetMemberListResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public GetMemberResponse getMember(Authentication authentication) {
+        Member member = findMemberByAuthentication(authentication);
+
+        if (member == null) {
+            throw new CustomBadRequestException(MEMBER_NOT_FOUND);
+        }
+
+        List<Item> itemList = itemRepository.findAll();
+        List<GetMemberItemListResponse> getMemberItemListResponses = new ArrayList<>();
+
+        for (Item item : itemList) {
+            Integer memberItemCount;
+            Optional<MemberItem> optionalMemberItem = memberItemRepository.findMemberItemByMemberAndItem(member, item);
+
+            if (optionalMemberItem.isPresent()) {
+                MemberItem memberItem = optionalMemberItem.get();
+                memberItemCount = memberItem.getCount();
+            } else {
+                memberItemCount = 0;
+            }
+
+            getMemberItemListResponses.add(GetMemberItemListResponse.from(item, memberItemCount));
+        }
+
+        return GetMemberResponse.from(member, getMemberItemListResponses);
     }
 
     public GetCoinResponse getCoin(Authentication authentication) {

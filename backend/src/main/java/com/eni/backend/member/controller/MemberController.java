@@ -27,11 +27,18 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
-    @GetMapping("")
-    public BaseSuccessResponse<?> getList() {
+    @GetMapping("/memberlist")
+    public BaseSuccessResponse<?> getList(Authentication authentication) {
         log.info("MemberController.getList");
 
-        return BaseSuccessResponse.of(GET_MEMBER_LIST_SUCCESS, memberService.getList());
+        return BaseSuccessResponse.of(GET_MEMBER_LIST_SUCCESS, memberService.getList(authentication));
+    }
+
+    @GetMapping("")
+    public BaseSuccessResponse<?> getMember(Authentication authentication) {
+        log.info("MemberController.getMember");
+
+        return BaseSuccessResponse.of(GET_MEMBER_SUCCESS, memberService.getMember(authentication));
     }
 
     @GetMapping("/coin")
