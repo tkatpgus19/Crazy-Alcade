@@ -11,14 +11,16 @@ import java.util.List;
 @Getter
 public class GetMemberResponse {
     private String nickname;
+    private String profile;
     private Integer levelId;
     private Integer exp;
     private Integer coin;
     private List<GetMemberItemListResponse> memberItemList;
 
     @Builder
-    private GetMemberResponse(String nickname, Integer levelId, Integer exp, Integer coin, List<GetMemberItemListResponse> memberItemList) {
+    private GetMemberResponse(String nickname, String profile, Integer levelId, Integer exp, Integer coin, List<GetMemberItemListResponse> memberItemList) {
         this.nickname = nickname;
+        this.profile = profile;
         this.levelId = levelId;
         this.exp = exp;
         this.coin = coin;
@@ -28,6 +30,7 @@ public class GetMemberResponse {
     public static GetMemberResponse from(Member member, List<GetMemberItemListResponse> memberItemList) {
         return builder()
                 .nickname(member.getNickname())
+                .profile(member.getProfile())
                 .levelId(member.getLevel().getId())
                 .exp(member.getExp())
                 .coin(member.getCoin())
