@@ -7,12 +7,14 @@ import com.eni.backend.auth.oauth2.user.LoginInfo;
 import com.eni.backend.auth.oauth2.user.OAuth2Provider;
 import com.eni.backend.auth.oauth2.user.OAuth2UserUnlinkManager;
 import com.eni.backend.auth.oauth2.util.CookieUtils;
+import com.eni.backend.member.entity.Member;
 import com.eni.backend.member.service.MemberService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -29,6 +31,9 @@ import static com.eni.backend.auth.oauth2.HttpCookieOAuth2AuthorizationRequestRe
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+    @Value("${handler.target-url}")
+    private String TARGET_URL;
+
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final OAuth2UserUnlinkManager oAuth2UserUnlinkManager;
     private final JwtTokenProvider jwtTokenProvider;
@@ -38,18 +43,50 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
 
-        String targetUrl;
+        String url = TARGET_URL;
+        OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
 
-        targetUrl = determineTargetUrl(request, response, authentication);
-
-        if (response.isCommitted()) {
-
-            logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
-            return;
+        if (principal == null) {
+            response.sendError(500);
         }
 
-        clearAuthenticationAttributes(request, response);
-        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+        String socialId  = principal.getUserInfo().getId();
+        OAuth2Provider provider = principal.getUserInfo().getProvider();
+
+        Optional<Member> findMember = memberService.findBySocialIdAndProvider(socialId, provider);
+        LoginInfo loginInfo;
+
+        // 신규 회원일 경우
+        if(findMember.isEmpty()) {
+            loginInfo = memberService.loginOrJoinMember(Member.from(principal.getUserInfo()), false);
+        }
+        // 기존 회원일 경우
+        else {
+            loginInfo = memberService.loginOrJoinMember(findMember.get(), true);
+        }
+
+        // 액세스 토큰 발급
+        String accessToken = jwtTokenProvider.generateAccessToken(authentication, loginInfo.getMemberId());
+
+        CookieUtils.addCookie(response, "access-token", accessToken, 60 * 5);
+        CookieUtils.addCookie(response, "member-id", String.valueOf(loginInfo.getMemberId()), 60 * 5);
+        CookieUtils.addCookie(response, "isNew", String.valueOf(loginInfo.isNew()), 60 * 5);
+        CookieUtils.addCookie(response, "isConnected", String.valueOf(loginInfo.isConnected()), 60 * 5);
+        CookieUtils.addCookie(response, "next", "main", 60 * 5);
+        response.sendRedirect(url);
+
+//        String targetUrl;
+//
+//        targetUrl = determineTargetUrl(request, response, authentication);
+//
+//        if (response.isCommitted()) {
+//
+//            logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
+//            return;
+//        }
+//
+//        clearAuthenticationAttributes(request, response);
+//        getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response,
@@ -59,9 +96,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .map(Cookie::getValue);
 
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
-
-//        String targetUrl = "http://localhost:3000/login-redirection";
-
 
         String mode = CookieUtils.getCookie(request, MODE_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue)
@@ -75,22 +109,55 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                     .build().toUriString();
         }
 
+        // mode가 로그인일 때
         if ("login".equalsIgnoreCase(mode)) {
+            log.info("id={}, email={}, accessToken={}, providerType={}",
+                    principal.getUserInfo().getId(),
+                    principal.getUserInfo().getEmail(),
+                    principal.getUserInfo().getAccessToken(),
+                    principal.getUserInfo().getProvider()
+            );
+
             // TODO: DB 저장
             // TODO: 액세스 토큰 발급
 
-            LoginInfo loginInfo = memberService.loginOrJoinMember(principal.getUserInfo());
+            String socialId  = principal.getUserInfo().getId();
+            OAuth2Provider provider = principal.getUserInfo().getProvider();
 
-            String accessToken = jwtTokenProvider.generateAccessToken(authentication, loginInfo.getMember().getId());
+            Optional<Member> findMember = memberService.findBySocialIdAndProvider(socialId, provider);
+            Member member;
+            LoginInfo loginInfo;
 
-            return UriComponentsBuilder.fromUriString(targetUrl)
-                    .queryParam("memberId", loginInfo.getMember().getId())
-                    .queryParam("isNew", loginInfo.isNew())
-                    .queryParam("isConnected", loginInfo.isConnected())
-                    .queryParam("access_token", accessToken)
-                    .build().toUriString();
+            if(findMember.isEmpty()) {
+                loginInfo = memberService.loginOrJoinMember(Member.from(principal.getUserInfo()), false);
 
-        } else if ("unlink".equalsIgnoreCase(mode)) {
+                // 액세스 토큰 발급
+                String accessToken = jwtTokenProvider.generateAccessToken(authentication, loginInfo.getMemberId());
+
+                //TODO: 회원가입 페이지(닉네임)로 리다이렉트
+                return UriComponentsBuilder.fromUriString(targetUrl)
+                        .queryParam("access-token", accessToken)
+                        .queryParam("member-id", loginInfo.getMemberId())
+                        .queryParam("next", "get-user-nickname")
+                        .build().toUriString();
+
+            } else {
+                member = findMember.get();
+                loginInfo = memberService.loginOrJoinMember(member, true);
+
+                // 액세스 토큰 발급
+                String accessToken = jwtTokenProvider.generateAccessToken(authentication, loginInfo.getMemberId());
+
+                //TODO: 로그인 후 페이지로 리다이렉트
+                return UriComponentsBuilder.fromUriString(targetUrl)
+                        .queryParam("access-token", accessToken)
+                        .queryParam("member-id", findMember.get().getId())
+                        .queryParam("next", "main")
+                        .build().toUriString();
+            }
+        }
+
+        else if ("unlink".equalsIgnoreCase(mode)) {
 
             String accessToken = principal.getUserInfo().getAccessToken();
             OAuth2Provider provider = principal.getUserInfo().getProvider();
@@ -103,7 +170,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
 
         return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("error", "Login failed")
+                .queryParam("error", "LoginFailed")
                 .build().toUriString();
 
     }

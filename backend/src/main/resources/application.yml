@@ -58,3 +58,6 @@ jwt:
 
 code:
   base-path: ${BASE_PATH}
+
+handler:
+  target-url: ${TARGET_URL}

@@ -1,6 +1,7 @@
 package com.eni.backend.auth.jwt;
 
 //import com.eni.backend.common.exception.CustomUnauthorizedException;
+
 import com.eni.backend.member.dto.SecurityMemberDto;
 import com.eni.backend.member.entity.Member;
 import com.eni.backend.member.service.MemberService;
@@ -17,8 +18,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-
-import static com.eni.backend.common.response.BaseResponseStatus.EXPIRED_TOKEN;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -52,7 +51,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             Member member = memberService.validateMemberByToken(jwtTokenProvider.getMemberId(accessToken));
 
             //SecurityContext에 저장할 Member 객체 생성
-            SecurityMemberDto securityDto = SecurityMemberDto.of(member);
+            SecurityMemberDto securityDto = SecurityMemberDto.from(member);
 
             Authentication authentication = jwtTokenProvider.getAuthentication(securityDto);
             SecurityContextHolder.getContext().setAuthentication(authentication);

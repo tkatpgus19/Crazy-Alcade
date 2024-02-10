@@ -1,34 +1,37 @@
 package com.eni.backend.auth.oauth2.user;
 
-import com.eni.backend.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public class LoginInfo {
-    Member member;
+
+    Long memberId;
+
+    // true: 로그인 보상 X, false: 로그인 보상 O
     boolean isNew;
+
+    // true: 신규 회원, false: 기존 회원
     boolean isConnected;
 
     @Builder
-    private LoginInfo(Member member, boolean isNew, boolean isConnected) {
-        this.member = member;
+    private LoginInfo(Long memberId, boolean isNew, boolean isConnected) {
+        this.memberId = memberId;
         this.isNew = isNew;
         this.isConnected = isConnected;
     }
 
-    public static LoginInfo of(Member member, boolean isNew, boolean isConnected) {
+    public static LoginInfo of(Long memberId, boolean isNew, boolean isConnected) {
         return builder()
-                .member(member)
+                .memberId(memberId)
                 .isNew(isNew)
                 .isConnected(isConnected)
                 .build();
     }
 
-    public static LoginInfo from(Member member, boolean isNew, boolean isConnected) {
+    public static LoginInfo from(Long memberId, boolean isNew, boolean isConnected) {
         return builder()
-                .member(member)
+                .memberId(memberId)
                 .isNew(isNew)
                 .isConnected(isConnected)
                 .build();

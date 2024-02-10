@@ -2,6 +2,7 @@ package com.eni.backend.member.service;
 
 import com.eni.backend.auth.oauth2.service.OAuth2UserPrincipal;
 import com.eni.backend.auth.oauth2.user.LoginInfo;
+import com.eni.backend.auth.oauth2.user.OAuth2Provider;
 import com.eni.backend.auth.oauth2.user.OAuth2UserInfo;
 import com.eni.backend.common.exception.CustomBadRequestException;
 import com.eni.backend.common.exception.CustomServerErrorException;
@@ -41,43 +42,28 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final LevelRepository levelRepository;
-
-    // true: 신규 회원, false: 기존 회원
-    boolean isNew = true;
-
-    // true: 로그인 보상 O, false: 로그인 보상 X
-    boolean isConnected = true;
     
     @Transactional
-    public LoginInfo loginOrJoinMember(OAuth2UserInfo info) {
+    public LoginInfo loginOrJoinMember(Member member, boolean flag) {
 
-        // DB에서 회원 정보 있는지 확인
-        Optional<Member> findMember = memberRepository.findByProviderAndSocialId(
-                info.getProvider(), info.getId());
-
-        Member member;
         LoginInfo loginInfo;
 
         // 회원 정보가 있으면 해당 회원 리턴
-        if (findMember.isPresent()) {
-            //회원 정보 불러오기
-            member = findMember.get();
-
+        if (flag) {
             // 회원이 로그인할 때 최종 접속시간 갱신
             member.updateConnectedAt(Timestamp.valueOf(LocalDateTime.now()));
 
-            loginInfo = LoginInfo.of(member, false, Objects.equals(member.getConnectedAt().toLocalDateTime().toLocalDate(), LocalDate.now()));
+            loginInfo = LoginInfo.of(member.getId(), false, Objects.equals(member.getConnectedAt().toLocalDateTime().toLocalDate(), LocalDate.now()));
         }
         // 없으면 새로 생성해서 리턴
         else {
-            member = Member.from(info);
-
             //레벨을 기본값을 1로 설정
             Optional<Level> defaultLevel = levelRepository.findById(1);
             defaultLevel.ifPresent(member::updateDefaultLevel);
 
             try {
-                loginInfo = LoginInfo.of(memberRepository.save(member), true, false);
+                Long memberId = memberRepository.save(member).getId();
+                loginInfo = LoginInfo.of(memberId, true, false);
             } catch (Exception e) {
                 throw new CustomServerErrorException(DATABASE_ERROR);
             }
@@ -96,31 +82,9 @@ public class MemberService {
         return memberRepository.findById(memberId);
     }
 
-    private OAuth2UserPrincipal getOAuth2UserPrincipal(Authentication authentication) {
-        Object principal = authentication.getPrincipal();
-
-        if (principal instanceof OAuth2UserPrincipal) {
-            return (OAuth2UserPrincipal) principal;
-        }
-
-        return null;
+    public Optional<Member> findBySocialIdAndProvider(String socialId, OAuth2Provider provider) {
+        return memberRepository.findBySocialIdAndProvider(socialId, provider);
     }
-
-//    public Member getAuthPrincipal(Authentication authentication) {
-//        Object principalObject = authentication.getPrincipal();
-//
-//        if (principalObject instanceof SecurityMemberDto securityMemberDto) {
-//
-//            try {
-//                Optional<Member> optionalMember = findMemberById(securityMemberDto.getId());
-//                return optionalMember.get();
-//            } catch (Exception e) {
-//                throw new CustomServerErrorException(MEMBER_NOT_FOUND);
-//            }
-//        }
-//
-//        return null;
-//    }
 
     public List<GetMemberListResponse> getList() {
         return memberRepository.findAll()
