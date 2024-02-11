@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
+import axios from "axios";
 
 import styles from "./Footer.module.css";
 import ItemButton from "./components/ItemButton";
@@ -106,25 +107,27 @@ const Footer = ({ roomType }) => {
       const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/1/codes/execute`;
       const token = process.env.REACT_APP_TOKEN;
 
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Bearer 토큰 방식을 사용하는 경우
-        },
-        body: JSON.stringify({
+      const response = await axios.post(
+        apiUrl,
+        {
           lang: lang,
           content: code,
-        }),
-      });
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Bearer 토큰 방식을 사용하는 경우
+            // Origin 헤더는 브라우저가 자동으로 설정하기 때문에 여기서 설정할 필요가 없습니다.
+          },
+        }
+      );
 
-      const data = await response.json();
+      const data = response.data;
       console.log(data); // 실행 결과 처리
       dispatch(setExecutionResult(data)); // Redux 상태 업데이트
-    } catch {
-      // 오류 처리
-      console.error("서버에서 문제가 발생했습니다.");
-      dispatch(setExecutionResult("Error executing code.")); // 오류 메시지 저장
+    } catch (error) {
+      console.error("서버에서 문제가 발생했습니다.", error);
+      // 오류가 발생했을 때 오류 메시지를 포함시켜 저장하는 것이 좋습니다.
+      dispatch(setExecutionResult(error.message || "Error executing code."));
     } finally {
       dispatch(setLoading(false));
     }
@@ -134,8 +137,8 @@ const Footer = ({ roomType }) => {
   const handleSubmit = async () => {
     dispatch(setLoading(true)); // 로딩 상태를 true로 설정
     const token = process.env.REACT_APP_TOKEN;
+    const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/1/codes/submit`;
     try {
-      const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/1/codes/submit`;
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
