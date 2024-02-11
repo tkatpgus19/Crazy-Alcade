@@ -10,25 +10,25 @@ import java.util.List;
 @ToString
 @Getter
 public class GetInventoryResponse {
-    private Integer coin;
+    private Integer memberCoin;
     private List<GetItemInventoryResponse> memberItemInventory;
 
     @Builder
-    private GetInventoryResponse(Integer coin, List<GetItemInventoryResponse> memberItemInventory) {
-        this.coin = coin;
+    private GetInventoryResponse(Integer memberCoin, List<GetItemInventoryResponse> memberItemInventory) {
+        this.memberCoin = memberCoin;
         this.memberItemInventory = memberItemInventory;
     }
 
-    public static GetInventoryResponse of(Integer coin, List<GetItemInventoryResponse> memberItemInventory) {
+    public static GetInventoryResponse of(Integer memberCoin, List<GetItemInventoryResponse> memberItemInventory) {
         return builder()
-                .coin(coin)
+                .memberCoin(memberCoin)
                 .memberItemInventory(memberItemInventory)
                 .build();
     }
 
     public static GetInventoryResponse from(Member member, List<GetItemInventoryResponse> memberItemInventory) {
         return builder()
-                .coin(member.getCoin())
+                .memberCoin(member.getCoin())
                 .memberItemInventory(memberItemInventory)
                 .build();
     }
