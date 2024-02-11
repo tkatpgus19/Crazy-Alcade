@@ -13,15 +13,17 @@ public class GetMemberDetailResponse {
     private String profile;
     private String nickname;
     private String email;
+    private String provider;
     private String lang;
     private List<GetMemberProblemResponse> successProblems;
     private List<GetMemberProblemResponse> failProblems;
 
     @Builder
-    private GetMemberDetailResponse(String profile, String nickname, String email, String lang, List<GetMemberProblemResponse> successProblems, List<GetMemberProblemResponse> failProblems) {
+    private GetMemberDetailResponse(String profile, String nickname, String email, String provider, String lang, List<GetMemberProblemResponse> successProblems, List<GetMemberProblemResponse> failProblems) {
         this.profile = profile;
         this.nickname = nickname;
         this.email = email;
+        this.provider = provider;
         this.lang = lang;
         this.successProblems = successProblems;
         this.failProblems = failProblems;
@@ -32,6 +34,7 @@ public class GetMemberDetailResponse {
                 .profile(member.getProfile())
                 .nickname(member.getNickname())
                 .email(member.getEmail())
+                .provider(member.getProvider().name())
                 .lang(member.getLang().name())
                 .successProblems(successProblems)
                 .failProblems(failProblems)
