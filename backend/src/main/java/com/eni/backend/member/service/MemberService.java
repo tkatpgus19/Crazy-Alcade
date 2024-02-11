@@ -163,29 +163,31 @@ public class MemberService {
         return GetCoinResponse.of(member.getCoin());
     }
 
-    public List<GetInventoryResponse> getInventory(Authentication authentication) {
+    public GetInventoryResponse getInventory(Authentication authentication) {
         Member member = findMemberByAuthentication(authentication);
 
         List<Item> itemList = itemRepository.findAll();
-        List<GetInventoryResponse> getInventoryResponseList = new ArrayList<>();
+        List<GetItemInventoryResponse> getItemInventoryResponses = new ArrayList<>();
 
-        if (member != null) {
-            for (Item item : itemList) {
-
-                Integer memberCount;
-                Optional<MemberItem> optionalMemberItem = memberItemRepository.findMemberItemByMemberAndItem(member, item);
-
-                if (optionalMemberItem.isPresent()) {
-                    memberCount = optionalMemberItem.get().getCount();
-                } else {
-                    memberCount = 0;
-                }
-
-                getInventoryResponseList.add(GetInventoryResponse.from(item, memberCount));
-            }
+        if (member == null) {
+            throw new CustomBadRequestException(MEMBER_NOT_FOUND);
         }
 
-        return getInventoryResponseList;
+        for (Item item : itemList) {
+
+            Integer memberCount;
+            Optional<MemberItem> optionalMemberItem = memberItemRepository.findMemberItemByMemberAndItem(member, item);
+
+            if (optionalMemberItem.isPresent()) {
+                memberCount = optionalMemberItem.get().getCount();
+            } else {
+                memberCount = 0;
+            }
+
+            getItemInventoryResponses.add(GetItemInventoryResponse.from(item, memberCount));
+        }
+
+        return GetInventoryResponse.from(member, getItemInventoryResponses);
     }
 
     public PutNicknameResponse putNickname(Authentication authentication, PutNicknameRequest putNicknameRequest) {
@@ -206,7 +208,7 @@ public class MemberService {
             throw new CustomBadRequestException(MEMBER_NOT_FOUND);
         }
 
-        if(!putLanguageRequest.getLang().name().equals("JAVA") && !putLanguageRequest.getLang().name().equals("PYTHON")) {
+        if (!putLanguageRequest.getLang().name().equals("JAVA") && !putLanguageRequest.getLang().name().equals("PYTHON")) {
             throw new CustomBadRequestException(MEMBER_LANG_CHANGE_FAIL);
         }
 
@@ -222,7 +224,7 @@ public class MemberService {
             throw new CustomBadRequestException(MEMBER_NOT_FOUND);
         }
 
-        if(!operator) {
+        if (!operator) {
             if (member.getCoin() < putCoinRequest.getPutValue() || member.getCoin() < 1) {
                 throw new CustomBadRequestException(MEMBER_COIN_SUB_FAIL);
             }
@@ -250,14 +252,13 @@ public class MemberService {
 
         if (principalObject instanceof SecurityMemberDto securityMemberDto) {
 
-            try {
-                Optional<Member> optionalMember = findMemberById(securityMemberDto.getId());
+            Optional<Member> optionalMember = findMemberById(securityMemberDto.getId());
+
+            if (optionalMember.isPresent()) {
                 return optionalMember.get();
-            } catch (Exception e) {
-                throw new CustomServerErrorException(MEMBER_NOT_FOUND);
             }
         }
 
-        return null;
+        throw new CustomServerErrorException(MEMBER_NOT_FOUND);
     }
 }
