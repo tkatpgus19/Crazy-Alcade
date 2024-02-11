@@ -9,7 +9,6 @@ import lombok.ToString;
 @ToString
 @Getter
 public class GetInventoryResponse {
-    private Long memberId;
     private Integer memberCount;
     private Long itemId;
     private Integer itemPrice;
@@ -18,8 +17,7 @@ public class GetInventoryResponse {
     private String itemImage;
 
     @Builder
-    private GetInventoryResponse(Long memberId, Integer memberCount, Long itemId, Integer itemPrice, Integer itemDuration, String itemDescription, String itemImage) {
-        this.memberId = memberId;
+    private GetInventoryResponse(Integer memberCount, Long itemId, Integer itemPrice, Integer itemDuration, String itemDescription, String itemImage) {
         this.memberCount = memberCount;
         this.itemId = itemId;
         this.itemPrice = itemPrice;
@@ -28,9 +26,8 @@ public class GetInventoryResponse {
         this.itemImage = itemImage;
     }
 
-    public static GetInventoryResponse of(Long memberId, Integer memberCount, Long itemId, Integer itemPrice, Integer itemDuration, String itemDescription, String itemImage) {
+    public static GetInventoryResponse of(Integer memberCount, Long itemId, Integer itemPrice, Integer itemDuration, String itemDescription, String itemImage) {
         return builder()
-                .memberId(memberId)
                 .memberCount(memberCount)
                 .itemId(itemId)
                 .itemPrice(itemPrice)
@@ -40,9 +37,8 @@ public class GetInventoryResponse {
                 .build();
     }
 
-    public static GetInventoryResponse from(Member member, Item item, Integer memberCount) {
+    public static GetInventoryResponse from(Item item, Integer memberCount) {
         return builder()
-                .memberId(member.getId())
                 .memberCount(memberCount)
                 .itemId(item.getId())
                 .itemPrice(item.getPrice())

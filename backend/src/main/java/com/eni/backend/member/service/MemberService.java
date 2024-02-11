@@ -119,8 +119,7 @@ public class MemberService {
             Optional<MemberItem> optionalMemberItem = memberItemRepository.findMemberItemByMemberAndItem(member, item);
 
             if (optionalMemberItem.isPresent()) {
-                MemberItem memberItem = optionalMemberItem.get();
-                memberItemCount = memberItem.getCount();
+                memberItemCount = optionalMemberItem.get().getCount();
             } else {
                 memberItemCount = 0;
             }
@@ -157,17 +156,16 @@ public class MemberService {
     public GetCoinResponse getCoin(Authentication authentication) {
         Member member = findMemberByAuthentication(authentication);
 
-        Optional<Member> optionalMember = memberRepository.findById(member.getId());
-
-        if (optionalMember.isEmpty()) {
+        if (member == null) {
             throw new CustomBadRequestException(MEMBER_NOT_FOUND);
         }
 
-        return GetCoinResponse.of(optionalMember.get().getCoin());
+        return GetCoinResponse.of(member.getCoin());
     }
 
     public List<GetInventoryResponse> getInventory(Authentication authentication) {
         Member member = findMemberByAuthentication(authentication);
+
         List<Item> itemList = itemRepository.findAll();
         List<GetInventoryResponse> getInventoryResponseList = new ArrayList<>();
 
@@ -178,13 +176,12 @@ public class MemberService {
                 Optional<MemberItem> optionalMemberItem = memberItemRepository.findMemberItemByMemberAndItem(member, item);
 
                 if (optionalMemberItem.isPresent()) {
-                    MemberItem memberItem = optionalMemberItem.get();
-                    memberCount = memberItem.getCount();
+                    memberCount = optionalMemberItem.get().getCount();
                 } else {
                     memberCount = 0;
                 }
 
-                getInventoryResponseList.add(GetInventoryResponse.from(member, item, memberCount));
+                getInventoryResponseList.add(GetInventoryResponse.from(item, memberCount));
             }
         }
 
@@ -194,19 +191,26 @@ public class MemberService {
     public PutNicknameResponse putNickname(Authentication authentication, PutNicknameRequest putNicknameRequest) {
         Member member = findMemberByAuthentication(authentication);
 
-        if (member != null) {
-            member.updateNickname(putNicknameRequest);
+        if (member == null) {
+            throw new CustomBadRequestException(MEMBER_NOT_FOUND);
         }
 
+        member.updateNickname(putNicknameRequest);
         return PutNicknameResponse.of(member.getId());
     }
 
     public PutLanguageResponse putLanguage(Authentication authentication, PutLanguageRequest putLanguageRequest) {
         Member member = findMemberByAuthentication(authentication);
 
-        if (member != null) {
-            member.updateLanguage(putLanguageRequest);
+        if (member == null) {
+            throw new CustomBadRequestException(MEMBER_NOT_FOUND);
         }
+
+        if(!putLanguageRequest.getLang().name().equals("JAVA") && !putLanguageRequest.getLang().name().equals("PYTHON")) {
+            throw new CustomBadRequestException(MEMBER_LANG_CHANGE_FAIL);
+        }
+
+        member.updateLanguage(putLanguageRequest);
 
         return PutLanguageResponse.of(member.getId());
     }
@@ -214,9 +218,17 @@ public class MemberService {
     public PutCoinResponse putCoin(Authentication authentication, PutCoinRequest putCoinRequest, boolean operator) {
         Member member = findMemberByAuthentication(authentication);
 
-        if (member != null) {
-            member.updateCoin(putCoinRequest, operator);
+        if (member == null) {
+            throw new CustomBadRequestException(MEMBER_NOT_FOUND);
         }
+
+        if(!operator) {
+            if (member.getCoin() < putCoinRequest.getPutValue() || member.getCoin() < 1) {
+                throw new CustomBadRequestException(MEMBER_COIN_SUB_FAIL);
+            }
+        }
+
+        member.updateCoin(putCoinRequest, operator);
 
         return PutCoinResponse.of(member.getId());
     }
@@ -224,9 +236,11 @@ public class MemberService {
     public PutRewardResponse putReward(Authentication authentication, PutRewardRequest putRewardRequest) {
         Member member = findMemberByAuthentication(authentication);
 
-        if (member != null) {
-            member.putReward(putRewardRequest);
+        if (member == null) {
+            throw new CustomBadRequestException(MEMBER_NOT_FOUND);
         }
+
+        member.putReward(putRewardRequest);
 
         return PutRewardResponse.of(member.getId());
     }

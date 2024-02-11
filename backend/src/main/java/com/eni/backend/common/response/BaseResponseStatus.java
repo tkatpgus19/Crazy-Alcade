@@ -21,7 +21,7 @@ public enum BaseResponseStatus {
     GET_MEMBER_COIN_SUCCESS(HttpStatus.OK, "회원 보유 코인 조회에 성공하였습니다."),
     GET_INVENTORY_SUCCESS(HttpStatus.OK, "상점 아이템 및 보유 아이템 조회에 성공하였습니다."),
     PUT_NICKNAME_SUCCESS(HttpStatus.OK, "닉네임 변경에 성공하였습니다."),
-    PUT_LANGUAGE_SUCCESS(HttpStatus.OK, "닉네임 변경에 성공하였습니다."),
+    PUT_LANGUAGE_SUCCESS(HttpStatus.OK, "선호 언어 변경에 성공하였습니다."),
     PUT_COIN_ADD_SUCCESS(HttpStatus.OK, "코인 획득에 성공하였습니다."),
     PUT_COIN_SUB_SUCCESS(HttpStatus.OK, "코인 차감에 성공하였습니다."),
     REWARD_ADD_SUCCESS(HttpStatus.OK, "코인과 EXP 획득에 성공하였습니다."),
@@ -60,11 +60,13 @@ public enum BaseResponseStatus {
 
     // SOCIAL LOGIN
     EMAIL_NOT_FOUND(HttpStatus.UNAUTHORIZED, "해당 소셜 플랫폼에 해당하는 이메일이 없습니다."),
-    SOCIAL_AUTHORIZATION_FAIL(HttpStatus.UNAUTHORIZED, "소셜 로그인 인증에 실패했습니다."),
+    SOCIAL_AUTHORIZATION_FAIL(HttpStatus.UNAUTHORIZED, "소셜 로그인 인증에 실패하였습니다."),
     PROVIDER_NOT_SUPPORTED(HttpStatus.UNAUTHORIZED, "지원되지 않는 소셜 플랫폼 입니다."),
 
     // MEMBER
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당하는 멤버 정보가 없습니다."),
+    MEMBER_COIN_SUB_FAIL(HttpStatus.BAD_REQUEST, "코인 수가 부족합니다."),
+    MEMBER_LANG_CHANGE_FAIL(HttpStatus.BAD_REQUEST, "선호 언어 변경에 실패하였습니다."),
 
     // PROBLEM
     PLATFORM_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "지원하지 않는 플랫폼입니다."),
