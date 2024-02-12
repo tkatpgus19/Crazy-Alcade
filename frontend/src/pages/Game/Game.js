@@ -346,7 +346,11 @@ function Game() {
           </div>
         </Resizable>
       </div>
-      <Footer roomType={roomInfo.roomType} userInfo={userInfo} />
+      <Footer
+        roomType={roomInfo.roomType}
+        userInfo={userInfo}
+        problemId={roomInfo.problemId}
+      />
       {showOctopus && <OctopusImage />}
       {inkSpotImages}
       {chickenImages}
