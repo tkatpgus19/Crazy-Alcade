@@ -93,32 +93,32 @@ const Footer = ({ roomType, userInfo }) => {
         console.error("아이템 사용 중 에러 발생", error);
       }
 
-      if (item === "아이템1") {
+      if (item === 1) {
         if (!isSprayingInk) dispatch(toggleInkSpraying());
         setTimeout(() => {
           // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
           dispatch(resetInkSpraying());
         }, 5000);
-      } else if (item === "아이템2") {
+      } else if (item === 2) {
         if (!isChickenWalking) dispatch(toggleChickenWalking());
         setTimeout(() => {
           // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
           dispatch(resetChickenWalking());
         }, 5000);
-      } else if (item === "아이템3") {
+      } else if (item === 3) {
         if (!isAnimating) dispatch(toggleWaterBalloonAnimation(true)); // 애니메이션 시작
 
         setTimeout(() => {
           // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
           dispatch(resetWaterBalloonAnimation());
         }, 5000);
-      } else if (item === "아이템4") {
+      } else if (item === 4) {
         dispatch(toggleWebIDEFlip());
         // setTimeout 콜백 내에서 isFlipped 상태를 확인
         setTimeout(() => {
           dispatch(resetWebIDEFlip());
         }, 5000); // 5000ms = 5초
-      } else if (item === "아이템5") {
+      } else if (item === 5) {
         if (isSprayingInk == true) dispatch(toggleInkSpraying(false));
         if (isChickenWalking == true) dispatch(toggleChickenWalking(false));
         if (isAnimating == true) dispatch(toggleWaterBalloonAnimation(false));
