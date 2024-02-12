@@ -22,7 +22,23 @@ const Login = () => {
     };
 
     handleOAuthRedirect();
-  }, [location]);
+
+    // 쿠키를 확인하여 리다이렉션 처리하는 로직 추가
+    const checkRedirectCookie = () => {
+      const cookies = document.cookie.split("; ").reduce((acc, current) => {
+        const [key, value] = current.split("=");
+        acc[key] = value;
+        return acc;
+      }, {});
+
+      const nextUrl = cookies["next"]; // 쿠키에서 리다이렉션할 URL을 담고 있는 'next' 키 확인
+      if (nextUrl) {
+        navigate(nextUrl); // useNavigate 훅을 사용하여 해당 URL로 리다이렉트
+      }
+    };
+
+    checkRedirectCookie();
+  }, [location, navigate]); // navigate 함수를 의존성 배열에 추가
 
   const fetchAccessToken = async (code) => {
     try {
@@ -60,7 +76,10 @@ const Login = () => {
   };
 
   const kakaoLoginHandler = () => {
-    window.location.href = process.env.REACT_APP_KAKAO_URL;
+    // window.location.href = process.env.REACT_APP_KAKAO_URL;
+    window.location.replace(
+      "http://172.30.1.11:8081/oauth2/authorization/kakao?redirect_uri=http://localhost:3000/login-redirection&mode=login"
+    );
   };
 
   const googleLoginHandler = () => {
@@ -87,11 +106,11 @@ const Login = () => {
         <img className={styles.loginlogoImg} src={imgfile} alt="로고" />
       </div>
 
-      <div className={styles.kakaoLogin}>
+      <div className={styles.kakaoLogin} onClick={kakaoLoginHandler}>
         <img src={kakaoImg} width={"300px"} />
       </div>
 
-      <div className={styles.googleLogin}>
+      <div className={styles.googleLogin} onClick={googleLoginHandler}>
         <img src={googleImg} width={"300px"} style={{ borderRadius: "7px" }} />
       </div>
 

@@ -8,6 +8,7 @@ import Game from "./pages/Game/Game";
 import KakaoRedirection from "./pages/Login/KakaoRedirection";
 import GoogleRedirection from "./pages/Login/GoogleRedirection";
 import GameIntroduction from "./pages/Main/GameIntroduction";
+import LoginRedirection from "./pages/Login/LoginRedirection";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             element={<GoogleRedirection />}
           />
           <Route path="/game-introduction" element={<GameIntroduction />} />
+          <Route path="/login-redirection" element={<LoginRedirection />} />
           <Route path="/main" element={<Main />} />
           <Route path="/room" element={<Room />} />
           <Route path="/game" element={<Game />} />
