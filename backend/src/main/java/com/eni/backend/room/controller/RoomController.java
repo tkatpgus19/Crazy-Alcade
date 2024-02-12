@@ -188,18 +188,9 @@ public class RoomController {
         template.convertAndSend("/sub/game/" + itemDto.getRoomId(), itemDto);
     }
 
+    // 타이머 세팅
     @GetMapping("/set-timer")
-    public void startTimer(@RequestParam("roomId") String roomId){
-        long timerValue;
-        for (int i = 10; i >= 0; i--) {
-            timerValue = i;
-            template.convertAndSend("/sub/timer/"+roomId, timerValue);
-            log.warn("초: " + timerValue);
-            try {
-                Thread.sleep(1000); // 1초 대기
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    public BaseSuccessResponse<?> getSetTimer(@RequestParam("roomId") String roomId){
+        return BaseSuccessResponse.of(GET_ROOM_TIMER_START_SUCCESS, roomService.startTimer(roomId));
     }
 }
