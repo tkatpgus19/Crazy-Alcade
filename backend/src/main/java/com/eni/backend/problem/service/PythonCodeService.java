@@ -109,7 +109,7 @@ public class PythonCodeService {
             // 결과 반환
             return CodeSubmitResponse.of(codeStatus, results);
         }
-        
+
         // 실행
         testcases = testcaseRepository.findAllByProblemIdAndIsHidden(problem.getId(), isHidden);
         List<CodeExecuteDto> results = new ArrayList<>();
