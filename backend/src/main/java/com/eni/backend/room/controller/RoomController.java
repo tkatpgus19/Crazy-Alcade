@@ -70,8 +70,7 @@ public class RoomController {
 
     // 게임방 정보 조회
     @GetMapping("/info")
-    public BaseSuccessResponse<?> getRoom(@RequestParam("roomId") String roomId){
-        log.warn("조회된 방 정보: {}", roomService.getRoomInfo(roomId));
+    public BaseSuccessResponse<?> getInfo(@RequestParam("roomId") String roomId){
         return BaseSuccessResponse.of(GET_ROOM_INFO_SUCCESS, roomService.getRoomInfo(roomId));
     }
 
@@ -85,14 +84,13 @@ public class RoomController {
         // stomp 세션에 있던 uuid 와 roomId 를 확인해서 채팅방 유저 리스트와 room 에서 해당 유저를 삭제
         String userUUID = (String) headerAccessor.getSessionAttributes().get("userUUID");
         String roomId = (String) headerAccessor.getSessionAttributes().get("roomId");
-        String roomType = (String) headerAccessor.getSessionAttributes().get("roomType");
 
         log.info("headAccessor {}", headerAccessor);
 
         // 채팅방 유저 리스트에서 UUID 유저 닉네임 조회 및 리스트에서 유저 삭제
 
-        String username = roomService.getUserName(roomType, roomId, userUUID);
-        roomService.delUser(roomType, roomId, userUUID);
+        String username = roomService.getUserName(roomId, userUUID);
+        roomService.delUser(roomId, userUUID);
 
         if (username != null) {
             log.info("User Disconnected : " + username);
@@ -105,10 +103,10 @@ public class RoomController {
                     .build();
 
             template.convertAndSend("/sub/chat/room/" + roomId, chat);
-            template.convertAndSend("/sub/normal/room-list", roomService.getSortedRoomList("normal", null, null, null, null, 1));
+            template.convertAndSend("/sub/normal/room-list", roomService.getSortedRoomList("normal",null, null, null, false, 1));
             template.convertAndSend("/sub/item/room-list", roomService.getSortedRoomList("item", null, null, null, null, 1));
-            if(roomService.getUserStatus(roomType, roomId) != null) {
-                template.convertAndSend("/sub/room/" + roomId + "/status", roomService.getUserStatus(roomType, roomId));
+            if(roomService.getUserStatus(roomId) != null) {
+                template.convertAndSend("/sub/room/" + roomId + "/status", roomService.getUserStatus(roomId));
             }
         }
     }
