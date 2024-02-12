@@ -1,22 +1,30 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import styles from "./ItemShopModal.module.css";
+import axios from "axios";
+
+// 이미지 import
 import waterBalloonImg from "../../assets/images/waterBalloon.png";
 import octopusImg from "../../assets/images/octopus.png";
 import chickImg from "../../assets/images/chick.png";
 import magicImg from "../../assets/images/magic.png";
 import shieldImg from "../../assets/images/shield.png";
 
-const Item = ({ name, description, count, img, coin }) => {
+// 이미지를 itemId와 매핑하기 위한 객체
+const itemImages = {
+  1: waterBalloonImg,
+  2: octopusImg,
+  3: chickImg,
+  4: magicImg,
+  5: shieldImg,
+};
+
+const Item = ({ name, description, count, img, coin, onBuy }) => {
   return (
     <div className={styles.item}>
       <div className={styles.itemImageContainer}>
-        <div
-          className={styles.itemImage}
-          style={{ backgroundImage: `url(${img})` }}
-        ></div>
-        <div className={styles.itemCoin}>코인: {coin}</div>{" "}
-        {/* 이미지 아래 코인 가격 */}
+        <img src={img} alt={name} className={styles.itemImage} />
+        <div className={styles.itemCoin}>코인: {coin}</div>
       </div>
       <div className={styles.itemContent}>
         <div className={styles.itemHeader}>
@@ -25,7 +33,9 @@ const Item = ({ name, description, count, img, coin }) => {
         </div>
         <div className={styles.itemBody}>
           <div className={styles.itemDescription}>{description}</div>
-          <button className={styles.buyButton}>구매</button>
+          <button className={styles.buyButton} onClick={onBuy}>
+            구매
+          </button>
         </div>
       </div>
     </div>
@@ -41,44 +51,28 @@ Item.propTypes = {
   coin: PropTypes.number.isRequired,
 };
 
-const ItemShopModal = ({ closeModal, coins }) => {
-  const [items, setItems] = useState([
-    {
-      name: "물풍선",
-      description: "알록달록 물풍선입니다",
-      count: 5,
-      img: waterBalloonImg,
-      coin: 60,
-    },
-    {
-      name: "문어야끼",
-      description: "먹물 뿌리는 문어입니다",
-      count: 5,
-      img: octopusImg,
-      coin: 40,
-    },
-    {
-      name: "병아리",
-      description: "이리저리 돌아다니는걸 좋아하는 병아리입니다",
-      count: 5,
-      img: chickImg,
-      coin: 20,
-    },
-    {
-      name: "요술봉",
-      description: "뒤집어지도록 하는 요술봉입니다",
-      count: 5,
-      img: magicImg,
-      coin: 100,
-    },
-    {
-      name: "쉴드",
-      description: "모든 아이템들을 방어하는 쉴드입니다",
-      count: 5,
-      img: shieldImg,
-      coin: 80,
-    },
-  ]);
+const ItemShopModal = ({ closeModal }) => {
+  const [items, setItems] = useState([]);
+  const [coins, setCoins] = useState(0);
+
+  useEffect(() => {
+    axios
+      .get("http://i10d104.p.ssafy.io/api/tiers")
+      .then((response) => {
+        const { memberCoin, memberItemInventory } = response.data.result;
+        setCoins(memberCoin);
+        const updatedItems = memberItemInventory.map((item) => ({
+          ...item,
+          name: item.itemDescription, // 아이템 설명
+          description: item.itemDescription, // 아이템 설명
+          count: item.memberCount, // 아이템 보유 갯수
+          img: itemImages[item.itemId], // itemId에 따라 이미지 할당
+          coin: item.itemPrice, // 아이템 가격
+        }));
+        setItems(updatedItems);
+      })
+      .catch((error) => console.error("에러 발생!", error));
+  }, []);
 
   return (
     <div className={styles.itemShopModal}>
@@ -86,8 +80,7 @@ const ItemShopModal = ({ closeModal, coins }) => {
       <button className={styles.closeButton} onClick={closeModal}>
         &times;
       </button>
-      <div className={styles.coinsDisplay}>보유 코인: {coins}</div>{" "}
-      {/* 보유 코인 표시 */}
+      <div className={styles.coinsDisplay}>보유 코인: {coins}</div>
       <div className={styles.itemsContainer}>
         {items.map((item, index) => (
           <Item
@@ -96,7 +89,7 @@ const ItemShopModal = ({ closeModal, coins }) => {
             description={item.description}
             count={item.count}
             onBuy={() => {
-              /* handle purchase logic here */
+              /* 구매 로직 처리 */
             }}
             img={item.img}
             coin={item.coin}
@@ -109,7 +102,6 @@ const ItemShopModal = ({ closeModal, coins }) => {
 
 ItemShopModal.propTypes = {
   closeModal: PropTypes.func.isRequired,
-  coins: PropTypes.number, // coins prop에 대한 PropTypes 정의
 };
 
 export default ItemShopModal;

@@ -5,6 +5,8 @@ import imgfile from "../../assets/images/loginlogo.png";
 import background from "../../assets/images/loginback.PNG";
 import styles from "./Login.module.css";
 import { useLocation, useNavigate } from "react-router-dom";
+import kakaoImg from "../../assets/images/kakao_login_large_wide.png";
+import googleImg from "../../assets/images/web_neutral_sq_ctn@2x.png";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -73,7 +75,7 @@ const Login = () => {
     backgroundImage: `url(${background})`,
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
-    height: "740px",
+    height: "100vh",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -85,21 +87,13 @@ const Login = () => {
         <img className={styles.loginlogoImg} src={imgfile} alt="로고" />
       </div>
 
-      <button
-        type="button"
-        onClick={kakaoLoginHandler}
-        className={`${styles.kakaoButton}`}
-      >
-        카카오 계정으로 로그인
-      </button>
+      <div className={styles.kakaoLogin}>
+        <img src={kakaoImg} width={"300px"} />
+      </div>
 
-      <button
-        type="button"
-        onClick={googleLoginHandler}
-        className={`${styles.googleButton}`}
-      >
-        구글 계정으로 로그인
-      </button>
+      <div className={styles.googleLogin}>
+        <img src={googleImg} width={"300px"} style={{ borderRadius: "7px" }} />
+      </div>
 
       {/* Add a new button for navigating to "/main" */}
       <button

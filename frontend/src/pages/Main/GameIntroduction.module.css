@@ -2,20 +2,19 @@
   /* Use flexbox to organize content vertically */
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Align items to the start of the flex container */
   justify-content: flex-start; /* Align items to the top */
-  height: 740px; /* Adjust height as needed */
+  height: 100vh; /* Adjust height as needed */
   background-image: url("../../assets/images/mainback.png");
   background-repeat: no-repeat;
   background-size: cover;
 }
 
 .header {
-  /* Style your header here */
-  width: 100%;
   display: flex;
   justify-content: space-between;
-  padding: 20px; /* Add padding as needed */
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .logoImg {
@@ -23,22 +22,66 @@
   margin-left: 50px;
 }
 
-.gameIntroductionContainer {
-  width: 100%; /* Adjust width as needed */
-  margin-top: 30px; /* Add space between header and this container */
+.gameInfoButton {
+  /* 게임 정보 버튼 스타일링 */
+  position: absolute;
+  left: 50%;
+  top: 5%;
+  transform: translateX(-50%);
+  background-color: white;
+  padding: 10px 20px; /* 버튼의 크기를 조정합니다 */
+  font-size: 20px; /* 글꼴 크기를 조정합니다 */
+  text-align: center;
+  margin: 0 10px; /* 텍스트에 여백을 추가하여 버튼을 더 크게 만듭니다 */
+  border-radius: 5px;
+  font-family: "DNFBitBitv2";
+}
+
+.exitButton {
+  /* 뒤로 가기 버튼 스타일링 */
+  background-color: #f1c100; /* 주황색 배경 */
+  color: black; /* 검은색 텍스트 */
+  border: none;
+  font-size: 15px; /* 글꼴 크기를 조정합니다 */
+  cursor: pointer; /* 마우스 오버 시 커서 변경 */
+  margin: 0 20px;
+  border-radius: 5px;
+  text-align: center;
+  font-family: "DNFBitBitv2";
+  width: 100px;
+  height: 50px;
+  border: 2px solid rgba(255, 255, 255, 0.34);
+}
+
+.buttonContent {
+  background-color: rgba(0, 185, 255, 0.25); /* 00B9FF 색상에 25% 투명도 */
+}
+
+.tabButtons {
   display: flex;
-  justify-content: flex-start; /* Align items to the left */
-  padding-left: 20px; /* Add padding to align with the logo above */
+  justify-content: left;
+  margin-top: 20px;
+  margin-left: 30px;
 }
 
-/* Style your buttons here */
-.introButton,
-.itemDexButton,
-.expTableButton {
-  margin-right: 10px; /* Space between buttons */
+.tabButton {
+  font-family: "DNFBitBitv2";
+  font-size: 15px;
+  padding: 5px 15px;
+  background-color: #a6a8a9;
+  color: white;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0; /* 왼쪽 상단, 오른쪽 상단, 오른쪽 하단, 왼쪽 하단 모서리 */
+}
+.tabButtonActive {
+  background-color: #00b9ff; /* 하늘색 */
+  color: white;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0; /* 상단 모서리만 둥글게 */
 }
 
-/* Adjust this as needed based on your content layout */
 .contentArea {
-  /* This is where you'll show your content when a button is clicked */
+  background-color: rgba(255, 255, 255, 0.54);
+  margin-left: 30px;
+  /* 콘텐츠 영역 스타일링 */
 }
