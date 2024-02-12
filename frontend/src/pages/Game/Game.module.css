@@ -1,10 +1,26 @@
 /* MainContent.css */
 
-.container {
-  width: 100%;
+.normalBackgroundStyle {
+  background-image: url("../../assets/images/normalBackground3.webp");
+  background-size: contain; /* Cover the entire area */
+  background-position: top; /* Center the background image */
+  opacity: 1;
   height: 100vh;
+  width: 100vw;
+}
+.itemBackgroundStyle {
+  background-image: url("../../assets/images/itemBackground.webp");
+  background-size: contain; /* Cover the entire area */
+  background-position: center; /* Center the background image */
+  opacity: 1;
+  height: 100vh;
+  width: 100vw;
+}
+
+.container {
   display: flex;
-  display: flex;
+  overflow: hidden;
+
   flex-direction: row; /* 가로 방향으로 배치 */
   margin: auto; /* 원하는 간격으로 조절 */
   width: 95%; /* 가로의 95%를 차지하도록 설정 */
@@ -16,8 +32,8 @@
   border: 1px solid black;
   overflow-y: auto;
   border-radius: 10px; /* 둥근 테두리 설정 */
-  margin: 10px 0px;
-  height: 95%;
+  margin-top: 10px;
+  height: 96%;
 }
 
 .problemArea {
@@ -29,4 +45,53 @@
 
 .webIDE {
   margin-left: 8px; /* 문제와 Web IDE 간의 간격을 조절 */
+}
+
+/* 문어 흔들림 애니메이션 */
+@keyframes shake {
+  0%,
+  100% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.octopusImage {
+  animation: shake 1s ease-in-out infinite;
+}
+
+.inkImage.fadeOut {
+  animation: fadeOut 1s forwards; /* 1초 동안 애니메이션 실행 후 사라짐 */
+}
+
+.inkImage {
+  width: 200px;
+  animation: shake 1s infinite; /* 흔들림 효과 */
+  position: fixed; /* 화면에 고정 */
+  z-index: 1000; /* 다른 요소들 위에 표시 */
+}
+
+.chicken {
+  position: fixed; /* 화면에 고정 */
+  width: 200px; /* 병아리 이미지 크기 조정 */
+  z-index: 1000; /* 다른 요소들 위에 표시 */
+}
+
+.gameResultsContainer {
+  position: fixed; /* Fixed position to place it over other content */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center the component */
+  z-index: 1000; /* Ensure it's above other content */
 }

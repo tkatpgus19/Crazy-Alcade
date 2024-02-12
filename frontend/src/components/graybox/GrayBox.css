@@ -2,8 +2,10 @@
   background-color: rgba(51, 51, 51, 0.5);
   padding: 20px;
   margin-top: 15px;
-  margin: 15px 40px;
-  height: 545px; /* Set height */
+  margin: 15px auto;
+  min-height: 545px; /* Set height */
+  height: 75vh;
+  width: 90vw;
   border-radius: 15px;
   display: flex;
   border: 1.6px solid;
