@@ -1,32 +1,29 @@
 package com.eni.backend.problem.dto.response;
 
+import com.eni.backend.problem.entity.CodeStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+
+import java.util.List;
 
 @ToString
 @Getter
 public class CodeSubmitResponse {
 
-    private Integer testcaseNo;
-    private String codeStatus;
-    private String time;
-    private String memory;
+    private String allResult;
+    private List<CodeSubmitDto> tcResult;
 
     @Builder
-    private CodeSubmitResponse(Integer testcaseNo, String codeStatus, String time, String memory) {
-        this.testcaseNo = testcaseNo;
-        this.codeStatus = codeStatus;
-        this.time = time;
-        this.memory = memory;
+    private CodeSubmitResponse(String allResult, List<CodeSubmitDto> tcResult) {
+        this.allResult = allResult;
+        this.tcResult = tcResult;
     }
 
-    public static CodeSubmitResponse of(Integer testcaseNo, String codeStatus, Long time, Long memory) {
+    public static CodeSubmitResponse of(CodeStatus codeStatus, List<CodeSubmitDto> tcResult) {
         return builder()
-                .testcaseNo(testcaseNo)
-                .codeStatus(codeStatus)
-                .time(time + "ms")
-                .memory(memory + "KB")
+                .allResult(codeStatus.getStatus())
+                .tcResult(tcResult)
                 .build();
     }
 
