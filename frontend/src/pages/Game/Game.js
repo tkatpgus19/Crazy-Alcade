@@ -50,24 +50,24 @@ function Game() {
       : styles.normalBackgroundStyle;
 
   // 더미 방 데이터.
-  const dummyRoomInfo = {
-    roomId: "e50ec323-60ce-4fde-9837-2a393a59897d",
-    roomType: "normal",
-    roomName: "더미방1",
-    hasPassword: false,
-    roomPassword: "",
-    problemTier: "골드1",
-    problemNo: 1,
-    timeLimit: 60,
-    language: "JAVA",
-    codeReview: false,
-    maxUserCnt: 6,
-    master: "123",
-    userList: {},
-    readyList: {},
-    started: false,
-    userCnt: 0,
-  };
+  // const dummyRoomInfo = {
+  //   roomId: "e50ec323-60ce-4fde-9837-2a393a59897d",
+  //   roomType: "normal",
+  //   roomName: "더미방1",
+  //   hasPassword: false,
+  //   roomPassword: "",
+  //   problemTier: "골드1",
+  //   problemNo: 1,
+  //   timeLimit: 60,
+  //   language: "JAVA",
+  //   codeReview: false,
+  //   maxUserCnt: 6,
+  //   master: "123",
+  //   userList: {},
+  //   readyList: {},
+  //   started: false,
+  //   userCnt: 0,
+  // };
 
   // 비정상인 접근 차단. 개발 후 살리기.
   useEffect(() => {
