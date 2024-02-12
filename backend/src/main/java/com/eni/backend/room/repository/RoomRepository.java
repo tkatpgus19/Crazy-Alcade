@@ -29,7 +29,7 @@ public class RoomRepository {
                 .hasPassword(request.getHasPassword())
                 .roomPassword(request.getRoomPassword())
                 .problemTier(request.getProblemTier())
-                .problemName(request.getProblemName())
+                .problemNo(request.getProblemNo())
                 .timeLimit(request.getTimeLimit())
                 .language(request.getLanguage())
                 .codeReview(request.getCodeReview())

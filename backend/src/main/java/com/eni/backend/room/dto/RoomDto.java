@@ -14,8 +14,8 @@ public class RoomDto {
     private String roomName;
     private Boolean hasPassword;
     private String roomPassword;
-    private String problemTier;
-    private String problemName;
+    private Long problemTier;
+    private Long problemNo;
     private Long timeLimit;
     private String language;
     private Boolean codeReview;
@@ -29,7 +29,7 @@ public class RoomDto {
 
     @Builder
     public RoomDto(String roomId, String roomType, String roomName, Boolean hasPassword,
-                   String roomPassword, String problemTier, String problemName, Long timeLimit,
+                   String roomPassword, Long problemTier, Long problemNo, Long timeLimit,
                    String language, Boolean codeReview, Integer maxUserCnt,
                    String master, Boolean isStarted) {
         this.roomId = roomId != null ? roomId : UUID.randomUUID().toString();
@@ -38,7 +38,7 @@ public class RoomDto {
         this.hasPassword = hasPassword;
         this.roomPassword = roomPassword;
         this.problemTier = problemTier;
-        this.problemName = problemName;
+        this.problemNo = problemNo;
         this.timeLimit = timeLimit;
         this.language = language;
         this.codeReview = codeReview;
