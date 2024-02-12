@@ -90,8 +90,8 @@ public class RoomService {
             chat.setSender(request.getNickname());
             chat.setMessage(chat.getSender() + " 님 입장!!");
 
-            template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
-            template.convertAndSend("/sub/room/"+chat.getRoomId()+"/status", getUserStatus(chat.getRoomId()));
+            template.convertAndSend("/sub/chat/room/" + request.getRoomId(), chat);
+            template.convertAndSend("/sub/room/"+request.getRoomId()+"/status", getUserStatus(request.getRoomId()));
 
             template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal",null, null, null, null, 1));
             template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null,1));
