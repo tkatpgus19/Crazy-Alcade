@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import AceEditor from "react-ace";
+import PropTypes from "prop-types";
 import "brace/mode/java";
 import "brace/theme/github";
 import styles from "./WebIDE.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { setCode } from "./slices/codeSlice"; // 경로는 프로젝트에 따라 달라질 수 있음
+import { setCode, setLanguage } from "./slices/codeSlice"; // 경로는 프로젝트에 따라 달라질 수 있음
 import { toggleResultExpanded } from "./slices/executionResultSlice"; // 경로는 프로젝트에 따라 달라질 수 있음
 
-const WebIDE = () => {
+const WebIDE = ({ language }) => {
   const dispatch = useDispatch();
   const executionResult = useSelector((state) => state.executionResult.output);
   const [fontSize, setFontSize] = useState(14);
@@ -20,22 +21,33 @@ const WebIDE = () => {
 
   useEffect(() => {
     // 컴포넌트가 마운트될 때 Redux 상태에 초기 코드 값 저장
-    dispatch(
-      setCode(`import java.util.Scanner;
- 
-  public class Solution {
-         
-    public static void main(String[] args) {
-         
-      Scanner in = new Scanner(System.in);
-          
-      int A = in.nextInt();
-      int B = in.nextInt();
+    if (language === "JAVA") {
+      dispatch(
+        setCode(`import java.util.Scanner;
+   
+    public class Solution {
+           
+      public static void main(String[] args) {
+           
+        Scanner in = new Scanner(System.in);
             
-      System.out.println(A+B);
+        int A = in.nextInt();
+        int B = in.nextInt();
+              
+        System.out.println(A+B);
+      }
+    }`)
+      );
+    } else if (language === "PYTHON") {
+      dispatch(
+        setCode(`A, B = input().split()	# 입력되는 문자를 input()함수로 입력받고 split()함수로 나누어 A,B 변수에 저장
+
+        print(int(A)+int(B))	# int() 함수로 A와 B를 정수로 변환 하고 두수의 합을 출력`)
+      );
     }
-  }`)
-    );
+
+    // 언어 상태에 올리기
+    dispatch(setLanguage(language));
   }, [dispatch]); // dispatch를 의존성 배열에 추가
 
   const handleCodeChange = (newCode) => {
@@ -142,6 +154,10 @@ const WebIDE = () => {
       </div>
     </div>
   );
+};
+
+WebIDE.propTypes = {
+  language: PropTypes.string.isRequired,
 };
 
 export default WebIDE;

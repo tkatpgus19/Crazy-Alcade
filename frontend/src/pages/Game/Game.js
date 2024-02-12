@@ -21,6 +21,9 @@ const itemBackgroundImage = "../../assets/images/normalBackground.webp";
 
 function Game() {
   const navigate = useNavigate();
+  let location = useLocation();
+
+  // 아이템 동작 확인
   const isSprayingInk = useSelector((state) => state.octopus.isSprayingInk);
   const isChickenWalking = useSelector((state) => state.feature.chickenWalking); // 병아리 걸음 상태
   const isShieldActive = useSelector(
@@ -28,22 +31,23 @@ function Game() {
   );
   const timeCompleted = useSelector((state) => state.timer.timeCompleted);
 
-  let location = useLocation();
-
   // 대기 방에서 넘어 온 정보들.
-  const roomId = location.state ? location.state.roomId : null;
-  const nickname = location.state ? location.state.nickname : null;
-  const userList = location.state ? location.state.userList : null;
+  const roomId = location.state ? location.state.roomId : "roomId";
+  const nickname = location.state ? location.state.nickname : "nickname";
+  const userList = location.state ? location.state.userList : "userList";
   const roomType = location.state ? location.state.roomType : "normal"; // 기본값을 "normal"로 설정
-
-  const backgroundStyle =
-    roomType === "item"
-      ? styles.normalBackgroundStyle
-      : styles.itemBackgroundStyle;
 
   const [showOctopus, setOctopus] = useState(false);
   const [chickens, setChickens] = useState([]); // 병아리 이미지 상태
   const [inkSpots, setInkSpots] = useState([]); // 먹물 이미지 상태
+
+  const [showResult, setShowResult] = useState(false);
+
+  // 게임 모드에 따른 배경 화면 설정
+  const backgroundStyle =
+    roomType === "item"
+      ? styles.itemBackgroundStyle
+      : styles.normalBackgroundStyle;
 
   // 더미 방 데이터.
   const dummyRoomInfo = {
@@ -53,7 +57,7 @@ function Game() {
     hasPassword: false,
     roomPassword: "",
     problemTier: "골드1",
-    problemNo: 1,
+    problemNo: 7,
     timeLimit: 60,
     language: "JAVA",
     codeReview: false,
@@ -72,9 +76,6 @@ function Game() {
     //REACT_APP_SERVER_URL
   }, []);
 
-  // 0초가 되면 결과창 표시
-
-  // 쉴드
   useEffect(() => {
     // "쉴드" 상태가 활성화되면 문어와 병아리 애니메이션을 즉시 제거
     if (isShieldActive) {
@@ -208,7 +209,7 @@ function Game() {
   ));
 
   const handleExitClick = () => {
-    // "/"로 이동하는 코드
+    // "/main"으로 이동하는 코드
     navigate("/main");
   };
 
@@ -262,7 +263,7 @@ function Game() {
           }}
         >
           <div className={styles.webIDE}>
-            <WebIDE />
+            <WebIDE language={dummyRoomInfo.language} />
           </div>
         </Resizable>
       </div>
@@ -272,9 +273,9 @@ function Game() {
       {chickenImages}
 
       {/* 시간이 0이 되면 결과창을 렌더링 */}
-      {timeCompleted && (
+      {showResult && (
         <div className={styles.gameResultsContainer}>
-          <GameResults />
+          <GameResults roomType={dummyRoomInfo.roomType} />
         </div>
       )}
     </div>

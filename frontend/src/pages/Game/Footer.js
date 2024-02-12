@@ -103,10 +103,10 @@ const Footer = ({ roomType }) => {
   const handleRun = async () => {
     dispatch(setLoading(true)); // 로딩 시작
     console.log("코드 실행");
-
-    const apiUrl = `${process.env.REACT_APP_BASE_URL}/api/problems/1/codes/execute`;
-    const token = process.env.REACT_APP_TOKEN;
     try {
+      const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/1/codes/execute`;
+      const token = process.env.REACT_APP_TOKEN;
+
       const response = await axios.post(
         apiUrl,
         {
@@ -131,8 +131,6 @@ const Footer = ({ roomType }) => {
     } finally {
       dispatch(setLoading(false));
     }
-    // API 요청이 완료된 후 로딩 상태를 false로 설정
-    dispatch(setLoading(false));
   };
 
   // 코드 제출 함수
@@ -153,15 +151,9 @@ const Footer = ({ roomType }) => {
         }),
       });
 
-      // if (response.ok) {
       const data = await response.json();
       dispatch(setExecutionResult(data)); // 결과를 저장
       console.log(data);
-      // } else {
-      //   console.error("서버에서 문제가 발생했습니다.");
-      //   console.error(response);
-      //   dispatch(setExecutionResult({ message: "Error submitting code." })); // 오류 메시지 저장
-      // }
     } catch (error) {
       console.error("요청 처리 중 에러 발생:", error);
       dispatch(setExecutionResult({ message: "Error submitting code." }));

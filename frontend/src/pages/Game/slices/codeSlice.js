@@ -5,7 +5,7 @@ export const codeSlice = createSlice({
   name: "code",
   initialState: {
     content: "",
-    lang: "JAVA",
+    lang: "",
   },
   reducers: {
     setCode: (state, action) => {
