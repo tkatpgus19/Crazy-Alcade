@@ -105,14 +105,26 @@ const Main = () => {
     axios
       .post(`${SERVER_URL}/rooms`, roomData)
       .then((res) => {
-        console.log(res);
-        navigate("/room", {
-          state: {
-            roomId: res.data.result.roomId,
+        console.log(res.data.result.roomId);
+        // 방 생성에 성공했을때 바로 입장
+        axios
+          .post(`${SERVER_URL}/rooms/enter`, {
             nickname: nickname,
-            roomType: roomData.roomType,
-          },
-        });
+            roomId: res.data.result.roomId,
+          })
+          .then((response) => {
+            if (response.data.result) {
+              navigate("/room", {
+                state: {
+                  roomId: res.data.result.roomId,
+                  nickname: nickname,
+                  roomType: roomData.roomType,
+                },
+              });
+            } else {
+              alert("방에 인원이 가득 찼습니다.");
+            }
+          });
       })
       .catch((err) => {
         alert("실패");
@@ -164,17 +176,28 @@ const Main = () => {
       const password = prompt("비밀번호를 입력하세요");
       axios
         .post(
-          `${SERVER_URL}/rooms/checkPwd?roomType=${data.roomType}&roomId=${data.roomId}&roomPwd=${password}`
+          `${SERVER_URL}/rooms/checkPwd?roomId=${data.roomId}&roomPwd=${password}`
         )
         .then((res) => {
           if (res.data) {
-            navigate("/room", {
-              state: {
+            axios
+              .post(`${SERVER_URL}/rooms/enter`, {
                 roomId: data.roomId,
                 nickname: nickname,
-                roomType: data.roomType,
-              },
-            });
+              })
+              .then((res) => {
+                if (res.data.result) {
+                  navigate("/room", {
+                    state: {
+                      roomId: data.roomId,
+                      nickname: nickname,
+                      roomType: data.roomType,
+                    },
+                  });
+                } else {
+                  alert("방에 인원이 가득 찼습니다.");
+                }
+              });
           } else {
             alert("비밀번호가 달라요");
           }
