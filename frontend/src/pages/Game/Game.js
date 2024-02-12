@@ -42,7 +42,7 @@ function Game() {
     hasPassword: false,
     roomPassword: "",
     problemTier: "골드1",
-    problemNo: 1000,
+    problemNo: 1,
     timeLimit: 60,
     language: "JAVA",
     codeReview: false,

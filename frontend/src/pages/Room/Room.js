@@ -218,6 +218,7 @@ const Room = () => {
                       <Status
                         nickname={userlist[index]}
                         status={readylist[index]}
+                        currentUser={nickname}
                       />
                     </div>
                   </>
