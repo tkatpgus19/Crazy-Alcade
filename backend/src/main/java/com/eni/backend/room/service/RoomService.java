@@ -39,7 +39,7 @@ public class RoomService {
         Tier tier = findTierById(request.getProblemTier());
 
         // 문제 조회
-        Problem problem = findProblemById(request.getProblemNo());
+        Problem problem = findProblemById(request.getProblemId());
 
         // 저장
         String roomId = roomRepository.saveRoom(request, tier, problem);

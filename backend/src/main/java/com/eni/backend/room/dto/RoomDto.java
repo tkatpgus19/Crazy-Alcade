@@ -6,7 +6,6 @@ import com.eni.backend.room.dto.request.PostRoomRequest;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
@@ -19,7 +18,7 @@ public class RoomDto {
     private String roomPassword;
     private Long problemTier;
     private String problemTierValue;
-    private Integer problemNo;
+    private Long problemId;
     private String problemName;
     private Long timeLimit;
     private String language;
@@ -34,7 +33,7 @@ public class RoomDto {
 
     @Builder
     private RoomDto(String roomId, String roomType, String roomName, Boolean hasPassword,
-                    String roomPassword, Long problemTier, String problemTierValue, Integer problemNo, String problemName,
+                    String roomPassword, Long problemTier, String problemTierValue, Long problemId, String problemName,
                     Long timeLimit, String language, Boolean codeReview, Integer maxUserCnt,
                     String master, Boolean isStarted) {
         this.roomId = roomId != null ? roomId : UUID.randomUUID().toString();
@@ -44,7 +43,7 @@ public class RoomDto {
         this.roomPassword = roomPassword;
         this.problemTier = problemTier;
         this.problemTierValue = problemTierValue;
-        this.problemNo = problemNo;
+        this.problemId = problemId;
         this.problemName = problemName;
         this.timeLimit = timeLimit;
         this.language = language;
@@ -63,7 +62,7 @@ public class RoomDto {
                 .roomPassword(request.getRoomPassword())
                 .problemTier(tier.getId())
                 .problemTierValue(tier.getStringTier())
-                .problemNo(problem.getNo())
+                .problemId(problem.getId())
                 .problemName(problem.getProblemName())
                 .timeLimit(request.getTimeLimit())
                 .language(request.getLanguage())
