@@ -34,25 +34,27 @@ function Game() {
   // 대기 방에서 넘어 온 정보들.
   const roomId = location.state ? location.state.roomId : "roomId";
   const nickname = location.state ? location.state.nickname : "nickname";
-  const userList = location.state ? location.state.userList : "userList";
+  const userList = location.state ? location.state.userList : [];
   const roomType = location.state ? location.state.roomType : "normal"; // 기본값을 "normal"로 설정
 
   const [showOctopus, setOctopus] = useState(false);
   const [chickens, setChickens] = useState([]); // 병아리 이미지 상태
   const [inkSpots, setInkSpots] = useState([]); // 먹물 이미지 상태
 
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
   const [showResult, setShowResult] = useState(false);
 
-  // 게임 모드에 따른 배경 화면 설정
-  const backgroundStyle =
-    roomType === "item"
-      ? styles.itemBackgroundStyle
-      : styles.normalBackgroundStyle;
-
+  // const [roomInfo, setRoomInfo] = useState({
+  //   roomId: "roodId",
+  //   roomType: "normal", // 기본값 설정
+  //   roomName: "Loading...", // 로딩 중임을 알리는 기본값
+  //   language: "language",
+  //   // 필요한 기타 초기값들
+  // });
   // 더미 방 데이터.
-  const dummyRoomInfo = {
+  const roomInfo = {
     roomId: "e50ec323-60ce-4fde-9837-2a393a59897d",
-    roomType: "normal",
+    roomType: "item",
     roomName: "더미방1",
     hasPassword: false,
     roomPassword: "",
@@ -69,12 +71,46 @@ function Game() {
     userCnt: 0,
   };
 
-  // 비정상인 접근 차단. 개발 후 살리기.
   useEffect(() => {
+    // 비정상인 접근 차단. 개발 후 살리기.
     // if (!(roomId && nickname)) navigate("/error");
+
     // roomId를 이용해 API로 세부 방 정보 가져오기.
-    //REACT_APP_SERVER_URL
+    const fetchRoomInfo = async () => {
+      setIsLoading(true); // 데이터 로딩 시작
+
+      try {
+        const apiUrl = `${process.env.REACT_APP_BASE_URL}/rooms/info?roomId=${roomId}`;
+        const response = await axios.get(apiUrl);
+
+        if (response.data.code === 200) {
+          console.log("방 정보 조회에 성공하였습니다.", response.data);
+          setRoomInfo(response.data.result); // 전체 방 정보 저장
+        } else {
+          console.error("방 정보 조회 실패:", response.data.message);
+        }
+      } catch (error) {
+        console.error("방 정보 조회 중 에러 발생:", error);
+        // 에러 처리 로직 (예: 사용자를 에러 페이지로 리다이렉트)
+      } finally {
+        setIsLoading(false); // 데이터 로딩 완료
+      }
+
+      // 타이머 온
+      // 방장이 요청으로 변경
+      axios.get(
+        `${process.env.REACT_APP_BASE_URL}/rooms/set-timer?roomId=${roomId}`
+      );
+    };
+
+    fetchRoomInfo();
   }, []);
+
+  // 게임 모드에 따른 배경 화면 설정
+  const backgroundStyle =
+    roomType === "item"
+      ? styles.itemBackgroundStyle
+      : styles.normalBackgroundStyle;
 
   useEffect(() => {
     // "쉴드" 상태가 활성화되면 문어와 병아리 애니메이션을 즉시 제거
@@ -213,26 +249,30 @@ function Game() {
     navigate("/main");
   };
 
+  if (isLoading) {
+    return <div>Loading room information...</div>; // 로딩 중 사용자에게 표시할 컴포넌트
+  }
+
   return (
     <div className={backgroundStyle}>
       <Header
-        roomTitle={dummyRoomInfo.roomName}
-        language={dummyRoomInfo.language}
-        roomType={dummyRoomInfo.roomType}
-        roomId={roomId}
+        roomTitle={roomInfo.roomName}
+        language={roomInfo.language}
+        roomType={roomInfo.roomType}
+        roomId={roomInfo.roomId}
         onExitClick={handleExitClick} // 수정된 부분
       />
       <VideoScreen
-        roomId={roomId}
+        roomId={roomInfo.roomId}
         nickname={nickname}
-        roomType={roomType}
-        userList={[userList]}
+        roomType={roomInfo.roomType}
+        userList={roomInfo.userList}
       />
       <div className={styles.container}>
         <div className={styles.problemArea}>
           <Problem
-            problemTier={dummyRoomInfo.problemTier}
-            problemNo={dummyRoomInfo.problemNo}
+            problemTier={roomInfo.problemTier}
+            problemNo={roomInfo.problemNo}
           />
         </div>
         {/* 드래그 컨트롤 */}
@@ -263,11 +303,11 @@ function Game() {
           }}
         >
           <div className={styles.webIDE}>
-            <WebIDE language={dummyRoomInfo.language} />
+            <WebIDE language={roomInfo.language} />
           </div>
         </Resizable>
       </div>
-      <Footer roomType={dummyRoomInfo.roomType} />
+      <Footer roomType={roomInfo.roomType} />
       {showOctopus && <OctopusImage />}
       {inkSpotImages}
       {chickenImages}
@@ -275,7 +315,7 @@ function Game() {
       {/* 시간이 0이 되면 결과창을 렌더링 */}
       {showResult && (
         <div className={styles.gameResultsContainer}>
-          <GameResults roomType={dummyRoomInfo.roomType} />
+          <GameResults roomType={roomInfo.roomType} />
         </div>
       )}
     </div>

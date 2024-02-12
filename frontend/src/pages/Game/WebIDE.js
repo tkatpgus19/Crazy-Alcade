@@ -75,22 +75,28 @@ const WebIDE = ({ language }) => {
     }
 
     // 성공한 테스트 케이스의 수를 계산합니다.
-    const passedTests = executionResult.result.filter(
+    const passedTests = executionResult.result.tcResult.filter(
       (testcase) => testcase.codeStatus === "맞았습니다."
     ).length;
-    const allPassed = passedTests === executionResult.result.length;
+    const allPassed = passedTests === executionResult.result.tcResult.length;
 
     return (
       <div className={styles.resultContainer}>
         <button onClick={toggleResultDisplay} className={styles.toggleButton}>
           {isResultExpanded ? "👇" : "👆"}
         </button>
-        <h4>{isResultExpanded && executionResult.message}</h4>
+        <h4
+          style={{
+            color: allPassed ? "blue" : "red", // 모든 테스트 케이스를 맞췄으면 파란색, 아니면 빨간색
+          }}
+        >
+          {isResultExpanded && executionResult.result.allResult}
+        </h4>
 
         {isResultExpanded && (
           <div className={styles.console}>
             <ul>
-              {executionResult.result.map((testcase, index) => (
+              {executionResult.result.tcResult.map((testcase, index) => (
                 <li key={index} className={styles.testcaseResult}>
                   <span className={styles.testcaseNo}>
                     테스트 {testcase.testcaseNo}:
@@ -111,8 +117,9 @@ const WebIDE = ({ language }) => {
                 color: allPassed ? "blue" : "red", // 모든 테스트 케이스를 맞췄으면 파란색, 아니면 빨간색
               }}
             >
-              테스트 결과 (~˘▾˘)~ &nbsp; {passedTests}개 중{" "}
-              {executionResult.result.length}개 성공!
+              테스트 결과 (~˘▾˘)~ &nbsp;
+              {passedTests}개 중 {executionResult.result.tcResult.length}개
+              성공!
             </h4>
           </div>
         )}
