@@ -62,31 +62,41 @@ public class PythonCodeService {
         // 컴파일 에러
         if (!compile(dirPath, code)) {
             log.info("컴파일 에러");
-            return CodeStatus.COMPILE_ERROR.getStatus();
+
+            // 채점
+            if (isHidden) {
+
+            }
+
+            // 실행
+            return CodeExecuteResponse.of(CodeStatus.COMPILE_ERROR, null);
         }
 
         log.info("컴파일 성공");
 
-        List<Object> responses = new ArrayList<>();
+        CodeStatus codeStatus = CodeStatus.SUCCESS;
+        List<Object> tcResults = new ArrayList<>();
         List<Testcase> testcases;
 
         // 채점
         if (isHidden) {
             testcases = testcaseRepository.findAllByProblemId(problem.getId());
             CodeSubmitResponse response;
-            CodeStatus result = CodeStatus.SUCCESS;
+
             // 각 테스트케이스 별 실행 결과
             for (int i=0; i<testcases.size(); i++) {
                 response = submit(dirPath, problem,i+1, testcases.get(i));
-                responses.add(response);
+                tcResults.add(response);
+
                 // 해당 코드 상태를 실패로 변경
                 if (!response.getCodeStatus().equals(CodeStatus.SUCCESS.getStatus())) {
-                    result = CodeStatus.FAIL;
+                    codeStatus = CodeStatus.FAIL;
                 }
             }
+
             // 코드 저장
             try {
-                codeRepository.save(Code.of(code, Language.PYTHON, resultTime, resultMemory, result, member, problem));
+                codeRepository.save(Code.of(code, Language.JAVA, resultTime, resultMemory, codeStatus, member, problem));
             } catch (Exception e) {
                 deleteFolder(dirPath);
                 throw new CustomServerErrorException(DATABASE_ERROR);
@@ -95,16 +105,27 @@ public class PythonCodeService {
         // 실행
         else {
             testcases = testcaseRepository.findAllByProblemIdAndIsHidden(problem.getId(), isHidden);
+            List<CodeExecuteDto> results = new ArrayList<>();
+            CodeExecuteDto tcResult;
+
             // 각 테스트케이스 별 실행 결과
             for (int i=0; i<testcases.size(); i++) {
-                responses.add(execute(dirPath,i+1, testcases.get(i)));
+                tcResult = execute(dirPath,i+1, testcases.get(i));
+                results.add(tcResult);
+
+                // 해당 코드 상태를 실패로 변경
+                if (!tcResult.getCodeStatus().equals(CodeStatus.SUCCESS.getStatus())) {
+                    codeStatus = CodeStatus.FAIL;
+                }
+
+                return CodeExecuteResponse.of(codeStatus, results);
             }
         }
 
         // 파일 삭제
         deleteFolder(dirPath);
 
-        return responses;
+        return tcResults;
     }
 
     private boolean compile(String dirPath, String code) throws IOException, InterruptedException {
