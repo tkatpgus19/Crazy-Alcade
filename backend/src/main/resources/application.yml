@@ -61,3 +61,6 @@ code:
 
 OPENVIDU_URL: ${OPENVIDU_URL}
 OPENVIDU_SECRET: ${OPENVIDU_URL}
+
+handler:
+  target-url: ${TARGET_URL}

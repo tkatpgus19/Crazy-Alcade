@@ -1,15 +1,14 @@
 package com.eni.backend.member.entity;
 
-
-import com.eni.backend.problem.entity.Code;
-import com.eni.backend.common.entity.BaseTime;
 import com.eni.backend.auth.oauth2.user.OAuth2Provider;
 import com.eni.backend.auth.oauth2.user.OAuth2UserInfo;
+import com.eni.backend.common.entity.BaseTime;
 import com.eni.backend.item.entity.MemberItem;
 import com.eni.backend.member.dto.request.PutCoinRequest;
-import com.eni.backend.member.dto.request.PutRewardRequest;
 import com.eni.backend.member.dto.request.PutLanguageRequest;
 import com.eni.backend.member.dto.request.PutNicknameRequest;
+import com.eni.backend.member.dto.request.PutRewardRequest;
+import com.eni.backend.problem.entity.Code;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -129,6 +128,10 @@ public class Member extends BaseTime {
         } else {
             this.coin -= putCoinRequest.getPutValue();
         }
+    }
+
+    public void updateCoin(Integer putValue) {
+        this.coin -= putValue;
     }
 
     public void putReward(PutRewardRequest putRewardRequest) {

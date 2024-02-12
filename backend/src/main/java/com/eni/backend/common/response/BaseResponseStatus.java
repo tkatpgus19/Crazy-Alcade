@@ -15,13 +15,20 @@ public enum BaseResponseStatus {
     LOGIN_SUCCESS(HttpStatus.OK,"로그인에 성공하였습니다."),
     LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃에 성공하였습니다."),
 
+    GET_MEMBER_SUCCESS(HttpStatus.OK, "기본 회원 정보 조회에 성공하였습니다."),
+    GET_MEMBER_DETAILS_SUCCESS(HttpStatus.OK, "상세 회원 정보 조회에 성공하였습니다."),
     GET_MEMBER_LIST_SUCCESS(HttpStatus.OK, "회원 목록 조회에 성공하였습니다."),
+    GET_MEMBER_COIN_SUCCESS(HttpStatus.OK, "회원 보유 코인 조회에 성공하였습니다."),
+    GET_INVENTORY_SUCCESS(HttpStatus.OK, "상점 아이템 및 보유 아이템 조회에 성공하였습니다."),
     PUT_NICKNAME_SUCCESS(HttpStatus.OK, "닉네임 변경에 성공하였습니다."),
-    PUT_LANGUAGE_SUCCESS(HttpStatus.OK, "닉네임 변경에 성공하였습니다."),
+    PUT_LANGUAGE_SUCCESS(HttpStatus.OK, "선호 언어 변경에 성공하였습니다."),
     PUT_COIN_ADD_SUCCESS(HttpStatus.OK, "코인 획득에 성공하였습니다."),
     PUT_COIN_SUB_SUCCESS(HttpStatus.OK, "코인 차감에 성공하였습니다."),
     REWARD_ADD_SUCCESS(HttpStatus.OK, "코인과 EXP 획득에 성공하였습니다."),
 
+    GET_ITEM_LIST_SUCCESS(HttpStatus.OK, "아이템 목록 조회에 성공하였습니다."),
+    PUT_ITEM_ADD_SUCCESS(HttpStatus.OK, "아이템 구매에 성공하였습니다."),
+    PUT_ITEM_SUB_SUCCESS(HttpStatus.OK, "아이템 사용에 성공하였습니다."),
 
     POST_PROBLEM_SUCCESS(HttpStatus.OK, "문제 생성에 성공하였습니다."),
     POST_TESTCASE_SUCCESS(HttpStatus.OK, "테스트케이스 생성에 성공하였습니다."),
@@ -60,15 +67,17 @@ public enum BaseResponseStatus {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
     MALFORMED_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 올바르게 구성되지 않았습니다."),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
-    TOKEN_MISMATCH(HttpStatus.UNAUTHORIZED, "요청 정보가 토큰 정보와 일치하지 않습니다."),
+    TOKEN_MISMATCH(HttpStatus.BAD_REQUEST, "토큰 정보에 해당하는 회원 정보가 없습니다."),
 
     // SOCIAL LOGIN
     EMAIL_NOT_FOUND(HttpStatus.UNAUTHORIZED, "해당 소셜 플랫폼에 해당하는 이메일이 없습니다."),
-    SOCIAL_AUTHORIZATION_FAIL(HttpStatus.UNAUTHORIZED, "소셜 로그인 인증에 실패했습니다."),
+    SOCIAL_AUTHORIZATION_FAIL(HttpStatus.UNAUTHORIZED, "소셜 로그인 인증에 실패하였습니다."),
     PROVIDER_NOT_SUPPORTED(HttpStatus.UNAUTHORIZED, "지원되지 않는 소셜 플랫폼 입니다."),
 
     // MEMBER
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당하는 멤버 정보가 없습니다."),
+    MEMBER_COIN_SUB_FAIL(HttpStatus.BAD_REQUEST, "코인 수가 부족합니다."),
+    MEMBER_LANG_CHANGE_FAIL(HttpStatus.BAD_REQUEST, "선호 언어 변경에 실패하였습니다."),
 
     // PROBLEM
     PLATFORM_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "지원하지 않는 플랫폼입니다."),
@@ -80,6 +89,13 @@ public enum BaseResponseStatus {
 
     // CODE
     LANGUAGE_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "지원하지 않는 언어입니다."),
+
+    // ITEM
+    ITEM_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당하는 아이템이 없습니다."),
+
+    // MEMBER ITEM
+    MEMBER_ITEM_PURCHASE_FAIL(HttpStatus.BAD_REQUEST, "코인 부족으로 아이템 구매에 실패하였습니다."),
+    MEMBER_ITEM_USE_FAIL(HttpStatus.BAD_REQUEST, "보유 개수 부족으로 아이템 구매에 실패하였습니다.")
     ;
 
 
