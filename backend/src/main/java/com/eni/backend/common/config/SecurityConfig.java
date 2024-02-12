@@ -1,6 +1,7 @@
 package com.eni.backend.common.config;
 
 import com.eni.backend.auth.jwt.JwtAuthorizationFilter;
+import com.eni.backend.auth.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.eni.backend.auth.oauth2.handler.OAuth2AuthenticationFailureHandler;
 import com.eni.backend.auth.oauth2.handler.OAuth2AuthenticationSuccessHandler;
 import com.eni.backend.auth.oauth2.service.CustomOAuth2UserService;
@@ -27,6 +28,7 @@ public class SecurityConfig {
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
+    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -44,7 +46,8 @@ public class SecurityConfig {
                 )
                 .sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2Login(configure ->
-                        configure.userInfoEndpoint(config -> config.userService(customOAuth2UserService))
+                        configure.authorizationEndpoint(config -> config.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
+                                .userInfoEndpoint(config -> config.userService(customOAuth2UserService))
                                 .successHandler(oAuth2AuthenticationSuccessHandler)
                                 .failureHandler(oAuth2AuthenticationFailureHandler)
                 )
