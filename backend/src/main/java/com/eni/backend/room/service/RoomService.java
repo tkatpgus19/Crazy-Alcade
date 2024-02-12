@@ -7,10 +7,7 @@ import com.eni.backend.problem.repository.ProblemRepository;
 import com.eni.backend.problem.repository.TierRepository;
 import com.eni.backend.room.dto.ChatDto;
 import com.eni.backend.room.dto.RoomDto;
-import com.eni.backend.room.dto.request.DeleteRoomRequest;
-import com.eni.backend.room.dto.request.PostRoomEnterRequest;
-import com.eni.backend.room.dto.request.PostRoomRequest;
-import com.eni.backend.room.dto.request.PutReadyRequest;
+import com.eni.backend.room.dto.request.*;
 import com.eni.backend.room.dto.response.PostRoomResponse;
 import com.eni.backend.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -288,6 +285,14 @@ public class RoomService {
     private Problem findProblemById(Long problemId) {
         return problemRepository.findById(problemId)
                 .orElseThrow(() -> new CustomBadRequestException(PROBLEM_NOT_FOUND));
+    }
+
+    public Boolean attackUser(PostAttackRequest request){
+        if(request.getRoomId() != null && request.getNickname() != null) {
+            template.convertAndSend("/sub/game/" + request.getRoomId(), request);
+            return true;
+        }
+        return false;
     }
 
     public void test(){
