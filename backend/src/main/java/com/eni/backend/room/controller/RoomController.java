@@ -6,6 +6,7 @@ import com.eni.backend.room.dto.ChatDto;
 import com.eni.backend.room.dto.ItemDto;
 import com.eni.backend.room.dto.RoomDto;
 import com.eni.backend.room.dto.request.DeleteRoomRequest;
+import com.eni.backend.room.dto.request.PostRoomEnterRequest;
 import com.eni.backend.room.dto.request.PostRoomRequest;
 import com.eni.backend.room.dto.request.PutReadyRequest;
 import com.eni.backend.room.service.RoomService;
@@ -33,6 +34,7 @@ import static com.eni.backend.common.util.BindingResultUtils.getErrorMessages;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/rooms")
+@CrossOrigin(origins = "*")
 public class RoomController {
     private final SimpMessageSendingOperations template;
     private final RoomService roomService;
@@ -133,24 +135,30 @@ public class RoomController {
         }
     }
 
-    // 방 입장처리
-    @MessageMapping("/room/enterUser")
-    public void enterUser(@Payload ChatDto chat, SimpMessageHeaderAccessor headerAccessor) {
-        // 채팅방에 유저 추가 및 UserUUID 반환
-        String userUUID = roomService.addUser(chat.getRoomId(), chat.getSender());
-        // 반환 결과를 socket session 에 userUUID 로 저장
-        headerAccessor.getSessionAttributes().put("userUUID", userUUID);
-        headerAccessor.getSessionAttributes().put("roomId", chat.getRoomId());
-
-
-        chat.setMessage(chat.getSender() + " 님 입장!!");
-        template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
-        template.convertAndSend("/sub/room/"+chat.getRoomId()+"/status", roomService.getUserStatus(chat.getRoomId()));
-
-        template.convertAndSend("/sub/normal/room-list", roomService.getSortedRoomList("normal",null, null, null, null, 1));
-        template.convertAndSend("/sub/item/room-list", roomService.getSortedRoomList("item", null, null, null, null,1));
-
+    @PostMapping("/enter")
+    public BaseSuccessResponse<?> putEnter(@RequestBody PostRoomEnterRequest request){
+        return BaseSuccessResponse.of(POST_ENTER_ROOM_SUCCESS, roomService.enter(request));
     }
+
+    // 방 입장처리
+//    @MessageMapping("/room/enterUser")
+//    public void enterUser(@Payload ChatDto chat, SimpMessageHeaderAccessor headerAccessor) {
+//        // 채팅방에 유저 추가 및 UserUUID 반환
+//        String userUUID = roomService.addUser(chat.getRoomId(), chat.getSender());
+//
+//        // 반환 결과를 socket session 에 userUUID 로 저장
+//        headerAccessor.getSessionAttributes().put("userUUID", userUUID);
+//        headerAccessor.getSessionAttributes().put("roomId", chat.getRoomId());
+//
+//
+//        chat.setMessage(chat.getSender() + " 님 입장!!");
+//        template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
+//        template.convertAndSend("/sub/room/"+chat.getRoomId()+"/status", roomService.getUserStatus(chat.getRoomId()));
+//
+//        template.convertAndSend("/sub/normal/room-list", roomService.getSortedRoomList("normal",null, null, null, null, 1));
+//        template.convertAndSend("/sub/item/room-list", roomService.getSortedRoomList("item", null, null, null, null,1));
+//
+//    }
 
     // 게임 준비
     @PutMapping("/ready")
