@@ -89,30 +89,32 @@ public class RoomService {
 
     public Boolean enter(PostRoomEnterRequest request){
         RoomDto room = roomRepository.getRoomById(request.getRoomId());
-        if(room.getUserCnt() < room.getMaxUserCnt()){
-            String userUUID = UUID.randomUUID().toString();
-            room.setUserCnt(room.getUserCnt()+1);
-            room.getUserList().put(userUUID, request.getNickname());
+        if(room != null) {
+            if (room.getUserCnt() < room.getMaxUserCnt()) {
+                String userUUID = UUID.randomUUID().toString();
+                room.setUserCnt(room.getUserCnt() + 1);
+                room.getUserList().put(userUUID, request.getNickname());
 
-            // 마스터 등록
-            if(room.getUserCnt()==1){
-                room.getReadyList().put(request.getNickname(), "MASTER");
+                // 마스터 등록
+                if (room.getUserCnt() == 1) {
+                    room.getReadyList().put(request.getNickname(), "MASTER");
+                }
+                // 참가자 대기상태 설정
+                else {
+                    room.getReadyList().put(request.getNickname(), "WAITING");
+                }
+
+                ChatDto chat = new ChatDto();
+                chat.setSender(request.getNickname());
+                chat.setMessage(chat.getSender() + " 님 입장!!");
+
+                template.convertAndSend("/sub/chat/room/" + request.getRoomId(), chat);
+                template.convertAndSend("/sub/room/" + request.getRoomId() + "/status", getUserStatus(request.getRoomId()));
+
+                template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, null, 1));
+                template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
+                return true;
             }
-            // 참가자 대기상태 설정
-            else {
-                room.getReadyList().put(request.getNickname(), "WAITING");
-            }
-
-            ChatDto chat = new ChatDto();
-            chat.setSender(request.getNickname());
-            chat.setMessage(chat.getSender() + " 님 입장!!");
-
-            template.convertAndSend("/sub/chat/room/" + request.getRoomId(), chat);
-            template.convertAndSend("/sub/room/"+request.getRoomId()+"/status", getUserStatus(request.getRoomId()));
-
-            template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal",null, null, null, null, 1));
-            template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null,1));
-            return true;
         }
         return false;
     }
