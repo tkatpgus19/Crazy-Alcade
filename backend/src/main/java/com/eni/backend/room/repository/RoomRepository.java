@@ -29,7 +29,7 @@ public class RoomRepository {
                 .hasPassword(request.getHasPassword())
                 .roomPassword(request.getRoomPassword())
                 .problemTier(request.getProblemTier())
-                .problemNo(request.getProblemNo())
+                .problemName(request.getProblemName())
                 .timeLimit(request.getTimeLimit())
                 .language(request.getLanguage())
                 .codeReview(request.getCodeReview())
@@ -51,6 +51,6 @@ public class RoomRepository {
     }
 
     public RoomDto getRoomById(String roomId){
-        return roomMap.get(roomId);
+        return roomMap.getOrDefault(roomId, null);
     }
 }
