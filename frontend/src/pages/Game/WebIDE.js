@@ -21,7 +21,7 @@ const WebIDE = ({ language }) => {
 
   useEffect(() => {
     // 컴포넌트가 마운트될 때 Redux 상태에 초기 코드 값 저장
-    if (language === "JAVA") {
+    if (language === "java") {
       dispatch(
         setCode(`import java.util.Scanner;
    
@@ -38,11 +38,10 @@ const WebIDE = ({ language }) => {
       }
     }`)
       );
-    } else if (language === "PYTHON") {
+    } else if (language === "python") {
       dispatch(
-        setCode(`A, B = input().split()	# 입력되는 문자를 input()함수로 입력받고 split()함수로 나누어 A,B 변수에 저장
-
-        print(int(A)+int(B))	# int() 함수로 A와 B를 정수로 변환 하고 두수의 합을 출력`)
+        setCode(`A, B = input().split()
+        print(int(A)+int(B))	`)
       );
     }
 

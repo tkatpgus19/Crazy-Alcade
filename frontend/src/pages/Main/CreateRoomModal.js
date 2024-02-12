@@ -15,12 +15,12 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
     roomName: "",
     hasPassword: false,
     roomPassword: "",
-    problemTier: "",
-    problemName: "",
+    problemTier: 0,
+    problemNo: 0,
     timeLimit: 0,
     language: "java",
     codeReview: true,
-    master: "김진영",
+    master: "",
   });
 
   const [problems, setProblems] = useState([]); // 문제 목록을 저장할 상태
@@ -181,8 +181,8 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
         <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
           <span>문제 이름 : </span>
           <select
-            name="problemName"
-            value={roomData.problemName}
+            name="problemNo"
+            value={roomData.problemNo}
             onChange={handleChange}
           >
             <option value="">문제를 선택하세요</option>
