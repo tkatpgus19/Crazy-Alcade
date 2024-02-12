@@ -290,7 +290,7 @@ public class JavaCodeService {
             process.destroyForcibly();
             deleteFile(inputPath);
 
-            return CodeSubmitDto.of(no, CodeStatus.RUNTIME_ERROR.getStatus(), null, null);
+            return CodeSubmitDto.of(no, CodeStatus.RUNTIME_ERROR.getStatus());
         }
 
         // 실행 결과
