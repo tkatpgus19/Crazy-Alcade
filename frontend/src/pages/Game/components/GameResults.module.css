@@ -151,12 +151,8 @@
 }
 
 /* 기존 스타일... */
-.exitButton {
-  background-image: linear-gradient(
-    to right,
-    #ff416c,
-    #ff4b2b
-  ); /* 그라디언트 배경 */
+.exitButton,
+.reviewButton {
   color: #ffffff; /* 흰색 텍스트 */
   font-size: 16px; /* 텍스트 크기 */
   font-family: "DNFBITBITV2"; /* 폰트 변경 */
@@ -181,4 +177,21 @@
 .exitButton:hover {
   transform: translateX(10px); /* 호버 시 약간 위로 이동 */
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25); /* 호버 시 그림자 강조 */
+}
+
+.exitButton {
+  background-image: linear-gradient(
+    to right,
+    #ff416c,
+    #ff4b2b
+  ); /* 그라디언트 배경 */
+}
+
+/* 리뷰 버튼을 위한 새 스타일 */
+.reviewButton {
+  background-image: linear-gradient(
+    to right,
+    #414eff,
+    #402bff
+  ); /* 그라디언트 배경 */
 }

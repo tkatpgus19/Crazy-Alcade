@@ -56,11 +56,11 @@ public class ProblemController {
         return BaseSuccessResponse.of(GET_PROBLEM_LIST_SUCCESS, problemService.getList(tierId));
     }
 
-    @GetMapping("/random")
-    public BaseSuccessResponse<?> getRandom(@RequestParam(name = "tier-id") Long tierId) {
-        log.info("ProblemController.getRandom");
-        return BaseSuccessResponse.of(GET_PROBLEM_RANDOM_PROCESS, problemService.getRandom(tierId));
-    }
+//    @GetMapping("/random")
+//    public BaseSuccessResponse<?> getRandom(@RequestParam(name = "tier-id") Long tierId) {
+//        log.info("ProblemController.getRandom");
+//        return BaseSuccessResponse.of(GET_PROBLEM_RANDOM_PROCESS, problemService.getRandom(tierId));
+//    }
 
     @GetMapping("/{problem-id}")
     public BaseSuccessResponse<?> get(@PathVariable(name = "problem-id") Long problemId) {

@@ -2,8 +2,9 @@
 
 .blue {
   background-color: #0777d2; /* 파란색 배경 */
-  width: 1000px; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
-  height: 540px; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
+  width: 70%; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
+  min-height: 540px; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
+  height: 100%;
   border-radius: 15px;
   margin-left: 1%;
   margin-bottom: auto;
@@ -14,16 +15,16 @@
 /* ChatBox.css */
 
 .chat {
+  position: relative;
   background-color: #0777d2; /* 파란색 배경 */
   width: 93.4%; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
-  height: 150px;
   border-radius: 15px;
-  margin-top: auto;
+  height: 80%;
   margin-left: 30px;
   margin-right: auto;
   border: 1.6px solid;
   border-color: black;
-  padding-bottom: 300px;
+  padding-bottom: 20px;
 }
 
 .chattext {
@@ -40,35 +41,51 @@
 
 .realchat {
   width: 88%; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
-  height: 300px;
+  height: 70%;
   margin-top: auto;
   margin-left: 30px;
   margin-right: auto;
   overflow-x: hidden;
-  overflow-y: "scroll";
+  overflow-y: scroll;
   color: white;
   font-family: "DNFBitBitv2";
 }
+.realchat::-webkit-scrollbar {
+  width: 20px;
+}
+.realchat::-webkit-scrollbar-thumb {
+  background-color: #3fa6f9;
+  border-radius: 20px;
+}
+.realchat::-webkit-scrollbar-track {
+  background-color: #02508f;
+  border-radius: 20px;
+}
 
 .checkchat {
+  position: absolute;
+  bottom: 4%;
   display: flex;
+  width: 100%;
+  margin-top: 30%;
 }
 
 .write {
   background-color: white; /* 파란색 배경 */
-  width: 75%; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
+  width: 73%; /* GrayBox의 내부 공간 중 5/3을 차지하도록 설정 */
   height: 40px;
   border-radius: 10px;
   margin-top: 15px;
-  margin-left: 30px;
+  margin-left: 32px;
   border: 1.6px solid;
   border-color: black;
+  padding-left: 10px;
+  font-family: "DNFBitBitv2";
 }
 
 .buttonWithImage {
   background-color: #0bbeff;
   background-image: url("../../../public/images/chat.png");
-  background-size: cover;
   background-size: contain; /* 이미지가 버튼에 맞게 조절됩니다. */
   background-repeat: no-repeat;
   background-position: center; /* 이미지를 가로 및 세로 정중앙에 배치합니다. */
@@ -77,7 +94,6 @@
   border-radius: 10px;
   margin-top: 15px;
   margin-left: 11px;
-  margin-right: auto;
   border: 1.6px solid;
   border-color: black;
 }
@@ -109,6 +125,15 @@
     orange,
     darkorange
   ); /* 주황색 그라데이션 효과 */
+  transition: 0.5s all;
+}
+.start:hover {
+  background: linear-gradient(
+    to right,
+    rgb(197, 128, 0),
+    rgb(122, 67, 0)
+  ); /* 주황색 그라데이션 효과 */
+  transition: 0.5s all;
 }
 .ready {
   background: linear-gradient(
@@ -116,6 +141,15 @@
     #38d600,
     #80f158
   ); /* 주황색 그라데이션 효과 */
+  transition: 0.5s all;
+}
+.ready:hover {
+  background: linear-gradient(
+    to right,
+    #268d00,
+    #1c6a00
+  ); /* 주황색 그라데이션 효과 */
+  transition: 0.5s all;
 }
 
 /* 오른쪽에 들어갈 버튼  */
@@ -140,13 +174,14 @@
 .miniBoxup {
   /* 격자 방식으로 요소들을 배치하는 display */
   display: grid;
+  height: 100%;
   /* 아래는 각각 열 행? 이 화면의 얼마만큼을 차지하게 할지 정하는 것 */
   /* 참고로 1fr은 화면을 꽉채우는 비율 */
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  width: 680px;
-  height: 200px;
-  margin: auto;
+  justify-content: center;
+  justify-items: center;
+  padding: 1.5% 50px 0 50px;
   /* 상 우 하 좌 순서 */
 }
 
@@ -169,22 +204,22 @@
   border-color: black;
   border: 2px solid;
   width: 180px;
-  height: 70px;
+  height: 74px;
   margin-top: 5px;
 }
 /* 대기방 첫번째 헤더 */
 .roomheader1 {
   margin-bottom: 15px;
   padding-top: 15px;
-  padding-left: 41px;
+  padding-left: 3.7%;
 }
 
 /* 대기방 두번째 헤더 */
 .roomheader2 {
   display: flex;
   justify-content: space-between;
-  padding-left: 11px;
-  padding-right: 42px;
+  padding-left: 1.7%;
+  padding-right: 3.8%;
 }
 
 /* 오른쪽 아래 3개 버튼 스타일  */
@@ -198,15 +233,14 @@
 /* 오른쪽 아래 4개 버튼 스타일  */
 .button4 {
   display: flex;
-  gap: 10px;
+  gap: 20px;
 }
 
 /* 오른쪽 부분 전체 스타일  */
 .right {
-  display: flex;
-  flex-direction: column;
-  width: 40%;
-  height: 540px;
+  width: 50%;
+  height: 100%;
+  min-height: 540px;
   box-sizing: border-box;
 }
 
@@ -240,7 +274,7 @@
   border: 2px solid;
   width: 170px;
   height: 28px;
-  margin-top: 3px;
+  margin-top: 3.5px;
   margin-left: 3px;
   text-align: center; /* 텍스트 중앙 정렬 */
   font-family: "DNFBitBitv2";
@@ -275,8 +309,7 @@
   border: 2px solid;
   width: 170px;
   height: 28px;
-  margin-top: 3px;
-  margin-left: 3px;
+  margin: 3px;
   text-align: center; /* 텍스트 중앙 정렬 */
   font-family: "DNFBitBitv2";
   font-size: 18px;

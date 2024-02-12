@@ -15,8 +15,7 @@ import screenOnImage from "../../assets/images/SCREEN-ON.png";
 import screenOffImage from "../../assets/images/SCREEN-OFF.png";
 
 // OpenVidu 서버의 URL을 환경에 따라 설정
-const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === "production" ? "" : "http://192.168.100.146:8080/";
+const APPLICATION_SERVER_URL = process.env.REACT_APP_OPENVIDU_URL;
 
 const VideoScreen = ({ roomId, nickname, userList, roomType }) => {
   const [mySessionId, setMySessionId] = useState(roomId);

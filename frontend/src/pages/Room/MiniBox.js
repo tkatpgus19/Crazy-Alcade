@@ -10,7 +10,7 @@ const MiniBox = ({ children, image }) => {
     <div className={styles.minibox}>
       <ModalAlert
         message="창준이를 강퇴시키시겠습니까"
-        showCancelButton={false}
+        showCancelButton={true}
         showConfirmButton={true}
       />
       <div>

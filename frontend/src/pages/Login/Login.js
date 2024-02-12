@@ -1,97 +1,108 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../store/authSlice";
 import imgfile from "../../assets/images/loginlogo.png";
 import background from "../../assets/images/loginback.PNG";
-import "./Login.module.css";
 import styles from "./Login.module.css";
+import { useLocation, useNavigate } from "react-router-dom";
+import kakaoImg from "../../assets/images/kakao_login_large_wide.png";
+import googleImg from "../../assets/images/web_neutral_sq_ctn@2x.png";
 
 const Login = () => {
-  // Kakao 로그인 핸들러
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const kakaoLoginHandler = async () => {
+  useEffect(() => {
+    const handleOAuthRedirect = async () => {
+      const code = new URLSearchParams(location.search).get("code");
+      if (code) {
+        await fetchAccessToken(code);
+      }
+    };
+
+    handleOAuthRedirect();
+  }, [location]);
+
+  const fetchAccessToken = async (code) => {
     try {
-      const response = await fetch(
-        "http://i10d104.p.ssafy.io/oauth2/authorization/kakao"
-      );
-      const contentType = response.headers.get("content-type");
+      // 서버에 코드를 보내고 액세스 토큰을 요청하는 URL과 방식을 확인하세요.
+      const response = await fetch(process.env.REACT_APP_KAKAO_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ code }),
+      });
 
-      if (!contentType || !contentType.includes("application/json")) {
-        throw new Error("서버에서 JSON 형식의 데이터를 반환하지 않았습니다.");
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
 
       const data = await response.json();
-      dispatch(loginSuccess(data)); // 로그인 성공 시 액션 디스패치
-      console.log(response);
+      localStorage.setItem("loginResponse", JSON.stringify(data)); // 전체 데이터를 loginResponse라는 키로 저장
+
+      if (!data || !data.result) {
+        throw new Error("Invalid data from server");
+      }
+
+      // 필요한 값을 각각 저장
+      localStorage.setItem("accessToken", data.result.accessToken);
+      localStorage.setItem("memberId", data.result.memberId.toString());
+      localStorage.setItem("isNew", data.result.new.toString());
+      localStorage.setItem("isConnected", data.result.connected.toString());
+
+      dispatch(loginSuccess(data.result));
+      navigate("/main"); // useHistory의 history.push('/main') 대신 useNavigate를 사용
     } catch (error) {
-      console.error("Kakao 로그인 중 오류 발생:", error);
-      // 적절한 오류 처리
+      console.error("Failed to fetch access token:", error);
     }
   };
 
-  // Google 로그인 핸들러
-  const googleLoginHandler = () => {
-    window.location.href =
-      "http://192.168.100.147:8080/oauth2/authorization/google";
+  const kakaoLoginHandler = () => {
+    window.location.href = process.env.REACT_APP_KAKAO_URL;
   };
 
-  // 페이지 배경 스타일
+  const googleLoginHandler = () => {
+    window.location.href = process.env.REACT_APP_GOOGLE_URL;
+  };
+
+  const navigateToMain = () => {
+    navigate("/main");
+  };
+
   const backgroundStyle = {
     backgroundImage: `url(${background})`,
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
-    height: "740px",
+    height: "100vh",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
   };
 
-  // 로고 스타일
-  const logoStyle = {
-    // 로고에 대한 추가적인 스타일을 필요에 따라 정의합니다.
-  };
-
   return (
     <div className={styles.loginmainContainer} style={backgroundStyle}>
-      {/* 로그인 내용은 여기에 넣으세요 */}
-      <div className={styles.loginlogo} style={logoStyle}>
+      <div className={styles.loginlogo}>
         <img className={styles.loginlogoImg} src={imgfile} alt="로고" />
       </div>
 
-      {/* Kakao 로그인 버튼 */}
+      <div className={styles.kakaoLogin}>
+        <img src={kakaoImg} width={"300px"} />
+      </div>
+
+      <div className={styles.googleLogin}>
+        <img src={googleImg} width={"300px"} style={{ borderRadius: "7px" }} />
+      </div>
+
+      {/* Add a new button for navigating to "/main" */}
       <button
         type="button"
-        onClick={kakaoLoginHandler}
-        className={`${styles.kakaoButton} `}
+        onClick={navigateToMain}
+        className={`${styles.mainButton}`}
       >
-        카카오 계정으로 로그인
+        이동하기
       </button>
-
-      {/* Google 로그인 버튼 */}
-      <button
-        type="button"
-        onClick={googleLoginHandler}
-        className={`${styles.googleButton} `}
-      >
-        구글 계정으로 로그인
-      </button>
-
-      {/* Google 로그인 버튼을 사용할 경우 아래 주석 부분을 활성화하세요 */}
-      {/* 
-      <GoogleOAuthProvider clientId="YourGoogleClientId">
-        <GoogleLogin
-          onSuccess={(res) => {
-            console.log(res);
-            // Google 로그인 성공 시 추가 작업 수행
-          }}
-          onFailure={(err) => {
-            console.log(err);
-            // Google 로그인 실패 시 추가 작업 수행
-          }}
-        />
-      </GoogleOAuthProvider>
-      */}
     </div>
   );
 };

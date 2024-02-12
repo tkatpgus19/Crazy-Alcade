@@ -1,29 +1,35 @@
-// authSlice.js
-
+// store/authSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   memberId: null,
-  accessToken: null,
+  accessToken: "",
   isNew: false,
   isConnected: false,
+  isLoggedIn: false,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    loginSuccess(state, action) {
+    loginSuccess: (state, action) => {
       const { memberId, accessToken, isNew, isConnected } = action.payload;
       state.memberId = memberId;
       state.accessToken = accessToken;
       state.isNew = isNew;
       state.isConnected = isConnected;
+      state.isLoggedIn = true;
     },
-    // 다른 액션들을 추가할 수 있습니다.
+    logout: (state) => {
+      state.memberId = null;
+      state.accessToken = "";
+      state.isNew = false;
+      state.isConnected = false;
+      state.isLoggedIn = false;
+    },
   },
 });
 
-export const { loginSuccess } = authSlice.actions;
-
+export const { loginSuccess, logout } = authSlice.actions;
 export default authSlice.reducer;

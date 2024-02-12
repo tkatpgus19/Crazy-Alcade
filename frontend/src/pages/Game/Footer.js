@@ -1,6 +1,8 @@
 // Footer.js
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import PropTypes from "prop-types";
+import axios from "axios";
 
 import styles from "./Footer.module.css";
 import ItemButton from "./components/ItemButton";
@@ -8,7 +10,10 @@ import ActionButton from "./components/ActionButton";
 
 import { useSpring, animated } from "@react-spring/web";
 import { toggleInkSpraying, resetInkSpraying } from "./slices/octopusSlice";
-import { toggleChickenWalking } from "./slices/featureSlice";
+import {
+  resetChickenWalking,
+  toggleChickenWalking,
+} from "./slices/featureSlice";
 import { setExecutionResult } from "./slices/executionResultSlice"; // 올바른 경로로 수정
 import { setLoading } from "./slices/loadingSlice"; // 올바른 경로로 수정
 import { toggleWebIDEFlip, resetWebIDEFlip } from "./slices/webIDESlice";
@@ -24,16 +29,25 @@ import balloonIcon from "../../assets/images/waterBalloon.png";
 import magicIcon from "../../assets/images/magic.png";
 import shieldIcon from "../../assets/images/shield.png";
 
-const Footer = () => {
+const Footer = ({ roomType }) => {
+  const dispatch = useDispatch();
+
+  const [isItem, setItem] = useState(false);
+
   const code = useSelector((state) => state.code.content); // 코드 상태 선택
   const lang = useSelector((state) => state.code.lang); // 언어 상태 선택
-
-  const dispatch = useDispatch();
 
   const isSprayingInk = useSelector((state) => state.octopus.isSprayingInk);
   const isChickenWalking = useSelector((state) => state.feature.chickenWalking);
   const isAnimating = useSelector((state) => state.waterBalloon.isAnimating);
   const isFlipped = useSelector((state) => state.webIDE.isFlipped); // 가정: webIDE 슬라이스에서 isFlipped 상태를 관리
+
+  useEffect(() => {
+    if (roomType === "item") {
+      setItem(true);
+      console.log("아이템전입니다");
+    }
+  }, []);
 
   const animProps = useSpring({
     transform: isAnimating ? "translateY(-100px)" : "translateY(0px)",
@@ -53,6 +67,10 @@ const Footer = () => {
       }, 5000);
     } else if (item === "아이템2") {
       if (!isChickenWalking) dispatch(toggleChickenWalking());
+      setTimeout(() => {
+        // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
+        dispatch(resetChickenWalking());
+      }, 5000);
     } else if (item === "아이템3") {
       if (!isAnimating) dispatch(toggleWaterBalloonAnimation(true)); // 애니메이션 시작
 
@@ -85,41 +103,47 @@ const Footer = () => {
   const handleRun = async () => {
     dispatch(setLoading(true)); // 로딩 시작
     console.log("코드 실행");
+    try {
+      const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/1/codes/execute`;
+      const token = process.env.REACT_APP_TOKEN;
 
-    const apiUrl = `${process.env.REACT_APP_API_BASE_URL}/problems/1/codes/execute`;
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        lang: lang,
-        content: code,
-      }),
-    });
+      const response = await axios.post(
+        apiUrl,
+        {
+          lang: lang,
+          content: code,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Bearer 토큰 방식을 사용하는 경우
+            // Origin 헤더는 브라우저가 자동으로 설정하기 때문에 여기서 설정할 필요가 없습니다.
+          },
+        }
+      );
 
-    if (response.ok) {
-      const data = await response.json();
+      const data = response.data;
       console.log(data); // 실행 결과 처리
       dispatch(setExecutionResult(data)); // Redux 상태 업데이트
-    } else {
-      // 오류 처리
-      console.error("서버에서 문제가 발생했습니다.");
-      dispatch(setExecutionResult("Error executing code.")); // 오류 메시지 저장
+    } catch (error) {
+      console.error("서버에서 문제가 발생했습니다.", error);
+      // 오류가 발생했을 때 오류 메시지를 포함시켜 저장하는 것이 좋습니다.
+      dispatch(setExecutionResult(error.message || "Error executing code."));
+    } finally {
+      dispatch(setLoading(false));
     }
-    // API 요청이 완료된 후 로딩 상태를 false로 설정
-    dispatch(setLoading(false));
   };
 
   // 코드 제출 함수
   const handleSubmit = async () => {
     dispatch(setLoading(true)); // 로딩 상태를 true로 설정
+    const token = process.env.REACT_APP_TOKEN;
+    const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/1/codes/submit`;
     try {
-      const apiUrl = `${process.env.REACT_APP_API_BASE_URL}/problems/1/codes/submit`;
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Bearer 토큰 방식을 사용하는 경우
         },
         body: JSON.stringify({
           lang: lang, // 언어 설정
@@ -127,13 +151,9 @@ const Footer = () => {
         }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        dispatch(setExecutionResult(data)); // 결과를 저장
-      } else {
-        console.error("서버에서 문제가 발생했습니다.");
-        dispatch(setExecutionResult({ message: "Error submitting code." })); // 오류 메시지 저장
-      }
+      const data = await response.json();
+      dispatch(setExecutionResult(data)); // 결과를 저장
+      console.log(data);
     } catch (error) {
       console.error("요청 처리 중 에러 발생:", error);
       dispatch(setExecutionResult({ message: "Error submitting code." }));
@@ -145,35 +165,37 @@ const Footer = () => {
   return (
     <div className={styles.footer}>
       {/* 내 아이템 영역 */}
-      <div className={styles.itemContainer}>
-        <div className={styles.itemHeader}>내 아이템</div>
-        {/* 각각의 아이템 버튼을 ItemButton 컴포넌트로 대체 */}
-        <ItemButton
-          icon={octopusIcon}
-          itemName="문어"
-          onUseItem={() => handleUseItem("아이템1")}
-        />
-        <ItemButton
-          icon={chickIcon}
-          itemName="병아리"
-          onUseItem={() => handleUseItem("아이템2")}
-        />
-        <ItemButton
-          icon={balloonIcon}
-          itemName="물풍선"
-          onUseItem={() => handleUseItem("아이템3")}
-        />
-        <ItemButton
-          icon={magicIcon}
-          itemName="요술봉"
-          onUseItem={() => handleUseItem("아이템4")}
-        />
-        <ItemButton
-          icon={shieldIcon}
-          itemName="쉴드"
-          onUseItem={() => handleUseItem("아이템5")}
-        />
-      </div>
+      {isItem && (
+        <div className={styles.itemContainer}>
+          <div className={styles.itemHeader}>내 아이템</div>
+          {/* 각각의 아이템 버튼을 ItemButton 컴포넌트로 대체 */}
+          <ItemButton
+            icon={octopusIcon}
+            itemName="문어"
+            onUseItem={() => handleUseItem("아이템1")}
+          />
+          <ItemButton
+            icon={chickIcon}
+            itemName="병아리"
+            onUseItem={() => handleUseItem("아이템2")}
+          />
+          <ItemButton
+            icon={balloonIcon}
+            itemName="물풍선"
+            onUseItem={() => handleUseItem("아이템3")}
+          />
+          <ItemButton
+            icon={magicIcon}
+            itemName="요술봉"
+            onUseItem={() => handleUseItem("아이템4")}
+          />
+          <ItemButton
+            icon={shieldIcon}
+            itemName="쉴드"
+            onUseItem={() => handleUseItem("아이템5")}
+          />
+        </div>
+      )}
       {/* 액션 버튼들 */}
       <animated.div style={animProps} className={styles.buttonContainer}>
         {isAnimating && (
@@ -204,6 +226,10 @@ const Footer = () => {
       </animated.div>
     </div>
   );
+};
+
+Footer.propTypes = {
+  roomType: PropTypes.string.isRequired,
 };
 
 export default Footer;

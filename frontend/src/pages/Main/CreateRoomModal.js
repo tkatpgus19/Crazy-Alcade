@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom"; // React Router v6에서는 useHistory 대신 useNavigate를 사용
 import styles from "./CreateRoomModal.module.css";
@@ -22,6 +23,42 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
     master: "김진영",
   });
 
+  const [problems, setProblems] = useState([]); // 문제 목록을 저장할 상태
+  const [tiers, setTiers] = useState([]); // 티어 정보 상태 추가
+
+  useEffect(() => {
+    const fetchProblems = async () => {
+      try {
+        const response = await axios.get(
+          "https://i10d104.p.ssafy.io/api/problems?tier-id=1"
+        );
+        // 'result' 배열을 상태에 저장
+        setProblems(response.data.result);
+      } catch (error) {
+        console.error("문제 목록을 불러오는 데 실패했습니다.", error);
+        setProblems([]); // 오류 발생 시 빈 배열 설정
+      }
+    };
+
+    fetchProblems();
+
+    // 티어 정보를 불러오는 함수
+    const fetchTiers = async () => {
+      try {
+        const response = await axios.get(
+          "https://i10d104.p.ssafy.io/api/tiers"
+        );
+        // API 응답에서 'result' 배열을 추출하여 'tiers' 상태에 설정
+        setTiers(response.data.result || []); // 'result'가 없는 경우 빈 배열을 기본값으로 사용
+      } catch (error) {
+        console.error("티어 정보를 불러오는 데 실패했습니다.", error);
+        setTiers([]); // 오류 발생 시 빈 배열 설정
+      }
+    };
+
+    fetchTiers();
+  }, []);
+
   // 입력값이 변경될 때 호출되는 핸들러 함수를 정의합니다.
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -33,6 +70,7 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
 
   // 폼을 제출할 때 호출되는 핸들러 함수를 정의합니다.
   const handleSubmit = () => {
+    console.log(roomData);
     createRoom(roomData); // 방 만들기 함수 호출
     closeModal(); // 모달 닫기 함수 호출
 
@@ -62,10 +100,18 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
         <div className={styles.roomTitle}>방 만들기</div>
       </div>
 
-      {/* 방 타입 체크박스 */}
-      <div className={`${styles.roomSectionTitle} ${styles.languageCheckbox}`}>
-        <label>
-          <span>방 타입 : </span>
+      <div
+        style={{
+          background: "#00B9FF",
+          border: "2px solid black",
+          borderRadius: "8px",
+        }}
+      >
+        {/* 방 타입 체크박스 */}
+        <div
+          className={`${styles.roomSectionTitle} ${styles.languageCheckbox}`}
+        >
+          <span>방 타입</span>
           노말전
           <input
             type="checkbox"
@@ -74,8 +120,6 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
             checked={roomData.roomType === "normal"}
             onChange={() => handleChangeRoomType("normal")}
           />
-        </label>
-        <label>
           아이템전
           <input
             type="checkbox"
@@ -84,77 +128,75 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
             checked={roomData.roomType === "item"}
             onChange={() => handleChangeRoomType("item")}
           />
-        </label>
-      </div>
+        </div>
 
-      {/* 방 이름 입력란 */}
-      <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
-        <label>
-          <span>방 이름 : </span>
+        {/* 방 이름 입력란 */}
+        <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
+          <span>방 이름</span>
           <input
             type="text"
             name="roomName"
             value={roomData.name}
             onChange={handleChange}
           />
-        </label>
-      </div>
+        </div>
 
-      {/* 비밀번호 입력란 */}
-      <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
-        <label>
-          <span>비밀번호 : </span>
+        {/* 비밀번호 입력란 */}
+        <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
+          <span>비밀번호</span>
           <input
             type="checkbox"
             name="hasPassword"
             checked={roomData.hasPassword}
             onChange={handleChange}
           />
-        </label>
-        {roomData.hasPassword && (
-          <input
-            type="password"
-            name="roomPassword"
-            value={roomData.password}
-            onChange={handleChange}
-          />
-        )}
-      </div>
+          {roomData.hasPassword && (
+            <input
+              type="password"
+              name="roomPassword"
+              value={roomData.password}
+              onChange={handleChange}
+            />
+          )}
+        </div>
 
-      {/* 티어 선택 드롭다운 */}
-      <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
-        <label>
+        {/* 티어 선택 드롭다운 */}
+        <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
           <span>티어 선택 : </span>
           <select
             name="problemTier"
-            value={roomData.tier}
+            value={roomData.problemTier}
             onChange={handleChange}
           >
             <option value="">선택하세요</option>
-            <option value="bronze">Bronze</option>
-            <option value="silver">Silver</option>
-            <option value="gold">Gold</option>
+            {tiers.map((tier, index) => (
+              <option key={index} value={tier.tierId}>
+                {tier.tierName}
+              </option>
+            ))}
           </select>
-        </label>
-      </div>
+        </div>
 
-      {/* 문제 번호 입력란 */}
-      <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
-        <label>
+        {/* 문제 번호 선택 드롭다운 */}
+        <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
           <span>문제 번호 : </span>
-          <input
-            type="text"
+          <select
             name="problemNo"
-            value={roomData.problemNumber}
+            value={roomData.problemNo}
             onChange={handleChange}
-          />
-        </label>
-      </div>
+          >
+            <option value="">문제를 선택하세요</option>
+            {problems.map((problem, index) => (
+              <option key={index} value={problem.problemId}>
+                {problem.platform} {problem.no} {problem.title}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      {/* 시간 제한 드롭다운 */}
-      <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
-        <label>
-          <span>시간 제한 : </span>
+        {/* 시간 제한 드롭다운 */}
+        <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
+          <span>시간 제한</span>
           <select
             name="timeLimit"
             value={roomData.timeLimit}
@@ -166,13 +208,13 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
             <option value="2h">2시간</option>
             <option value="2h30m">2시간 30분</option>
           </select>
-        </label>
-      </div>
+        </div>
 
-      {/* 풀이 언어 체크박스 */}
-      <div className={`${styles.roomSectionTitle} ${styles.languageCheckbox}`}>
-        <label>
-          <span>풀이 언어 : </span>
+        {/* 풀이 언어 체크박스 */}
+        <div
+          className={`${styles.roomSectionTitle} ${styles.languageCheckbox}`}
+        >
+          <span>풀이 언어</span>
           Java
           <input
             type="checkbox"
@@ -181,8 +223,6 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
             checked={roomData.language === "java"}
             onChange={() => handleChangeLanguage("java")}
           />
-        </label>
-        <label>
           Python
           <input
             type="checkbox"
@@ -191,15 +231,13 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
             checked={roomData.language === "python"}
             onChange={() => handleChangeLanguage("python")}
           />
-        </label>
-      </div>
+        </div>
 
-      {/* 코드 리뷰 체크박스 */}
-      <div
-        className={`${styles.roomSectionTitle} ${styles.codeReviewCheckbox}`}
-      >
-        <label>
-          <span>코드 리뷰 : </span>
+        {/* 코드 리뷰 체크박스 */}
+        <div
+          className={`${styles.roomSectionTitle} ${styles.codeReviewCheckbox}`}
+        >
+          <span>코드 리뷰</span>
           o
           <input
             type="checkbox"
@@ -212,8 +250,6 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
               }))
             }
           />
-        </label>
-        <label>
           x
           <input
             type="checkbox"
@@ -226,7 +262,7 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
               }))
             }
           />
-        </label>
+        </div>
       </div>
 
       {/* 추가적인 방 정보에 대한 유사한 입력 필드를 추가하세요 */}

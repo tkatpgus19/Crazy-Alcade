@@ -1,80 +1,126 @@
 /* ItemShopModal.module.css */
 .itemShopModal {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 400px;
-  padding: 20px;
-  background-color: white;
-  border: 2px solid #0584df;
+  width: 100%;
+  max-width: 480px;
+  background: #0ddfff;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
 }
 
 .titleBox {
-  width: calc(100% - 40px); /* 너비 조절 */
-  height: 40px;
-  background-color: #0584df;
-  color: white;
-  text-align: center;
-  line-height: 40px;
-  border-radius: 5px;
+  border-radius: 10px;
+  font-size: 24px;
+  margin-left: 15px;
+  color: #333;
+  text-align: left;
   margin-bottom: 20px;
 }
 
 .closeButton {
-  position: absolute; /* 오른쪽 상단에 고정 */
+  position: absolute;
   top: 10px;
   right: 10px;
-  font-size: 16px;
-  background: none;
   border: none;
-  color: black;
+  background: transparent;
+  font-size: 24px;
   cursor: pointer;
-  font-family: "DNFBitBitv2";
 }
 
-.itemContainer {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
+.coinsDisplay {
+  text-align: right; /* 텍스트를 오른쪽 정렬 */
+  margin-top: -15px;
+  margin-bottom: 10px;
+  margin-right: 15px;
+  font-size: 16px; /* 폰트 사이즈 */
+  color: black; /* 폰트 색상, 필요에 따라 조정 */
 }
 
 .itemImage {
-  width: 100px;
-  height: 100px;
-  background-color: white;
-  border: 2px solid #0584df;
+  width: 60px;
+  height: 60px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
   margin-right: 20px;
+  background-size: 70%; /* 이미지가 div를 꽉 채우도록 */
+  background-position: center; /* 이미지를 중앙에 위치시킴 */
+  background-repeat: no-repeat; /* 이미지가 반복되지 않도록 설정 */
 }
 
-.itemInfo {
+.itemCoin {
+  margin-top: 5px; /* 코인 가격과 설명 사이의 간격 */
+  font-size: 12px; /* 코인 가격의 폰트 크기 */
+  color: black; /* 코인 가격의 색상 */
+  margin-left: 3px;
+}
+
+.itemsContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  max-height: 400px; /* 아이템 컨테이너의 최대 높이 설정 */
+  overflow-y: auto; /* 세로 방향으로 스크롤바 표시 */
+}
+
+.item {
+  background-color: #0594df;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.itemContent {
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-.itemName {
-  font-size: 16px;
-  margin-bottom: 5px;
+.itemHeader,
+.itemBody {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
+.itemName,
 .itemDescription {
-  font-size: 14px;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
+  flex: 1;
 }
 
 .itemCount {
-  font-size: 14px;
+  margin-left: 20px; /* 이름과 보유 갯수 사이의 간격 */
+  white-space: nowrap; /* 보유 갯수가 줄바꿈 되지 않도록 함 */
+  color: white;
   margin-bottom: 5px;
 }
 
 .buyButton {
-  background-color: #0584df;
-  color: white;
-  padding: 8px 16px;
-  font-size: 14px;
+  padding: 5px 15px;
+  background-color: white;
+  color: black;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 14px;
   font-family: "DNFBitBitv2";
+}
+
+/* 추가적인 반응형 스타일링 */
+@media (max-width: 768px) {
+  .itemShopModal {
+    width: 95%;
+  }
+
+  .itemsContainer {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
 }
