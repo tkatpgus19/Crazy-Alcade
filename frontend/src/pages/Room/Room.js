@@ -31,8 +31,15 @@ const Room = () => {
   // 추가한 부분
   const getRoomInfo = () => {
     axios.get(`${SERVER_URL}/rooms/info?roomId=${roomId}`).then((res) => {
-      console.log("제바라라라라라라\n\n\n\n\n" + res.data.result);
       setRoomInfo(res.data.result);
+      console.log(res.data.result);
+      let index = 0;
+      Object.values(res.data.result.userList).forEach((data, idx) => {
+        if (data === nickname) {
+          index = idx;
+        }
+      });
+      setUserUUID(Object.keys(res.data.result.userList)[index]);
     });
   };
 
@@ -44,6 +51,7 @@ const Room = () => {
   const { roomId, nickname, roomType } = location.state; // 세가지 받아옴.
   const [chatContent, setChatContent] = useState([]);
   const [chatInput, setChatInput] = useState("");
+  const [userUUID, setUserUUID] = useState("");
 
   const client = useRef();
 
@@ -54,8 +62,12 @@ const Room = () => {
   };
 
   const leaveRoom = () => {
-    client.current.disconnect();
-    navigate(-1);
+    axios
+      .delete(`${SERVER_URL}/rooms/exit?roomId=${roomId}&member-id=${userUUID}`)
+      .then((res) => {
+        client.current.disconnect();
+        navigate(-1);
+      });
   };
 
   const onSignalReceived = (payload) => {
