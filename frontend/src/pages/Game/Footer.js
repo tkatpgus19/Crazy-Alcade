@@ -209,30 +209,35 @@ const Footer = ({ roomType, userInfo, problemId }) => {
             itemName="문어"
             disabled={itemCounts[1] === 0} // itemId가 1인 아이템의 개수를 기반으로 비활성화 결정
             onUseItem={() => handleUseItem(1, itemCounts[1])}
+            count={itemCounts[1]}
           />
           <ItemButton
             icon={chickIcon}
             itemName="병아리"
             disabled={itemCounts[2] === 0} // itemId가 2인 아이템의 개수를 기반으로 비활성화 결정
             onUseItem={() => handleUseItem(2, itemCounts[2])}
+            count={itemCounts[2]}
           />
           <ItemButton
             icon={balloonIcon}
             itemName="물풍선"
             disabled={itemCounts[3] === 0} // itemId가 3인 아이템의 개수를 기반으로 비활성화 결정
             onUseItem={() => handleUseItem(3, itemCounts[3])}
+            count={itemCounts[3]}
           />
           <ItemButton
             icon={magicIcon}
             itemName="요술봉"
             disabled={itemCounts[4] === 0} // itemId가 4인 아이템의 개수를 기반으로 비활성화 결정
             onUseItem={() => handleUseItem(4, itemCounts[4])}
+            count={itemCounts[4]}
           />
           <ItemButton
             icon={shieldIcon}
             itemName="쉴드"
             disabled={itemCounts[5] === 0} // itemId가 5인 아이템의 개수를 기반으로 비활성화 결정
             onUseItem={() => handleUseItem(5, itemCounts[5])}
+            count={itemCounts[5]}
           />
         </div>
       )}
