@@ -137,7 +137,7 @@ public class RoomService {
     }
 
     // 방에서 인원 삭제
-    public void delUser(String roomId, String userUUID){
+    public Boolean delUser(String roomId, String userUUID){
         if(roomId != null) {
             RoomDto room = roomRepository.getRoomById(roomId);
             room.setUserCnt(room.getUserCnt() - 1);
@@ -158,6 +158,7 @@ public class RoomService {
             }
         }
         clearRooms();
+        return true;
     }
 
     // 게임방 참여인원 조회
