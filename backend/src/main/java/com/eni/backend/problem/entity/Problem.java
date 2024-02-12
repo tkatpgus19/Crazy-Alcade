@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,6 +98,10 @@ public class Problem extends BaseTime {
 
     public String getStringTier() {
         return this.tier.getStringTier();
+    }
+
+    public String getProblemName() {
+        return getStringPlatform() + " " + this.no +  ". " + getTitle();
     }
 
 }

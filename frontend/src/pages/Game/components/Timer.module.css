@@ -2,7 +2,6 @@
   height: 35px;
   width: 110px;
   background-color: #0bbeff;
-  box-shadow: 1px 1px 1px black;
 
   margin-right: 8px;
   padding: 0px 6px;
@@ -15,10 +14,16 @@
   font-family: "DNFBitBitv2";
   text-align: center;
   line-height: 35px; /* 높이와 동일하게 설정 */
-  -webkit-text-stroke: 0.5px white;
+  -webkit-text-stroke: 0.3px white; /* 가독성 위해 0.5 => 0.3 */
   box-sizing: border-box;
 }
 
 .timer {
   user-select: none;
+}
+
+/* 60초 아래로 내려가면 글자색 빨강으로 변경. */
+.redTimer {
+  /* background-color: red; */
+  color: red;
 }

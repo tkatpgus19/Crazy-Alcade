@@ -109,7 +109,7 @@ public class PythonCodeService {
             // 결과 반환
             return CodeSubmitResponse.of(codeStatus, results);
         }
-        
+
         // 실행
         testcases = testcaseRepository.findAllByProblemIdAndIsHidden(problem.getId(), isHidden);
         List<CodeExecuteDto> results = new ArrayList<>();
@@ -293,7 +293,7 @@ public class PythonCodeService {
             process.destroyForcibly();
             deleteFile(inputPath);
 
-            return CodeSubmitDto.of(no, CodeStatus.RUNTIME_ERROR.getStatus(), null, null);
+            return CodeSubmitDto.of(no, CodeStatus.RUNTIME_ERROR.getStatus());
         }
 
         // 실행 결과

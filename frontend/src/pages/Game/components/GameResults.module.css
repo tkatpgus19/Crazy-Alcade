@@ -1,0 +1,197 @@
+.overlay {
+  width: 100vw;
+  height: 100vw;
+  background-color: rgba(0, 0, 0, 0.5); /* 투명 회색 배경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* 다른 요소들 위에 오도록 z-index 설정 */
+}
+
+.resultsWindow {
+  background: #ffffff; /* 밝은 회색으로 변경 */
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  width: 525px; /* 기본 너비를 1.5배로 조정 */
+  min-width: 300px; /* 최소 너비 설정 */
+  max-width: 700px; /* 최대 너비 설정 */
+  margin: 20px auto;
+  font-family: "DNFBITBITV2"; /* 폰트 변경 */
+  pointer-events: all; /* 결과 창 내부에서는 클릭 가능 */
+}
+
+.header {
+  background: #007bff; /* 진한 파란색으로 변경 */
+  color: #ffffff;
+  text-align: center;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 25px;
+  font-size: 24px; /* 텍스트 크기 조정 */
+}
+
+.leaderboard {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.leaderboard li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 10px;
+  background: #f9f9f9; /* 더 밝은 회색으로 변경 */
+  border-radius: 8px; /* 모서리 둥글게 */
+  transition: transform 0.2s; /* 호버 효과를 위한 전환 */
+}
+
+.leaderboard li:hover {
+  transform: scale(1.02); /* 호버 시 약간 확대 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 호버 시 그림자 효과 */
+}
+
+.leaderboardHeader {
+  font-weight: bold; /* 헤더 텍스트를 두껍게 */
+  background: black; /* 헤더 배경색 */
+  color: #333; /* 헤더 텍스트 색상 */
+}
+.leaderboard .leaderboardHeader:hover {
+  transform: none; /* transform 효과 제거 */
+  box-shadow: none; /* 호버 시 적용된 그림자 효과도 제거하고 싶다면 추가 */
+}
+
+.rank1 {
+  background: #ffd700;
+}
+
+.rank2 {
+  background: #c0c0c0;
+}
+
+.rank3 {
+  background: #cd7f32;
+}
+
+.retiredPlayer {
+  color: gray; /* 회색으로 설정 */
+}
+
+.leaderboard li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 10px 15px; /* 좀 더 넓은 패딩으로 조정 */
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.leaderboard li span {
+  flex: 1; /* 등수, 이름, 시간, 메모리에 동일한 공간을 할당 */
+  text-align: center; /* 각 항목을 중앙 정렬 */
+  padding: 0 10px; /* 각 항목 사이의 공간을 조정 */
+}
+
+/* 등수에 조금 더 적은 공간을 할당하고 이름에 더 많은 공간을 할당하려면 */
+.leaderboard li .rank {
+  flex: 0.5; /* 등수는 다른 항목보다 공간을 적게 차지 */
+}
+
+.leaderboard li .name {
+  flex: 1.5; /* 이름은 다른 항목보다 공간을 더 차지 */
+}
+
+.leaderboard li .time {
+  flex: 0.6; /* 시간과 메모리는 동일한 공간을 차지 */
+  text-align: end;
+}
+.leaderboard li .memory {
+  flex: 1; /* 시간과 메모리는 동일한 공간을 차지 */
+  text-align: end;
+}
+
+.leaderboard li .headerTime {
+  flex: 0.6; /* 시간과 메모리는 동일한 공간을 차지 */
+  text-align: center;
+}
+.leaderboard li .headerMemory {
+  flex: 1; /* 시간과 메모리는 동일한 공간을 차지 */
+  text-align: end;
+}
+
+.footerSection {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.playerSection {
+  flex: 7; /* 비율 7 */
+}
+
+.playerInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #e9ecef; /* 밝은 회색으로 변경 */
+  padding: 12px 15px;
+  border-radius: 10px;
+}
+
+.playerRank,
+.coins {
+  font-weight: bold;
+}
+
+.coins {
+  background: #ffc107; /* 진한 노란색으로 변경 */
+  border-radius: 15px;
+  padding: 3px 8px;
+}
+
+/* 기존 스타일... */
+.exitButton,
+.reviewButton {
+  color: #ffffff; /* 흰색 텍스트 */
+  font-size: 16px; /* 텍스트 크기 */
+  font-family: "DNFBITBITV2"; /* 폰트 변경 */
+  margin-top: 12px;
+  margin-bottom: 12px;
+  margin-left: 24px; /* 마진 */
+  padding: 12px 24px; /* 패딩 */
+  border: none; /* 테두리 없음 */
+  border-radius: 10px; /* 둥근 모서리 */
+  cursor: pointer; /* 마우스 오버시 커서 변경 */
+
+  width: 30%; /* 너비를 부모 컨테이너에 맞춤, 양 옆 패딩 고려 */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out; /* 변환 및 그림자 변경시 애니메이션 */
+  display: block; /* 블록 레벨 요소로 변경 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  flex: 3; /* 비율 3 */
+}
+
+.exitButton:hover {
+  transform: translateX(10px); /* 호버 시 약간 위로 이동 */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25); /* 호버 시 그림자 강조 */
+}
+
+.exitButton {
+  background-image: linear-gradient(
+    to right,
+    #ff416c,
+    #ff4b2b
+  ); /* 그라디언트 배경 */
+}
+
+/* 리뷰 버튼을 위한 새 스타일 */
+.reviewButton {
+  background-image: linear-gradient(
+    to right,
+    #414eff,
+    #402bff
+  ); /* 그라디언트 배경 */
+}

@@ -30,4 +30,13 @@ public class CodeSubmitDto {
                 .build();
     }
 
+    public static CodeSubmitDto of(Integer testcaseNo, String codeStatus) {
+        return builder()
+                .testcaseNo(testcaseNo)
+                .codeStatus(codeStatus)
+                .time(null)
+                .memory(null)
+                .build();
+    }
+
 }

@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Problem.module.css";
+import PropTypes from "prop-types"; // prop-types 임포트
 
-const Problem = () => {
+const Problem = ({ problemNo, problemTier }) => {
   const [problemData, setProblemData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getData = async () => {
+      const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/${problemNo}`;
+
       try {
-        const response = await fetch(
-          "http://i10d104.p.ssafy.io:8080/problems/1"
-        );
+        const response = await fetch(apiUrl);
 
         if (!response || !response.ok) {
           throw new Error("서버 응답이 올바르지 않습니다.");
@@ -66,6 +67,8 @@ const renderExamples = (examples) => {
 };
 
 const renderProblem = (data) => {
+  console.log(data.description);
+
   return (
     <div className={styles.problemBox}>
       <div className={styles.problem}>
@@ -99,6 +102,11 @@ const renderProblem = (data) => {
       </div>
     </div>
   );
+};
+
+Problem.propTypes = {
+  problemNo: PropTypes.number.isRequired, // problemNo는 숫자이며 필수
+  problemTier: PropTypes.string.isRequired, // problemTier는 문자열이지만 필수는 아님
 };
 
 export default Problem;

@@ -5,14 +5,12 @@ import com.eni.backend.common.response.BaseSuccessResponse;
 import com.eni.backend.room.dto.ChatDto;
 import com.eni.backend.room.dto.ItemDto;
 import com.eni.backend.room.dto.RoomDto;
-import com.eni.backend.room.dto.request.DeleteRoomRequest;
-import com.eni.backend.room.dto.request.PostRoomEnterRequest;
-import com.eni.backend.room.dto.request.PostRoomRequest;
-import com.eni.backend.room.dto.request.PutReadyRequest;
+import com.eni.backend.room.dto.request.*;
 import com.eni.backend.room.service.RoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -140,25 +138,10 @@ public class RoomController {
         return BaseSuccessResponse.of(POST_ENTER_ROOM_SUCCESS, roomService.enter(request));
     }
 
-    // 방 입장처리
-//    @MessageMapping("/room/enterUser")
-//    public void enterUser(@Payload ChatDto chat, SimpMessageHeaderAccessor headerAccessor) {
-//        // 채팅방에 유저 추가 및 UserUUID 반환
-//        String userUUID = roomService.addUser(chat.getRoomId(), chat.getSender());
-//
-//        // 반환 결과를 socket session 에 userUUID 로 저장
-//        headerAccessor.getSessionAttributes().put("userUUID", userUUID);
-//        headerAccessor.getSessionAttributes().put("roomId", chat.getRoomId());
-//
-//
-//        chat.setMessage(chat.getSender() + " 님 입장!!");
-//        template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
-//        template.convertAndSend("/sub/room/"+chat.getRoomId()+"/status", roomService.getUserStatus(chat.getRoomId()));
-//
-//        template.convertAndSend("/sub/normal/room-list", roomService.getSortedRoomList("normal",null, null, null, null, 1));
-//        template.convertAndSend("/sub/item/room-list", roomService.getSortedRoomList("item", null, null, null, null,1));
-//
-//    }
+    @DeleteMapping("/exit")
+    public BaseSuccessResponse<?> deleteUser(@RequestParam("roomId") String roomId, @RequestParam("member-id") String memberId){
+        return BaseSuccessResponse.of(DELETE_MEMBER_SUCCESS, roomService.delUser(roomId, memberId));
+    }
 
     // 게임 준비
     @PutMapping("/ready")
@@ -190,6 +173,12 @@ public class RoomController {
         return BaseSuccessResponse.of(PUT_ROOM_START_SUCCESS, roomService.checkReady(roomId));
     }
 
+
+    @PostMapping("/attack")
+    public BaseSuccessResponse<?> postAttack(@RequestBody PostAttackRequest request){
+        return BaseSuccessResponse.of(POST_ATTACK_SUCCESS, roomService.attackUser(request));
+    }
+
     @MessageMapping("/item/use")
     public void sendMessage(@Payload ItemDto itemDto) {
         log.info("공격 상황 : " + itemDto);
@@ -202,4 +191,10 @@ public class RoomController {
         return BaseSuccessResponse.of(GET_ROOM_TIMER_START_SUCCESS, roomService.startTimer(roomId));
     }
 
+
+    @DeleteMapping("/test")
+    public ResponseEntity<?> test(){
+        roomService.test();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
