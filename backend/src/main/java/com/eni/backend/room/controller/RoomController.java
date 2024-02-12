@@ -164,28 +164,22 @@ public class RoomController {
         return BaseSuccessResponse.of(DELETE_ROOM_SUCCESS, roomService.delete(request));
     }
 
-    // 채팅방 비밀번호 비교
-    // 넘어오는 roomPwd 를 비교하고 일치하는지 체크 후 boolean 값을 반환한다.
-    @PostMapping("/checkPwd")
-    public ResponseEntity<?> confirmPwd(@RequestParam("roomType") String roomType, @RequestParam("roomId") String roomId, @RequestParam("roomPwd") String roomPwd){
-        return new ResponseEntity<>(roomService.checkPwd(roomType, roomId, roomPwd), HttpStatus.OK);
+    // 채팅방 비밀번호 체크
+    @GetMapping("/password")
+    public BaseSuccessResponse<?> getPassword(@RequestParam("roomId") String roomId, @RequestParam("roomPwd") String roomPwd){
+        return BaseSuccessResponse.of(GET_ROOM_PASSWORD_CHECK_SUCCESS, roomService.checkPwd(roomId, roomPwd));
     }
 
     // 인원 수 체크
     @GetMapping("/personnel/check")
-    public ResponseEntity<?> checkPersonnel(@RequestParam("roomType") String roomType, @RequestParam("roomId") String roomId){
-        return new ResponseEntity<>(roomService.checkPersonnel(roomType, roomId), HttpStatus.OK);
+    public BaseSuccessResponse<?> getCheckPersonnel(@RequestParam("roomId") String roomId){
+        return BaseSuccessResponse.of(GET_ROOM_PERSONNEL_CHECK_SUCCESS, roomService.checkPersonnel(roomId));
     }
 
     // 게임 시작
-    @GetMapping("/start")
-    public ResponseEntity<?> start(@RequestParam("roomType") String roomType, @RequestParam("roomId") String roomId){
-        RoomDto result = roomService.checkReady(roomType, roomId);
-        if(result == null){
-            return new ResponseEntity<>(false, HttpStatus.OK);
-        }
-        template.convertAndSend("/sub/room/"+roomId+"/start", result);
-        return new ResponseEntity<>(true, HttpStatus.OK);
+    @PutMapping("/start")
+    public BaseSuccessResponse<?> putStart(@RequestParam("roomId") String roomId){
+        return BaseSuccessResponse.of(PUT_ROOM_START_SUCCESS, roomService.checkReady(roomId));
     }
 
     @MessageMapping("/item/use")
