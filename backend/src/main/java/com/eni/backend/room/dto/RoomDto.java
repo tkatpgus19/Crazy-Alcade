@@ -42,7 +42,7 @@ public class RoomDto {
         this.timeLimit = timeLimit;
         this.language = language;
         this.codeReview = codeReview;
-        this.userCnt = 1;
+        this.userCnt = 0;
         this.maxUserCnt = maxUserCnt != null ? maxUserCnt : 6;
         this.master = master;
         this.isStarted = isStarted != null ? isStarted : false;
