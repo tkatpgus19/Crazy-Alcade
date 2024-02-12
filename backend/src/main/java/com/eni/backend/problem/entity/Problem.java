@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin("*")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
