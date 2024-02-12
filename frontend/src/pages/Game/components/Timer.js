@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
+import axios from "axios";
 
 import PropTypes from "prop-types";
 import styles from "./Timer.module.css";
@@ -11,11 +12,18 @@ import { resetTimer } from "../slices/timerSlice";
 const Timer = ({ roomId }) => {
   const dispatch = useDispatch();
 
-  const [remainingTime, setRemainingTime] = useState();
+  const [remainingTime, setRemainingTime] = useState(0);
   const client = useRef();
 
+  // 남은 시간을 '분:초' 형식으로 변환하는 함수
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  };
+
   useEffect(() => {
-    // 방장이 요청으로 변경
+    // // 방장이 요청으로 변경
     // axios.get(
     //   `${process.env.REACT_APP_BASE_URL}/rooms/set-timer?roomId=${roomId}`
     // );
@@ -59,13 +67,6 @@ const Timer = ({ roomId }) => {
 
 Timer.propTypes = {
   roomId: PropTypes.string.isRequired,
-};
-
-// 남은 시간을 '분:초' 형식으로 변환하는 함수
-const formatTime = (time) => {
-  const minutes = Math.floor(time / 60);
-  const seconds = time % 60;
-  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 };
 
 export default Timer;

@@ -16,7 +16,7 @@ const Header = ({ roomTitle, language, roomType, roomId, onExitClick }) => {
         <LanguageBox language={roomType} />
       </div>
       <div className={styles.timerAndExit}>
-        {/* <Timer roomId={roomId} /> */}
+        <Timer roomId={roomId} />
         <ExitButton onClick={onExitClick} />
       </div>
     </div>

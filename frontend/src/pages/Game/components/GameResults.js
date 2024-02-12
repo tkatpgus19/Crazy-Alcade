@@ -1,8 +1,9 @@
 import React from "react";
 import styles from "./GameResults.module.css";
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
-const GameResults = () => {
+const GameResults = ({ roomType }) => {
   const navigate = useNavigate();
 
   const players = [
@@ -16,9 +17,13 @@ const GameResults = () => {
   ];
 
   const playerResult = { rank: 2, level: "28", coins: "+ 300" };
+
   const exitClick = () => {
-    // "/main"로 이동하는 코드
-    navigate("/main");
+    if (roomType === "normal") {
+      navigate("/review"); // 노말 게임일 때 리뷰 페이지로 이동
+    } else {
+      navigate("/main"); // 아이템 게임일 때 메인 페이지로 이동
+    }
   };
 
   return (
@@ -56,13 +61,22 @@ const GameResults = () => {
               </div>
             </div>
           </div>
-          <button className={styles.exitButton} onClick={exitClick}>
-            나가기
+          <button
+            className={
+              roomType === "normal" ? styles.reviewButton : styles.exitButton
+            }
+            onClick={exitClick}
+          >
+            {roomType === "normal" ? "리뷰화면으로" : "나가기"}
           </button>
         </div>
       </div>
     </div>
   );
+};
+
+GameResults.propTypes = {
+  roomType: PropTypes.string.isRequired,
 };
 
 export default GameResults;

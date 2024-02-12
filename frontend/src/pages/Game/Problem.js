@@ -67,6 +67,8 @@ const renderExamples = (examples) => {
 };
 
 const renderProblem = (data) => {
+  console.log(data.description);
+
   return (
     <div className={styles.problemBox}>
       <div className={styles.problem}>
