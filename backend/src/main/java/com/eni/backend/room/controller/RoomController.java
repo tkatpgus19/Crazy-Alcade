@@ -5,7 +5,9 @@ import com.eni.backend.common.response.BaseSuccessResponse;
 import com.eni.backend.room.dto.ChatDto;
 import com.eni.backend.room.dto.ItemDto;
 import com.eni.backend.room.dto.RoomDto;
+import com.eni.backend.room.dto.request.DeleteRoomRequest;
 import com.eni.backend.room.dto.request.PostRoomRequest;
+import com.eni.backend.room.dto.request.PutReadyRequest;
 import com.eni.backend.room.service.RoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -131,31 +133,31 @@ public class RoomController {
         }
     }
 
-    @MessageMapping("/chat/enterUser")
+    // 방 입장처리
+    @MessageMapping("/room/enterUser")
     public void enterUser(@Payload ChatDto chat, SimpMessageHeaderAccessor headerAccessor) {
         // 채팅방에 유저 추가 및 UserUUID 반환
-        String userUUID = roomService.addUser(chat);
-
+        String userUUID = roomService.addUser(chat.getRoomId(), chat.getSender());
         // 반환 결과를 socket session 에 userUUID 로 저장
         headerAccessor.getSessionAttributes().put("userUUID", userUUID);
         headerAccessor.getSessionAttributes().put("roomId", chat.getRoomId());
-        headerAccessor.getSessionAttributes().put("roomType", chat.getRoomType());
+
 
         chat.setMessage(chat.getSender() + " 님 입장!!");
         template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
-        template.convertAndSend("/sub/room/"+chat.getRoomId()+"/status", roomService.getUserStatus(chat.getRoomType(), chat.getRoomId()));
+        template.convertAndSend("/sub/room/"+chat.getRoomId()+"/status", roomService.getUserStatus(chat.getRoomId()));
 
-        template.convertAndSend("/sub/normal/room-list", roomService.getSortedRoomList("normal", null, null, null, null, 1));
-        template.convertAndSend("/sub/item/room-list", roomService.getSortedRoomList("item", null, null, null, null, 1));
+        template.convertAndSend("/sub/normal/room-list", roomService.getSortedRoomList("normal",null, null, null, null, 1));
+        template.convertAndSend("/sub/item/room-list", roomService.getSortedRoomList("item", null, null, null, null,1));
+
     }
-
 
     // 게임 준비
     @PutMapping("/ready")
-    public void ready(@RequestBody ChatDto chat){
-        roomService.ready(chat);
-        template.convertAndSend("/sub/room/"+chat.getRoomId()+"/status", roomService.getUserStatus(chat.getRoomType(), chat.getRoomId()));
+    public BaseSuccessResponse<?> putReady(@RequestBody PutReadyRequest request){
+        return BaseSuccessResponse.of(PUT_READY_SUCCESS, roomService.ready(request));
     }
+
 
     // 채팅방 비밀번호 비교
     // 넘어오는 roomPwd 를 비교하고 일치하는지 체크 후 boolean 값을 반환한다.
