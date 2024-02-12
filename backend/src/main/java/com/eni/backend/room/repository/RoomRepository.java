@@ -15,18 +15,14 @@ import java.util.Map;
 @Repository
 @Getter
 public class RoomRepository {
-    private Map<String, RoomDto> normalRoomMap;
-    private Map<String, RoomDto> itemRoomMap;
     private Map<String, RoomDto> roomMap;
 
     @PostConstruct
     private void init(){
-        normalRoomMap = new LinkedHashMap<>();
-        itemRoomMap = new LinkedHashMap<>();
         roomMap = new LinkedHashMap<>();
     }
 
-    public String save(PostRoomRequest request){
+    public String saveRoom(PostRoomRequest request){
         RoomDto room = RoomDto.builder()
                 .roomType(request.getRoomType())
                 .roomName(request.getRoomName())
@@ -39,7 +35,6 @@ public class RoomRepository {
                 .codeReview(request.getCodeReview())
                 .master(request.getMaster())
                 .build();
-
         roomMap.put(room.getRoomId(), room);
         return room.getRoomId();
     }
@@ -55,7 +50,7 @@ public class RoomRepository {
         return roomMap.values().stream().toList();
     }
 
-    public RoomDto getRoomInfoById(String roomId){
+    public RoomDto getRoomById(String roomId){
         return roomMap.get(roomId);
     }
 }
