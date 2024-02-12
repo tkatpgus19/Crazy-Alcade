@@ -152,10 +152,24 @@ public class RoomService {
                 room.getReadyList().remove(user);
             }
             room.getUserList().remove(userUUID);
+            log.info("User exit : " + user);
 
+            // builder 어노테이션 활용
+            ChatDto chat = ChatDto.builder()
+                    .type(ChatDto.MessageType.LEAVE)
+                    .sender(user)
+                    .message(user + " 님 퇴장!!")
+                    .build();
+            template.convertAndSend("/sub/chat/room/" + roomId, chat);
+            template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal",null, null, null, false, 1));
+            template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
+            if(getUserStatus(roomId) != null) {
+                template.convertAndSend("/sub/room/" + roomId + "/status", getUserStatus(roomId));
+            }
             if (room.getUserCnt() == 0) {
                 roomRepository.getRoomMap().remove(roomId);
             }
+
         }
         clearRooms();
         return true;
