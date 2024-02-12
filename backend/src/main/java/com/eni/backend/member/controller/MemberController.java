@@ -23,10 +23,9 @@ import static com.eni.backend.common.util.BindingResultUtils.getErrorMessages;
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
-@CrossOrigin
 public class MemberController {
-    @Autowired
-    private MemberService memberService;
+
+    private final MemberService memberService;
 
     @GetMapping("/memberlist")
     public BaseSuccessResponse<?> getList(Authentication authentication) {
@@ -85,6 +84,7 @@ public class MemberController {
         }
 
         return BaseSuccessResponse.of(PUT_LANGUAGE_SUCCESS, memberService.putLanguage(authentication, putLanguageRequest));
+
     }
 
     @PutMapping("/coin/add")

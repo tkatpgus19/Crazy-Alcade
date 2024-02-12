@@ -1,12 +1,7 @@
-.webIDEContainer {
-  position: relative;
-}
-
 .buttonContainer {
   position: absolute;
-  top: 0px;
-  right: 3px;
-  z-index: 1;
+  top: 20px;
+  right: 30px;
 }
 
 .floatButton {
@@ -21,4 +16,90 @@
 
 .floatButton:hover {
   background-color: gray;
+}
+
+/* WebIDE.module.css */
+.webIDEContainer {
+  position: static;
+  height: 100%; /* 전체 높이에서 결과창 높이를 뺀 값 */
+  z-index: 1;
+}
+
+.loading {
+  text-align: center;
+}
+
+/* WebIDE.module.css */
+
+.resultContainer,
+.loading {
+  margin: 10px 0px;
+  margin-right: 1px;
+  margin-left: 10px;
+  padding: 10px;
+  border: 1px solid #ddd; /* Light grey border */
+  border-radius: 10px; /* Slightly rounded corners for the border */
+  background-color: #f9f9f9; /* Light grey background */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+  overflow-y: auto; /* Scrollable if content overflows */
+  position: absolute; /* 결과 컨테이너를 절대적 위치로 설정 */
+  bottom: 1px; /* IDE 컨테이너의 바닥에 붙임 */
+  left: 0; /* IDE 컨테이너의 왼쪽에 붙임 */
+  right: 0; /* IDE 컨테이너의 오른쪽에 붙임 */
+  z-index: 4; /* 다른 요소들 위에 겹쳐 표시 */
+  top: auto; /* Adjust this value so the result container sits in the middle of the screen */
+  max-height: auto; /* You might need to adjust this value so that the container fits the contents properly */
+  font-family: "BMDOHYEON";
+  font-size: 15px;
+}
+
+.toggleButton {
+  margin: 0;
+}
+
+.resultContainer ul {
+  list-style: none; /* 기본 목록 스타일 제거 */
+  padding: 0; /* 내부 여백 제거 */
+  margin: 0; /* 외부 여백 제거 */
+  width: 100%; /* 컨테이너 전체 너비 사용 */
+  box-sizing: border-box; /* 총 너비에 패딩과 테두리 포함 */
+}
+
+.resultContainer li {
+  border: 1px solid #eaeaea; /* Light grey border for each list item */
+  padding: 8px 12px; /* Padding inside each list item */
+  margin-bottom: 8px; /* Space between list items */
+  font-family: "Arial", sans-serif; /* Font style */
+  font-size: 0.9em; /* Font size */
+  background-color: #fff; /* White background for list items */
+  display: flex; /* Use flexbox for layout */
+  justify-content: space-between; /* Space out the content */
+  align-items: center; /* Align items vertically */
+  box-sizing: border-box;
+}
+
+.resultContainer li:last-child {
+  margin-bottom: 0; /* 마지막 항목의 하단 여백*/
+}
+
+.testcaseNo {
+  flex-basis: 20%; /* Width of the testcase number */
+  text-align: left; /* Align text to the left */
+}
+
+.codeStatus {
+  flex-basis: 35%; /* Width of the code status */
+  text-align: center; /* Align text to the center */
+}
+
+.executionTime,
+.executionMemory {
+  flex-basis: 20%; /* Width of the time and memory */
+  text-align: right; /* Align text to the right */
+}
+
+.flipped {
+  transform: rotateY(180deg); /* Y축을 중심으로 180도 회전 */
+  transform-style: preserve-3d; /* 3D 변환 스타일을 유지 */
+  transition: transform 0.6s; /* 변환에 대한 전환 효과 */
 }
