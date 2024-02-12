@@ -29,7 +29,6 @@ public class CookieUtils {
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
 
         Cookie cookie = new Cookie(name, value);
-        log.info("여기까지는 오니 쿠키야{}", name);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setMaxAge(maxAge);

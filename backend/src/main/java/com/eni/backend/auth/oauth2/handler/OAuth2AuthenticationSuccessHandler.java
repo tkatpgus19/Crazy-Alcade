@@ -31,8 +31,8 @@ import static com.eni.backend.auth.oauth2.HttpCookieOAuth2AuthorizationRequestRe
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    @Value("${handler.target-url}")
-    private String TARGET_URL;
+//    @Value("${handler.target-url}")
+//    private String TARGET_URL;
 
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final OAuth2UserUnlinkManager oAuth2UserUnlinkManager;
@@ -43,50 +43,50 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
 
-        String url = TARGET_URL;
-        OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
-
-        if (principal == null) {
-            response.sendError(500);
-        }
-
-        String socialId  = principal.getUserInfo().getId();
-        OAuth2Provider provider = principal.getUserInfo().getProvider();
-
-        Optional<Member> findMember = memberService.findBySocialIdAndProvider(socialId, provider);
-        LoginInfo loginInfo;
-
-        // 신규 회원일 경우
-        if(findMember.isEmpty()) {
-            loginInfo = memberService.loginOrJoinMember(Member.from(principal.getUserInfo()), false);
-        }
-        // 기존 회원일 경우
-        else {
-            loginInfo = memberService.loginOrJoinMember(findMember.get(), true);
-        }
-
-        // 액세스 토큰 발급
-        String accessToken = jwtTokenProvider.generateAccessToken(authentication, loginInfo.getMemberId());
-
-        CookieUtils.addCookie(response, "access-token", accessToken, 60 * 5);
-        CookieUtils.addCookie(response, "member-id", String.valueOf(loginInfo.getMemberId()), 60 * 5);
-        CookieUtils.addCookie(response, "isNew", String.valueOf(loginInfo.isNew()), 60 * 5);
-        CookieUtils.addCookie(response, "isConnected", String.valueOf(loginInfo.isConnected()), 60 * 5);
-        CookieUtils.addCookie(response, "next", "main", 60 * 5);
-        response.sendRedirect(url);
-
-//        String targetUrl;
+//        String url = TARGET_URL;
+//        OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
 //
-//        targetUrl = determineTargetUrl(request, response, authentication);
-//
-//        if (response.isCommitted()) {
-//
-//            logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
-//            return;
+//        if (principal == null) {
+//            response.sendError(500);
 //        }
 //
-//        clearAuthenticationAttributes(request, response);
-//        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+//        String socialId  = principal.getUserInfo().getId();
+//        OAuth2Provider provider = principal.getUserInfo().getProvider();
+//
+//        Optional<Member> findMember = memberService.findBySocialIdAndProvider(socialId, provider);
+//        LoginInfo loginInfo;
+//
+//        // 신규 회원일 경우
+//        if(findMember.isEmpty()) {
+//            loginInfo = memberService.loginOrJoinMember(Member.from(principal.getUserInfo()), false);
+//        }
+//        // 기존 회원일 경우
+//        else {
+//            loginInfo = memberService.loginOrJoinMember(findMember.get(), true);
+//        }
+//
+//        // 액세스 토큰 발급
+//        String accessToken = jwtTokenProvider.generateAccessToken(authentication, loginInfo.getMemberId());
+//
+//        CookieUtils.addCookie(response, "access-token", accessToken, 60 * 5);
+//        CookieUtils.addCookie(response, "member-id", String.valueOf(loginInfo.getMemberId()), 60 * 5);
+//        CookieUtils.addCookie(response, "is-new", String.valueOf(loginInfo.isNew()), 60 * 5);
+//        CookieUtils.addCookie(response, "is-connected", String.valueOf(loginInfo.isConnected()), 60 * 5);
+//        CookieUtils.addCookie(response, "next", "main", 60 * 5);
+//        response.sendRedirect(url);
+
+        String targetUrl;
+
+        targetUrl = determineTargetUrl(request, response, authentication);
+
+        if (response.isCommitted()) {
+
+            logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
+            return;
+        }
+
+        clearAuthenticationAttributes(request, response);
+        getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response,
@@ -101,11 +101,13 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .map(Cookie::getValue)
                 .orElse("");
 
+        log.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! {} {}", mode, redirectUri);
+
         OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
 
         if (principal == null) {
             return UriComponentsBuilder.fromUriString(targetUrl)
-                    .queryParam("status", "Failed")
+                    .queryParam("error", "LoginFailed")
                     .build().toUriString();
         }
 
