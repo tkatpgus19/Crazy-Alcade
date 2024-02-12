@@ -19,7 +19,6 @@ import static com.eni.backend.common.util.BindingResultUtils.getErrorMessages;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/items")
-@CrossOrigin
 public class ItemController {
 
     private final ItemService itemService;
