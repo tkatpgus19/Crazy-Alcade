@@ -1,6 +1,5 @@
 server:
-  port: 8081
-
+    port: 8081
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
@@ -59,3 +58,9 @@ jwt:
 
 code:
   base-path: ${BASE_PATH}
+
+OPENVIDU_URL: ${OPENVIDU_URL}
+OPENVIDU_SECRET: ${OPENVIDU_URL}
+
+handler:
+  target-url: ${TARGET_URL}

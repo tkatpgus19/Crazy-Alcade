@@ -23,23 +23,26 @@ public class Item {
     private String name;
 
     @Column(nullable = false)
-    private String description;
-
-    @Column(nullable = false)
     private Integer price;
 
     @Column(nullable = false)
+    private String description;
+
+    @Column(nullable = false)
     private Integer duration;
+
+    @Column(nullable = false)
+    private String image;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.REMOVE)
     private List<MemberItem> memberItems = new ArrayList<>();
 
     @Builder
-    public Item(String name, String description, Integer price, Integer duration) {
+    public Item(String name, Integer price, String description, Integer duration, String image) {
         this.name = name;
-        this.description = description;
         this.price  = price;
+        this.description = description;
         this.duration = duration;
+        this.image = image;
     }
-
 }

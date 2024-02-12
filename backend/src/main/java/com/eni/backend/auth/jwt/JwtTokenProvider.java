@@ -41,11 +41,8 @@ public class JwtTokenProvider implements InitializingBean {
 
     private Key key;
 
-    private final long accessTokenValidTime = (60 * 1000) * 30; // 30분
+    private final long accessTokenValidTime = (60 * 1000) * 60 * 24 * 7; // 7일
     //    private final long refreshTokenValidTime = (60 * 1000) * 60 * 24 * 7; // 7일
-    private final String AUTHORITIES_KEY = "auth";
-
-    private final MemberRepository memberRepository;
 
     @PostConstruct
     protected void init() {
@@ -74,10 +71,6 @@ public class JwtTokenProvider implements InitializingBean {
     public String generateAccessToken(Authentication authentication, Long memberId) {
         return generateToken(authentication, memberId, accessTokenValidTime);
     }
-
-//    public String generateRefreshToken(OAuth2UserPrincipal principal) {
-//        return generateToken(principal, refreshTokenValidTime);
-//    }
 
     private Claims getClaims(String token) {
         try {

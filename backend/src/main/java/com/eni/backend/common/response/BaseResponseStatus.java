@@ -15,6 +15,21 @@ public enum BaseResponseStatus {
     LOGIN_SUCCESS(HttpStatus.OK,"로그인에 성공하였습니다."),
     LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃에 성공하였습니다."),
 
+    GET_MEMBER_SUCCESS(HttpStatus.OK, "기본 회원 정보 조회에 성공하였습니다."),
+    GET_MEMBER_DETAILS_SUCCESS(HttpStatus.OK, "상세 회원 정보 조회에 성공하였습니다."),
+    GET_MEMBER_LIST_SUCCESS(HttpStatus.OK, "회원 목록 조회에 성공하였습니다."),
+    GET_MEMBER_COIN_SUCCESS(HttpStatus.OK, "회원 보유 코인 조회에 성공하였습니다."),
+    GET_INVENTORY_SUCCESS(HttpStatus.OK, "상점 아이템 및 보유 아이템 조회에 성공하였습니다."),
+    PUT_NICKNAME_SUCCESS(HttpStatus.OK, "닉네임 변경에 성공하였습니다."),
+    PUT_LANGUAGE_SUCCESS(HttpStatus.OK, "선호 언어 변경에 성공하였습니다."),
+    PUT_COIN_ADD_SUCCESS(HttpStatus.OK, "코인 획득에 성공하였습니다."),
+    PUT_COIN_SUB_SUCCESS(HttpStatus.OK, "코인 차감에 성공하였습니다."),
+    REWARD_ADD_SUCCESS(HttpStatus.OK, "코인과 EXP 획득에 성공하였습니다."),
+
+    GET_ITEM_LIST_SUCCESS(HttpStatus.OK, "아이템 목록 조회에 성공하였습니다."),
+    PUT_ITEM_ADD_SUCCESS(HttpStatus.OK, "아이템 구매에 성공하였습니다."),
+    PUT_ITEM_SUB_SUCCESS(HttpStatus.OK, "아이템 사용에 성공하였습니다."),
+
     POST_PROBLEM_SUCCESS(HttpStatus.OK, "문제 생성에 성공하였습니다."),
     POST_TESTCASE_SUCCESS(HttpStatus.OK, "테스트케이스 생성에 성공하였습니다."),
     EXECUTE_CODE_SUCCESS(HttpStatus.OK, "코드 실행에 성공하였습니다."),
@@ -23,6 +38,18 @@ public enum BaseResponseStatus {
     GET_PROBLEM_RANDOM_PROCESS(HttpStatus.OK, "랜덤 문제 조회에 성공하였습니다."),
     GET_PROBLEM_DETAIL_SUCCESS(HttpStatus.OK, "문제 정보 조회에 성공하였습니다."),
     GET_TIER_LIST_SUCCESS(HttpStatus.OK, "티어 리스트 조회에 성공하였습니다."),
+
+    POST_ROOM_SUCCESS(HttpStatus.OK, "방 생성에 성공하였습니다."),
+    GET_ROOM_LIST_SUCCESS(HttpStatus.OK, "방 목록 조회에 성공하였습니다."),
+    GET_ROOM_INFO_SUCCESS(HttpStatus.OK, "방 정보 조회에 성공하였습니다."),
+    GET_USER_STATUS_SUCCESS(HttpStatus.OK, "유저 목록 조회에 성공하였습니다."),
+    PUT_READY_SUCCESS(HttpStatus.OK, "준비 상태 변경에 성공하였습니다."),
+    GET_ROOM_PERSONNEL_CHECK_SUCCESS(HttpStatus.OK, "방 입장 가능 여부 조회에 성공하였습니다."),
+    GET_ROOM_PASSWORD_CHECK_SUCCESS(HttpStatus.OK, "방 비밀번호 일치 여부 조회에 성공하였습니다."),
+    PUT_ROOM_START_SUCCESS(HttpStatus.OK, "방 시작 가능 여부 조회에 성공하였습니다."),
+    GET_ROOM_TIMER_START_SUCCESS(HttpStatus.OK, "방 타이머 세팅에 성공하였습니다."),
+    DELETE_ROOM_SUCCESS(HttpStatus.OK, "방 삭제에 성공하였습니다."),
+    POST_ENTER_ROOM_SUCCESS(HttpStatus.OK, "방 입장에 성공하였습니다."),
 
     // BAD_REQUEST
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "유효하지 않은 요청입니다."),
@@ -45,11 +72,13 @@ public enum BaseResponseStatus {
 
     // SOCIAL LOGIN
     EMAIL_NOT_FOUND(HttpStatus.UNAUTHORIZED, "해당 소셜 플랫폼에 해당하는 이메일이 없습니다."),
-    SOCIAL_AUTHORIZATION_FAIL(HttpStatus.UNAUTHORIZED, "소셜 로그인 인증에 실패했습니다."),
+    SOCIAL_AUTHORIZATION_FAIL(HttpStatus.UNAUTHORIZED, "소셜 로그인 인증에 실패하였습니다."),
     PROVIDER_NOT_SUPPORTED(HttpStatus.UNAUTHORIZED, "지원되지 않는 소셜 플랫폼 입니다."),
 
     // MEMBER
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당하는 멤버 정보가 없습니다."),
+    MEMBER_COIN_SUB_FAIL(HttpStatus.BAD_REQUEST, "코인 수가 부족합니다."),
+    MEMBER_LANG_CHANGE_FAIL(HttpStatus.BAD_REQUEST, "선호 언어 변경에 실패하였습니다."),
 
     // PROBLEM
     PLATFORM_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "지원하지 않는 플랫폼입니다."),
@@ -62,6 +91,12 @@ public enum BaseResponseStatus {
     // CODE
     LANGUAGE_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "지원하지 않는 언어입니다."),
 
+    // ITEM
+    ITEM_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당하는 아이템이 없습니다."),
+
+    // MEMBER ITEM
+    MEMBER_ITEM_PURCHASE_FAIL(HttpStatus.BAD_REQUEST, "코인 부족으로 아이템 구매에 실패하였습니다."),
+    MEMBER_ITEM_USE_FAIL(HttpStatus.BAD_REQUEST, "보유 개수 부족으로 아이템 구매에 실패하였습니다.")
     ;
 
 

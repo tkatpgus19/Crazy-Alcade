@@ -21,7 +21,7 @@ public class SecurityMemberDto {
         this.email = email;
     }
 
-    public static SecurityMemberDto of(Member member) {
+    public static SecurityMemberDto from(Member member) {
         return builder()
                 .provider(member.getProvider())
                 .id(member.getId())
