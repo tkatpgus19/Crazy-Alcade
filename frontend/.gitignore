@@ -26,3 +26,5 @@ yarn-debug.log*
 # 추가
 .idea/**
 yarn-error.log*
+
+**/.idea
