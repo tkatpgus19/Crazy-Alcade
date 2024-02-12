@@ -22,7 +22,6 @@ import static com.eni.backend.common.util.BindingResultUtils.getErrorMessages;
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
-@CrossOrigin
 public class MemberController {
     @Autowired
     private MemberService memberService;
