@@ -15,8 +15,8 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
     roomName: "",
     hasPassword: false,
     roomPassword: "",
-    problemTier: "",
-    problemName: "",
+    problemTier: 0,
+    problemNo: 0,
     timeLimit: 0,
     language: "java",
     codeReview: true,
@@ -181,8 +181,8 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
         <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
           <span>문제 이름 : </span>
           <select
-            name="problemName"
-            value={roomData.problemName}
+            name="problemNo"
+            value={roomData.problemNo}
             onChange={handleChange}
           >
             <option value="">문제를 선택하세요</option>
