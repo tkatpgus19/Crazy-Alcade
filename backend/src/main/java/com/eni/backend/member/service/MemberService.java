@@ -20,6 +20,7 @@ import com.eni.backend.member.repository.LevelRepository;
 import com.eni.backend.member.repository.MemberRepository;
 import com.eni.backend.problem.entity.Code;
 import com.eni.backend.problem.entity.CodeStatus;
+import com.eni.backend.problem.entity.Problem;
 import com.eni.backend.problem.repository.CodeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -138,27 +139,44 @@ public class MemberService {
             throw new CustomBadRequestException(MEMBER_NOT_FOUND);
         }
 
-        List<String> successProblems = new ArrayList<>();
-        List<String> failProblems = new ArrayList<>();
+        List<Problem> successProblems = codeRepository.findAllByMemberAndCodeStatus(member, CodeStatus.SUCCESS);
+        List<Problem> failProblems = codeRepository.findAllByMember(member);
+        failProblems.removeAll(successProblems);
 
-        List<Code> codeList = codeRepository.findAllByMember(member);
+        List<String> newSuccessProblems = new ArrayList<>();
+        List<String> newFailProblems = new ArrayList<>();
 
-        for (Code code : codeList) {
-            String problemPlatform = code.getProblem().getStringPlatform();
-            String problemNo = String.valueOf(code.getProblem().getNo());
+        for(Problem problem : successProblems) {
+            String problemPlatform = problem.getStringPlatform();
+            String problemNo = String.valueOf(problem.getNo());
 
-            if (code.getStatus() == CodeStatus.SUCCESS) {
-                successProblems.add(problemPlatform + " " + problemNo);
-
-            } else if (code.getStatus() == CodeStatus.FAIL || code.getStatus() == CodeStatus.COMPILE_ERROR) {
-                failProblems.add(problemPlatform + " " + problemNo);
-            } else {
-                throw new CustomServerErrorException(SERVER_ERROR);
-            }
+            newSuccessProblems.add(problemPlatform + " " + problemNo);
         }
 
-        List<String> newSuccessProblems = successProblems.stream().distinct().toList();
-        List<String> newFailProblems = failProblems.stream().distinct().toList();
+        for(Problem problem : failProblems) {
+            String problemPlatform = problem.getStringPlatform();
+            String problemNo = String.valueOf(problem.getNo());
+
+            newFailProblems.add(problemPlatform + " " + problemNo);
+        }
+
+//        for (Code code : codeList) {
+//
+//            String problemPlatform = code.getProblem().getStringPlatform();
+//            String problemNo = String.valueOf(code.getProblem().getNo());
+//
+//            if (code.getStatus() == CodeStatus.SUCCESS) {
+//                successProblems.add(problemPlatform + " " + problemNo);
+//
+//            } else if (code.getStatus() == CodeStatus.FAIL || code.getStatus() == CodeStatus.COMPILE_ERROR) {
+//                failProblems.add(problemPlatform + " " + problemNo);
+//            } else {
+//                throw new CustomServerErrorException(SERVER_ERROR);
+//            }
+//        }
+//
+//        List<String> newSuccessProblems = successProblems.stream().distinct().toList();
+//        List<String> newFailProblems = failProblems.stream().distinct().toList();
 
         return GetMemberDetailResponse.from(member, newSuccessProblems, newFailProblems);
     }
