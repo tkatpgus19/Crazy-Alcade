@@ -68,16 +68,16 @@ const Room = () => {
       "/sub/room/" + roomId + "/status",
       onStatusReceived
     ); // 이 url은 방의 상태, user 목록이나 준비상태를 본다.
-    client.current.send(
-      "/pub/room/enterUser",
-      {},
-      JSON.stringify({
-        type: "ENTER",
-        roomId: roomId,
-        sender: nickname,
-        roomType: roomType,
-      })
-    ); // 입장 이벤트 처리
+    // client.current.send(
+    //   "/pub/room/enterUser",
+    //   {},
+    //   JSON.stringify({
+    //     type: "ENTER",
+    //     roomId: roomId,
+    //     sender: nickname,
+    //     roomType: roomType,
+    //   })
+    // ); // 입장 이벤트 처리
     client.current.subscribe(
       "/sub/room/" + roomId + "/start",
       onSignalReceived
@@ -128,9 +128,7 @@ const Room = () => {
 
   const getUserList = () => {
     axios
-      .get(
-        `${SERVER_URL}/rooms/userStatus?roomType=${roomType}&roomId=${roomId}`
-      ) // requset param 형태 api 요청할때 필요한 것
+      .get(`${SERVER_URL}/rooms/userStatus?roomId=${roomId}`) // requset param 형태 api 요청할때 필요한 것
       .then((res) => {
         setUserStatus(res.data.result);
         setUserlist(Object.keys(res.data.result));

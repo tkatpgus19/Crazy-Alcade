@@ -16,8 +16,8 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
     hasPassword: false,
     roomPassword: "",
     problemTier: "",
-    problemNo: "",
-    timeLimit: "",
+    problemName: "",
+    timeLimit: 0,
     language: "java",
     codeReview: true,
     master: "김진영",
@@ -179,10 +179,10 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
 
         {/* 문제 번호 선택 드롭다운 */}
         <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
-          <span>문제 번호 : </span>
+          <span>문제 이름 : </span>
           <select
-            name="problemNo"
-            value={roomData.problemNo}
+            name="problemName"
+            value={roomData.problemName}
             onChange={handleChange}
           >
             <option value="">문제를 선택하세요</option>
@@ -197,17 +197,12 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
         {/* 시간 제한 드롭다운 */}
         <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
           <span>시간 제한</span>
-          <select
+          <input
+            type="number"
             name="timeLimit"
             value={roomData.timeLimit}
             onChange={handleChange}
-          >
-            <option value="">선택하세요</option>
-            <option value="1h">1시간</option>
-            <option value="1h30m">1시간 30분</option>
-            <option value="2h">2시간</option>
-            <option value="2h30m">2시간 30분</option>
-          </select>
+          />
         </div>
 
         {/* 풀이 언어 체크박스 */}
