@@ -21,7 +21,6 @@ import com.eni.backend.member.repository.MemberRepository;
 import com.eni.backend.problem.entity.Code;
 import com.eni.backend.problem.entity.CodeStatus;
 import com.eni.backend.problem.repository.CodeRepository;
-import com.eni.backend.problem.repository.ProblemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -49,7 +48,6 @@ public class MemberService {
     private final ItemRepository itemRepository;
     private final MemberItemRepository memberItemRepository;
     private final CodeRepository codeRepository;
-    private final ProblemRepository problemRepository;
     private final LevelRepository levelRepository;
 
     @Transactional
@@ -154,8 +152,7 @@ public class MemberService {
 
             } else if (code.getStatus() == CodeStatus.FAIL || code.getStatus() == CodeStatus.COMPILE_ERROR) {
                 failProblems.add(problemPlatform + " " + problemNo);
-            }
-            else {
+            } else {
                 throw new CustomServerErrorException(SERVER_ERROR);
             }
         }
