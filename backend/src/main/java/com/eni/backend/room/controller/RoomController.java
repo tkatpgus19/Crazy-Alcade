@@ -158,6 +158,11 @@ public class RoomController {
         return BaseSuccessResponse.of(PUT_READY_SUCCESS, roomService.ready(request));
     }
 
+    // 게임방 종료
+    @DeleteMapping("")
+    public BaseSuccessResponse<?> delete(@RequestBody DeleteRoomRequest request){
+        return BaseSuccessResponse.of(DELETE_ROOM_SUCCESS, roomService.delete(request));
+    }
 
     // 채팅방 비밀번호 비교
     // 넘어오는 roomPwd 를 비교하고 일치하는지 체크 후 boolean 값을 반환한다.
