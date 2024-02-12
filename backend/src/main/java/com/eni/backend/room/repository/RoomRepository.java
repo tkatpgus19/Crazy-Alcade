@@ -53,4 +53,8 @@ public class RoomRepository {
     public RoomDto getRoomById(String roomId){
         return roomMap.getOrDefault(roomId, null);
     }
+
+    public void test(){
+        roomMap.clear();
+    }
 }

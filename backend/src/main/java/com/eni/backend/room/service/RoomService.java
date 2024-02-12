@@ -243,4 +243,10 @@ public class RoomService {
         }
         return false;
     }
+
+
+
+    public void test(){
+        roomRepository.test();
+    }
 }
