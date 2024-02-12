@@ -6,7 +6,6 @@ import com.eni.backend.member.dto.request.PutCoinRequest;
 import com.eni.backend.member.dto.request.PutLanguageRequest;
 import com.eni.backend.member.dto.request.PutNicknameRequest;
 import com.eni.backend.member.dto.request.PutRewardRequest;
-import com.eni.backend.member.entity.Language;
 import com.eni.backend.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
