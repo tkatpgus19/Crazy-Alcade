@@ -197,6 +197,10 @@
   /* 상 우 하 좌 순서 */
 }
 
+.currentUser {
+  background-color: yellow; /* 현재 사용자를 나타내는 노란색 배경 */
+}
+
 /* 상태창 나타내주기 */
 .status {
   background-color: #0bbeff;
@@ -280,6 +284,21 @@
   font-family: "DNFBitBitv2";
   font-size: 18px;
   color: white;
+  border-color: black;
+}
+
+.currentUser {
+  background-color: #0777d2;
+  border-radius: 8px;
+  border: 2px solid;
+  width: 170px;
+  height: 28px;
+  margin-top: 3.5px;
+  margin-left: 3px;
+  text-align: center; /* 텍스트 중앙 정렬 */
+  font-family: "DNFBitBitv2";
+  font-size: 18px;
+  color: yellow;
   border-color: black;
 }
 
