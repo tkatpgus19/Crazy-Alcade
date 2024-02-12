@@ -167,6 +167,8 @@ public class RoomService {
             }
             if (room.getUserCnt() == 0) {
                 roomRepository.getRoomMap().remove(roomId);
+                template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal",null, null, null, false, 1));
+                template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
             }
 
         }
