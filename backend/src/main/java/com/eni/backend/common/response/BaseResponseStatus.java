@@ -35,6 +35,13 @@ public enum BaseResponseStatus {
     POST_ROOM_SUCCESS(HttpStatus.OK, "방 생성에 성공하였습니다."),
     GET_ROOM_LIST_SUCCESS(HttpStatus.OK, "방 목록 조회에 성공하였습니다."),
     GET_ROOM_INFO_SUCCESS(HttpStatus.OK, "방 정보 조회에 성공하였습니다."),
+    GET_USER_STATUS_SUCCESS(HttpStatus.OK, "유저 목록 조회에 성공하였습니다."),
+    PUT_READY_SUCCESS(HttpStatus.OK, "준비 상태 변경에 성공하였습니다."),
+    GET_ROOM_PERSONNEL_CHECK_SUCCESS(HttpStatus.OK, "방 입장 가능 여부 조회에 성공하였습니다."),
+    GET_ROOM_PASSWORD_CHECK_SUCCESS(HttpStatus.OK, "방 비밀번호 일치 여부 조회에 성공하였습니다."),
+    PUT_ROOM_START_SUCCESS(HttpStatus.OK, "방 시작 가능 여부 조회에 성공하였습니다."),
+    GET_ROOM_TIMER_START_SUCCESS(HttpStatus.OK, "방 타이머 세팅에 성공하였습니다."),
+    DELETE_ROOM_SUCCESS(HttpStatus.OK, "방 삭제에 성공하였습니다."),
 
     // BAD_REQUEST
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "유효하지 않은 요청입니다."),

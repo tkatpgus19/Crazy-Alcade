@@ -73,7 +73,27 @@ public class RoomController {
     public BaseSuccessResponse<?> getInfo(@RequestParam("roomId") String roomId){
         return BaseSuccessResponse.of(GET_ROOM_INFO_SUCCESS, roomService.getRoomInfo(roomId));
     }
+    // 게임에 참여한 유저 리스트 및 상태 반환
+    @GetMapping("/userStatus")
+    public BaseSuccessResponse<?> getUserStatus(@RequestParam("roomId") String roomId) {
+        return BaseSuccessResponse.of(GET_USER_STATUS_SUCCESS, roomService.getUserStatus(roomId));
+    }
 
+    // 게임방 채팅
+    @MessageMapping("/chat/sendMessage")
+    public void sendMessage(@Payload ChatDto chat) {
+        log.info("개인 채팅 : " + chat.getMessage());
+        chat.setMessage(chat.getMessage());
+        template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
+    }
+
+    // 전체 채팅
+    @MessageMapping("/chat/all/sendMessage")
+    public void sendMessageAll(@Payload ChatDto chat) {
+        log.info("전체 채팅 : " + chat.getMessage());
+        chat.setMessage(chat.getMessage());
+        template.convertAndSend("/sub/chat/all", chat);
+    }
 
     // 유저 퇴장 시에는 EventListener 을 통해서 유저 퇴장을 확인
     @EventListener
@@ -129,27 +149,6 @@ public class RoomController {
         template.convertAndSend("/sub/item/room-list", roomService.getSortedRoomList("item", null, null, null, null, 1));
     }
 
-    // 게임에 참여한 유저 리스트 및 상태 반환
-    @GetMapping("/userStatus")
-    public ResponseEntity<?> userList(@RequestParam("roomType") String roomType, @RequestParam("roomId") String roomId) {
-        return new ResponseEntity<>(roomService.getUserStatus(roomType, roomId), HttpStatus.OK);
-    }
-
-    // 게임방 채팅
-    @MessageMapping("/chat/sendMessage")
-    public void sendMessage(@Payload ChatDto chat) {
-        log.info("개인 채팅 : " + chat.getMessage());
-        chat.setMessage(chat.getMessage());
-        template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
-    }
-
-    // 전체 채팅
-    @MessageMapping("/chat/all/sendMessage")
-    public void sendMessage2All(@Payload ChatDto chat) {
-        log.info("전체 채팅 : " + chat.getMessage());
-        chat.setMessage(chat.getMessage());
-        template.convertAndSend("/sub/chat/all", chat);
-    }
 
     // 게임 준비
     @PutMapping("/ready")
