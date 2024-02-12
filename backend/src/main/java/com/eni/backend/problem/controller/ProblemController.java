@@ -25,6 +25,7 @@ import java.io.IOException;
 import static com.eni.backend.common.response.BaseResponseStatus.*;
 import static com.eni.backend.common.util.BindingResultUtils.getErrorMessages;
 
+@CrossOrigin("*")
 @Slf4j
 @Validated
 @RestController
