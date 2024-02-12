@@ -19,7 +19,9 @@ import com.eni.backend.member.entity.Member;
 import com.eni.backend.member.repository.LevelRepository;
 import com.eni.backend.member.repository.MemberRepository;
 import com.eni.backend.problem.entity.Code;
+import com.eni.backend.problem.entity.CodeStatus;
 import com.eni.backend.problem.repository.CodeRepository;
+import com.eni.backend.problem.repository.ProblemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -47,6 +49,7 @@ public class MemberService {
     private final ItemRepository itemRepository;
     private final MemberItemRepository memberItemRepository;
     private final CodeRepository codeRepository;
+    private final ProblemRepository problemRepository;
     private final LevelRepository levelRepository;
 
     @Transactional
@@ -137,20 +140,30 @@ public class MemberService {
             throw new CustomBadRequestException(MEMBER_NOT_FOUND);
         }
 
-        List<GetMemberProblemResponse> successProblems = new ArrayList<>();
-        List<GetMemberProblemResponse> failProblems = new ArrayList<>();
+        List<String> successProblems = new ArrayList<>();
+        List<String> failProblems = new ArrayList<>();
 
         List<Code> codeList = codeRepository.findAllByMember(member);
 
         for (Code code : codeList) {
-            if (code.getStatus().name().equals("SUCCESS")) {
-                successProblems.add(GetMemberProblemResponse.from(code));
-            } else if (code.getStatus().name().equals("FAIL")) {
-                failProblems.add(GetMemberProblemResponse.from(code));
+            String problemPlatform = code.getProblem().getStringPlatform();
+            String problemNo = String.valueOf(code.getProblem().getNo());
+
+            if (code.getStatus() == CodeStatus.SUCCESS) {
+                successProblems.add(problemPlatform + " " + problemNo);
+
+            } else if (code.getStatus() == CodeStatus.FAIL || code.getStatus() == CodeStatus.COMPILE_ERROR) {
+                failProblems.add(problemPlatform + " " + problemNo);
+            }
+            else {
+                throw new CustomServerErrorException(SERVER_ERROR);
             }
         }
 
-        return GetMemberDetailResponse.from(member, successProblems, failProblems);
+        List<String> newSuccessProblems = successProblems.stream().distinct().toList();
+        List<String> newFailProblems = failProblems.stream().distinct().toList();
+
+        return GetMemberDetailResponse.from(member, newSuccessProblems, newFailProblems);
     }
 
     public GetCoinResponse getCoin(Authentication authentication) {
