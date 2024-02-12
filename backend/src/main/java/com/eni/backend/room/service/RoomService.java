@@ -7,10 +7,7 @@ import com.eni.backend.problem.repository.ProblemRepository;
 import com.eni.backend.problem.repository.TierRepository;
 import com.eni.backend.room.dto.ChatDto;
 import com.eni.backend.room.dto.RoomDto;
-import com.eni.backend.room.dto.request.DeleteRoomRequest;
-import com.eni.backend.room.dto.request.PostRoomEnterRequest;
-import com.eni.backend.room.dto.request.PostRoomRequest;
-import com.eni.backend.room.dto.request.PutReadyRequest;
+import com.eni.backend.room.dto.request.*;
 import com.eni.backend.room.dto.response.PostRoomResponse;
 import com.eni.backend.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -89,30 +86,32 @@ public class RoomService {
 
     public Boolean enter(PostRoomEnterRequest request){
         RoomDto room = roomRepository.getRoomById(request.getRoomId());
-        if(room.getUserCnt() < room.getMaxUserCnt()){
-            String userUUID = UUID.randomUUID().toString();
-            room.setUserCnt(room.getUserCnt()+1);
-            room.getUserList().put(userUUID, request.getNickname());
+        if(room != null) {
+            if (room.getUserCnt() < room.getMaxUserCnt()) {
+                String userUUID = UUID.randomUUID().toString();
+                room.setUserCnt(room.getUserCnt() + 1);
+                room.getUserList().put(userUUID, request.getNickname());
 
-            // 마스터 등록
-            if(room.getUserCnt()==1){
-                room.getReadyList().put(request.getNickname(), "MASTER");
+                // 마스터 등록
+                if (room.getUserCnt() == 1) {
+                    room.getReadyList().put(request.getNickname(), "MASTER");
+                }
+                // 참가자 대기상태 설정
+                else {
+                    room.getReadyList().put(request.getNickname(), "WAITING");
+                }
+
+                ChatDto chat = new ChatDto();
+                chat.setSender(request.getNickname());
+                chat.setMessage(chat.getSender() + " 님 입장!!");
+
+                template.convertAndSend("/sub/chat/room/" + request.getRoomId(), chat);
+                template.convertAndSend("/sub/room/" + request.getRoomId() + "/status", getUserStatus(request.getRoomId()));
+
+                template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, null, 1));
+                template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
+                return true;
             }
-            // 참가자 대기상태 설정
-            else {
-                room.getReadyList().put(request.getNickname(), "WAITING");
-            }
-
-            ChatDto chat = new ChatDto();
-            chat.setSender(request.getNickname());
-            chat.setMessage(chat.getSender() + " 님 입장!!");
-
-            template.convertAndSend("/sub/chat/room/" + request.getRoomId(), chat);
-            template.convertAndSend("/sub/room/"+request.getRoomId()+"/status", getUserStatus(request.getRoomId()));
-
-            template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal",null, null, null, null, 1));
-            template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null,1));
-            return true;
         }
         return false;
     }
@@ -137,7 +136,7 @@ public class RoomService {
     }
 
     // 방에서 인원 삭제
-    public void delUser(String roomId, String userUUID){
+    public Boolean delUser(String roomId, String userUUID){
         if(roomId != null) {
             RoomDto room = roomRepository.getRoomById(roomId);
             room.setUserCnt(room.getUserCnt() - 1);
@@ -152,12 +151,27 @@ public class RoomService {
                 room.getReadyList().remove(user);
             }
             room.getUserList().remove(userUUID);
+            log.info("User exit : " + user);
 
+            // builder 어노테이션 활용
+            ChatDto chat = ChatDto.builder()
+                    .type(ChatDto.MessageType.LEAVE)
+                    .sender(user)
+                    .message(user + " 님 퇴장!!")
+                    .build();
+            template.convertAndSend("/sub/chat/room/" + roomId, chat);
+            template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal",null, null, null, false, 1));
+            template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
+            if(getUserStatus(roomId) != null) {
+                template.convertAndSend("/sub/room/" + roomId + "/status", getUserStatus(roomId));
+            }
             if (room.getUserCnt() == 0) {
                 roomRepository.getRoomMap().remove(roomId);
             }
+
         }
         clearRooms();
+        return true;
     }
 
     // 게임방 참여인원 조회
@@ -271,6 +285,14 @@ public class RoomService {
     private Problem findProblemById(Long problemId) {
         return problemRepository.findById(problemId)
                 .orElseThrow(() -> new CustomBadRequestException(PROBLEM_NOT_FOUND));
+    }
+
+    public Boolean attackUser(PostAttackRequest request){
+        if(request.getRoomId() != null && request.getNickname() != null) {
+            template.convertAndSend("/sub/game/" + request.getRoomId(), request);
+            return true;
+        }
+        return false;
     }
 
     public void test(){
