@@ -13,7 +13,7 @@
 //   useEffect(() => {
 //     // 3. Kakao OAuth 엔드포인트로 코드를 전송하여 사용자 정보를 받아오기
 //     axios
-//       .get(`http://localhost:3000/login/oauth2/code/kakao?code=${code}`)
+//       .get(`http://192.168.123.111:8080/login/oauth2/code/kakao?code=${code}`)
 //       .then((response) => {
 //         // 4. 받아온 데이터를 콘솔에 출력 (사용자 정보 확인용)
 //         console.log(response.data);

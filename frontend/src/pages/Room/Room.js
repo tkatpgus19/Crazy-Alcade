@@ -17,6 +17,7 @@ const Room = () => {
   const messagesEndRef = useRef(null); // messages 참조 생성
 
   useEffect(() => {
+    console.log("뭔데\n\n\n\n\n" + roomId + nickname + roomType);
     connectRoom();
     getUserList();
 
@@ -29,9 +30,10 @@ const Room = () => {
 
   // 추가한 부분
   const getRoomInfo = () => {
-    axios
-      .get(`http://${SERVER_URL}/rooms/info?roomId=${roomId}`)
-      .then((res) => setRoomInfo(res.data.result));
+    axios.get(`${SERVER_URL}/rooms/info?roomId=${roomId}`).then((res) => {
+      console.log("제바라라라라라라\n\n\n\n\n" + res.data.result);
+      setRoomInfo(res.data.result);
+    });
   };
 
   const [userlist, setUserlist] = useState([]);
@@ -46,7 +48,7 @@ const Room = () => {
   const client = useRef();
 
   const connectRoom = () => {
-    const socket = new SockJS(`http://${SERVER_URL}/ws-stomp`);
+    const socket = new SockJS(`${SERVER_URL}/ws-stomp`);
     client.current = Stomp.over(socket);
     client.current.connect({}, onConnected, onError); // 현재상태를 변경할 때, {}는 헤더값 쓸때 쓴는 것, 성공하면 onConnected 실패시 onError
   };
@@ -127,7 +129,7 @@ const Room = () => {
   const getUserList = () => {
     axios
       .get(
-        `http://${SERVER_URL}/rooms/userStatus?roomType=${roomType}&roomId=${roomId}`
+        `${SERVER_URL}/rooms/userStatus?roomType=${roomType}&roomId=${roomId}`
       ) // requset param 형태 api 요청할때 필요한 것
       .then((res) => {
         setUserStatus(res.data.result);
@@ -139,12 +141,9 @@ const Room = () => {
   };
 
   const getReady = () => {
-    axios.put(`http://${SERVER_URL}/rooms/ready`, {
+    axios.put(`${SERVER_URL}/rooms/ready`, {
       roomId: roomId,
-      sender: nickname,
-      message: "ready",
-      type: "TALK",
-      roomType: roomType,
+      nickname: nickname,
     });
   };
 
@@ -160,18 +159,14 @@ const Room = () => {
   };
   const onStartClicked = () => {
     // 게임시작을 하기위해서 불러오는 API
-    axios
-      .get(
-        `http://${SERVER_URL}/rooms/start?roomType=${roomType}&roomId=${roomId}`
-      )
-      .then((res) => {
-        if (res.data) {
-          console.log("되는거니..?");
-          axios.get(`http://${SERVER_URL}/rooms/set-timer?roomId=${roomId}`);
-        } else {
-          alert("준비가 되지 않았습니다.");
-        }
-      });
+    axios.put(`${SERVER_URL}/rooms/start?roomId=${roomId}`).then((res) => {
+      if (res.data) {
+        console.log("되는거니..?");
+        axios.get(`${SERVER_URL}/rooms/set-timer?roomId=${roomId}`);
+      } else {
+        alert("준비가 되지 않았습니다.");
+      }
+    });
   };
 
   const enterGame = (data) => {
