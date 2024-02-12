@@ -238,6 +238,19 @@ public class RoomService {
         if(cnt == room.getUserCnt()-1){
             room.setIsStarted(true);
             template.convertAndSend("/sub/room/"+roomId+"/start", room);
+
+            long timerValue = 0;
+
+            for (long i = room.getTimeLimit(); i >= 0; i--) {
+                timerValue = i;
+                template.convertAndSend("/sub/timer/"+roomId, timerValue);
+                log.warn("초: " + timerValue);
+                try {
+                    Thread.sleep(1000); // 1초 대기
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             return true;
         }
         return false;
