@@ -43,6 +43,7 @@ public enum BaseResponseStatus {
     GET_ROOM_TIMER_START_SUCCESS(HttpStatus.OK, "방 타이머 세팅에 성공하였습니다."),
     DELETE_ROOM_SUCCESS(HttpStatus.OK, "방 삭제에 성공하였습니다."),
     POST_ENTER_ROOM_SUCCESS(HttpStatus.OK, "방 입장에 성공하였습니다."),
+    DELETE_MEMBER_SUCCESS(HttpStatus.OK, "방 퇴장에 성공하였습니다."),
 
     // BAD_REQUEST
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "유효하지 않은 요청입니다."),

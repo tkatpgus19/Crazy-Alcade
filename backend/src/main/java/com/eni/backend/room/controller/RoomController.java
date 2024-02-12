@@ -141,25 +141,10 @@ public class RoomController {
         return BaseSuccessResponse.of(POST_ENTER_ROOM_SUCCESS, roomService.enter(request));
     }
 
-    // 방 입장처리
-//    @MessageMapping("/room/enterUser")
-//    public void enterUser(@Payload ChatDto chat, SimpMessageHeaderAccessor headerAccessor) {
-//        // 채팅방에 유저 추가 및 UserUUID 반환
-//        String userUUID = roomService.addUser(chat.getRoomId(), chat.getSender());
-//
-//        // 반환 결과를 socket session 에 userUUID 로 저장
-//        headerAccessor.getSessionAttributes().put("userUUID", userUUID);
-//        headerAccessor.getSessionAttributes().put("roomId", chat.getRoomId());
-//
-//
-//        chat.setMessage(chat.getSender() + " 님 입장!!");
-//        template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
-//        template.convertAndSend("/sub/room/"+chat.getRoomId()+"/status", roomService.getUserStatus(chat.getRoomId()));
-//
-//        template.convertAndSend("/sub/normal/room-list", roomService.getSortedRoomList("normal",null, null, null, null, 1));
-//        template.convertAndSend("/sub/item/room-list", roomService.getSortedRoomList("item", null, null, null, null,1));
-//
-//    }
+    @DeleteMapping("/exit")
+    public BaseSuccessResponse<?> deleteUser(@RequestParam("roomId") String roomId, @RequestParam("member-id") String memberId){
+        return BaseSuccessResponse.of(DELETE_MEMBER_SUCCESS, roomService.delUser(roomId, memberId));
+    }
 
     // 게임 준비
     @PutMapping("/ready")
