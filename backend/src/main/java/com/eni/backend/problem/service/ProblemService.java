@@ -67,6 +67,19 @@ public class ProblemService {
     }
 
     public GetProblemResponse get(Long problemId) {
+        // 랜덤 문제 조회
+        if (problemId == -1) { // 브론즈
+            return getRandom(1L);
+        }
+
+        if (problemId == -2) { // 실버
+            return getRandom(2L);
+        }
+
+        if (problemId == -3) { // 골드
+            return getRandom(3L);
+        }
+
         // 문제 조회
         Problem problem = findProblemById(problemId);
 
@@ -83,7 +96,7 @@ public class ProblemService {
                 .collect(Collectors.toList());
     }
 
-    public GetProblemResponse getRandom(Long tierId) {
+    private GetProblemResponse getRandom(Long tierId) {
         // 해당 티어의 문제 리스트 조회
         List<GetProblemListResponse> problems = getList(tierId);
 
