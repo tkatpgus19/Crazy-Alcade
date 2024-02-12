@@ -58,6 +58,14 @@ dependencies {
 
 	// File
 	implementation 'commons-io:commons-io:2.11.0'
+
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+	// OpenVidu
+	implementation 'io.openvidu:openvidu-java-client:2.29.0'
+
+	// Stomp
+	implementation 'org.webjars:stomp-websocket:2.3.4'
 }
 
 tasks.named('test') {
