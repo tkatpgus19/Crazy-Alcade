@@ -35,7 +35,6 @@ public class RoomService {
 
     // 조건에 부합하는 방 리스트 조회
     public List<RoomDto> getSortedRoomList(String roomType, String language, String tier, Boolean codeReview, Boolean isSolved, Integer page){
-        clearRooms();
         List<RoomDto> resultList = roomRepository.getRoomListByRoomType(roomType);
         if(language != null){
             resultList = resultList
