@@ -9,6 +9,7 @@ import com.eni.backend.member.entity.Member;
 import com.eni.backend.member.repository.MemberRepository;
 import com.eni.backend.problem.dto.response.CodeExecuteDto;
 import com.eni.backend.problem.dto.response.CodeExecuteResponse;
+import com.eni.backend.problem.dto.response.CodeSubmitDto;
 import com.eni.backend.problem.dto.response.CodeSubmitResponse;
 import com.eni.backend.problem.entity.Code;
 import com.eni.backend.problem.entity.CodeStatus;
@@ -65,7 +66,7 @@ public class PythonCodeService {
 
             // 채점
             if (isHidden) {
-
+                return CodeSubmitResponse.of(CodeStatus.COMPILE_ERROR, null);
             }
 
             // 실행
@@ -75,57 +76,61 @@ public class PythonCodeService {
         log.info("컴파일 성공");
 
         CodeStatus codeStatus = CodeStatus.SUCCESS;
-        List<Object> tcResults = new ArrayList<>();
         List<Testcase> testcases;
 
         // 채점
         if (isHidden) {
-            testcases = testcaseRepository.findAllByProblemId(problem.getId());
-            CodeSubmitResponse response;
-
-            // 각 테스트케이스 별 실행 결과
-            for (int i=0; i<testcases.size(); i++) {
-                response = submit(dirPath, problem,i+1, testcases.get(i));
-                tcResults.add(response);
-
-                // 해당 코드 상태를 실패로 변경
-                if (!response.getCodeStatus().equals(CodeStatus.SUCCESS.getStatus())) {
-                    codeStatus = CodeStatus.FAIL;
-                }
-            }
-
-            // 코드 저장
-            try {
-                codeRepository.save(Code.of(code, Language.JAVA, resultTime, resultMemory, codeStatus, member, problem));
-            } catch (Exception e) {
-                deleteFolder(dirPath);
-                throw new CustomServerErrorException(DATABASE_ERROR);
-            }
-        }
-        // 실행
-        else {
             testcases = testcaseRepository.findAllByProblemIdAndIsHidden(problem.getId(), isHidden);
-            List<CodeExecuteDto> results = new ArrayList<>();
-            CodeExecuteDto tcResult;
+            List<CodeSubmitDto> results = new ArrayList<>();
+            CodeSubmitDto tcResult;
 
             // 각 테스트케이스 별 실행 결과
             for (int i=0; i<testcases.size(); i++) {
-                tcResult = execute(dirPath,i+1, testcases.get(i));
+                tcResult = submit(dirPath, problem,i+1, testcases.get(i));
                 results.add(tcResult);
 
                 // 해당 코드 상태를 실패로 변경
                 if (!tcResult.getCodeStatus().equals(CodeStatus.SUCCESS.getStatus())) {
                     codeStatus = CodeStatus.FAIL;
                 }
+            }
 
-                return CodeExecuteResponse.of(codeStatus, results);
+            // 코드 저장
+            try {
+                codeRepository.save(Code.of(code, Language.PYTHON, resultTime, resultMemory, codeStatus, member, problem));
+            } catch (Exception e) {
+                deleteFolder(dirPath);
+                throw new CustomServerErrorException(DATABASE_ERROR);
+            }
+
+            // 파일 삭제
+            deleteFolder(dirPath);
+
+            // 결과 반환
+            return CodeSubmitResponse.of(codeStatus, results);
+        }
+
+        // 실행
+        testcases = testcaseRepository.findAllByProblemIdAndIsHidden(problem.getId(), isHidden);
+        List<CodeExecuteDto> results = new ArrayList<>();
+        CodeExecuteDto tcResult;
+
+        // 각 테스트케이스 별 실행 결과
+        for (int i=0; i<testcases.size(); i++) {
+            tcResult = execute(dirPath,i+1, testcases.get(i));
+            results.add(tcResult);
+
+            // 해당 코드 상태를 실패로 변경
+            if (!tcResult.getCodeStatus().equals(CodeStatus.SUCCESS.getStatus())) {
+                codeStatus = CodeStatus.FAIL;
             }
         }
 
         // 파일 삭제
         deleteFolder(dirPath);
 
-        return tcResults;
+        // 결과 반환
+        return CodeExecuteResponse.of(codeStatus, results);
     }
 
     private boolean compile(String dirPath, String code) throws IOException, InterruptedException {
@@ -230,7 +235,7 @@ public class PythonCodeService {
         return CodeExecuteDto.of(no, CodeStatus.SUCCESS.getStatus());
     }
 
-    private CodeSubmitResponse submit(String dirPath, Problem problem, Integer no, Testcase testcase) throws IOException, InterruptedException {
+    private CodeSubmitDto submit(String dirPath, Problem problem, Integer no, Testcase testcase) throws IOException, InterruptedException {
         // 테스트 케이스 input 생성
         String inputPath = createInputFile(dirPath, no, testcase.getInput());
 
@@ -261,14 +266,14 @@ public class PythonCodeService {
         if (!timeover) {
             process.destroyForcibly();
             deleteFile(inputPath);
-            return CodeSubmitResponse.of(no, CodeStatus.TIME_OVER.getStatus(), time, memory);
+            return CodeSubmitDto.of(no, CodeStatus.TIME_OVER.getStatus(), time, memory);
         }
 
         // 메모리 초과
         if (memory > problem.getMemory() * 1024) {
             process.destroyForcibly();
             deleteFile(inputPath);
-            return CodeSubmitResponse.of(no, CodeStatus.MEMORY_OVER.getStatus(), time, memory);
+            return CodeSubmitDto.of(no, CodeStatus.MEMORY_OVER.getStatus(), time, memory);
         }
 
         BufferedReader outputReader;
@@ -288,7 +293,7 @@ public class PythonCodeService {
             process.destroyForcibly();
             deleteFile(inputPath);
 
-            return CodeSubmitResponse.of(no, CodeStatus.RUNTIME_ERROR.getStatus(), null, null);
+            return CodeSubmitDto.of(no, CodeStatus.RUNTIME_ERROR.getStatus(), null, null);
         }
 
         // 실행 결과
@@ -339,11 +344,11 @@ public class PythonCodeService {
 
         // 실패
         if (!result.toString().equals(output.toString())) {
-            return CodeSubmitResponse.of(no, CodeStatus.FAIL.getStatus(), time, memory);
+            return CodeSubmitDto.of(no, CodeStatus.FAIL.getStatus(), time, memory);
         }
 
         // 성공
-        return CodeSubmitResponse.of(no, CodeStatus.SUCCESS.getStatus(), time, memory);
+        return CodeSubmitDto.of(no, CodeStatus.SUCCESS.getStatus(), time, memory);
     }
 
     private String createDirectory(UUID uuid) {
