@@ -219,8 +219,10 @@ public class RoomService {
     }
 
     public Boolean startTimer(String roomId){
-        long timerValue;
-        for (int i = 10; i >= 0; i--) {
+        RoomDto room = roomRepository.getRoomById(roomId);
+        long timerValue = 0;
+
+        for (long i = room.getTimeLimit(); i >= 0; i--) {
             timerValue = i;
             template.convertAndSend("/sub/timer/"+roomId, timerValue);
             log.warn("초: " + timerValue);
