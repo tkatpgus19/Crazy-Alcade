@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -31,9 +30,6 @@ import static com.eni.backend.auth.oauth2.HttpCookieOAuth2AuthorizationRequestRe
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-//    @Value("${handler.target-url}")
-//    private String TARGET_URL;
-
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final OAuth2UserUnlinkManager oAuth2UserUnlinkManager;
     private final JwtTokenProvider jwtTokenProvider;
@@ -42,38 +38,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
-
-//        String url = TARGET_URL;
-//        OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
-//
-//        if (principal == null) {
-//            response.sendError(500);
-//        }
-//
-//        String socialId  = principal.getUserInfo().getId();
-//        OAuth2Provider provider = principal.getUserInfo().getProvider();
-//
-//        Optional<Member> findMember = memberService.findBySocialIdAndProvider(socialId, provider);
-//        LoginInfo loginInfo;
-//
-//        // 신규 회원일 경우
-//        if(findMember.isEmpty()) {
-//            loginInfo = memberService.loginOrJoinMember(Member.from(principal.getUserInfo()), false);
-//        }
-//        // 기존 회원일 경우
-//        else {
-//            loginInfo = memberService.loginOrJoinMember(findMember.get(), true);
-//        }
-//
-//        // 액세스 토큰 발급
-//        String accessToken = jwtTokenProvider.generateAccessToken(authentication, loginInfo.getMemberId());
-//
-//        CookieUtils.addCookie(response, "access-token", accessToken, 60 * 5);
-//        CookieUtils.addCookie(response, "member-id", String.valueOf(loginInfo.getMemberId()), 60 * 5);
-//        CookieUtils.addCookie(response, "is-new", String.valueOf(loginInfo.isNew()), 60 * 5);
-//        CookieUtils.addCookie(response, "is-connected", String.valueOf(loginInfo.isConnected()), 60 * 5);
-//        CookieUtils.addCookie(response, "next", "main", 60 * 5);
-//        response.sendRedirect(url);
 
         String targetUrl;
 
@@ -101,8 +65,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .map(Cookie::getValue)
                 .orElse("");
 
-        log.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! {} {}", mode, redirectUri);
-
         OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
 
         if (principal == null) {
@@ -123,14 +85,14 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             // TODO: DB 저장
             // TODO: 액세스 토큰 발급
 
-            String socialId  = principal.getUserInfo().getId();
+            String socialId = principal.getUserInfo().getId();
             OAuth2Provider provider = principal.getUserInfo().getProvider();
 
             Optional<Member> findMember = memberService.findBySocialIdAndProvider(socialId, provider);
             Member member;
             LoginInfo loginInfo;
 
-            if(findMember.isEmpty()) {
+            if (findMember.isEmpty()) {
                 loginInfo = memberService.loginOrJoinMember(Member.from(principal.getUserInfo()), false);
 
                 // 액세스 토큰 발급
@@ -140,7 +102,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 return UriComponentsBuilder.fromUriString(targetUrl)
                         .queryParam("access-token", accessToken)
                         .queryParam("member-id", loginInfo.getMemberId())
-                        .queryParam("next", "get-user-nickname")
+                        .queryParam("is-new", loginInfo.isNew())
+                        .queryParam("is-connected", loginInfo.isConnected())
+                        .queryParam("next", "/")
                         .build().toUriString();
 
             } else {
@@ -153,13 +117,13 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 //TODO: 로그인 후 페이지로 리다이렉트
                 return UriComponentsBuilder.fromUriString(targetUrl)
                         .queryParam("access-token", accessToken)
-                        .queryParam("member-id", findMember.get().getId())
-                        .queryParam("next", "main")
+                        .queryParam("member-id", loginInfo.getMemberId())
+                        .queryParam("is-new", loginInfo.isNew())
+                        .queryParam("is-connected", loginInfo.isConnected())
+                        .queryParam("next", "/")
                         .build().toUriString();
             }
-        }
-
-        else if ("unlink".equalsIgnoreCase(mode)) {
+        } else if ("unlink".equalsIgnoreCase(mode)) {
 
             String accessToken = principal.getUserInfo().getAccessToken();
             OAuth2Provider provider = principal.getUserInfo().getProvider();
@@ -181,7 +145,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         Object principal = authentication.getPrincipal();
 
-        if(principal instanceof OAuth2UserPrincipal) {
+        if (principal instanceof OAuth2UserPrincipal) {
             return (OAuth2UserPrincipal) principal;
         }
 
