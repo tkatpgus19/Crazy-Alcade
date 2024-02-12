@@ -100,4 +100,8 @@ public class Problem extends BaseTime {
         return this.tier.getStringTier();
     }
 
+    public String getProblemName() {
+        return getStringPlatform() + " " + this.no +  ". " + getTitle();
+    }
+
 }

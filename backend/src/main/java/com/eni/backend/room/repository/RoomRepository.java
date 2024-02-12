@@ -1,5 +1,7 @@
 package com.eni.backend.room.repository;
 
+import com.eni.backend.problem.entity.Problem;
+import com.eni.backend.problem.entity.Tier;
 import com.eni.backend.room.dto.RoomDto;
 import com.eni.backend.room.dto.request.PostRoomRequest;
 import jakarta.annotation.PostConstruct;
@@ -22,19 +24,8 @@ public class RoomRepository {
         roomMap = new LinkedHashMap<>();
     }
 
-    public String saveRoom(PostRoomRequest request){
-        RoomDto room = RoomDto.builder()
-                .roomType(request.getRoomType())
-                .roomName(request.getRoomName())
-                .hasPassword(request.getHasPassword())
-                .roomPassword(request.getRoomPassword())
-                .problemTier(request.getProblemTier())
-                .problemNo(request.getProblemNo())
-                .timeLimit(request.getTimeLimit())
-                .language(request.getLanguage())
-                .codeReview(request.getCodeReview())
-                .master(request.getMaster())
-                .build();
+    public String saveRoom(PostRoomRequest request, Tier tier, Problem problem){
+        RoomDto room = RoomDto.from(request, tier, problem);
         roomMap.put(room.getRoomId(), room);
         return room.getRoomId();
     }
@@ -57,4 +48,5 @@ public class RoomRepository {
     public void test(){
         roomMap.clear();
     }
+
 }

@@ -1,5 +1,10 @@
 package com.eni.backend.room.service;
 
+import com.eni.backend.common.exception.CustomBadRequestException;
+import com.eni.backend.problem.entity.Problem;
+import com.eni.backend.problem.entity.Tier;
+import com.eni.backend.problem.repository.ProblemRepository;
+import com.eni.backend.problem.repository.TierRepository;
 import com.eni.backend.room.dto.ChatDto;
 import com.eni.backend.room.dto.RoomDto;
 import com.eni.backend.room.dto.request.DeleteRoomRequest;
@@ -15,17 +20,29 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static com.eni.backend.common.response.BaseResponseStatus.PROBLEM_NOT_FOUND;
+import static com.eni.backend.common.response.BaseResponseStatus.TIER_NOT_FOUND;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class RoomService {
 
     private final RoomRepository roomRepository;
+    private final TierRepository tierRepository;
+    private final ProblemRepository problemRepository;
     private final SimpMessageSendingOperations template;
 
     // 방 등록
     public PostRoomResponse post(PostRoomRequest request){
-        String roomId = roomRepository.saveRoom(request);
+        // 티어 조회
+        Tier tier = findTierById(request.getProblemTier());
+
+        // 문제 조회
+        Problem problem = findProblemById(request.getProblemNo());
+
+        // 저장
+        String roomId = roomRepository.saveRoom(request, tier, problem);
 
         template.convertAndSend("/sub/normal/room-list", roomRepository.getRoomListByRoomType("normal"));
         template.convertAndSend("/sub/item/room-list", roomRepository.getRoomListByRoomType("item"));
@@ -246,7 +263,15 @@ public class RoomService {
         return false;
     }
 
+    private Tier findTierById(Long tierId) {
+        return tierRepository.findById(tierId)
+                .orElseThrow(() -> new CustomBadRequestException(TIER_NOT_FOUND));
+    }
 
+    private Problem findProblemById(Long problemId) {
+        return problemRepository.findById(problemId)
+                .orElseThrow(() -> new CustomBadRequestException(PROBLEM_NOT_FOUND));
+    }
 
     public void test(){
         roomRepository.test();
