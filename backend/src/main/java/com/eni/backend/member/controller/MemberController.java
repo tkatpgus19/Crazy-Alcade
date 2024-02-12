@@ -3,9 +3,9 @@ package com.eni.backend.member.controller;
 import com.eni.backend.common.exception.CustomBadRequestException;
 import com.eni.backend.common.response.BaseSuccessResponse;
 import com.eni.backend.member.dto.request.PutCoinRequest;
-import com.eni.backend.member.dto.request.PutRewardRequest;
 import com.eni.backend.member.dto.request.PutLanguageRequest;
 import com.eni.backend.member.dto.request.PutNicknameRequest;
+import com.eni.backend.member.dto.request.PutRewardRequest;
 import com.eni.backend.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,16 +22,43 @@ import static com.eni.backend.common.util.BindingResultUtils.getErrorMessages;
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
-@CrossOrigin
 public class MemberController {
     @Autowired
     private MemberService memberService;
 
-    @GetMapping("")
-    public BaseSuccessResponse<?> getList() {
+    @GetMapping("/memberlist")
+    public BaseSuccessResponse<?> getList(Authentication authentication) {
         log.info("MemberController.getList");
 
-        return BaseSuccessResponse.of(GET_MEMBER_LIST_SUCCESS, memberService.getList());
+        return BaseSuccessResponse.of(GET_MEMBER_LIST_SUCCESS, memberService.getList(authentication));
+    }
+
+    @GetMapping("")
+    public BaseSuccessResponse<?> getMember(Authentication authentication) {
+        log.info("MemberController.getMember");
+
+        return BaseSuccessResponse.of(GET_MEMBER_SUCCESS, memberService.getMember(authentication));
+    }
+
+    @GetMapping("/details")
+    public BaseSuccessResponse<?> getMemberDetails(Authentication authentication) {
+        log.info("MemberController.getMemberDetails");
+
+        return BaseSuccessResponse.of(GET_MEMBER_DETAILS_SUCCESS, memberService.getMemberDetails(authentication));
+    }
+
+    @GetMapping("/coin")
+    public BaseSuccessResponse<?> getCoin(Authentication authentication) {
+        log.info("MemberController.getCoin");
+
+        return BaseSuccessResponse.of(GET_MEMBER_COIN_SUCCESS, memberService.getCoin(authentication));
+    }
+
+    @GetMapping("/inventory")
+    public BaseSuccessResponse<?> getInventory(Authentication authentication) {
+        log.info("MemberController.getInventory");
+
+        return BaseSuccessResponse.of(GET_INVENTORY_SUCCESS, memberService.getInventory(authentication));
     }
 
     @PutMapping("/nickname")

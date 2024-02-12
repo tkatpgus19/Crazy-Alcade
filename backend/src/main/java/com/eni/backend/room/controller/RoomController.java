@@ -35,8 +35,8 @@ import static com.eni.backend.common.util.BindingResultUtils.getErrorMessages;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/rooms")
-@CrossOrigin(origins = "*")
 public class RoomController {
+
     private final SimpMessageSendingOperations template;
     private final RoomService roomService;
 

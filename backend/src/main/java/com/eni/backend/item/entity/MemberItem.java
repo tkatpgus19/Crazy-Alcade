@@ -18,21 +18,45 @@ public class MemberItem {
     private Long id;
 
     @Column
-    @ColumnDefault("0")
+    @ColumnDefault("1")
     private Integer count;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="member_id", nullable = false)
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="item_id", nullable = false)
+    @JoinColumn(name = "item_id", nullable = false)
     private Item item;
 
     @Builder
-    public MemberItem(Integer count, Member member, Item item) {
+    private MemberItem(Integer count, Member member, Item item) {
         this.count = count;
         this.member = member;
         this.item = item;
+    }
+
+    public static MemberItem of(Member member, Item item, Integer count) {
+        return builder()
+                .member(member)
+                .item(item)
+                .count(count)
+                .build();
+    }
+
+    public static MemberItem from(Member member, Integer count, Item item) {
+        return builder()
+                .member(member)
+                .item(item)
+                .count(count)
+                .build();
+    }
+
+    public void updateMemberItem(Integer count, boolean operator) {
+        if (operator) {
+            this.count += count;
+        } else {
+            this.count -= count;
+        }
     }
 }

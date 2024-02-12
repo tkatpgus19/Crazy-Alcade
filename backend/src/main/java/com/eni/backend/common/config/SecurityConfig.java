@@ -37,8 +37,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
 //                        .requestMatchers("/api/members/**").authenticated()
 //                        .requestMatchers("/api/problems/{problem-id}/codes/**").authenticated()
+//                                .requestMatchers("/api/items/members/**").authenticated()
+//                                .requestMatchers("/api/items/list").permitAll()
 //                        .requestMatchers("/api/auth/**").permitAll()
-                        .anyRequest().permitAll())
+                        .anyRequest().permitAll()
+                )
                 .sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2Login(configure ->
                         configure.userInfoEndpoint(config -> config.userService(customOAuth2UserService))

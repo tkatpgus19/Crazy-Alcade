@@ -1,19 +1,27 @@
 package com.eni.backend.member.service;
 
-import com.eni.backend.auth.jwt.JwtTokenProvider;
-import com.eni.backend.auth.oauth2.service.OAuth2UserPrincipal;
-import com.eni.backend.auth.oauth2.user.OAuth2UserInfo;
+import com.eni.backend.auth.oauth2.user.LoginInfo;
+import com.eni.backend.auth.oauth2.user.OAuth2Provider;
+import com.eni.backend.common.exception.CustomBadRequestException;
 import com.eni.backend.common.exception.CustomServerErrorException;
+import com.eni.backend.item.entity.Item;
+import com.eni.backend.item.entity.MemberItem;
+import com.eni.backend.item.repository.ItemRepository;
+import com.eni.backend.item.repository.MemberItemRepository;
 import com.eni.backend.member.dto.SecurityMemberDto;
 import com.eni.backend.member.dto.request.PutCoinRequest;
-import com.eni.backend.member.dto.request.PutRewardRequest;
 import com.eni.backend.member.dto.request.PutLanguageRequest;
 import com.eni.backend.member.dto.request.PutNicknameRequest;
+import com.eni.backend.member.dto.request.PutRewardRequest;
 import com.eni.backend.member.dto.response.*;
 import com.eni.backend.member.entity.Level;
 import com.eni.backend.member.entity.Member;
 import com.eni.backend.member.repository.LevelRepository;
 import com.eni.backend.member.repository.MemberRepository;
+import com.eni.backend.problem.entity.Code;
+import com.eni.backend.problem.entity.CodeStatus;
+import com.eni.backend.problem.entity.Problem;
+import com.eni.backend.problem.repository.CodeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -23,12 +31,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.eni.backend.common.response.BaseResponseStatus.MEMBER_NOT_FOUND;
+import static com.eni.backend.common.response.BaseResponseStatus.*;
 
 @Slf4j
 @Service
@@ -37,70 +46,43 @@ import static com.eni.backend.common.response.BaseResponseStatus.MEMBER_NOT_FOUN
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final ItemRepository itemRepository;
+    private final MemberItemRepository memberItemRepository;
+    private final CodeRepository codeRepository;
     private final LevelRepository levelRepository;
-    private final JwtTokenProvider jwtTokenProvider;
-
-    // true: 신규 회원, false: 기존 회원
-    private boolean isNew = true;
-
-    // true: 로그인 보상 O, false: 로그인 보상 X
-    private boolean isConnected = true;
-
-    public LoginResponse login(Authentication authentication) {
-        OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
-
-        Member member = findOrSaveMember(principal.getUserInfo());
-        String accessToken = jwtTokenProvider.generateAccessToken(authentication, member.getId());
-
-        //로그인 할 때 최종 접속시간 확인해서 로그인 보상 받을 수 있는지 확인
-        if (isNew) {
-            // 신규회원
-            // 로그인 보상
-            isConnected = true;
-        } else {
-            // 기존회원
-            // 최종 접속일 확인 후 로그인 보상
-            isConnected = !Objects.equals(member.getConnectedAt().toLocalDateTime().toLocalDate(), LocalDate.now());
-        }
-
-        return LoginResponse.of(member.getId(), accessToken, isNew, isConnected);
-    }
 
     @Transactional
-    public Member findOrSaveMember(OAuth2UserInfo info) {
+    public LoginInfo loginOrJoinMember(Member member, boolean flag) {
 
-        // DB에서 회원 정보 있는지 확인
-        Optional<Member> findMember = memberRepository.findByProviderAndSocialId(
-                info.getProvider(), info.getId());
-
-        Member member;
+        LoginInfo loginInfo;
 
         // 회원 정보가 있으면 해당 회원 리턴
-        if (findMember.isPresent()) {
-            isNew = false;
-            member = findMember.get();
-
-            // 회원 탐색할 때 최종 접속시간 갱신
+        if (flag) {
+            // 회원이 로그인할 때 최종 접속시간 갱신
             member.updateConnectedAt(Timestamp.valueOf(LocalDateTime.now()));
 
-            return member;
+            loginInfo = LoginInfo.of(member.getId(), false, Objects.equals(member.getConnectedAt().toLocalDateTime().toLocalDate(), LocalDate.now()));
         }
         // 없으면 새로 생성해서 리턴
         else {
-            isNew = true;
-            member = Member.from(info);
-
             //레벨을 기본값을 1로 설정
             Optional<Level> defaultLevel = levelRepository.findById(1);
             defaultLevel.ifPresent(member::updateDefaultLevel);
 
-            return memberRepository.save(member);
+            try {
+                Long memberId = memberRepository.save(member).getId();
+                loginInfo = LoginInfo.of(memberId, true, false);
+            } catch (Exception e) {
+                throw new CustomServerErrorException(DATABASE_ERROR);
+            }
         }
+
+        return loginInfo;
     }
 
     public Member validateMemberByToken(Long memberId) {
         return findMemberById(memberId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new CustomBadRequestException(TOKEN_MISMATCH));
     }
 
     private Optional<Member> findMemberById(Long memberId) {
@@ -108,38 +90,157 @@ public class MemberService {
         return memberRepository.findById(memberId);
     }
 
-    private OAuth2UserPrincipal getOAuth2UserPrincipal(Authentication authentication) {
-        Object principal = authentication.getPrincipal();
-
-        if (principal instanceof OAuth2UserPrincipal) {
-            return (OAuth2UserPrincipal) principal;
-        }
-
-        return null;
+    public Optional<Member> findBySocialIdAndProvider(String socialId, OAuth2Provider provider) {
+        return memberRepository.findBySocialIdAndProvider(socialId, provider);
     }
 
-    public List<GetMemberListResponse> getList() {
+    public List<GetMemberListResponse> getList(Authentication authentication) {
+        Member member = findMemberByAuthentication(authentication);
+
+        if (member == null) {
+            throw new CustomBadRequestException(MEMBER_NOT_FOUND);
+        }
+
         return memberRepository.findAll()
                 .stream().map(GetMemberListResponse::of)
                 .collect(Collectors.toList());
     }
 
+    public GetMemberResponse getMember(Authentication authentication) {
+        Member member = findMemberByAuthentication(authentication);
+
+        if (member == null) {
+            throw new CustomBadRequestException(MEMBER_NOT_FOUND);
+        }
+
+        List<Item> itemList = itemRepository.findAll();
+        List<GetMemberItemListResponse> getMemberItemListResponses = new ArrayList<>();
+
+        for (Item item : itemList) {
+            Integer memberItemCount;
+            Optional<MemberItem> optionalMemberItem = memberItemRepository.findMemberItemByMemberAndItem(member, item);
+
+            if (optionalMemberItem.isPresent()) {
+                memberItemCount = optionalMemberItem.get().getCount();
+            } else {
+                memberItemCount = 0;
+            }
+
+            getMemberItemListResponses.add(GetMemberItemListResponse.from(item, memberItemCount));
+        }
+
+        return GetMemberResponse.from(member, getMemberItemListResponses);
+    }
+
+    public GetMemberDetailResponse getMemberDetails(Authentication authentication) {
+        Member member = findMemberByAuthentication(authentication);
+
+        if (member == null) {
+            throw new CustomBadRequestException(MEMBER_NOT_FOUND);
+        }
+
+        List<Problem> successProblems = codeRepository.findAllByMemberAndCodeStatus(member, CodeStatus.SUCCESS);
+        List<Problem> failProblems = codeRepository.findAllByMember(member);
+        failProblems.removeAll(successProblems);
+
+        List<String> newSuccessProblems = new ArrayList<>();
+        List<String> newFailProblems = new ArrayList<>();
+
+        for(Problem problem : successProblems) {
+            String problemPlatform = problem.getStringPlatform();
+            String problemNo = String.valueOf(problem.getNo());
+
+            newSuccessProblems.add(problemPlatform + " " + problemNo);
+        }
+
+        for(Problem problem : failProblems) {
+            String problemPlatform = problem.getStringPlatform();
+            String problemNo = String.valueOf(problem.getNo());
+
+            newFailProblems.add(problemPlatform + " " + problemNo);
+        }
+
+//        for (Code code : codeList) {
+//
+//            String problemPlatform = code.getProblem().getStringPlatform();
+//            String problemNo = String.valueOf(code.getProblem().getNo());
+//
+//            if (code.getStatus() == CodeStatus.SUCCESS) {
+//                successProblems.add(problemPlatform + " " + problemNo);
+//
+//            } else if (code.getStatus() == CodeStatus.FAIL || code.getStatus() == CodeStatus.COMPILE_ERROR) {
+//                failProblems.add(problemPlatform + " " + problemNo);
+//            } else {
+//                throw new CustomServerErrorException(SERVER_ERROR);
+//            }
+//        }
+//
+//        List<String> newSuccessProblems = successProblems.stream().distinct().toList();
+//        List<String> newFailProblems = failProblems.stream().distinct().toList();
+
+        return GetMemberDetailResponse.from(member, newSuccessProblems, newFailProblems);
+    }
+
+    public GetCoinResponse getCoin(Authentication authentication) {
+        Member member = findMemberByAuthentication(authentication);
+
+        if (member == null) {
+            throw new CustomBadRequestException(MEMBER_NOT_FOUND);
+        }
+
+        return GetCoinResponse.of(member.getCoin());
+    }
+
+    public GetInventoryResponse getInventory(Authentication authentication) {
+        Member member = findMemberByAuthentication(authentication);
+
+        List<Item> itemList = itemRepository.findAll();
+        List<GetItemInventoryResponse> getItemInventoryResponses = new ArrayList<>();
+
+        if (member == null) {
+            throw new CustomBadRequestException(MEMBER_NOT_FOUND);
+        }
+
+        for (Item item : itemList) {
+
+            Integer memberCount;
+            Optional<MemberItem> optionalMemberItem = memberItemRepository.findMemberItemByMemberAndItem(member, item);
+
+            if (optionalMemberItem.isPresent()) {
+                memberCount = optionalMemberItem.get().getCount();
+            } else {
+                memberCount = 0;
+            }
+
+            getItemInventoryResponses.add(GetItemInventoryResponse.from(item, memberCount));
+        }
+
+        return GetInventoryResponse.from(member, getItemInventoryResponses);
+    }
+
     public PutNicknameResponse putNickname(Authentication authentication, PutNicknameRequest putNicknameRequest) {
         Member member = findMemberByAuthentication(authentication);
 
-        if (member != null) {
-            member.updateNickname(putNicknameRequest);
+        if (member == null) {
+            throw new CustomBadRequestException(MEMBER_NOT_FOUND);
         }
 
+        member.updateNickname(putNicknameRequest);
         return PutNicknameResponse.of(member.getId());
     }
 
     public PutLanguageResponse putLanguage(Authentication authentication, PutLanguageRequest putLanguageRequest) {
         Member member = findMemberByAuthentication(authentication);
 
-        if (member != null) {
-            member.updateLanguage(putLanguageRequest);
+        if (member == null) {
+            throw new CustomBadRequestException(MEMBER_NOT_FOUND);
         }
+
+        if (!putLanguageRequest.getLang().name().equals("JAVA") && !putLanguageRequest.getLang().name().equals("PYTHON")) {
+            throw new CustomBadRequestException(MEMBER_LANG_CHANGE_FAIL);
+        }
+
+        member.updateLanguage(putLanguageRequest);
 
         return PutLanguageResponse.of(member.getId());
     }
@@ -147,9 +248,17 @@ public class MemberService {
     public PutCoinResponse putCoin(Authentication authentication, PutCoinRequest putCoinRequest, boolean operator) {
         Member member = findMemberByAuthentication(authentication);
 
-        if (member != null) {
-            member.updateCoin(putCoinRequest, operator);
+        if (member == null) {
+            throw new CustomBadRequestException(MEMBER_NOT_FOUND);
         }
+
+        if (!operator) {
+            if (member.getCoin() < putCoinRequest.getPutValue() || member.getCoin() < 1) {
+                throw new CustomBadRequestException(MEMBER_COIN_SUB_FAIL);
+            }
+        }
+
+        member.updateCoin(putCoinRequest, operator);
 
         return PutCoinResponse.of(member.getId());
     }
@@ -157,9 +266,11 @@ public class MemberService {
     public PutRewardResponse putReward(Authentication authentication, PutRewardRequest putRewardRequest) {
         Member member = findMemberByAuthentication(authentication);
 
-        if (member != null) {
-            member.putReward(putRewardRequest);
+        if (member == null) {
+            throw new CustomBadRequestException(MEMBER_NOT_FOUND);
         }
+
+        member.putReward(putRewardRequest);
 
         return PutRewardResponse.of(member.getId());
     }
@@ -169,14 +280,13 @@ public class MemberService {
 
         if (principalObject instanceof SecurityMemberDto securityMemberDto) {
 
-            try {
-                Optional<Member> optionalMember = findMemberById(securityMemberDto.getId());
+            Optional<Member> optionalMember = findMemberById(securityMemberDto.getId());
+
+            if (optionalMember.isPresent()) {
                 return optionalMember.get();
-            } catch (Exception e) {
-                throw new CustomServerErrorException(MEMBER_NOT_FOUND);
             }
         }
 
-        return null;
+        throw new CustomServerErrorException(MEMBER_NOT_FOUND);
     }
 }

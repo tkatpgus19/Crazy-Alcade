@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@CrossOrigin(origins = "*")
 @RestController
 public class OpenViduController {
+
     @Value("${OPENVIDU_URL}")
     private String OPENVIDU_URL;
 
@@ -55,4 +55,5 @@ public class OpenViduController {
         Connection connection = session.createConnection(properties);
         return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
     }
+
 }
