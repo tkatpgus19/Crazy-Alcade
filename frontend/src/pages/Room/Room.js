@@ -12,16 +12,27 @@ import { Stomp } from "@stomp/stompjs";
 import axios from "axios";
 
 const Room = () => {
-  const SERVER_URL =
-    // "ec2-3-39-233-234.ap-northeast-2.compute.amazonaws.com:8080";
-    "192.168.100.146:8080";
+  const SERVER_URL = process.env.REACT_APP_BASE_URL;
 
   const messagesEndRef = useRef(null); // messages 참조 생성
 
   useEffect(() => {
     connectRoom();
     getUserList();
+
+    // 추가한 부분
+    getRoomInfo();
   }, []);
+
+  // 추가한 부분
+  const [roomInfo, setRoomInfo] = useState({});
+
+  // 추가한 부분
+  const getRoomInfo = () => {
+    axios
+      .get(`http://${SERVER_URL}/rooms/info?roomId=${roomId}`)
+      .then((res) => setRoomInfo(res.data.result));
+  };
 
   const [userlist, setUserlist] = useState([]);
   const [readylist, setReadylist] = useState([]);
@@ -56,7 +67,7 @@ const Room = () => {
       onStatusReceived
     ); // 이 url은 방의 상태, user 목록이나 준비상태를 본다.
     client.current.send(
-      "/pub/chat/enterUser",
+      "/pub/room/enterUser",
       {},
       JSON.stringify({
         type: "ENTER",
@@ -119,9 +130,9 @@ const Room = () => {
         `http://${SERVER_URL}/rooms/userStatus?roomType=${roomType}&roomId=${roomId}`
       ) // requset param 형태 api 요청할때 필요한 것
       .then((res) => {
-        setUserStatus(res.data);
-        setUserlist(Object.keys(res.data));
-        setReadylist(Object.values(res.data));
+        setUserStatus(res.data.result);
+        setUserlist(Object.keys(res.data.result));
+        setReadylist(Object.values(res.data.result));
         console.log("getUserList 호출됨 : " + res.data);
       })
       .catch((err) => console.log(err));
@@ -197,84 +208,89 @@ const Room = () => {
 
   return (
     <Background>
-      <RoomHeader roomTitle="1. 너만 오면 고" />
+      <RoomHeader roomTitle={roomInfo.roomName} />
       <RoomHeader2 onExitClick={back} />
       <GrayBox>
-        <div className={styles.blue}>
-          <div className={styles.miniBoxup}>
-            {[0, 0, 0, 0, 0, 0].map((data, index) => {
-              //6번 돌아주기 위해서 임의로 0 여섯개
-              return (
-                <>
-                  <div>
-                    <MiniBox image="/images/user.png" />
-                    <Status
-                      nickname={userlist[index]}
-                      status={readylist[index]}
-                    />
-                  </div>
-                </>
-              );
-            })}
-          </div>
-        </div>
-        <div className={styles.right}>
-          <div className={styles.chat}>
-            <p className={styles.chattext}>채팅창</p>
-            <div className={styles.realchat} ref={messagesEndRef}>
-              {chatContent.map((message, index) => {
+        <div style={{ display: "flex", width: "100%", minWidth: "1200px" }}>
+          <div className={styles.blue}>
+            <div className={styles.miniBoxup}>
+              {[0, 0, 0, 0, 0, 0].map((data, index) => {
+                //6번 돌아주기 위해서 임의로 0 여섯개
                 return (
                   <>
-                    <div key={index} style={{ marginBottom: "10px" }}>
-                      <span style={{ WebkitTextStroke: "0.8px black" }}>
-                        {message.sender}
-                      </span>
-                      <span style={{ fontSize: "10px", color: "black" }}>
-                        {" " + " "}
-                        {message.timestamp}
-                      </span>
-                      <span style={{ display: "block" }}>
-                        {message.content}
-                      </span>
+                    <div>
+                      <MiniBox image="/images/user.png" />
+                      <Status
+                        nickname={userlist[index]}
+                        status={readylist[index]}
+                      />
                     </div>
                   </>
                 );
               })}
             </div>
-            <div className={styles.checkchat}>
-              <input
-                className={styles.write}
-                value={chatInput}
-                onChange={onChage}
-                onKeyDown={onKeyDown}
-              />
-              <div className={styles.buttonWithImage} onClick={sendChat}></div>
-            </div>
           </div>
-          <div className={styles.button4}>
-            <div
-              className={
-                userStatus[nickname] === "MASTER"
-                  ? styles.start + " " + styles.startbtn
-                  : styles.ready + " " + styles.startbtn
-              }
-              onClick={
-                userStatus[nickname] === "MASTER"
-                  ? onStartClicked
-                  : onReadyClicked
-              }
-            >
-              {userStatus[nickname] === "MASTER" ? "START" : "READY"}
+          <div className={styles.right}>
+            <div className={styles.chat}>
+              <p className={styles.chattext}>채팅창</p>
+              <div className={styles.realchat} ref={messagesEndRef}>
+                {chatContent.map((message, index) => {
+                  return (
+                    <>
+                      <div key={index} style={{ marginBottom: "10px" }}>
+                        <span style={{ WebkitTextStroke: "0.8px black" }}>
+                          {message.sender}
+                        </span>
+                        <span style={{ fontSize: "10px", color: "black" }}>
+                          {" " + " "}
+                          {message.timestamp}
+                        </span>
+                        <span style={{ display: "block" }}>
+                          {message.content}
+                        </span>
+                      </div>
+                    </>
+                  );
+                })}
+              </div>
+              <div className={styles.checkchat}>
+                <input
+                  className={styles.write}
+                  value={chatInput}
+                  onChange={onChage}
+                  onKeyDown={onKeyDown}
+                />
+                <div
+                  className={styles.buttonWithImage}
+                  onClick={sendChat}
+                ></div>
+              </div>
             </div>
-            <div className={styles.button3}>
-              <div className={styles.rightbutton}>
-                <p>버튼1</p>
+            <div className={styles.button4}>
+              <div
+                className={
+                  userStatus[nickname] === "MASTER"
+                    ? styles.start + " " + styles.startbtn
+                    : styles.ready + " " + styles.startbtn
+                }
+                onClick={
+                  userStatus[nickname] === "MASTER"
+                    ? onStartClicked
+                    : onReadyClicked
+                }
+              >
+                {userStatus[nickname] === "MASTER" ? "START" : "READY"}
               </div>
-              <div className={styles.rightbutton}>
-                <p>버튼2</p>
-              </div>
-              <div className={styles.rightbutton}>
-                <p>버튼3</p>
+              <div className={styles.button3}>
+                <div className={styles.rightbutton}>
+                  <p>버튼1</p>
+                </div>
+                <div className={styles.rightbutton}>
+                  <p>버튼2</p>
+                </div>
+                <div className={styles.rightbutton}>
+                  <p>버튼3</p>
+                </div>
               </div>
             </div>
           </div>

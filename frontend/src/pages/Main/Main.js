@@ -13,9 +13,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
 
 const Main = () => {
-  const SERVER_URL =
-    // "ec2-3-39-233-234.ap-northeast-2.compute.amazonaws.com:8080";
-    "192.168.100.146:8080";
+  const SERVER_URL = process.env.REACT_APP_BASE_URL;
+
   useEffect(() => {
     getRoomList("normal");
 
@@ -157,7 +156,9 @@ const Main = () => {
   const enterRoom = (data) => {
     navigate("/room", {
       state: {
-        roomId: data.result.roomId,
+        // 아래 주석을 풀어주세요
+        // roomId: data.result.roomId,
+        roomId: data.roomId,
         nickname: nickname,
         roomType: data.roomType,
       },
@@ -361,7 +362,9 @@ const Main = () => {
                 <div
                   key={index}
                   className={styles.room}
-                  onClick={() => enterRoom(data)}
+                  onClick={() => {
+                    enterRoom(data);
+                  }}
                 >
                   {/* 방 안의 제목 */}
                   <div className={styles.roomBlueBox}>
