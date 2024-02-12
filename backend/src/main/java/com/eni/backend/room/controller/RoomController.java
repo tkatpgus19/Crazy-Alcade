@@ -13,6 +13,7 @@ import com.eni.backend.room.service.RoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -202,4 +203,10 @@ public class RoomController {
         return BaseSuccessResponse.of(GET_ROOM_TIMER_START_SUCCESS, roomService.startTimer(roomId));
     }
 
+
+    @DeleteMapping("/test")
+    public ResponseEntity<?> test(){
+        roomService.test();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
