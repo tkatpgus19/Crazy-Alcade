@@ -160,7 +160,7 @@ const Room = () => {
   const onStartClicked = () => {
     // 게임시작을 하기위해서 불러오는 API
     axios.put(`${SERVER_URL}/rooms/start?roomId=${roomId}`).then((res) => {
-      if (res.data) {
+      if (res.data.result) {
         console.log("되는거니..?");
         axios.get(`${SERVER_URL}/rooms/set-timer?roomId=${roomId}`);
       } else {
@@ -252,6 +252,7 @@ const Room = () => {
               <div className={styles.checkchat}>
                 <input
                   className={styles.write}
+                  placeholder="채팅을 입력하세요"
                   value={chatInput}
                   onChange={onChage}
                   onKeyDown={onKeyDown}

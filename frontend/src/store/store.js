@@ -8,6 +8,7 @@ import loadingReducer from "../pages/Game/slices/loadingSlice"; // 로딩 slice 
 import webIDEReducer from "../pages/Game/slices/webIDESlice";
 import waterBalloonReducer from "../pages/Game/slices/waterBalloonSlice";
 import animationControlReducer from "../pages/Game/slices/animationControlSlice";
+import timerReducer from "../pages/Game/slices/timerSlice";
 import authReducer from "./authSlice";
 
 const store = configureStore({
@@ -21,6 +22,8 @@ const store = configureStore({
     waterBalloon: waterBalloonReducer,
     animationControl: animationControlReducer,
     auth: authReducer,
+    timer: timerReducer,
+
     // 다른 리듀서가 있다면 여기에 추가하세요.
   },
 });

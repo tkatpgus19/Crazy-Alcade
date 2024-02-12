@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Header from "./Header"; // Header 컴포넌트의 경로에 맞게 수정하세요.
 import VideoScreen from "./VideoScreen";
@@ -6,6 +6,7 @@ import Problem from "./Problem";
 import styles from "./Game.module.css";
 import Footer from "./Footer";
 import WebIDE from "./WebIDE";
+import axios from "axios";
 
 import GameResults from "./components/GameResults"; // Adjust the path according to your file structure
 import { Resizable } from "re-resizable";
@@ -15,24 +16,38 @@ import { useDispatch, useSelector } from "react-redux";
 import octopusImage from "../../assets/images/octopus.png"; // 문어 이미지의 경로
 import inkImage from "../../assets/images/muk.png"; // 먹물 이미지의 경로
 import chickenImage from "../../assets/images/chick.png"; // 병아리 이미지 경로
+const normalBackgroundImage = "../../assets/images/normalBackground.webp";
+const itemBackgroundImage = "../../assets/images/normalBackground.webp";
 
 function Game() {
   const navigate = useNavigate();
+  let location = useLocation();
+
+  // 아이템 동작 확인
   const isSprayingInk = useSelector((state) => state.octopus.isSprayingInk);
   const isChickenWalking = useSelector((state) => state.feature.chickenWalking); // 병아리 걸음 상태
   const isShieldActive = useSelector(
     (state) => state.animationControl.isShieldActive
   );
+  const timeCompleted = useSelector((state) => state.timer.timeCompleted);
 
-  let location = useLocation();
-
-  const { roomId, nickname, userList, roomType } = location.state; // 대기방에서 넘긴 데이터들을 받아왔다.
+  // 대기 방에서 넘어 온 정보들.
+  const roomId = location.state ? location.state.roomId : "roomId";
+  const nickname = location.state ? location.state.nickname : "nickname";
+  const userList = location.state ? location.state.userList : "userList";
+  const roomType = location.state ? location.state.roomType : "normal"; // 기본값을 "normal"로 설정
 
   const [showOctopus, setOctopus] = useState(false);
   const [chickens, setChickens] = useState([]); // 병아리 이미지 상태
-  const [time, setTime] = useState(); // initialTime is now a state
-  const [showResults, setShowResults] = useState(false);
   const [inkSpots, setInkSpots] = useState([]); // 먹물 이미지 상태
+
+  const [showResult, setShowResult] = useState(false);
+
+  // 게임 모드에 따른 배경 화면 설정
+  const backgroundStyle =
+    roomType === "item"
+      ? styles.itemBackgroundStyle
+      : styles.normalBackgroundStyle;
 
   // 더미 방 데이터.
   const dummyRoomInfo = {
@@ -54,28 +69,13 @@ function Game() {
     userCnt: 0,
   };
 
-  // 타이머 실행
+  // 비정상인 접근 차단. 개발 후 살리기.
   useEffect(() => {
-    setTime(dummyRoomInfo.timeLimit);
-    if (time === 0) return;
-
-    // Decrease time by 1 every second
-    const timerId = setInterval(() => {
-      setTime((prevTime) => prevTime - 1);
-    }, 1000);
-
-    // Clean up the interval on unmount
-    return () => clearInterval(timerId);
+    // if (!(roomId && nickname)) navigate("/error");
+    // roomId를 이용해 API로 세부 방 정보 가져오기.
+    //REACT_APP_SERVER_URL
   }, []);
 
-  // 0초가 되면 결과창 표시
-  useEffect(() => {
-    if (time === 0) {
-      setShowResults(true); // When time is 0, show the GameResults component
-    }
-  }, [time]);
-
-  // 쉴드
   useEffect(() => {
     // "쉴드" 상태가 활성화되면 문어와 병아리 애니메이션을 즉시 제거
     if (isShieldActive) {
@@ -101,7 +101,6 @@ function Game() {
         }));
       setInkSpots(newInkSpots);
       setTimeout(() => {
-        // useDispatch(resetInkSpraying);
         setInkSpots([]);
         setOctopus(false); // 필요한 경우 문어 이미지 숨김
       }, 5000);
@@ -210,23 +209,24 @@ function Game() {
   ));
 
   const handleExitClick = () => {
-    // "/"로 이동하는 코드
+    // "/main"으로 이동하는 코드
     navigate("/main");
   };
 
   return (
-    <div className={styles.backgroundStyle}>
+    <div className={backgroundStyle}>
       <Header
         roomTitle={dummyRoomInfo.roomName}
         language={dummyRoomInfo.language}
-        initialTime={dummyRoomInfo.timeLimit} // 예시로 120초 설정
+        roomType={dummyRoomInfo.roomType}
+        roomId={roomId}
         onExitClick={handleExitClick} // 수정된 부분
       />
       <VideoScreen
         roomId={roomId}
         nickname={nickname}
         roomType={roomType}
-        userList={userList}
+        userList={[userList]}
       />
       <div className={styles.container}>
         <div className={styles.problemArea}>
@@ -256,25 +256,26 @@ function Game() {
               height: "95%",
               left: "-2px",
               backgroundColor: "#c3c8d0",
+
               marginTop: "10px",
               borderRadius: "30px",
             },
           }}
         >
           <div className={styles.webIDE}>
-            <WebIDE />
+            <WebIDE language={dummyRoomInfo.language} />
           </div>
         </Resizable>
       </div>
-      <Footer />
+      <Footer roomType={dummyRoomInfo.roomType} />
       {showOctopus && <OctopusImage />}
       {inkSpotImages}
       {chickenImages}
 
       {/* 시간이 0이 되면 결과창을 렌더링 */}
-      {showResults && (
+      {showResult && (
         <div className={styles.gameResultsContainer}>
-          <GameResults />
+          <GameResults roomType={dummyRoomInfo.roomType} />
         </div>
       )}
     </div>

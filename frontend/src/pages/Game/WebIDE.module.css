@@ -48,13 +48,28 @@
   right: 0; /* IDE 컨테이너의 오른쪽에 붙임 */
   z-index: 4; /* 다른 요소들 위에 겹쳐 표시 */
   top: auto; /* Adjust this value so the result container sits in the middle of the screen */
-  max-height: auto; /* You might need to adjust this value so that the container fits the contents properly */
   font-family: "BMDOHYEON";
   font-size: 15px;
 }
 
 .toggleButton {
-  margin: 0;
+  padding: 5px 5px;
+  background-color: whitesmoke; /* 버튼 배경색 */
+  color: white; /* 아이콘 색상 */
+  border: none;
+  border-radius: 5px; /* 버튼 모서리 둥글게 */
+  cursor: pointer; /* 마우스 오버 시 커서 변경 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.console {
+  max-height: 50vh;
+
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .resultContainer ul {
