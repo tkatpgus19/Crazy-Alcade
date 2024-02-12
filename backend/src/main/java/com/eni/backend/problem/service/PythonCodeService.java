@@ -7,6 +7,7 @@ import com.eni.backend.member.dto.SecurityMemberDto;
 import com.eni.backend.member.entity.Language;
 import com.eni.backend.member.entity.Member;
 import com.eni.backend.member.repository.MemberRepository;
+import com.eni.backend.problem.dto.response.CodeExecuteDto;
 import com.eni.backend.problem.dto.response.CodeExecuteResponse;
 import com.eni.backend.problem.dto.response.CodeSubmitResponse;
 import com.eni.backend.problem.entity.Code;
@@ -129,7 +130,7 @@ public class PythonCodeService {
         return result;
     }
 
-    private CodeExecuteResponse execute(String dirPath, Integer no, Testcase testcase) throws IOException, InterruptedException {
+    private CodeExecuteDto execute(String dirPath, Integer no, Testcase testcase) throws IOException, InterruptedException {
         // 테스트 케이스 input 생성
         String inputPath = createInputFile(dirPath, no, testcase.getInput());
 
@@ -161,7 +162,7 @@ public class PythonCodeService {
             process.destroyForcibly();
             deleteFile(inputPath);
 
-            return CodeExecuteResponse.of(no, CodeStatus.RUNTIME_ERROR.getStatus());
+            return CodeExecuteDto.of(no, CodeStatus.RUNTIME_ERROR.getStatus());
         }
 
         // 실행 결과
@@ -201,11 +202,11 @@ public class PythonCodeService {
 
         // 실패
         if (!result.toString().equals(output.toString())) {
-            return CodeExecuteResponse.of(no, CodeStatus.FAIL.getStatus());
+            return CodeExecuteDto.of(no, CodeStatus.FAIL.getStatus());
         }
 
         // 성공
-        return CodeExecuteResponse.of(no, CodeStatus.SUCCESS.getStatus());
+        return CodeExecuteDto.of(no, CodeStatus.SUCCESS.getStatus());
     }
 
     private CodeSubmitResponse submit(String dirPath, Problem problem, Integer no, Testcase testcase) throws IOException, InterruptedException {
