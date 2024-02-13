@@ -23,6 +23,8 @@
   position: static;
   height: 100%; /* 전체 높이에서 결과창 높이를 뺀 값 */
   z-index: 1;
+  padding-top: 0;
+  background-color: #fff;
 }
 
 .loading {
@@ -83,15 +85,13 @@
 }
 
 .toggleButton {
+  /* margin-bottom: 0px; */
   padding: 5px 5px;
   background-color: whitesmoke; /* 버튼 배경색 */
   color: white; /* 아이콘 색상 */
   border: none;
   border-radius: 5px; /* 버튼 모서리 둥글게 */
   cursor: pointer; /* 마우스 오버 시 커서 변경 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .console {
@@ -146,4 +146,7 @@
   transform: rotateY(180deg); /* Y축을 중심으로 180도 회전 */
   transform-style: preserve-3d; /* 3D 변환 스타일을 유지 */
   transition: transform 0.6s; /* 변환에 대한 전환 효과 */
+}
+
+.h4 {
 }

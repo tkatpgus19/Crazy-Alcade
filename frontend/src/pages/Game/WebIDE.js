@@ -13,6 +13,7 @@ const WebIDE = ({ language }) => {
   const executionResult = useSelector((state) => state.executionResult.output);
   const [fontSize, setFontSize] = useState(16);
   const code = useSelector((state) => state.code.content); // Redux 상태에서 코드 값 선택
+
   const isLoading = useSelector((state) => state.loading.isLoading); // 로딩 상태 선택
   const isResultExpanded = useSelector(
     (state) => state.executionResult.isResultExpanded
@@ -43,12 +44,8 @@ const WebIDE = ({ language }) => {
     }`)
       );
     } else if (language === "python") {
-      dispatch(
-        setCode(`A, B = input().split()
-        print(int(A)+int(B))	`)
-      );
+      dispatch(setCode(`A, B = input().split()\nprint(int(A)+int(B))	`));
     }
-
     // 언어 상태에 올리기
     dispatch(setLanguage(language));
   }, [dispatch]); // dispatch를 의존성 배열에 추가
@@ -136,6 +133,7 @@ const WebIDE = ({ language }) => {
     >
       <AceEditor
         mode="java"
+        //mode={language === "java" ? "java" : "py"} // python은 py
         theme="github"
         fontSize={fontSize}
         width="100%"
@@ -146,9 +144,10 @@ const WebIDE = ({ language }) => {
         value={code}
         onChange={handleCodeChange}
         wrapEnabled={true}
+        cursorStart={1}
         setOptions={{
           showLineNumbers: true,
-          tabSize: 2,
+          tabSize: 4,
           wrap: true,
         }}
       />

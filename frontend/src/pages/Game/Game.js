@@ -159,7 +159,7 @@ function Game() {
       setOctopus(true); // 문어 이미지를 표시
 
       // 1초 후에 먹물 이미지의 위치를 한 번만 무작위로 계산하여 상태에 저장
-      const newInkSpots = Array(15)
+      const newInkSpots = Array(125)
         .fill(null)
         .map((_, index) => ({
           id: index,
