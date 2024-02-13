@@ -29,7 +29,7 @@ function App() {
           /> */}
           {/* <Route path="/nickname" element={<NicknameModal />} /> */}
           <Route path="/game-introduction" element={<GameIntroduction />} />
-          {/* <Route path="/login-redirection" element={<LoginRedirection />} /> */}
+          <Route path="/login-redirection" element={<LoginRedirection />} />
           <Route path="/main" element={<Main />} />
           <Route path="/room" element={<Room />} />
           <Route path="/game" element={<Game />} />

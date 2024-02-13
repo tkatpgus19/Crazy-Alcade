@@ -50,6 +50,8 @@ public enum BaseResponseStatus {
     GET_ROOM_TIMER_START_SUCCESS(HttpStatus.OK, "방 타이머 세팅에 성공하였습니다."),
     DELETE_ROOM_SUCCESS(HttpStatus.OK, "방 삭제에 성공하였습니다."),
     POST_ENTER_ROOM_SUCCESS(HttpStatus.OK, "방 입장에 성공하였습니다."),
+    DELETE_MEMBER_SUCCESS(HttpStatus.OK, "방 퇴장에 성공하였습니다."),
+    POST_ATTACK_SUCCESS(HttpStatus.OK, "공격에 성공하였습니다."),
 
     // BAD_REQUEST
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "유효하지 않은 요청입니다."),
@@ -96,7 +98,11 @@ public enum BaseResponseStatus {
 
     // MEMBER ITEM
     MEMBER_ITEM_PURCHASE_FAIL(HttpStatus.BAD_REQUEST, "코인 부족으로 아이템 구매에 실패하였습니다."),
-    MEMBER_ITEM_USE_FAIL(HttpStatus.BAD_REQUEST, "보유 개수 부족으로 아이템 구매에 실패하였습니다.")
+    MEMBER_ITEM_USE_FAIL(HttpStatus.BAD_REQUEST, "보유 개수 부족으로 아이템 구매에 실패하였습니다."),
+
+    // ROOM
+    ROOM_ENTER_FAIL(HttpStatus.BAD_REQUEST, "인원이 가득 찼습니다."),
+    ROOM_GAME_START_FAIL(HttpStatus.BAD_REQUEST, "게임은 최소 2인 이상부터 시작 가능합니다.")
     ;
 
 
