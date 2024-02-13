@@ -68,3 +68,5 @@ OPENVIDU_SECRET: ${OPENVIDU_URL}
 
 handler:
   target-url: ${TARGET_URL}
+
+BASE_URL: ${BASE_URL}
