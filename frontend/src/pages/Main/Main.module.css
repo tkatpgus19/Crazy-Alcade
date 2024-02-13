@@ -5,10 +5,11 @@
   font-family: "DNFBitBitv2";
 }
 
-.logo {
+.logo img {
   position: absolute;
-  left: 5%;
-  top: 9%;
+  left: 7.2%;
+  top: 0.5%;
+  width: 250px;
 }
 
 .myPage {
