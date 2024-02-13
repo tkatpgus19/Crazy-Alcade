@@ -86,6 +86,9 @@ public class RoomService {
     public Boolean enter(PostRoomEnterRequest request){
         RoomDto room = roomRepository.getRoomById(request.getRoomId());
         if(room != null) {
+            if(room.getIsStarted()){
+                throw new CustomBadRequestException(ROOM_ENTER_FAIL_STARTED_ROOM);
+            }
             if (room.getUserCnt() < room.getMaxUserCnt()) {
                 String userUUID = UUID.randomUUID().toString();
                 room.setUserCnt(room.getUserCnt() + 1);
@@ -111,8 +114,9 @@ public class RoomService {
                 template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
                 return true;
             }
+            throw new CustomBadRequestException(ROOM_ENTER_FAIL);
         }
-        throw new CustomBadRequestException(ROOM_ENTER_FAIL);
+        throw new CustomBadRequestException(ROOM_NOT_EXIST);
     }
     // 방에 인원 추가
     public String addUser(String roomId, String nickname){
