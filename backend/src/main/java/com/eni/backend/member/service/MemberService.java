@@ -26,8 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.security.SecureRandom;
 
+import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -151,14 +151,14 @@ public class MemberService {
         List<String> newSuccessProblems = new ArrayList<>();
         List<String> newFailProblems = new ArrayList<>();
 
-        for(Problem problem : successProblems) {
+        for (Problem problem : successProblems) {
             String problemPlatform = problem.getStringPlatform();
             String problemNo = String.valueOf(problem.getNo());
 
             newSuccessProblems.add(problemPlatform + " " + problemNo);
         }
 
-        for(Problem problem : failProblems) {
+        for (Problem problem : failProblems) {
             String problemPlatform = problem.getStringPlatform();
             String problemNo = String.valueOf(problem.getNo());
 
@@ -212,7 +212,18 @@ public class MemberService {
             throw new CustomBadRequestException(MEMBER_NOT_FOUND);
         }
 
+        if (member.getNickname().equals(putNicknameRequest.getNickname())) {
+            throw new CustomBadRequestException(SAME_NICKNAME);
+        }
+
+        Optional<Member> existingMember = memberRepository.findByNickname(putNicknameRequest.getNickname());
+
+        if (existingMember.isPresent()) {
+            throw new CustomBadRequestException(DUPLICATED_NICKNAME);
+        }
+
         member.updateNickname(putNicknameRequest);
+
         return PutNicknameResponse.of(member.getId());
     }
 
