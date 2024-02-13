@@ -4,6 +4,23 @@ import imgfile from "../../assets/images/logo.png";
 import timeLimitImg from "../../assets/images/timeLimit.png";
 import languageImg from "../../assets/images/language.png";
 import background from "../../assets/images/mainback.png";
+<<<<<<< Updated upstream
+=======
+
+import waterBalloonImg from "../../assets/images/waterBalloon.png";
+import octopusImg from "../../assets/images/octopus.png";
+import chickImg from "../../assets/images/chick.png";
+import magicImg from "../../assets/images/magic.png";
+import shieldImg from "../../assets/images/shield.png";
+
+import waterBalloonImgGrayImg from "../../assets/images/waterBalloonGrayImg.png";
+import octopusGrayImg from "../../assets/images/octopusGrayImg.png";
+import chickGrayImg from "../../assets/images/chickGrayImg.png";
+import magicGrayImg from "../../assets/images/magicGrayImg.png";
+import shieldGrayImg from "../../assets/images/shieldGrayImg.png";
+
+import "./Main.module.css";
+>>>>>>> Stashed changes
 import styles from "./Main.module.css";
 
 import CreateRoomModal from "./CreateRoomModal";
