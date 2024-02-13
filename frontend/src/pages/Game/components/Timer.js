@@ -27,7 +27,7 @@ const Timer = ({ roomId }) => {
   }, []);
 
   function connectSession() {
-    const socket = new SockJS(`${process.env.REACT_APP_BASE_URL}/ws-stomp`);
+    const socket = new SockJS(`${process.env.REACT_APP_SOCKET_URL}`);
     client.current = Stomp.over(socket);
     client.current.connect({}, onConnected, onError);
   }
