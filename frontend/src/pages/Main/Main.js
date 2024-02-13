@@ -4,7 +4,6 @@ import imgfile from "../../assets/images/logo.png";
 import timeLimitImg from "../../assets/images/timeLimit.png";
 import languageImg from "../../assets/images/language.png";
 import background from "../../assets/images/mainback.png";
-import "./Main.module.css";
 import styles from "./Main.module.css";
 
 import CreateRoomModal from "./CreateRoomModal";
