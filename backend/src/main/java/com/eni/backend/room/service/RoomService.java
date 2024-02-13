@@ -147,10 +147,9 @@ public class RoomService {
         if(roomId != null) {
             RoomDto room = roomRepository.getRoomById(roomId);
             if(room != null) {
-                room.setUserCnt(room.getUserCnt() - 1);
                 String user = room.getUserList().get(userUUID);
 
-                if (room.getReadyList().get(user).equals("MASTER") && room.getUserCnt() != 0) {
+                if (room.getReadyList().get(user).equals("MASTER") && room.getUserCnt() != 1) {
                     room.getReadyList().remove(user);
                     Map.Entry<String, String> firstEntry = room.getReadyList().entrySet().iterator().next();
                     room.getReadyList().replace(firstEntry.getKey(), "MASTER");
@@ -159,6 +158,9 @@ public class RoomService {
                     room.getReadyList().remove(user);
                 }
                 room.getUserList().remove(userUUID);
+                room.setUserCnt(room.getUserCnt() - 1);
+
+                clearRooms();
                 log.info("User exit : " + user);
 
                 // builder 어노테이션 활용
@@ -169,11 +171,11 @@ public class RoomService {
                         .build();
                 template.convertAndSend("/sub/chat/room/" + roomId, chat);
 
-                if (getUserStatus(roomId) != null) {
-                    template.convertAndSend("/sub/room/" + roomId + "/status", getUserStatus(roomId));
-                }
                 if (room.getUserCnt() == 0) {
                     roomRepository.getRoomMap().remove(roomId);
+                }
+                if (getUserStatus(roomId) != null) {
+                    template.convertAndSend("/sub/room/" + roomId + "/status", getUserStatus(roomId));
                 }
             }
             template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, false, 1));
