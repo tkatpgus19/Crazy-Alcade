@@ -197,8 +197,7 @@ const Main = () => {
                 });
               })
               .catch((err) => {
-                console.log(err);
-                alert("방 인원이 가득찼습니다.");
+                alert(err.response.data.message);
               });
           } else {
             alert("비밀번호가 달라요");
@@ -220,8 +219,7 @@ const Main = () => {
           });
         })
         .catch((err) => {
-          console.log(err);
-          alert("방 인원이 가득찼습니다.");
+          alert(err.response.data.message);
         });
     }
   };
@@ -249,10 +247,6 @@ const Main = () => {
     alignItems: "space-between",
   };
 
-  const logoStyle = {
-    // 로고에 대한 추가 스타일을 여기에 추가
-  };
-
   const handleLogout = () => {
     // 로그아웃 관련 로직 수행 (필요하다면)
     // 홈 페이지로 이동
@@ -262,8 +256,8 @@ const Main = () => {
   return (
     <div className={styles.mainContainer} style={backgroundStyle}>
       {/* 왼쪽 부분 (my-page) */}
-      <div className={styles.logo} style={logoStyle}>
-        <img className={styles.logoImg} src={imgfile} alt="로고" />
+      <div className={styles.logo}>
+        <img src={imgfile} alt="로고" />
       </div>
 
       {/* 오른쪽 상단 버튼들 */}
