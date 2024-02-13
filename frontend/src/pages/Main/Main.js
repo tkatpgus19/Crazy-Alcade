@@ -17,14 +17,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
 
 const Main = () => {
-  const SERVER_URL = process.env.REACT_APP_BASE_URL;
-
-  useEffect(() => {
-    getRoomList("normal");
-
-    connectSession();
-  }, []);
-
   const client = useRef();
   const getRoomList = (roomType) => {
     axios.get(`${SERVER_URL}/rooms/${roomType}?page=${page}`).then((res) => {
@@ -71,7 +63,6 @@ const Main = () => {
     setChatContent((chatContent) => [...chatContent, newMessage]);
   }
 
-  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [createRoomButtonPressed, setCreateRoomButtonPressed] = useState(false);
   const [isItemShopModalOpen, setIsItemShopModalOpen] = useState(false);
@@ -80,9 +71,46 @@ const Main = () => {
   const [normalMode, setNormalMode] = useState(true);
   const [roomList, setRoomList] = useState([]);
   const [page, setPage] = useState(1);
-  const [nickname, setNickname] = useState(
-    "닉네임" + Math.floor(Math.random() * 100)
-  );
+  const [profile, setProfile] = useState([]);
+  const [levelId, setLevelId] = useState(0);
+  const [exp, setExp] = useState(0);
+  const [coin, setCoin] = useState(0);
+  const [memberItemList, setMemberItemList] = useState([]);
+
+  const navigate = useNavigate();
+  const [nickname, setNickname] = useState("");
+
+  const SERVER_URL = process.env.REACT_APP_BASE_URL;
+
+  useEffect(() => {
+    axios
+      .get(`https://i10d104.p.ssafy.io/api/members`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      })
+      .then((response) => {
+        const { nickname, profile, levelId, exp, coin, memberItemList } =
+          response.data.result;
+        // API 응답의 구조에 따라 접근 방식을 조정할 필요가 있습니다.
+        // console.log(
+        //   response.data.data.nickname, // 사용자 닉네임
+        //   response.data.data.profile // 사용자 프로필
+        // );
+        // 상태 설정 함수들을 사용하여 응답 데이터를 상태에 저장합니다.
+        // setName, setNickname, setEmail, setProfile 함수들은 해당 상태를 관리하기 위해 미리 정의되어 있어야 합니다.
+        setNickname(nickname);
+        //setProfile(`url(../../assets/images/${profile})`);
+        setProfile(require(`../../assets/images/${profile}`).default);
+        setLevelId(levelId);
+        setExp(exp);
+        setCoin(coin);
+        setMemberItemList(memberItemList);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -248,8 +276,14 @@ const Main = () => {
   };
 
   const handleLogout = () => {
-    // 로그아웃 관련 로직 수행 (필요하다면)
-    // 홈 페이지로 이동
+    // 로컬 스토리지에서 사용자 관련 정보 제거
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("nickname");
+    localStorage.removeItem("isNew");
+    localStorage.removeItem("isConnected");
+    localStorage.removeItem("memberId");
+
+    // 로그아웃 후 사용자를 홈 페이지로 리디렉션
     navigate("/");
   };
 
@@ -321,21 +355,29 @@ const Main = () => {
 
           {/* 프로필 사진 입력 칸 */}
           <div className={styles.profilePicture}>
-            <label htmlFor="profile-pic">프로필 사진</label>
-            <input type="file" id={styles.profilePic} accept="image/*" />
+            {/* profile 상태가 이미지 URL을 담고 있다고 가정하고 img 태그로 이미지를 표시합니다. */}
+            {profile && (
+              <img
+                src={profile}
+                alt="프로필 사진"
+                style={{ width: "100px", height: "100px" }}
+              />
+            )}
+            {/* <input type="file" id="profile-pic" accept="image/*" /> */}
           </div>
 
           {/* 소개 칸 */}
           <div className={styles.introduction}>
-            <div>
-              <div>Lv. </div>
-              <div>경험치 </div>
-              <div>코인</div>
-            </div>
+            <p>
+              <div>Lv. {levelId}</div>
+              <div>경험치 {exp}</div>
+              <div>코인 {coin}</div>
+            </p>
           </div>
 
           {/* 하단 흰색 네모 칸 4개 정렬 */}
           <div className={styles.whiteBoxes}>
+            <div className={styles.whiteBox}></div>
             <div className={styles.whiteBox}></div>
             <div className={styles.whiteBox}></div>
             <div className={styles.whiteBox}></div>

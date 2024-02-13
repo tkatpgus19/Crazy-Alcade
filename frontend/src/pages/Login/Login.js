@@ -105,7 +105,9 @@ const Login = () => {
   };
 
   const googleLoginHandler = () => {
-    window.location.href = process.env.REACT_APP_GOOGLE_URL;
+    window.location.replace(
+      "https://i10d104.p.ssafy.io/oauth2/authorization/google?redirect_uri=http://localhost:3000/login-redirection&mode=login"
+    );
   };
 
   const navigateToMain = () => {

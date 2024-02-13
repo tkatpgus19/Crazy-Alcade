@@ -38,7 +38,7 @@
   position: relative; /* 상대적 위치 설정 */
   width: 150px; /* 원하는 네모 칸의 너비 */
   height: 170px; /* 원하는 네모 칸의 높이 */
-  background-color: skyblue; /* 하늘색 배경 설정 */
+  background-color: #12deff; /* 하늘색 배경 설정 */
   display: flex; /* Flex 컨테이너로 설정 */
   align-items: center; /* 세로 가운데 정렬 */
   justify-content: center; /* 가로 가운데 정렬 */
