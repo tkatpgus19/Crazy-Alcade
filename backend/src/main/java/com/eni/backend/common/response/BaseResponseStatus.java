@@ -102,7 +102,8 @@ public enum BaseResponseStatus {
 
     // ROOM
     ROOM_ENTER_FAIL(HttpStatus.BAD_REQUEST, "인원이 가득 찼습니다."),
-    ROOM_GAME_START_FAIL(HttpStatus.BAD_REQUEST, "게임은 최소 2인 이상부터 시작 가능합니다.")
+    ROOM_GAME_START_FAIL(HttpStatus.BAD_REQUEST, "게임은 최소 2인 이상부터 시작 가능합니다."),
+    ROOM_GAME_START_FAIL_NOT_READY(HttpStatus.BAD_REQUEST, "모든 인원이 준비 상태여야 게임을 시작할 수 있습니다.")
     ;
 
 

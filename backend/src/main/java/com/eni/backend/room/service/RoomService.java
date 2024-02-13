@@ -259,7 +259,7 @@ public class RoomService {
             template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
             return true;
         }
-        return false;
+        throw new CustomBadRequestException(ROOM_GAME_START_FAIL_NOT_READY);
     }
 
     public void clearRooms(){
