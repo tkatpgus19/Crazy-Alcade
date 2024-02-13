@@ -31,7 +31,7 @@ spring:
             client-secret: ${GOOGLE_SECRET}
             scope:
               - email
-            redirect-uri: "${BASE_URL}/{action}/oauth2/code/{registrationId}"
+            redirect-uri: ${GOOGLE_REDIRECT_URL}
           kakao:
             client-id: ${KAKAO_CLIENT_ID} # 발급 받은 Client ID
             client-secret: ${KAKAO_SECRET} # 발급 받은 Client Secret
