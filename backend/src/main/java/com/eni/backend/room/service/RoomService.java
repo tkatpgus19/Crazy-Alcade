@@ -272,7 +272,7 @@ public class RoomService {
 
     public void clearRooms(){
         for(RoomDto room : roomRepository.getRoomList()){
-            if(room.getUserCnt() == 0){
+            if(room.getUserCnt() <= 0){
                 roomRepository.getRoomMap().remove(room.getRoomId());
             }
         }
