@@ -56,7 +56,7 @@ const Timer = ({ roomId }) => {
     <div
       className={`${styles.timer} ${remainingTime < 60 ? styles.redTimer : ""}`}
     >
-      TIME {remainingTime ? formatTime(remainingTime) : "00:00"}
+      TIME {remainingTime ? formatTime(remainingTime) : "??:??"}
     </div>
   );
 };

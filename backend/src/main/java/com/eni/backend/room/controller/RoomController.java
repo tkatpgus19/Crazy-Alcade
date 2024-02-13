@@ -110,18 +110,17 @@ public class RoomController {
         log.info("headAccessor {}", headerAccessor);
 
         // 채팅방 유저 리스트에서 UUID 유저 닉네임 조회 및 리스트에서 유저 삭제
-
-        String username = roomService.getUserName(roomId, userUUID);
         roomService.delUser(roomId, userUUID);
+        String nickname = roomService.getUserName(roomId, userUUID);
 
-        if (username != null) {
-            log.info("User Disconnected : " + username);
+        if (nickname != null) {
+            log.info("User Disconnected : " + nickname);
 
             // builder 어노테이션 활용
             ChatDto chat = ChatDto.builder()
                     .type(ChatDto.MessageType.LEAVE)
-                    .sender(username)
-                    .message(username + " 님 퇴장!!")
+                    .sender(nickname)
+                    .message(nickname + " 님 퇴장!!")
                     .build();
 
             template.convertAndSend("/sub/chat/room/" + roomId, chat);
@@ -196,5 +195,12 @@ public class RoomController {
     public ResponseEntity<?> test(){
         roomService.test();
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @MessageMapping("/enter")
+    public void enterUser(@Payload PostRoomEnterRequest message, SimpMessageHeaderAccessor headerAccessor) {
+        // 반환 결과를 socket session 에 userUUID 로 저장
+        headerAccessor.getSessionAttributes().put("userUUID", message.getNickname());
+        headerAccessor.getSessionAttributes().put("roomId", message.getRoomId());
     }
 }
