@@ -12,7 +12,7 @@ public enum BaseResponseStatus {
     SUCCESS(HttpStatus.OK, "요청에 성공하였습니다."),
 
     SIGNUP_SUCCESS(HttpStatus.OK, "회원가입에 성공하였습니다."),
-    LOGIN_SUCCESS(HttpStatus.OK,"로그인에 성공하였습니다."),
+    LOGIN_SUCCESS(HttpStatus.OK, "로그인에 성공하였습니다."),
     LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃에 성공하였습니다."),
 
     GET_MEMBER_SUCCESS(HttpStatus.OK, "기본 회원 정보 조회에 성공하였습니다."),
@@ -64,7 +64,7 @@ public enum BaseResponseStatus {
 
     // UNAUTHORIZED
     JWT_ERROR(HttpStatus.UNAUTHORIZED, "JWT에서 오류가 발생하였습니다."),
-    TOKEN_NOT_FOUND( HttpStatus.BAD_REQUEST, "토큰이 HTTP Header에 없습니다."),
+    TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "토큰이 HTTP Header에 없습니다."),
     UNSUPPORTED_TOKEN_TYPE(HttpStatus.BAD_REQUEST, "지원되지 않는 토큰 형식입니다."),
     SOCIAL_EMAIL_NOT_FOUND(HttpStatus.UNAUTHORIZED, "해당 소셜 플랫폼에 해당하는 이메일이 없습니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
@@ -81,6 +81,8 @@ public enum BaseResponseStatus {
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당하는 멤버 정보가 없습니다."),
     MEMBER_COIN_SUB_FAIL(HttpStatus.BAD_REQUEST, "코인 수가 부족합니다."),
     MEMBER_LANG_CHANGE_FAIL(HttpStatus.BAD_REQUEST, "선호 언어 변경에 실패하였습니다."),
+    SAME_NICKNAME(HttpStatus.BAD_REQUEST, "현재 사용중인 닉네임과 동일한 닉네임입니다."),
+    DUPLICATED_NICKNAME(HttpStatus.BAD_REQUEST, "이미 사용하고 있는 닉네임입니다."),
 
     // PROBLEM
     PLATFORM_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "지원하지 않는 플랫폼입니다."),
@@ -105,8 +107,7 @@ public enum BaseResponseStatus {
     ROOM_ENTER_FAIL(HttpStatus.BAD_REQUEST, "인원이 가득 찼습니다."),
     ROOM_ENTER_FAIL_STARTED_ROOM(HttpStatus.BAD_REQUEST, "이미 시작된 방입니다."),
     ROOM_GAME_START_FAIL(HttpStatus.BAD_REQUEST, "게임은 최소 2인 이상부터 시작 가능합니다."),
-    ROOM_GAME_START_FAIL_NOT_READY(HttpStatus.BAD_REQUEST, "모든 인원이 준비 상태여야 게임을 시작할 수 있습니다.")
-    ;
+    ROOM_GAME_START_FAIL_NOT_READY(HttpStatus.BAD_REQUEST, "모든 인원이 준비 상태여야 게임을 시작할 수 있습니다.");
 
 
     private final HttpStatus status;
