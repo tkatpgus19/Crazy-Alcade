@@ -16,15 +16,22 @@ import soundOnImage from "../../assets/images/SOUND-ON.png";
 import soundOffImage from "../../assets/images/SOUND-OFF.png";
 import screenOnImage from "../../assets/images/SCREEN-ON.png";
 import screenOffImage from "../../assets/images/SCREEN-OFF.png";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  toggleMicrophone,
+  toggleCamera,
+  toggleAudio,
+} from "./slices/settingSlice";
 
 const Room = () => {
   const SERVER_URL = process.env.REACT_APP_BASE_URL;
 
   const messagesEndRef = useRef(null); // messages 참조 생성
 
-  const [isMicrophoneOn, setIsMicrophoneOn] = useState(true);
-  const [isCameraOn, setIsCameraOn] = useState(true);
-  const [isAudioOn, setIsAudioOn] = useState(true);
+  const { isMicrophoneOn, isCameraOn, isAudioOn } = useSelector(
+    (state) => state.settings
+  );
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getRoomInfo();
@@ -207,6 +214,8 @@ const Room = () => {
 
   const enterGame = (data) => {
     console.log(isCameraOn);
+    console.log(isAudioOn);
+    console.log(isMicrophoneOn);
     // 게임방 입장을 위한 로직
     navigate("/game", {
       state: {
@@ -214,9 +223,6 @@ const Room = () => {
         nickname: nickname,
         userList: data.userList,
         roomType: data.roomType,
-        isMicrophoneOn: isMicrophoneOn,
-        isCameraOn: isCameraOn,
-        isAudioOn: isAudioOn,
       },
     });
   };
@@ -240,11 +246,6 @@ const Room = () => {
       messagesEndRef.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
     }
   }, [chatContent]); // chatContent가 변경될 때마다 이 로직을 실행합니다.
-
-  // 토글 함수 정의
-  const toggleMicrophone = () => setIsMicrophoneOn((prev) => !prev);
-  const toggleCamera = () => setIsCameraOn((prev) => !prev);
-  const toggleAudio = () => setIsAudioOn((prev) => !prev);
 
   return (
     <Background>
@@ -324,21 +325,30 @@ const Room = () => {
                 {userStatus[nickname] === "MASTER" ? "START" : "READY"}
               </div>
               <div className={styles.button3}>
-                <div className={styles.rightbutton} onClick={toggleMicrophone}>
+                <div
+                  className={styles.rightbutton}
+                  onClick={() => dispatch(toggleMicrophone())}
+                >
                   {/* 마이크 토글 이미지 */}
                   <img
                     src={isMicrophoneOn ? micOnImage : micOffImage}
                     alt="Mic Toggle"
                   />
                 </div>
-                <div className={styles.rightbutton} onClick={toggleAudio}>
+                <div
+                  className={styles.rightbutton}
+                  onClick={() => dispatch(toggleAudio())}
+                >
                   {/* 오디오 토글 이미지 */}
                   <img
                     src={isAudioOn ? soundOnImage : soundOffImage}
                     alt="Audio Toggle"
                   />
                 </div>
-                <div className={styles.rightbutton} onClick={toggleCamera}>
+                <div
+                  className={styles.rightbutton}
+                  onClick={() => dispatch(toggleCamera())}
+                >
                   {/* 카메라 토글 이미지 */}
                   <img
                     src={isCameraOn ? screenOnImage : screenOffImage}

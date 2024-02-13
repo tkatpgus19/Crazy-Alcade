@@ -371,6 +371,9 @@
   -webkit-text-stroke: 1px black;
 }
 
+/* .roomBlueBox p {
+  color: white;
+} */
 .playingText {
   position: absolute;
   top: 0;
