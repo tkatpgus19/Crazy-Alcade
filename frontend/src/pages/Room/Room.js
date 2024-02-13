@@ -56,7 +56,9 @@ const Room = () => {
   const [userStatus, setUserStatus] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
-  const { roomId, nickname, roomType } = location.state; // 세가지 받아옴.
+  const roomId = location.state ? location.state.roomId : "roomId";
+  const nickname = location.state ? location.state.nickname : "nickname";
+  const roomType = location.state ? location.state.roomType : "normal"; // 기본값을 "normal"로 설정
   const [chatContent, setChatContent] = useState([]);
   const [chatInput, setChatInput] = useState("");
   const [userUUID, setUserUUID] = useState("");
@@ -104,6 +106,15 @@ const Room = () => {
 
   const onError = (error) => {
     alert("error");
+  };
+
+  // // 현재 페이지 상태를 history 스택에 추가
+  // history.pushState(null, null, location.href);
+
+  // 사용자가 뒤로 가기를 시도할 때 발생하는 이벤트를 감지
+  window.onpopstate = function () {
+    // history 스택에 현재 페이지를 다시 추가하여 뒤로 가기를 방지
+    client.current.disconnect();
   };
 
   const onChatReceived = (payload) => {
