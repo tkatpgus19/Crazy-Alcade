@@ -77,7 +77,7 @@ public class JavaCodeService {
 
         // 채점
         if (isHidden) {
-            testcases = testcaseRepository.findAllByProblemIdAndIsHidden(problem.getId(), isHidden);
+            testcases = testcaseRepository.findAllByProblemId(problem.getId());
             List<CodeSubmitDto> results = new ArrayList<>();
             CodeSubmitDto tcResult;
 
