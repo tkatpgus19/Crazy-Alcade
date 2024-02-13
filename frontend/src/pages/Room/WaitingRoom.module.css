@@ -152,22 +152,32 @@
   transition: 0.5s all;
 }
 
-/* 오른쪽에 들어갈 버튼  */
 .rightbutton {
-  width: 87.5px; /* StartButton의 너비의 절반 */
-  height: 70px; /* StartButton의 높이와 동일 */
-  border-radius: 12px; /* 버튼 모서리 둥글게 */
+  width: 87.5px;
+  height: 70px;
+  border-radius: 12px;
   background-color: white;
   margin: 15px auto auto auto;
   font-size: 20px;
-  text-align: center; /* 텍스트 중앙 정렬 */
+  text-align: center;
   font-family: "DNFBitBitv2";
-  border: 2px solid;
-  border-color: black;
-  cursor: pointer; /* 마우스를 올렸을 때 커서 모양 변경 */
+  border: 2px solid black;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative; /* 버튼 내부의 이미지를 조정하기 위해 relative 설정 */
 }
-.rightbutton p {
-  margin: 20px 0 0 0;
+
+.rightbutton img {
+  width: 50px; /* 이미지 크기 조정 */
+  height: 50px; /* 이미지 크기 조정 */
+  object-fit: contain; /* 이미지 비율 유지 */
+}
+
+/* 선택적: 이미지에 마우스 호버 효과 추가 */
+.rightbutton img:hover {
+  opacity: 0.8; /* 호버 시 이미지 투명도 조정 */
 }
 
 /* 3개의 상태창 스타일 위*/
