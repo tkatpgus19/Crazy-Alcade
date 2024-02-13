@@ -23,8 +23,8 @@
 
   flex-direction: row; /* 가로 방향으로 배치 */
   margin: auto; /* 원하는 간격으로 조절 */
-  width: 95%; /* 가로의 95%를 차지하도록 설정 */
-  height: 68vh;
+  width: 98%; /* 가로의 95%를 차지하도록 설정 */
+  height: 65vh;
 }
 
 .problemArea,
@@ -94,4 +94,39 @@
   left: 50%;
   transform: translate(-50%, -50%); /* Center the component */
   z-index: 1000; /* Ensure it's above other content */
+}
+
+/* 전체 문서에 적용되는 스크롤바 스타일 */
+::-webkit-scrollbar {
+  width: 7px; /* 스크롤바의 너비 */
+  height: 8px; /* 수평 스크롤바의 높이, 필요한 경우에만 */
+}
+
+/* 스크롤바 트랙 (바탕) 스타일 */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* 트랙의 배경색 */
+  border-radius: 4px; /* 트랙의 모서리를 둥글게 */
+}
+
+/* 스크롤바 핸들 (움직이는 부분) 스타일 */
+::-webkit-scrollbar-thumb {
+  background: #bbb; /* 핸들의 색상 */
+  border-radius: 10px; /* 핸들의 모서리를 둥글게 */
+}
+
+/* 스크롤바 핸들에 마우스 호버 시 스타일 */
+::-webkit-scrollbar-thumb:hover {
+  background: #999; /* 호버 시 핸들의 색상 변경 */
+}
+
+/* Webkit 기반 브라우저를 위한 스크롤바 스타일 */
+.container::-webkit-scrollbar {
+  width: 10px; /* 스크롤바 너비 */
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.5); /* 스크롤바 색상 */
+  border-radius: 5px; /* 스크롤바 모서리 둥글게 */
+  border: 2px solid transparent; /* 스크롤바 경계선 투명하게 */
+  background-clip: content-box; /* 배경색을 내용 상자에만 적용 */
 }

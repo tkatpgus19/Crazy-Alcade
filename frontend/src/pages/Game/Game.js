@@ -81,7 +81,7 @@ function Game() {
 
   useEffect(() => {
     // 비정상인 접근 차단. 개발 후 살리기.
-    // if (!(roomId && nickname)) navigate("/error");
+    if (!(roomInfo.roomId && nickname)) navigate("/error");
 
     // roomId를 이용해 API로 세부 방 정보 가져오기.
     const fetchRoomInfo = async () => {
@@ -196,12 +196,12 @@ function Game() {
         setChickens((chickens) =>
           chickens.map((chicken) => {
             const speed = 50; // 이동 속도 조정
-            let newLeft = chicken.left + (Math.random() - 0.25) * speed;
-            let newTop = chicken.top + (Math.random() - 0.45) * speed;
+            let newLeft = chicken.left + (Math.random() - 0.5) * speed;
+            let newTop = chicken.top + (Math.random() - 0.5) * speed;
 
             // 화면 경계 처리
-            newLeft = Math.max(50, Math.min(newLeft, window.innerWidth - 100)); // 병아리 이미지의 너비 고려
-            newTop = Math.max(50, Math.min(newTop, window.innerHeight - 100)); // 병아리 이미지의 높이 고려
+            newLeft = Math.max(10, Math.min(newLeft, window.innerWidth - 80)); // 병아리 이미지의 너비 고려
+            newTop = Math.max(50, Math.min(newTop, window.innerHeight - 150)); // 병아리 이미지의 높이 고려
 
             return { ...chicken, left: newLeft, top: newTop };
           })
