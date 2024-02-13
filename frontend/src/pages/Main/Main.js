@@ -33,7 +33,7 @@ const Main = () => {
   };
 
   const connectSession = () => {
-    const socket = new SockJS(`${SERVER_URL}/ws-stomp`);
+    const socket = new SockJS(process.env.REACT_APP_SOCKET_URL);
     client.current = Stomp.over(socket);
     client.current.connect({}, onConnected, onError);
   };
@@ -188,17 +188,17 @@ const Main = () => {
                 roomId: data.roomId,
               })
               .then((response) => {
-                if (response.data.result) {
-                  navigate("/room", {
-                    state: {
-                      roomId: data.roomId,
-                      nickname: nickname,
-                      roomType: data.roomType,
-                    },
-                  });
-                } else {
-                  alert("방에 인원이 가득 찼습니다.");
-                }
+                navigate("/room", {
+                  state: {
+                    roomId: data.roomId,
+                    nickname: nickname,
+                    roomType: data.roomType,
+                  },
+                });
+              })
+              .catch((err) => {
+                console.log(err);
+                alert("방 인원이 가득찼습니다.");
               });
           } else {
             alert("비밀번호가 달라요");
@@ -211,17 +211,17 @@ const Main = () => {
           roomId: data.roomId,
         })
         .then((response) => {
-          if (response.data.result) {
-            navigate("/room", {
-              state: {
-                roomId: data.roomId,
-                nickname: nickname,
-                roomType: data.roomType,
-              },
-            });
-          } else {
-            alert("방에 인원이 가득 찼습니다.");
-          }
+          navigate("/room", {
+            state: {
+              roomId: data.roomId,
+              nickname: nickname,
+              roomType: data.roomType,
+            },
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("방 인원이 가득찼습니다.");
         });
     }
   };
@@ -333,11 +333,11 @@ const Main = () => {
 
           {/* 소개 칸 */}
           <div className={styles.introduction}>
-            <p>
+            <div>
               <div>Lv. </div>
               <div>경험치 </div>
               <div>코인</div>
-            </p>
+            </div>
           </div>
 
           {/* 하단 흰색 네모 칸 4개 정렬 */}
@@ -434,8 +434,12 @@ const Main = () => {
                     <div className={styles.roomBlueBox}>
                       <p>{data.roomName}</p>
                     </div>
-                    <div className={styles.playingText}>
-                      <h1>Playing</h1>
+                    <div
+                      className={
+                        data.isStarted ? styles.playingText : styles.waitingText
+                      }
+                    >
+                      <h1>{data.isStarted ? "Playing" : "Waiting"}</h1>
                     </div>
                     <div
                       className={styles.roomDescription}
@@ -444,7 +448,7 @@ const Main = () => {
                         WebkitTextStroke: "0.5px white",
                       }}
                     >
-                      백준 : {data.problemNo}
+                      {data.problemName}
                     </div>
                     <div
                       className={
@@ -462,7 +466,7 @@ const Main = () => {
                           margin: "0 5px 5px 0",
                         }}
                       />
-                      {data.timeLimit}
+                      {data.timeLimit}초
                     </div>
                     <div
                       className={
@@ -488,16 +492,14 @@ const Main = () => {
                           bottom: "10px",
                         }}
                       >
-                        <FontAwesomeIcon
-                          icon={data.hasPassword ? faKey : null}
-                          rotation={data.hasPassword ? 220 : 0}
-                          style={
-                            data.hasPassword
-                              ? { color: "#FFD43B", marginTop: "5px" }
-                              : null
-                          }
-                          className={styles.keyIcon}
-                        />
+                        {data.hasPassword && (
+                          <FontAwesomeIcon
+                            icon={faKey}
+                            style={{ color: "#FFD43B", marginTop: "5px" }}
+                            className={styles.keyIcon}
+                          />
+                        )}
+
                         <img
                           src={
                             data.codeReview
