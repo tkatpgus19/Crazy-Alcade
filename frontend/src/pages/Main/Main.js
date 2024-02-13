@@ -13,7 +13,7 @@ import chickImg from "../../assets/images/chick.png";
 import magicImg from "../../assets/images/magic.png";
 import shieldImg from "../../assets/images/shield.png";
 
-import waterBalloonImgGrayImg from "../../assets/images/waterBalloonGrayImg.png";
+import waterBalloonGrayImg from "../../assets/images/waterBalloonGrayImg.png";
 import octopusGrayImg from "../../assets/images/octopusGrayImg.png";
 import chickGrayImg from "../../assets/images/chickGrayImg.png";
 import magicGrayImg from "../../assets/images/magicGrayImg.png";
@@ -129,6 +129,7 @@ const Main = () => {
         setExp(exp);
         setCoin(coin);
         setMemberItemList(memberItemList);
+        connectSession();
       })
       .catch((error) => {
         console.log(error);
@@ -152,7 +153,6 @@ const Main = () => {
   };
 
   const createRoom = (roomData) => {
-    roomData.master = nickname;
     console.log("방이 생성되었습니다:", roomData);
     roomData.master = nickname;
     axios

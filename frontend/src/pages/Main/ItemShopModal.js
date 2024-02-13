@@ -62,7 +62,7 @@ const ItemShopModal = ({ closeModal }) => {
 
   useEffect(() => {
     const apiUrl = `${process.env.REACT_APP_BASE_URL}/members/inventory`;
-    const token = process.env.REACT_APP_TOKEN;
+    const token = localStorage.getItem("accessToken");
 
     axios
       .get(apiUrl, {
@@ -90,7 +90,7 @@ const ItemShopModal = ({ closeModal }) => {
   // 아이템 구매 로직 처리
   const buyItem = (itemId, putValue) => {
     const apiUrl = `${process.env.REACT_APP_BASE_URL}/items/members/add`;
-    const token = process.env.REACT_APP_TOKEN;
+    const token = localStorage.getItem("accessToken");
 
     axios
       .put(
@@ -115,6 +115,17 @@ const ItemShopModal = ({ closeModal }) => {
         console.error("구매 실패:", error);
       });
   };
+  // 테스트용 돈복사
+  const showMeTheMoney = () => {
+    const apiUrl = `${process.env.REACT_APP_BASE_URL}/members/coin/add`;
+    const token = localStorage.getItem("accessToken");
+    axios.put(
+      apiUrl,
+      { putValue: 10000 },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+  };
+
   return (
     <div className={styles.itemShopModal}>
       <div className={styles.titleBox}>아이템 상점</div>
@@ -122,6 +133,9 @@ const ItemShopModal = ({ closeModal }) => {
         &times;
       </button>
       <div className={styles.coinsDisplay}>보유 코인: {coins}</div>
+      <button className={styles.coinsDisplay} onClick={showMeTheMoney}>
+        돈복사
+      </button>
       <div className={styles.itemsContainer}>
         {items.map((item, index) => (
           <Item
