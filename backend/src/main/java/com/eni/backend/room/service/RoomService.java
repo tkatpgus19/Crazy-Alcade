@@ -255,6 +255,8 @@ public class RoomService {
                     e.printStackTrace();
                 }
             }
+            template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, null, 1));
+            template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
             return true;
         }
         return false;
