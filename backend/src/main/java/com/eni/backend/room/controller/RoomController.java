@@ -5,10 +5,7 @@ import com.eni.backend.common.response.BaseSuccessResponse;
 import com.eni.backend.room.dto.ChatDto;
 import com.eni.backend.room.dto.ItemDto;
 import com.eni.backend.room.dto.RoomDto;
-import com.eni.backend.room.dto.request.DeleteRoomRequest;
-import com.eni.backend.room.dto.request.PostRoomEnterRequest;
-import com.eni.backend.room.dto.request.PostRoomRequest;
-import com.eni.backend.room.dto.request.PutReadyRequest;
+import com.eni.backend.room.dto.request.*;
 import com.eni.backend.room.service.RoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -174,6 +171,12 @@ public class RoomController {
     @PutMapping("/start")
     public BaseSuccessResponse<?> putStart(@RequestParam("roomId") String roomId){
         return BaseSuccessResponse.of(PUT_ROOM_START_SUCCESS, roomService.checkReady(roomId));
+    }
+
+
+    @PostMapping("/attack")
+    public BaseSuccessResponse<?> postAttack(@RequestBody PostAttackRequest request){
+        return BaseSuccessResponse.of(POST_ATTACK_SUCCESS, roomService.attackUser(request));
     }
 
     @MessageMapping("/item/use")

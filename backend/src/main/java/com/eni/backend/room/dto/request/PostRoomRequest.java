@@ -27,8 +27,8 @@ public class PostRoomRequest {
     @NotNull(message = "문제 난이도를 입력해주세요.")
     private Long problemTier;
 
-    @NotNull(message = "문제 번호를 입력해주세요.")
-    private Long problemNo;
+    @NotNull(message = "문제 ID를 입력해주세요.")
+    private Long problemId;
 
     @NotNull(message = "제한 시간을 입력해주세요.")
     private Long timeLimit;

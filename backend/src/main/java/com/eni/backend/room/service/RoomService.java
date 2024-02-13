@@ -7,10 +7,7 @@ import com.eni.backend.problem.repository.ProblemRepository;
 import com.eni.backend.problem.repository.TierRepository;
 import com.eni.backend.room.dto.ChatDto;
 import com.eni.backend.room.dto.RoomDto;
-import com.eni.backend.room.dto.request.DeleteRoomRequest;
-import com.eni.backend.room.dto.request.PostRoomEnterRequest;
-import com.eni.backend.room.dto.request.PostRoomRequest;
-import com.eni.backend.room.dto.request.PutReadyRequest;
+import com.eni.backend.room.dto.request.*;
 import com.eni.backend.room.dto.response.PostRoomResponse;
 import com.eni.backend.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +36,7 @@ public class RoomService {
         Tier tier = findTierById(request.getProblemTier());
 
         // 문제 조회
-        Problem problem = findProblemById(request.getProblemNo());
+        Problem problem = findProblemById(request.getProblemId());
 
         // 저장
         String roomId = roomRepository.saveRoom(request, tier, problem);
@@ -89,30 +86,32 @@ public class RoomService {
 
     public Boolean enter(PostRoomEnterRequest request){
         RoomDto room = roomRepository.getRoomById(request.getRoomId());
-        if(room.getUserCnt() < room.getMaxUserCnt()){
-            String userUUID = UUID.randomUUID().toString();
-            room.setUserCnt(room.getUserCnt()+1);
-            room.getUserList().put(userUUID, request.getNickname());
+        if(room != null) {
+            if (room.getUserCnt() < room.getMaxUserCnt()) {
+                String userUUID = UUID.randomUUID().toString();
+                room.setUserCnt(room.getUserCnt() + 1);
+                room.getUserList().put(userUUID, request.getNickname());
 
-            // 마스터 등록
-            if(room.getUserCnt()==1){
-                room.getReadyList().put(request.getNickname(), "MASTER");
+                // 마스터 등록
+                if (room.getUserCnt() == 1) {
+                    room.getReadyList().put(request.getNickname(), "MASTER");
+                }
+                // 참가자 대기상태 설정
+                else {
+                    room.getReadyList().put(request.getNickname(), "WAITING");
+                }
+
+                ChatDto chat = new ChatDto();
+                chat.setSender(request.getNickname());
+                chat.setMessage(chat.getSender() + " 님 입장!!");
+
+                template.convertAndSend("/sub/chat/room/" + request.getRoomId(), chat);
+                template.convertAndSend("/sub/room/" + request.getRoomId() + "/status", getUserStatus(request.getRoomId()));
+
+                template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, null, 1));
+                template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
+                return true;
             }
-            // 참가자 대기상태 설정
-            else {
-                room.getReadyList().put(request.getNickname(), "WAITING");
-            }
-
-            ChatDto chat = new ChatDto();
-            chat.setSender(request.getNickname());
-            chat.setMessage(chat.getSender() + " 님 입장!!");
-
-            template.convertAndSend("/sub/chat/room/" + request.getRoomId(), chat);
-            template.convertAndSend("/sub/room/"+request.getRoomId()+"/status", getUserStatus(request.getRoomId()));
-
-            template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal",null, null, null, null, 1));
-            template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null,1));
-            return true;
         }
         return false;
     }
@@ -168,6 +167,8 @@ public class RoomService {
             }
             if (room.getUserCnt() == 0) {
                 roomRepository.getRoomMap().remove(roomId);
+                template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal",null, null, null, false, 1));
+                template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
             }
 
         }
@@ -237,6 +238,19 @@ public class RoomService {
         if(cnt == room.getUserCnt()-1){
             room.setIsStarted(true);
             template.convertAndSend("/sub/room/"+roomId+"/start", room);
+
+            long timerValue = 0;
+
+            for (long i = room.getTimeLimit(); i >= 0; i--) {
+                timerValue = i;
+                template.convertAndSend("/sub/timer/"+roomId, timerValue);
+                log.warn("초: " + timerValue);
+                try {
+                    Thread.sleep(1000); // 1초 대기
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             return true;
         }
         return false;
@@ -286,6 +300,14 @@ public class RoomService {
     private Problem findProblemById(Long problemId) {
         return problemRepository.findById(problemId)
                 .orElseThrow(() -> new CustomBadRequestException(PROBLEM_NOT_FOUND));
+    }
+
+    public Boolean attackUser(PostAttackRequest request){
+        if(request.getRoomId() != null && request.getNickname() != null) {
+            template.convertAndSend("/sub/game/" + request.getRoomId(), request);
+            return true;
+        }
+        return false;
     }
 
     public void test(){
