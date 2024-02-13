@@ -62,7 +62,7 @@ const ItemShopModal = ({ closeModal }) => {
 
   useEffect(() => {
     const apiUrl = `${process.env.REACT_APP_BASE_URL}/members/inventory`;
-    const token = process.env.REACT_APP_TOKEN;
+    const token = localStorage.getItem("accessToken");
 
     axios
       .get(apiUrl, {
@@ -90,7 +90,7 @@ const ItemShopModal = ({ closeModal }) => {
   // 아이템 구매 로직 처리
   const buyItem = (itemId, putValue) => {
     const apiUrl = `${process.env.REACT_APP_BASE_URL}/items/members/add`;
-    const token = process.env.REACT_APP_TOKEN;
+    const token = localStorage.getItem("accessToken");
 
     axios
       .put(

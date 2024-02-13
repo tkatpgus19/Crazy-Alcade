@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Problem.module.css";
 import PropTypes from "prop-types"; // prop-types 임포트
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock, faMicrochip } from "@fortawesome/free-solid-svg-icons";
 
 const Problem = ({ problemId, problemTier }) => {
   const [problemData, setProblemData] = useState(null);
@@ -45,60 +47,54 @@ const Problem = ({ problemId, problemTier }) => {
   return renderProblem(problemData);
 };
 
-const renderExamples = (examples) => {
-  return (
-    <div>
-      {examples.map((example, index) => (
-        <div key={index}>
-          <h4>예제 {index + 1}</h4>
-          <hr />
-          <p>
-            <strong>입력:</strong> {example.input}
-          </p>
-
-          <p>
-            <strong>출력:</strong> {example.output}
-          </p>
-          <hr />
-        </div>
-      ))}
-    </div>
-  );
-};
-
 const renderProblem = (data) => {
   console.log(data.description);
 
   return (
     <div className={styles.problemBox}>
       <div className={styles.problem}>
-        <h2>
-          {data.no}. {data.title}
-        </h2>
-        <hr />
+        <div className={styles.stickyHeader}>
+          {/* <h2>와 <h3> 태그에 custom 클래스 적용 */}
+          <h2 className={styles.customH2}>
+            {data.no}. {data.title}
+          </h2>
+          <div className={styles.limitsContainer}>
+            <div className={styles.limit}>
+              <FontAwesomeIcon icon={faClock} /> <span>{data.time}</span>
+            </div>
+            <div className={styles.limit}>
+              <FontAwesomeIcon icon={faMicrochip} /> <span>{data.memory}</span>
+            </div>
+          </div>
+        </div>
+        <hr className={styles.customHr} />
+        <h3>문제</h3>
+        <p className={styles.customP}>{data.description}</p>
 
-        <p>{data.description}</p>
-        <hr />
-
+        <hr className={styles.customHr} />
         <h3>입력</h3>
         <p>{data.input}</p>
         <hr />
-
         <h3>출력</h3>
         <p>{data.output}</p>
-        <hr />
-
-        <h3>제한 시간</h3>
-        <p>{data.time}</p>
-        <hr />
-
-        <h3>제한 메모리</h3>
-        <p>{data.memory}</p>
 
         <hr />
         <h3>예제</h3>
-        <hr />
-        {renderExamples(data.examples)}
+        <div className={styles.examplesContainer}>
+          {data.examples &&
+            data.examples.map((example, index) => (
+              <div key={index} className={styles.exampleRow}>
+                <div className={styles.exampleBlock}>
+                  <h4>예제 입력 {index + 1}</h4>
+                  <pre className={styles.exampleContent}>{example.input}</pre>
+                </div>
+                <div className={styles.exampleBlock}>
+                  <h4>예제 출력 {index + 1}</h4>
+                  <pre className={styles.exampleContent}>{example.output}</pre>
+                </div>
+              </div>
+            ))}
+        </div>
       </div>
     </div>
   );

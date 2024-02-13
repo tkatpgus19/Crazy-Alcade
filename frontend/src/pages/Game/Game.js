@@ -16,12 +16,13 @@ import { useDispatch, useSelector } from "react-redux";
 import octopusImage from "../../assets/images/octopus.png"; // 문어 이미지의 경로
 import inkImage from "../../assets/images/muk.png"; // 먹물 이미지의 경로
 import chickenImage from "../../assets/images/chick.png"; // 병아리 이미지 경로
-const normalBackgroundImage = "../../assets/images/normalBackground.webp";
-const itemBackgroundImage = "../../assets/images/normalBackground.webp";
+import SockJS from "sockjs-client";
+import { Stomp } from "@stomp/stompjs";
 
 function Game() {
   const navigate = useNavigate();
   let location = useLocation();
+  const client = useRef();
 
   // 아이템 동작 확인
   const isSprayingInk = useSelector((state) => state.octopus.isSprayingInk);
@@ -81,7 +82,7 @@ function Game() {
 
   useEffect(() => {
     // 비정상인 접근 차단. 개발 후 살리기.
-    // if (!(roomId && nickname)) navigate("/error");
+    if (!(roomInfo.roomId && nickname)) navigate("/error");
 
     // roomId를 이용해 API로 세부 방 정보 가져오기.
     const fetchRoomInfo = async () => {
@@ -109,7 +110,7 @@ function Game() {
     const fetchUserInfo = async () => {
       try {
         const apiUrl = `${process.env.REACT_APP_BASE_URL}/members`;
-        const token = process.env.REACT_APP_TOKEN;
+        const token = localStorage.getItem("accessToken");
 
         const response = await axios.get(apiUrl, {
           headers: {
@@ -130,7 +131,22 @@ function Game() {
 
     fetchRoomInfo();
     fetchUserInfo();
+    connectSession;
   }, []);
+
+  const connectSession = () => {
+    const socket = new SockJS(`${process.env.REACT_APP_SOCKET_URL}`);
+    client.current = Stomp.over(socket);
+    client.current.connect({}, onConnected, onError);
+  };
+
+  const onConnected = () => {
+    client.current.subscribe(`/sub/game/` + roomId, onStatusReceived);
+  };
+
+  const onStatusReceived = (payload) => {
+    console.log(JSON.parse(payload.body));
+  };
 
   // 게임 모드에 따른 배경 화면 설정
   const backgroundStyle =
@@ -159,7 +175,7 @@ function Game() {
       setOctopus(true); // 문어 이미지를 표시
 
       // 1초 후에 먹물 이미지의 위치를 한 번만 무작위로 계산하여 상태에 저장
-      const newInkSpots = Array(15)
+      const newInkSpots = Array(125)
         .fill(null)
         .map((_, index) => ({
           id: index,
@@ -196,12 +212,12 @@ function Game() {
         setChickens((chickens) =>
           chickens.map((chicken) => {
             const speed = 50; // 이동 속도 조정
-            let newLeft = chicken.left + (Math.random() - 0.25) * speed;
-            let newTop = chicken.top + (Math.random() - 0.45) * speed;
+            let newLeft = chicken.left + (Math.random() - 0.5) * speed;
+            let newTop = chicken.top + (Math.random() - 0.5) * speed;
 
             // 화면 경계 처리
-            newLeft = Math.max(50, Math.min(newLeft, window.innerWidth - 100)); // 병아리 이미지의 너비 고려
-            newTop = Math.max(50, Math.min(newTop, window.innerHeight - 100)); // 병아리 이미지의 높이 고려
+            newLeft = Math.max(10, Math.min(newLeft, window.innerWidth - 80)); // 병아리 이미지의 너비 고려
+            newTop = Math.max(50, Math.min(newTop, window.innerHeight - 150)); // 병아리 이미지의 높이 고려
 
             return { ...chicken, left: newLeft, top: newTop };
           })

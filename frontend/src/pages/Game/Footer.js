@@ -71,7 +71,7 @@ const Footer = ({ roomType, userInfo, problemId }) => {
       // 여기에 API 요청 로직 추가
       try {
         const apiUrl = `${process.env.REACT_APP_BASE_URL}/items/members/sub`; // 환경변수나 상수로 API URL 관리
-        const token = process.env.REACT_APP_TOKEN; // 실제 토큰 값으로 대체
+        const token = localStorage.getItem("accessToken");
 
         const response = await axios.put(
           apiUrl,
@@ -140,7 +140,7 @@ const Footer = ({ roomType, userInfo, problemId }) => {
     console.log("코드 실행");
     try {
       const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/${problemId}/codes/execute`;
-      const token = process.env.REACT_APP_TOKEN;
+      const token = localStorage.getItem("accessToken");
 
       const response = await axios.post(
         apiUrl,
@@ -171,7 +171,7 @@ const Footer = ({ roomType, userInfo, problemId }) => {
   // 코드 제출 함수
   const handleSubmit = async () => {
     dispatch(setLoading(true)); // 로딩 상태를 true로 설정
-    const token = process.env.REACT_APP_TOKEN;
+    const token = localStorage.getItem("accessToken");
     const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/${problemId}/codes/submit`;
     try {
       const response = await fetch(apiUrl, {

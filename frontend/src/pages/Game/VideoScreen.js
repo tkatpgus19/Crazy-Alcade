@@ -13,6 +13,12 @@ import soundOnImage from "../../assets/images/SOUND-ON.png";
 import soundOffImage from "../../assets/images/SOUND-OFF.png";
 import screenOnImage from "../../assets/images/SCREEN-ON.png";
 import screenOffImage from "../../assets/images/SCREEN-OFF.png";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  toggleMicrophone,
+  toggleCamera,
+  toggleAudio,
+} from "../Room/slices/settingSlice.js";
 
 // OpenVidu 서버의 URL을 환경에 따라 설정
 const APPLICATION_SERVER_URL = process.env.REACT_APP_OPENVIDU_URL;
@@ -24,9 +30,10 @@ const VideoScreen = ({ roomId, nickname, userList, roomType }) => {
   const [mainStreamManager, setMainStreamManager] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined); //방장
   const [subscribers, setSubscribers] = useState([]); //참가자
-  const [isMicrophoneOn, setIsMicrophoneOn] = useState(true); // 마이크 상태를 상태로 관리
-  const [isAudioMuted, setIsAudioMuted] = useState(true); // 음소거 상태
-  const [isCameraOn, setIsCameraOn] = useState(true); // 카메라가 기본적으로 켜져 있다고 가정
+  const { isMicrophoneOn, isCameraOn, isAudioOn } = useSelector(
+    (state) => state.settings
+  );
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // 페이지가 언마운트되기 전에 이벤트 리스너 추가 및 정리
@@ -173,31 +180,63 @@ const VideoScreen = ({ roomId, nickname, userList, roomType }) => {
   };
 
   // 카메라 끄고 키는 버튼
-  const toggleCamera = () => {
+  const toggleca = () => {
     if (publisher) {
       const videoTracks = publisher.stream.getMediaStream().getVideoTracks();
       const isCurrentlyOn = videoTracks[0].enabled;
       videoTracks.forEach((track) => (track.enabled = !isCurrentlyOn));
-      setIsCameraOn(!isCurrentlyOn); // 카메라 상태 업데이트
+      dispatch(toggleCamera()); // 카메라 상태 업데이트
     }
   };
 
   // 마이크 토글 함수
-  const toggleMicrophone = () => {
+  const toggleMic = () => {
     if (publisher) {
       const audioTracks = publisher.stream.getMediaStream().getAudioTracks();
       audioTracks.forEach((track) => (track.enabled = !track.enabled));
     }
-    setIsMicrophoneOn((prevState) => !prevState); // 마이크 상태를 토글
+    dispatch(toggleMicrophone()); // 마이크 상태를 토글
   };
 
   // 음소거 토글 함수
-  const toggleAudioMute = () => {
-    setIsAudioMuted(!isAudioMuted);
+  const toggleAud = () => {
+    dispatch(toggleAudio());
     subscribers.forEach((subscriber) => {
-      subscriber.subscribeToAudio(!isAudioMuted);
+      subscriber.subscribeToAudio(!isAudioOn);
     });
   };
+
+  useEffect(() => {
+    const updateAudioVideoState = () => {
+      // 마이크 상태 설정
+      if (publisher) {
+        const audioTracks = publisher.stream.getMediaStream().getAudioTracks();
+        if (audioTracks.length > 0) {
+          audioTracks[0].enabled = isMicrophoneOn;
+        }
+
+        const videoTracks = publisher.stream.getMediaStream().getVideoTracks();
+        if (videoTracks.length > 0) {
+          videoTracks[0].enabled = isCameraOn;
+        }
+      }
+
+      // 음소거 상태 설정
+      subscribers.forEach((subscriber) => {
+        if (subscriber.stream && subscriber.stream.getMediaStream()) {
+          const audioTracks = subscriber.stream
+            .getMediaStream()
+            .getAudioTracks();
+          audioTracks.forEach((track) => (track.enabled = isAudioOn));
+        }
+      });
+    };
+
+    // joinSession 호출 후 publisher와 subscribers 준비 확인
+    if (publisher && subscribers.length > 0) {
+      updateAudioVideoState();
+    }
+  }, [publisher, subscribers, isMicrophoneOn, isCameraOn, isAudioOn]);
 
   return (
     <div>
@@ -216,21 +255,21 @@ const VideoScreen = ({ roomId, nickname, userList, roomType }) => {
           <img
             src={isMicrophoneOn ? micOnImage : micOffImage}
             className={styles.btnIcon}
-            onClick={toggleMicrophone}
+            onClick={toggleMic}
             alt="마이크 토글"
           />
           {/* 음소거 토글 이미지 버튼 */}
           <img
-            src={isAudioMuted ? soundOnImage : soundOffImage}
+            src={isAudioOn ? soundOnImage : soundOffImage}
             className={styles.btnIcon}
-            onClick={toggleAudioMute}
+            onClick={toggleAud}
             alt="음소거 토글"
           />
           {/* 카메라 토글 이미지 버튼 */}
           <img
             src={isCameraOn ? screenOnImage : screenOffImage}
             className={styles.btnIcon}
-            onClick={toggleCamera}
+            onClick={toggleca}
             alt="카메라 토글"
           />
         </div>

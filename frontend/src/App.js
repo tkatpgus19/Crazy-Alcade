@@ -9,7 +9,6 @@ import Game from "./pages/Game/Game";
 // import GoogleRedirection from "./pages/Login/GoogleRedirection";
 import GameIntroduction from "./pages/Main/GameIntroduction";
 import LoginRedirection from "./pages/Login/LoginRedirection";
-// import NicknameModal from "./pages/Login/NicknameModal";
 
 function App() {
   return (

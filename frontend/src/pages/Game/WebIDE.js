@@ -11,13 +11,18 @@ import { toggleResultExpanded } from "./slices/executionResultSlice"; // 경로�
 const WebIDE = ({ language }) => {
   const dispatch = useDispatch();
   const executionResult = useSelector((state) => state.executionResult.output);
-  const [fontSize, setFontSize] = useState(14);
+  const [fontSize, setFontSize] = useState(16);
   const code = useSelector((state) => state.code.content); // Redux 상태에서 코드 값 선택
+
   const isLoading = useSelector((state) => state.loading.isLoading); // 로딩 상태 선택
   const isResultExpanded = useSelector(
     (state) => state.executionResult.isResultExpanded
   );
   const isFlipped = useSelector((state) => state.webIDE.isFlipped);
+
+  const expandStyle = isResultExpanded
+    ? styles.resultContainer
+    : styles.resultContainerCompact;
 
   useEffect(() => {
     // 컴포넌트가 마운트될 때 Redux 상태에 초기 코드 값 저장
@@ -39,12 +44,8 @@ const WebIDE = ({ language }) => {
     }`)
       );
     } else if (language === "python") {
-      dispatch(
-        setCode(`A, B = input().split()
-        print(int(A)+int(B))	`)
-      );
+      dispatch(setCode(`A, B = input().split()\nprint(int(A)+int(B))	`));
     }
-
     // 언어 상태에 올리기
     dispatch(setLanguage(language));
   }, [dispatch]); // dispatch를 의존성 배열에 추가
@@ -70,7 +71,7 @@ const WebIDE = ({ language }) => {
       return <div className={styles.loading}>Loading...</div>;
     }
     if (!executionResult || !executionResult.result) {
-      return <div className={styles.resultContainer}>실행 결과</div>;
+      return;
     }
 
     // 성공한 테스트 케이스의 수를 계산합니다.
@@ -80,7 +81,7 @@ const WebIDE = ({ language }) => {
     const allPassed = passedTests === executionResult.result.tcResult.length;
 
     return (
-      <div className={styles.resultContainer}>
+      <div className={expandStyle}>
         <button onClick={toggleResultDisplay} className={styles.toggleButton}>
           {isResultExpanded ? "👇" : "👆"}
         </button>
@@ -117,7 +118,7 @@ const WebIDE = ({ language }) => {
               }}
             >
               테스트 결과 (~˘▾˘)~ &nbsp;
-              {passedTests}개 중 {executionResult.result.tcResult.length}개
+              {executionResult.result.tcResult.length}개 중 {passedTests}개
               성공!
             </h4>
           </div>
@@ -132,6 +133,7 @@ const WebIDE = ({ language }) => {
     >
       <AceEditor
         mode="java"
+        //mode={language === "java" ? "java" : "py"} // python은 py
         theme="github"
         fontSize={fontSize}
         width="100%"
@@ -142,9 +144,10 @@ const WebIDE = ({ language }) => {
         value={code}
         onChange={handleCodeChange}
         wrapEnabled={true}
+        cursorStart={1}
         setOptions={{
           showLineNumbers: true,
-          tabSize: 2,
+          tabSize: 4,
           wrap: true,
         }}
       />
