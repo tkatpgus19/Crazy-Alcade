@@ -139,10 +139,12 @@ const Room = () => {
   };
 
   const getReady = () => {
-    axios.put(`${SERVER_URL}/rooms/ready`, {
-      roomId: roomId,
-      nickname: nickname,
-    });
+    axios
+      .put(`${SERVER_URL}/rooms/ready`, {
+        roomId: roomId,
+        nickname: nickname,
+      })
+      .then((res) => console.log(res));
   };
 
   const back = () => {

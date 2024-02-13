@@ -1,4 +1,5 @@
-.itemButton {
+.itemButton,
+.disabledButton {
   margin: 0px 5px; /* 변경된 부분 */
   padding: 3px 5px;
   cursor: pointer;
@@ -15,4 +16,35 @@
   background-color: whitesmoke; /* 마우스 호버 시 배경색 변경 */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* 마우스 호버 시 그림자 효과 추가 */
   transform: scale(1.1); /* 호버 시 약간 확대 */
+}
+
+.disabledButton {
+  /* 회색으로 표시 */
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+.disabledButton:hover {
+  background-color: #aaa; /* 마우스 호버 시 배경색 변경 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* 마우스 호버 시 그림자 효과 추가 */
+  transform: scale(1); /* 호버 시 약간 확대 */
+}
+
+.itemButtonContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.itemCount {
+  font-family: "DNFBITBITV2";
+  position: absolute;
+  bottom: -4px; /* 아이템 버튼 밖, 우하단에 위치 */
+  right: -4px;
+  background-color: transparent; /* 배경색 */
+  color: black; /* 숫자 색상 */
+  font-size: 9px; /* 폰트 크기 */
+  border-radius: 50%; /* 원형 표시 */
+  padding: 2px 5px; /* 패딩 */
+  min-width: 20px; /* 최소 너비 */
+  text-align: center; /* 텍스트 중앙 정렬 */
 }

@@ -98,7 +98,11 @@ public enum BaseResponseStatus {
 
     // MEMBER ITEM
     MEMBER_ITEM_PURCHASE_FAIL(HttpStatus.BAD_REQUEST, "코인 부족으로 아이템 구매에 실패하였습니다."),
-    MEMBER_ITEM_USE_FAIL(HttpStatus.BAD_REQUEST, "보유 개수 부족으로 아이템 구매에 실패하였습니다.")
+    MEMBER_ITEM_USE_FAIL(HttpStatus.BAD_REQUEST, "보유 개수 부족으로 아이템 구매에 실패하였습니다."),
+
+    // ROOM
+    ROOM_ENTER_FAIL(HttpStatus.BAD_REQUEST, "인원이 가득 찼습니다."),
+    ROOM_GAME_START_FAIL(HttpStatus.BAD_REQUEST, "게임은 최소 2인 이상부터 시작 가능합니다.")
     ;
 
 
