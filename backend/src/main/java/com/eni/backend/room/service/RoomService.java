@@ -158,6 +158,9 @@ public class RoomService {
                     room.getReadyList().remove(user);
                 }
                 room.getUserList().remove(userUUID);
+                room.setUserCnt(room.getUserCnt() - 1);
+
+                clearRooms();
                 log.info("User exit : " + user);
 
                 room.setUserCnt(room.getUserCnt() - 1);
@@ -250,6 +253,8 @@ public class RoomService {
             }
             room.setIsStarted(true);
             template.convertAndSend("/sub/room/"+roomId+"/start", room);
+            template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, null, 1));
+            template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
 
             long timerValue = 0;
 
@@ -263,8 +268,6 @@ public class RoomService {
                     e.printStackTrace();
                 }
             }
-            template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, null, 1));
-            template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
             return true;
         }
         template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, null, 1));
@@ -274,7 +277,7 @@ public class RoomService {
 
     public void clearRooms(){
         for(RoomDto room : roomRepository.getRoomList()){
-            if(room.getUserCnt() == 0){
+            if(room.getUserCnt() <= 0){
                 roomRepository.getRoomMap().remove(room.getRoomId());
             }
         }
