@@ -149,7 +149,8 @@ public class RoomService {
             if(room != null) {
                 String user = room.getUserList().get(userUUID);
 
-                if (room.getReadyList().get(user).equals("MASTER") && room.getUserCnt() != 1) {
+                // 방장이고 방장을 넘길 사람이 있으면
+                if (room.getReadyList().get(user).equals("MASTER") && room.getUserCnt() > 1) {
                     room.getReadyList().remove(user);
                     Map.Entry<String, String> firstEntry = room.getReadyList().entrySet().iterator().next();
                     room.getReadyList().replace(firstEntry.getKey(), "MASTER");
@@ -160,10 +161,8 @@ public class RoomService {
                 room.getUserList().remove(userUUID);
                 room.setUserCnt(room.getUserCnt() - 1);
 
-                clearRooms();
                 log.info("User exit : " + user);
 
-                room.setUserCnt(room.getUserCnt() - 1);
 
                 // builder 어노테이션 활용
                 ChatDto chat = ChatDto.builder()
@@ -175,9 +174,9 @@ public class RoomService {
 
                 if (room.getUserCnt() == 0) {
                     roomRepository.getRoomMap().remove(roomId);
+                    clearRooms();
                 }
-                clearRooms();
-                if (getUserStatus(roomId) != null) {
+                else{
                     template.convertAndSend("/sub/room/" + roomId + "/status", getUserStatus(roomId));
                 }
             }
