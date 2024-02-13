@@ -101,7 +101,9 @@ const Main = () => {
   };
 
   const createRoom = (roomData) => {
+    roomData.master = nickname;
     console.log("방이 생성되었습니다:", roomData);
+    roomData.master = nickname;
     axios
       .post(`${SERVER_URL}/rooms`, roomData)
       .then((res) => {
@@ -175,18 +177,18 @@ const Main = () => {
     if (data.hasPassword) {
       const password = prompt("비밀번호를 입력하세요");
       axios
-        .post(
-          `${SERVER_URL}/rooms/checkPwd?roomId=${data.roomId}&roomPwd=${password}`
+        .get(
+          `${SERVER_URL}/rooms/password?roomId=${data.roomId}&roomPwd=${password}`
         )
         .then((res) => {
-          if (res.data) {
+          if (res.data.result) {
             axios
               .post(`${SERVER_URL}/rooms/enter`, {
-                roomId: data.roomId,
                 nickname: nickname,
+                roomId: data.roomId,
               })
-              .then((res) => {
-                if (res.data.result) {
+              .then((response) => {
+                if (response.data.result) {
                   navigate("/room", {
                     state: {
                       roomId: data.roomId,
@@ -203,15 +205,24 @@ const Main = () => {
           }
         });
     } else {
-      navigate("/room", {
-        state: {
-          // 아래 주석을 풀어주세요
-          // roomId: data.result.roomId,
-          roomId: data.roomId,
+      axios
+        .post(`${SERVER_URL}/rooms/enter`, {
           nickname: nickname,
-          roomType: data.roomType,
-        },
-      });
+          roomId: data.roomId,
+        })
+        .then((response) => {
+          if (response.data.result) {
+            navigate("/room", {
+              state: {
+                roomId: data.roomId,
+                nickname: nickname,
+                roomType: data.roomType,
+              },
+            });
+          } else {
+            alert("방에 인원이 가득 찼습니다.");
+          }
+        });
     }
   };
 

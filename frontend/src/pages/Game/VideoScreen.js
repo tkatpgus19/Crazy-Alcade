@@ -99,7 +99,7 @@ const VideoScreen = ({ roomId, nickname, userList, roomType }) => {
 
       const publisher = await OV.initPublisherAsync(undefined, {
         audioSource: undefined,
-        videoSource: undefined,
+        videoSource: roomType === "item" ? "screen" : undefined,
         publishAudio: true,
         publishVideo: true,
         resolution: "1920x1080",

@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import styles from "./Problem.module.css";
 import PropTypes from "prop-types"; // prop-types 임포트
 
-const Problem = ({ problemNo, problemTier }) => {
+const Problem = ({ problemId, problemTier }) => {
   const [problemData, setProblemData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getData = async () => {
-      const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/${problemNo}`;
+      const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/${problemId}`;
 
       try {
         const response = await fetch(apiUrl);
@@ -105,7 +105,7 @@ const renderProblem = (data) => {
 };
 
 Problem.propTypes = {
-  problemNo: PropTypes.number.isRequired, // problemNo는 숫자이며 필수
+  problemId: PropTypes.number.isRequired, // problemNo는 숫자이며 필수
   problemTier: PropTypes.string.isRequired, // problemTier는 문자열이지만 필수는 아님
 };
 

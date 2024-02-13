@@ -5,11 +5,11 @@ import Main from "./pages/Main/Main";
 import Login from "./pages/Login/Login";
 import Room from "./pages/Room/Room";
 import Game from "./pages/Game/Game";
-import KakaoRedirection from "./pages/Login/KakaoRedirection";
-import GoogleRedirection from "./pages/Login/GoogleRedirection";
+// import KakaoRedirection from "./pages/Login/KakaoRedirection";
+// import GoogleRedirection from "./pages/Login/GoogleRedirection";
 import GameIntroduction from "./pages/Main/GameIntroduction";
 import LoginRedirection from "./pages/Login/LoginRedirection";
-import NicknameCreation from "./pages/Login/NicknameModal";
+// import NicknameModal from "./pages/Login/NicknameModal";
 
 function App() {
   return (
@@ -17,19 +17,17 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route
+          {/* <Route
             exact
             path="/login/oauth2/code/kakao"
-            // path="/oauth2/kakao"
             element={<KakaoRedirection />}
           />
           <Route
             exact
             path="/login/oauth2/code/google"
-            // path="/oauth2/kakao"
             element={<GoogleRedirection />}
-          />
-          <Route path="/nickname" element={<NicknameCreation />} />
+          /> */}
+          {/* <Route path="/nickname" element={<NicknameModal />} /> */}
           <Route path="/game-introduction" element={<GameIntroduction />} />
           <Route path="/login-redirection" element={<LoginRedirection />} />
           <Route path="/main" element={<Main />} />
