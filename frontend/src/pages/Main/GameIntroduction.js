@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import imgfile from "../../assets/images/logo.png";
 import background from "../../assets/images/mainback.png";
-import gameIntroImage from "../../assets/images/loginlogo.png";
+import gameIntroImg from "../../assets/images/gameintro.png";
 
 import "./GameIntroduction.module.css";
 import styles from "./GameIntroduction.module.css";
@@ -34,15 +34,8 @@ const GameIntroduction = () => {
   // 게임 소개 페이지 내용
   const GameIntroContent = () => (
     <div>
-      <h1>게임 소개</h1>
-      <img
-        src={gameIntroImage}
-        alt="게임 소개"
-        style={{ width: "15%", height: "auto" }}
-      />
-      <p>Crazy Alcade는 코드 테스트 & 코딩 스타일의 게임을 결합해</p>
-      <p>새로운 코딩게임을 즐길 수 있는 사이트입니다.</p>
-      {/* 게임 설명 내용 */}
+      <img src={gameIntroImg} alt="게임 소개" className="gameIntroImage" />
+      {/* 게임 소개 내용 */}
     </div>
   );
 

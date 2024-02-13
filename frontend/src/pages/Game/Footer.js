@@ -29,7 +29,7 @@ import balloonIcon from "../../assets/images/waterBalloon.png";
 import magicIcon from "../../assets/images/magic.png";
 import shieldIcon from "../../assets/images/shield.png";
 
-const Footer = ({ roomType }) => {
+const Footer = ({ roomType, userInfo, problemId }) => {
   const dispatch = useDispatch();
 
   const [isItem, setItem] = useState(false);
@@ -49,48 +49,83 @@ const Footer = ({ roomType }) => {
     }
   }, []);
 
+  // 각 아이템의 개수를 itemId를 키로 하는 객체로 변환
+  const itemCounts = userInfo.memberItemList.reduce((acc, item) => {
+    acc[item.itemId] = item.memberItemCount;
+    return acc;
+  }, {});
+
   const animProps = useSpring({
     transform: isAnimating ? "translateY(-100px)" : "translateY(0px)",
     config: { duration: isAnimating ? 3000 : 300 },
   });
 
   // 아이템 사용 함수
-  const handleUseItem = (item) => {
-    console.log(`아이템 사용: ${item}`);
+  const handleUseItem = async (item, itemCount) => {
+    if (itemCount <= 0) {
+      console.log("아이템이 없습니다.");
+    } else {
+      // 각 아이템에 대한 효과 로직 추가
+      console.log(`아이템 사용: ${item}`);
 
-    // 각 아이템에 대한 효과 로직 추가
-    if (item === "아이템1") {
-      if (!isSprayingInk) dispatch(toggleInkSpraying());
-      setTimeout(() => {
-        // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
-        dispatch(resetInkSpraying());
-      }, 5000);
-    } else if (item === "아이템2") {
-      if (!isChickenWalking) dispatch(toggleChickenWalking());
-      setTimeout(() => {
-        // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
-        dispatch(resetChickenWalking());
-      }, 5000);
-    } else if (item === "아이템3") {
-      if (!isAnimating) dispatch(toggleWaterBalloonAnimation(true)); // 애니메이션 시작
+      // 여기에 API 요청 로직 추가
+      try {
+        const apiUrl = `${process.env.REACT_APP_BASE_URL}/items/members/sub`; // 환경변수나 상수로 API URL 관리
+        const token = process.env.REACT_APP_TOKEN; // 실제 토큰 값으로 대체
 
-      setTimeout(() => {
-        // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
-        dispatch(resetWaterBalloonAnimation());
-      }, 5000);
-    } else if (item === "아이템4") {
-      dispatch(toggleWebIDEFlip());
-      // setTimeout 콜백 내에서 isFlipped 상태를 확인
-      setTimeout(() => {
-        dispatch(resetWebIDEFlip());
-      }, 5000); // 5000ms = 5초
-    } else if (item === "아이템5") {
-      if (isSprayingInk == true) dispatch(toggleInkSpraying(false));
-      if (isChickenWalking == true) dispatch(toggleChickenWalking(false));
-      if (isAnimating == true) dispatch(toggleWaterBalloonAnimation(false));
-      if (isFlipped == true) dispatch(toggleWebIDEFlip(false));
-      dispatch(toggleShield());
-      setTimeout(() => dispatch(resetShield()), 0); // 바로 상태를 리셋하여 다른 애니메이션에 영향을 주지 않음
+        const response = await axios.put(
+          apiUrl,
+          {
+            itemId: item,
+            putValue: 1, // 아이템 개수 1 감소
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // 요청 성공 시, 로직 처리 (예: 상태 업데이트)
+        console.log("아이템 개수 감소 성공", response.data);
+        // 아이템 개수 상태 업데이트 또는 부모 컴포넌트로부터 받은 함수 호출 등을 통해 UI를 업데이트할 수 있습니다.
+      } catch (error) {
+        console.error("아이템 사용 중 에러 발생", error);
+      }
+
+      if (item === 1) {
+        if (!isSprayingInk) dispatch(toggleInkSpraying());
+        setTimeout(() => {
+          // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
+          dispatch(resetInkSpraying());
+        }, 5000);
+      } else if (item === 2) {
+        if (!isChickenWalking) dispatch(toggleChickenWalking());
+        setTimeout(() => {
+          // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
+          dispatch(resetChickenWalking());
+        }, 5000);
+      } else if (item === 3) {
+        if (!isAnimating) dispatch(toggleWaterBalloonAnimation(true)); // 애니메이션 시작
+
+        setTimeout(() => {
+          // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
+          dispatch(resetWaterBalloonAnimation());
+        }, 5000);
+      } else if (item === 4) {
+        dispatch(toggleWebIDEFlip());
+        // setTimeout 콜백 내에서 isFlipped 상태를 확인
+        setTimeout(() => {
+          dispatch(resetWebIDEFlip());
+        }, 5000); // 5000ms = 5초
+      } else if (item === 5) {
+        if (isSprayingInk == true) dispatch(toggleInkSpraying(false));
+        if (isChickenWalking == true) dispatch(toggleChickenWalking(false));
+        if (isAnimating == true) dispatch(toggleWaterBalloonAnimation(false));
+        if (isFlipped == true) dispatch(toggleWebIDEFlip(false));
+        dispatch(toggleShield());
+        setTimeout(() => dispatch(resetShield()), 0); // 바로 상태를 리셋하여 다른 애니메이션에 영향을 주지 않음
+      }
     }
   };
 
@@ -104,13 +139,13 @@ const Footer = ({ roomType }) => {
     dispatch(setLoading(true)); // 로딩 시작
     console.log("코드 실행");
     try {
-      const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/1/codes/execute`;
+      const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/${problemId}/codes/execute`;
       const token = process.env.REACT_APP_TOKEN;
 
       const response = await axios.post(
         apiUrl,
         {
-          lang: lang,
+          lang: lang.toUpperCase(),
           content: code,
         },
         {
@@ -137,7 +172,7 @@ const Footer = ({ roomType }) => {
   const handleSubmit = async () => {
     dispatch(setLoading(true)); // 로딩 상태를 true로 설정
     const token = process.env.REACT_APP_TOKEN;
-    const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/1/codes/submit`;
+    const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/${problemId}/codes/submit`;
     try {
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -146,7 +181,7 @@ const Footer = ({ roomType }) => {
           Authorization: `Bearer ${token}`, // Bearer 토큰 방식을 사용하는 경우
         },
         body: JSON.stringify({
-          lang: lang, // 언어 설정
+          lang: lang.toUpperCase(), // 언어 설정
           content: code,
         }),
       });
@@ -172,27 +207,37 @@ const Footer = ({ roomType }) => {
           <ItemButton
             icon={octopusIcon}
             itemName="문어"
-            onUseItem={() => handleUseItem("아이템1")}
+            disabled={itemCounts[1] === 0} // itemId가 1인 아이템의 개수를 기반으로 비활성화 결정
+            onUseItem={() => handleUseItem(1, itemCounts[1])}
+            count={itemCounts[1]}
           />
           <ItemButton
             icon={chickIcon}
             itemName="병아리"
-            onUseItem={() => handleUseItem("아이템2")}
+            disabled={itemCounts[2] === 0} // itemId가 2인 아이템의 개수를 기반으로 비활성화 결정
+            onUseItem={() => handleUseItem(2, itemCounts[2])}
+            count={itemCounts[2]}
           />
           <ItemButton
             icon={balloonIcon}
             itemName="물풍선"
-            onUseItem={() => handleUseItem("아이템3")}
+            disabled={itemCounts[3] === 0} // itemId가 3인 아이템의 개수를 기반으로 비활성화 결정
+            onUseItem={() => handleUseItem(3, itemCounts[3])}
+            count={itemCounts[3]}
           />
           <ItemButton
             icon={magicIcon}
             itemName="요술봉"
-            onUseItem={() => handleUseItem("아이템4")}
+            disabled={itemCounts[4] === 0} // itemId가 4인 아이템의 개수를 기반으로 비활성화 결정
+            onUseItem={() => handleUseItem(4, itemCounts[4])}
+            count={itemCounts[4]}
           />
           <ItemButton
             icon={shieldIcon}
             itemName="쉴드"
-            onUseItem={() => handleUseItem("아이템5")}
+            disabled={itemCounts[5] === 0} // itemId가 5인 아이템의 개수를 기반으로 비활성화 결정
+            onUseItem={() => handleUseItem(5, itemCounts[5])}
+            count={itemCounts[5]}
           />
         </div>
       )}
@@ -230,6 +275,8 @@ const Footer = ({ roomType }) => {
 
 Footer.propTypes = {
   roomType: PropTypes.string.isRequired,
+  userInfo: PropTypes.object.isRequired,
+  problemId: PropTypes.number.isRequired,
 };
 
 export default Footer;

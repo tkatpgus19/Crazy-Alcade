@@ -12,7 +12,7 @@ import { resetTimer } from "../slices/timerSlice";
 const Timer = ({ roomId }) => {
   const dispatch = useDispatch();
 
-  const [remainingTime, setRemainingTime] = useState(0);
+  const [remainingTime, setRemainingTime] = useState();
   const client = useRef();
 
   // 남은 시간을 '분:초' 형식으로 변환하는 함수
@@ -23,10 +23,6 @@ const Timer = ({ roomId }) => {
   };
 
   useEffect(() => {
-    // // 방장이 요청으로 변경
-    // axios.get(
-    //   `${process.env.REACT_APP_BASE_URL}/rooms/set-timer?roomId=${roomId}`
-    // );
     connectSession();
   }, []);
 
@@ -60,7 +56,7 @@ const Timer = ({ roomId }) => {
     <div
       className={`${styles.timer} ${remainingTime < 60 ? styles.redTimer : ""}`}
     >
-      TIME {remainingTime ? formatTime(remainingTime) : "?? : ??"}
+      TIME {remainingTime ? formatTime(remainingTime) : "??:??"}
     </div>
   );
 };

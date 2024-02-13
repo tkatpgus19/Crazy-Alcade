@@ -33,7 +33,7 @@ const Main = () => {
   };
 
   const connectSession = () => {
-    const socket = new SockJS(`${SERVER_URL}/ws-stomp`);
+    const socket = new SockJS(process.env.REACT_APP_SOCKET_URL);
     client.current = Stomp.over(socket);
     client.current.connect({}, onConnected, onError);
   };
@@ -101,7 +101,9 @@ const Main = () => {
   };
 
   const createRoom = (roomData) => {
+    roomData.master = nickname;
     console.log("방이 생성되었습니다:", roomData);
+    roomData.master = nickname;
     axios
       .post(`${SERVER_URL}/rooms`, roomData)
       .then((res) => {
@@ -175,43 +177,52 @@ const Main = () => {
     if (data.hasPassword) {
       const password = prompt("비밀번호를 입력하세요");
       axios
-        .post(
-          `${SERVER_URL}/rooms/checkPwd?roomId=${data.roomId}&roomPwd=${password}`
+        .get(
+          `${SERVER_URL}/rooms/password?roomId=${data.roomId}&roomPwd=${password}`
         )
         .then((res) => {
-          if (res.data) {
+          if (res.data.result) {
             axios
               .post(`${SERVER_URL}/rooms/enter`, {
-                roomId: data.roomId,
                 nickname: nickname,
+                roomId: data.roomId,
               })
-              .then((res) => {
-                if (res.data.result) {
-                  navigate("/room", {
-                    state: {
-                      roomId: data.roomId,
-                      nickname: nickname,
-                      roomType: data.roomType,
-                    },
-                  });
-                } else {
-                  alert("방에 인원이 가득 찼습니다.");
-                }
+              .then((response) => {
+                navigate("/room", {
+                  state: {
+                    roomId: data.roomId,
+                    nickname: nickname,
+                    roomType: data.roomType,
+                  },
+                });
+              })
+              .catch((err) => {
+                console.log(err);
+                alert("방 인원이 가득찼습니다.");
               });
           } else {
             alert("비밀번호가 달라요");
           }
         });
     } else {
-      navigate("/room", {
-        state: {
-          // 아래 주석을 풀어주세요
-          // roomId: data.result.roomId,
-          roomId: data.roomId,
+      axios
+        .post(`${SERVER_URL}/rooms/enter`, {
           nickname: nickname,
-          roomType: data.roomType,
-        },
-      });
+          roomId: data.roomId,
+        })
+        .then((response) => {
+          navigate("/room", {
+            state: {
+              roomId: data.roomId,
+              nickname: nickname,
+              roomType: data.roomType,
+            },
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("방 인원이 가득찼습니다.");
+        });
     }
   };
 
@@ -322,11 +333,11 @@ const Main = () => {
 
           {/* 소개 칸 */}
           <div className={styles.introduction}>
-            <p>
+            <div>
               <div>Lv. </div>
               <div>경험치 </div>
               <div>코인</div>
-            </p>
+            </div>
           </div>
 
           {/* 하단 흰색 네모 칸 4개 정렬 */}
@@ -477,16 +488,14 @@ const Main = () => {
                           bottom: "10px",
                         }}
                       >
-                        <FontAwesomeIcon
-                          icon={data.hasPassword ? faKey : null}
-                          rotation={data.hasPassword ? 220 : 0}
-                          style={
-                            data.hasPassword
-                              ? { color: "#FFD43B", marginTop: "5px" }
-                              : null
-                          }
-                          className={styles.keyIcon}
-                        />
+                        {data.hasPassword && (
+                          <FontAwesomeIcon
+                            icon={faKey}
+                            style={{ color: "#FFD43B", marginTop: "5px" }}
+                            className={styles.keyIcon}
+                          />
+                        )}
+
                         <img
                           src={
                             data.codeReview

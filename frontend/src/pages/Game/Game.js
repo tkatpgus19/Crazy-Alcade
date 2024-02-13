@@ -32,16 +32,105 @@ function Game() {
   const timeCompleted = useSelector((state) => state.timer.timeCompleted);
 
   // 대기 방에서 넘어 온 정보들.
-  const roomId = location.state ? location.state.roomId : "roomId";
-  const nickname = location.state ? location.state.nickname : "nickname";
-  const userList = location.state ? location.state.userList : "userList";
-  const roomType = location.state ? location.state.roomType : "normal"; // 기본값을 "normal"로 설정
+  const roomId = location.state.roomId;
+  const nickname = location.state.nickname;
+  const userList = location.state.userList;
+  const roomType = location.state.roomType;
 
   const [showOctopus, setOctopus] = useState(false);
   const [chickens, setChickens] = useState([]); // 병아리 이미지 상태
   const [inkSpots, setInkSpots] = useState([]); // 먹물 이미지 상태
 
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
   const [showResult, setShowResult] = useState(false);
+
+  const [roomInfo, setRoomInfo] = useState({
+    roomId: "roodId",
+    roomType: "normal", // 기본값 설정
+    roomName: "Loading...", // 로딩 중임을 알리는 기본값
+    language: "language",
+    // 필요한 기타 초기값들
+  });
+  const [userInfo, setUserInfo] = useState({
+    nickname: "",
+    profile: "",
+    levelId: 0,
+    exp: 0,
+    coin: 0,
+    memberItemList: [],
+  });
+  // 더미 방 데이터.
+  // const roomInfo = {
+  //   roomId: "e50ec323-60ce-4fde-9837-2a393a59897d",
+  //   roomType: "item",
+  //   roomName: "더미방1",
+  //   hasPassword: false,
+  //   roomPassword: "",
+  //   problemTier: "골드1",
+  //   problemNo: 1,
+  //   timeLimit: 60,
+  //   language: "JAVA",
+  //   codeReview: false,
+  //   maxUserCnt: 6,
+  //   master: "123",
+  //   userList: {},
+  //   readyList: {},
+  //   started: false,
+  //   userCnt: 0,
+  // };
+
+  useEffect(() => {
+    // 비정상인 접근 차단. 개발 후 살리기.
+    // if (!(roomId && nickname)) navigate("/error");
+
+    // roomId를 이용해 API로 세부 방 정보 가져오기.
+    const fetchRoomInfo = async () => {
+      setIsLoading(true); // 데이터 로딩 시작
+
+      try {
+        const apiUrl = `${process.env.REACT_APP_BASE_URL}/rooms/info?roomId=${roomId}`;
+        const response = await axios.get(apiUrl);
+
+        if (response.data.code === 200) {
+          console.log("방 정보 조회에 성공하였습니다.", response.data);
+          setRoomInfo(response.data.result); // 전체 방 정보 저장
+        } else {
+          console.error("방 정보 조회 실패:", response.data.message);
+        }
+      } catch (error) {
+        console.error("방 정보 조회 중 에러 발생:", error);
+        // 에러 처리 로직 (예: 사용자를 에러 페이지로 리다이렉트)
+      } finally {
+        setIsLoading(false); // 데이터 로딩 완료
+      }
+    };
+
+    // token 이용해 API로 유저 개인 정보 가져오기
+    const fetchUserInfo = async () => {
+      try {
+        const apiUrl = `${process.env.REACT_APP_BASE_URL}/members`;
+        const token = process.env.REACT_APP_TOKEN;
+
+        const response = await axios.get(apiUrl, {
+          headers: {
+            Authorization: `Bearer ${token}`, // Bearer 토큰 방식을 사용하는 경우
+            // Origin 헤더는 브라우저가 자동으로 설정하기 때문에 여기서 설정할 필요가 없습니다.
+          },
+        });
+        if (response.data.code === 200) {
+          setUserInfo(response.data.result); // 회원 정보 상태 업데이트
+          console.log(userInfo);
+        } else {
+          console.error("회원 정보 조회 실패:", response.data.message);
+        }
+      } catch (error) {
+        console.error("API 요청 중 에러 발생:", error);
+      }
+    };
+
+    fetchRoomInfo();
+    fetchUserInfo();
+  }, []);
 
   // 게임 모드에 따른 배경 화면 설정
   const backgroundStyle =
@@ -49,32 +138,11 @@ function Game() {
       ? styles.itemBackgroundStyle
       : styles.normalBackgroundStyle;
 
-  // 더미 방 데이터.
-  const dummyRoomInfo = {
-    roomId: "e50ec323-60ce-4fde-9837-2a393a59897d",
-    roomType: "normal",
-    roomName: "더미방1",
-    hasPassword: false,
-    roomPassword: "",
-    problemTier: "골드1",
-    problemNo: 1,
-    timeLimit: 60,
-    language: "JAVA",
-    codeReview: false,
-    maxUserCnt: 6,
-    master: "123",
-    userList: {},
-    readyList: {},
-    started: false,
-    userCnt: 0,
-  };
-
-  // 비정상인 접근 차단. 개발 후 살리기.
   useEffect(() => {
-    // if (!(roomId && nickname)) navigate("/error");
-    // roomId를 이용해 API로 세부 방 정보 가져오기.
-    //REACT_APP_SERVER_URL
-  }, []);
+    if (timeCompleted) {
+      setShowResult(true);
+    }
+  }, [timeCompleted]);
 
   useEffect(() => {
     // "쉴드" 상태가 활성화되면 문어와 병아리 애니메이션을 즉시 제거
@@ -213,26 +281,30 @@ function Game() {
     navigate("/main");
   };
 
+  if (isLoading) {
+    return <div>Loading room information...</div>; // 로딩 중 사용자에게 표시할 컴포넌트
+  }
+
   return (
     <div className={backgroundStyle}>
       <Header
-        roomTitle={dummyRoomInfo.roomName}
-        language={dummyRoomInfo.language}
-        roomType={dummyRoomInfo.roomType}
-        roomId={roomId}
+        roomTitle={roomInfo.roomName}
+        language={roomInfo.language}
+        roomType={roomInfo.roomType}
+        roomId={roomInfo.roomId}
         onExitClick={handleExitClick} // 수정된 부분
       />
       <VideoScreen
-        roomId={roomId}
+        roomId={roomInfo.roomId}
         nickname={nickname}
-        roomType={roomType}
-        userList={[userList]}
+        roomType={roomInfo.roomType}
+        userList={roomInfo.userList}
       />
       <div className={styles.container}>
         <div className={styles.problemArea}>
           <Problem
-            problemTier={dummyRoomInfo.problemTier}
-            problemNo={dummyRoomInfo.problemNo}
+            problemTier={roomInfo.problemTier}
+            problemId={roomInfo.problemId}
           />
         </div>
         {/* 드래그 컨트롤 */}
@@ -263,19 +335,23 @@ function Game() {
           }}
         >
           <div className={styles.webIDE}>
-            <WebIDE language={dummyRoomInfo.language} />
+            <WebIDE language={roomInfo.language} />
           </div>
         </Resizable>
       </div>
-      <Footer roomType={dummyRoomInfo.roomType} />
+      <Footer
+        roomType={roomInfo.roomType}
+        userInfo={userInfo}
+        problemId={roomInfo.problemId}
+      />
       {showOctopus && <OctopusImage />}
       {inkSpotImages}
       {chickenImages}
 
       {/* 시간이 0이 되면 결과창을 렌더링 */}
-      {showResult && (
+      {0 && (
         <div className={styles.gameResultsContainer}>
-          <GameResults roomType={dummyRoomInfo.roomType} />
+          <GameResults roomType={roomInfo.roomType} />
         </div>
       )}
     </div>
