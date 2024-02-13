@@ -1,29 +1,45 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import styles from "./NicknameModal.module.css";
+import styles from "./NicknameModal.module.css"; // 스타일시트 임포트
 
-function NicknameCreation() {
+const NicknameModal = ({ close }) => {
   const [nickname, setNickname] = useState("");
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
-  const handleNicknameSubmit = () => {
-    // 서버에 닉네임을 보내는 로직을 여기에 작성합니다
-    console.log("닉네임이 제출되었습니다:", nickname);
-    navigate("/main"); // 제출 후 메인 페이지로 이동
+  const handleSubmit = () => {
+    console.log("닉네임 제출: ", nickname);
+    // 닉네임 제출 로직 구현
+    // API 호출이 성공했다고 가정하고, isNew 값을 업데이트
+    localStorage.setItem("isNew", "false");
+    close(); // 모달 닫기
+    navigate("/main");
   };
 
   return (
-    <div className={styles.nicknameContainer}>
-      {/* 닉네임 입력을 위한 모달 표시 */}
-      <input
-        type="text"
-        value={nickname}
-        onChange={(e) => setNickname(e.target.value)}
-        placeholder="닉네임을 입력하세요"
-      />
-      <button onClick={handleNicknameSubmit}>시작하기</button>
+    <div className={styles.modalOverlay}>
+      <div className={styles.modalContent}>
+        <h2>닉네임 설정</h2>
+        <input
+          type="text"
+          placeholder="닉네임 입력"
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
+          className={styles.inputField}
+        />
+        <button onClick={handleSubmit} className={styles.submitButton}>
+          제출
+        </button>
+        <button onClick={close} className={styles.closeButton}>
+          닫기
+        </button>
+      </div>
     </div>
   );
-}
+};
 
-export default NicknameCreation;
+NicknameModal.propTypes = {
+  close: PropTypes.func.isRequired,
+};
+
+export default NicknameModal;

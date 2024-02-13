@@ -32,12 +32,12 @@ function LoginRedirection() {
       if (localStorage.getItem("accessToken")) {
         if (isNew === "true") {
           // 'isNew'가 'true' 문자열인 경우
-          navigate("/nickname"); // 닉네임 생성 페이지로 이동
+          navigate("/"); // 닉네임 생성 페이지로 이동
         } else {
           navigate("/main"); // 메인 페이지로 이동
         }
       } else {
-        navigate("/login"); // 로그인 페이지로 다시 이동
+        navigate("/"); // 로그인 페이지로 다시 이동
       }
     }
 

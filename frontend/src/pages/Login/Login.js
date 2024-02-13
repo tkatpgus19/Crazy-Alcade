@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../store/authSlice";
+import NicknameModal from "./NicknameModal";
 import imgfile from "../../assets/images/loginlogo.png";
 import background from "../../assets/images/loginback.PNG";
 import styles from "./Login.module.css";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import kakaoImg from "../../assets/images/kakao_login_large_wide.png";
 import googleImg from "../../assets/images/web_neutral_sq_ctn@2x.png";
 
@@ -12,33 +13,48 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
 
   useEffect(() => {
     const handleOAuthRedirect = async () => {
-      const code = new URLSearchParams(location.search).get("code");
+      const code = new URLSearchParams(window.location.search).get("code");
       if (code) {
-        await fetchAccessToken(code);
+        const data = await fetchAccessToken(code); // fetchAccessToken 함수는 서버로부터 응답을 받아오는 함수
+
+        // 로그인 성공 후 isNew 상태에 따라 조건부 리디렉션
+        if (data && data.isNew) {
+          setIsNicknameModalOpen(true); // isNew가 true면 모달을 열어 닉네임 설정 유도
+        } else {
+          navigate("/main"); // isNew가 false면 바로 메인 페이지로 이동
+        }
       }
     };
 
     handleOAuthRedirect();
+  }, [navigate]); // navigate를 의존성 배열에 추가
 
-    // 쿠키를 확인하여 리다이렉션 처리하는 로직 추가
-    const checkRedirectCookie = () => {
-      const cookies = document.cookie.split("; ").reduce((acc, current) => {
-        const [key, value] = current.split("=");
-        acc[key] = value;
-        return acc;
-      }, {});
+  useEffect(() => {
+    // 페이지 로드 시 로컬 스토리지에서 'isNew' 값을 확인하여
+    // 신규 사용자일 경우 닉네임 모달을 열어야 하는 로직
+    const isNew = localStorage.getItem("isNew") === "true";
+    if (isNew) {
+      setIsNicknameModalOpen(true);
+    }
+  }, []); // 컴포넌트 마운트 시 실행되는 useEffect
 
-      const nextUrl = cookies["next"]; // 쿠키에서 리다이렉션할 URL을 담고 있는 'next' 키 확인
-      if (nextUrl) {
-        navigate(nextUrl); // useNavigate 훅을 사용하여 해당 URL로 리다이렉트
-      }
-    };
+  // 쿠키를 확인하여 리다이렉션 처리하는 로직 추가
+  const checkRedirectCookie = () => {
+    const cookies = document.cookie.split("; ").reduce((acc, current) => {
+      const [key, value] = current.split("=");
+      acc[key] = value;
+      return acc;
+    }, {});
 
-    checkRedirectCookie();
-  }, [location, navigate]); // navigate 함수를 의존성 배열에 추가
+    const nextUrl = cookies["next"]; // 쿠키에서 리다이렉션할 URL을 담고 있는 'next' 키 확인
+    if (nextUrl) {
+      navigate(nextUrl); // useNavigate 훅을 사용하여 해당 URL로 리다이렉트
+    }
+  };
 
   const fetchAccessToken = async (code) => {
     try {
@@ -128,6 +144,10 @@ const Login = () => {
       >
         이동하기
       </button>
+
+      {isNicknameModalOpen && (
+        <NicknameModal close={() => setIsNicknameModalOpen(false)} />
+      )}
     </div>
   );
 };
