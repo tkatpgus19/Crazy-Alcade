@@ -69,7 +69,7 @@ public class MemberService {
         else {
             //레벨을 기본값을 1로 설정
             Optional<Level> defaultLevel = levelRepository.findById(1);
-            defaultLevel.ifPresent(member::updateDefaultLevel);
+            defaultLevel.ifPresent(member::updateLevel);
 
             // 이메일을 기준으로 해시를 사용해 사용자 프로필 아바타 랜덤 지정
             member.updateProfile(selectRandomProfileImage(member.getEmail()));
@@ -270,7 +270,21 @@ public class MemberService {
 
         member.putReward(putRewardRequest);
 
-        return PutRewardResponse.of(member.getId());
+        List<Level> levelList = levelRepository.findAll();
+        boolean levelUp = false;
+
+        for (Level level : levelList) {
+            if (member.getLevel().getId() < level.getId()) {
+                if (member.getExp() <= level.getExp()) {
+                    break;
+                }
+
+                member.updateLevel(level);
+                levelUp = true;
+            }
+        }
+
+        return PutRewardResponse.of(member.getId(), levelUp, member.getLevel().getId());
     }
 
     public Member findMemberByAuthentication(Authentication authentication) {
@@ -290,13 +304,14 @@ public class MemberService {
 
     public static String selectRandomProfileImage(String email) {
         int randomIndex = generateRandomIndex(email);
+
         return "profile" + (randomIndex + 1) + ".png";
     }
 
     private static int generateRandomIndex(String email) {
-        // 이 메서드는 email을 기반으로 랜덤한 숫자를 생성합니다.
-        // SecureRandom을 사용하여 안전한 난수를 생성합니다.
+        // SecureRandom을 사용하여 email을 기반으로 랜덤한 난수 생성
         SecureRandom random = new SecureRandom(email.getBytes());
+
         return random.nextInt(MemberService.NUM_PROFILE_IMAGES);
     }
 }
