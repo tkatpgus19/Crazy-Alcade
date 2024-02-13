@@ -250,6 +250,8 @@ public class RoomService {
             }
             room.setIsStarted(true);
             template.convertAndSend("/sub/room/"+roomId+"/start", room);
+            template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, null, 1));
+            template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
 
             long timerValue = 0;
 
@@ -263,8 +265,6 @@ public class RoomService {
                     e.printStackTrace();
                 }
             }
-            template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, null, 1));
-            template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
             return true;
         }
         template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, null, 1));
