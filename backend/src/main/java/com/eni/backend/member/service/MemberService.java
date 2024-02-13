@@ -18,7 +18,6 @@ import com.eni.backend.member.entity.Level;
 import com.eni.backend.member.entity.Member;
 import com.eni.backend.member.repository.LevelRepository;
 import com.eni.backend.member.repository.MemberRepository;
-import com.eni.backend.problem.entity.Code;
 import com.eni.backend.problem.entity.CodeStatus;
 import com.eni.backend.problem.entity.Problem;
 import com.eni.backend.problem.repository.CodeRepository;
@@ -27,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.security.SecureRandom;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -51,6 +51,8 @@ public class MemberService {
     private final CodeRepository codeRepository;
     private final LevelRepository levelRepository;
 
+    private static final int NUM_PROFILE_IMAGES = 10; // 프로필 사진의 개수
+
     @Transactional
     public LoginInfo loginOrJoinMember(Member member, boolean flag) {
 
@@ -68,6 +70,9 @@ public class MemberService {
             //레벨을 기본값을 1로 설정
             Optional<Level> defaultLevel = levelRepository.findById(1);
             defaultLevel.ifPresent(member::updateDefaultLevel);
+
+            // 이메일을 기준으로 해시를 사용해 사용자 프로필 아바타 랜덤 지정
+            member.updateProfile(selectRandomProfileImage(member.getEmail()));
 
             try {
                 Long memberId = memberRepository.save(member).getId();
@@ -159,24 +164,6 @@ public class MemberService {
 
             newFailProblems.add(problemPlatform + " " + problemNo);
         }
-
-//        for (Code code : codeList) {
-//
-//            String problemPlatform = code.getProblem().getStringPlatform();
-//            String problemNo = String.valueOf(code.getProblem().getNo());
-//
-//            if (code.getStatus() == CodeStatus.SUCCESS) {
-//                successProblems.add(problemPlatform + " " + problemNo);
-//
-//            } else if (code.getStatus() == CodeStatus.FAIL || code.getStatus() == CodeStatus.COMPILE_ERROR) {
-//                failProblems.add(problemPlatform + " " + problemNo);
-//            } else {
-//                throw new CustomServerErrorException(SERVER_ERROR);
-//            }
-//        }
-//
-//        List<String> newSuccessProblems = successProblems.stream().distinct().toList();
-//        List<String> newFailProblems = failProblems.stream().distinct().toList();
 
         return GetMemberDetailResponse.from(member, newSuccessProblems, newFailProblems);
     }
@@ -288,5 +275,17 @@ public class MemberService {
         }
 
         throw new CustomServerErrorException(MEMBER_NOT_FOUND);
+    }
+
+    public static String selectRandomProfileImage(String email) {
+        int randomIndex = generateRandomIndex(email);
+        return "profile" + (randomIndex + 1) + ".png";
+    }
+
+    private static int generateRandomIndex(String email) {
+        // 이 메서드는 email을 기반으로 랜덤한 숫자를 생성합니다.
+        // SecureRandom을 사용하여 안전한 난수를 생성합니다.
+        SecureRandom random = new SecureRandom(email.getBytes());
+        return random.nextInt(MemberService.NUM_PROFILE_IMAGES);
     }
 }
