@@ -49,6 +49,55 @@
   display: none; /* 기존의 파일 업로드 버튼 감추기 */
 }
 
+/* Main.module.css */
+
+/* 기존의 스타일에 추가 */
+.expBarContainer {
+  width: 70%; /* 컨테이너 너비를 조정합니다 */
+  height: 20px;
+  margin: 10px 0 0 -20px;
+  background-color: #ddd; /* 경험치 바의 배경색 */
+  border-radius: 10px; /* 경험치 바의 둥근 모서리 */
+  position: relative; /* 자식 요소의 위치를 기준으로 설정 */
+  overflow: hidden; /* 내용이 넘칠 경우 숨김 */
+  margin-right: 10px; /* 텍스트와의 간격을 위해 오른쪽 여백 추가 */
+  border: black 1px solid;
+}
+
+.expBar {
+  height: 20px; /* 경험치 바의 높이 */
+  width: 0%; /* exp 상태에 따라 동적으로 변경 */
+  background-color: #22d349; /* 경험치 바 색상 */
+  border-radius: 10px 0 0 10px; /* exp 바 왼쪽 모서리 둥글게 */
+  transition: width 0.5s ease-in-out; /* 부드러운 너비 변화 효과 */
+}
+
+/* 경험치 텍스트 */
+.expText {
+  position: absolute; /* 절대 위치 */
+  right: -50px; /* 오른쪽으로부터 50px 거리 */
+  top: 0; /* 상단에 정렬 */
+  height: 20px; /* 높이를 경험치 바와 동일하게 설정 */
+  line-height: 20px; /* 세로 가운데 정렬 */
+  padding-left: 5px; /* 텍스트 내부 왼쪽 패딩 */
+  background: #fff; /* 배경색 */
+  border-radius: 0 10px 10px 0; /* 오른쪽 모서리 둥글게 */
+}
+
+/* 코인 이미지와 텍스트 컨테이너 */
+.coinContainer {
+  display: flex; /* 플렉스 컨테이너로 설정 */
+  align-items: center; /* 수직으로 중앙 정렬 */
+  margin-top: 5px; /* 위쪽 여백 추가 */
+}
+
+.coinImage {
+  width: 20px; /* 코인 이미지의 크기를 줄임 */
+  height: 20px; /* 코인 이미지의 크기를 줄임 */
+  margin-left: 5px;
+  margin-right: 10px; /* 텍스트와의 간격을 위해 오른쪽 여백 추가 */
+}
+
 /* 스타일링 for 소개 칸 */
 .introduction {
   margin-bottom: 10px;

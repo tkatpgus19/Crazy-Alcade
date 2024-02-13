@@ -1,9 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+
+// 이미지 import
 import imgfile from "../../assets/images/logo.png";
 import timeLimitImg from "../../assets/images/timeLimit.png";
 import languageImg from "../../assets/images/language.png";
 import background from "../../assets/images/mainback.png";
+
+import waterBalloonImg from "../../assets/images/waterBalloon.png";
+import octopusImg from "../../assets/images/octopus.png";
+import chickImg from "../../assets/images/chick.png";
+import magicImg from "../../assets/images/magic.png";
+import shieldImg from "../../assets/images/shield.png";
+
+import waterBalloonImgGrayImg from "../../assets/images/waterBalloonGrayImg.png";
+import octopusGrayImg from "../../assets/images/octopusGrayImg.png";
+import chickGrayImg from "../../assets/images/chickGrayImg.png";
+import magicGrayImg from "../../assets/images/magicGrayImg.png";
+import shieldGrayImg from "../../assets/images/shieldGrayImg.png";
+
 import "./Main.module.css";
 import styles from "./Main.module.css";
 
@@ -76,6 +91,7 @@ const Main = () => {
   const [exp, setExp] = useState(0);
   const [coin, setCoin] = useState(0);
   const [memberItemList, setMemberItemList] = useState([]);
+  const [inventory, setInventory] = useState([]);
 
   const navigate = useNavigate();
   const [nickname, setNickname] = useState("");
@@ -90,18 +106,25 @@ const Main = () => {
         },
       })
       .then((response) => {
-        const { nickname, profile, levelId, exp, coin, memberItemList } =
+        const { nickname, levelId, exp, coin, memberItemList } =
           response.data.result;
-        // API 응답의 구조에 따라 접근 방식을 조정할 필요가 있습니다.
-        // console.log(
-        //   response.data.data.nickname, // 사용자 닉네임
-        //   response.data.data.profile // 사용자 프로필
-        // );
-        // 상태 설정 함수들을 사용하여 응답 데이터를 상태에 저장합니다.
-        // setName, setNickname, setEmail, setProfile 함수들은 해당 상태를 관리하기 위해 미리 정의되어 있어야 합니다.
+
+        // nickname을 기반으로 1부터 10 사이의 숫자를 생성하는 해시 함수
+        const hash = (str) => {
+          let hash = 0;
+          for (let i = 0; i < str.length; i++) {
+            const character = str.charCodeAt(i);
+            hash = (hash << 5) - hash + character;
+            hash = hash & hash; // Convert to 32bit integer
+          }
+          return Math.abs(hash % 10) + 1; // 1부터 10 사이의 숫자 반환
+        };
+
+        const profileNumber = hash(nickname); // 닉네임을 기반으로 숫자 생성
+        const profilePicture = `profile${profileNumber}.png`; // 파일 이름 구성
+
         setNickname(nickname);
-        //setProfile(`url(../../assets/images/${profile})`);
-        setProfile(require(`../../assets/images/${profile}`).default);
+        setProfile(`/images/${profilePicture}`);
         setLevelId(levelId);
         setExp(exp);
         setCoin(coin);
@@ -265,6 +288,43 @@ const Main = () => {
     connectSession();
   };
 
+  // 인벤토리 데이터를 가져오는 useEffect 훅
+  useEffect(() => {
+    axios
+      .get(`https://i10d104.p.ssafy.io/api/members/inventory`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      })
+      .then((response) => {
+        const inventoryData = response.data.result;
+        setInventory(inventoryData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []); // 종속성 배열이 비어있기 때문에 컴포넌트 마운트 시에만 실행됩니다.
+
+  // 아이템의 수량에 따라 이미지를 설정하는 함수
+  const getItemImage = (itemName, count) => {
+    const colorImages = {
+      waterBalloon: waterBalloonColorImg,
+      octopus: octopusColorImg,
+      chick: chickColorImg,
+      magic: magicColorImg,
+      shield: shieldColorImg,
+    };
+    const grayImages = {
+      waterBalloon: waterBalloonGrayImg,
+      octopus: octopusGrayImg,
+      chick: chickGrayImg,
+      magic: magicGrayImg,
+      shield: shieldGrayImg,
+    };
+
+    return count > 0 ? colorImages[itemName] : grayImages[itemName];
+  };
+
   const backgroundStyle = {
     backgroundImage: `url(${background})`,
     backgroundRepeat: "no-repeat",
@@ -374,12 +434,37 @@ const Main = () => {
           <div className={styles.introduction}>
             <p>
               <div>Lv. {levelId}</div>
-              <div>경험치 {exp}</div>
-              <div>코인 {coin}</div>
+              {/* 경험치 진행 상태 표시줄 */}
+              <div style={{ display: "flex" }}>
+                <p
+                  style={{
+                    margin: "0",
+                    width: "100px",
+                  }}
+                >
+                  경험치
+                </p>
+                <div className={styles.expBarContainer}>
+                  <div
+                    className={styles.expBar}
+                    style={{ width: `${exp}%` }}
+                  ></div>
+                  <div className={styles.expText}>exp</div>
+                </div>
+              </div>
+              {/* 코인 부분 */}
+              <div className={styles.coinContainer}>
+                <div>코인 {coin}</div>
+                <img
+                  src="/images/coinImage.png"
+                  alt="코인"
+                  className={styles.coinImage}
+                />
+              </div>
             </p>
           </div>
 
-          {/* 하단 흰색 네모 칸 4개 정렬 */}
+          {/* 하단 흰색 네모 칸 5개 정렬 */}
           <div className={styles.whiteBoxes}>
             <div className={styles.whiteBox}></div>
             <div className={styles.whiteBox}></div>
