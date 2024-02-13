@@ -129,6 +129,7 @@ const Main = () => {
         setExp(exp);
         setCoin(coin);
         setMemberItemList(memberItemList);
+        connectSession();
       })
       .catch((error) => {
         console.log(error);
