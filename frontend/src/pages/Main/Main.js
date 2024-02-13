@@ -40,7 +40,7 @@ const Main = () => {
   };
 
   const connectSession = () => {
-    const socket = new SockJS(`${SERVER_URL}/ws-stomp`);
+    const socket = new SockJS(process.env.REACT_APP_SOCKET_URL);
     client.current = Stomp.over(socket);
     client.current.connect({}, onConnected, onError);
   };
@@ -107,7 +107,7 @@ const Main = () => {
 
   useEffect(() => {
     axios
-      .get(`https://i10d104.p.ssafy.io/api/members`, {
+      .get(`${process.env.REACT_APP_BASE_URL}/members`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -136,6 +136,7 @@ const Main = () => {
         setExp(exp);
         setCoin(coin);
         setMemberItemList(memberItemList);
+        connectSession();
       })
       .catch((error) => {
         console.log(error);
@@ -160,6 +161,7 @@ const Main = () => {
 
   const createRoom = (roomData) => {
     console.log("방이 생성되었습니다:", roomData);
+    roomData.master = nickname;
     axios
       .post(`${SERVER_URL}/rooms`, roomData)
       .then((res) => {
@@ -244,17 +246,16 @@ const Main = () => {
                 roomId: data.roomId,
               })
               .then((response) => {
-                if (response.data.result) {
-                  navigate("/room", {
-                    state: {
-                      roomId: data.roomId,
-                      nickname: nickname,
-                      roomType: data.roomType,
-                    },
-                  });
-                } else {
-                  alert("방에 인원이 가득 찼습니다.");
-                }
+                navigate("/room", {
+                  state: {
+                    roomId: data.roomId,
+                    nickname: nickname,
+                    roomType: data.roomType,
+                  },
+                });
+              })
+              .catch((err) => {
+                alert(err.response.data.message);
               });
           } else {
             alert("비밀번호가 달라요");
@@ -267,17 +268,16 @@ const Main = () => {
           roomId: data.roomId,
         })
         .then((response) => {
-          if (response.data.result) {
-            navigate("/room", {
-              state: {
-                roomId: data.roomId,
-                nickname: nickname,
-                roomType: data.roomType,
-              },
-            });
-          } else {
-            alert("방에 인원이 가득 찼습니다.");
-          }
+          navigate("/room", {
+            state: {
+              roomId: data.roomId,
+              nickname: nickname,
+              roomType: data.roomType,
+            },
+          });
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
         });
     }
   };
@@ -298,7 +298,7 @@ const Main = () => {
   // 아이템 회색 흑백 관련
   useEffect(() => {
     axios
-      .get(`https://i10d104.p.ssafy.io/api/members`, {
+      .get(process.env.REACT_APP_INVENTORY_URL, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -351,10 +351,6 @@ const Main = () => {
     alignItems: "space-between",
   };
 
-  const logoStyle = {
-    // 로고에 대한 추가 스타일을 여기에 추가
-  };
-
   const handleLogout = () => {
     // 로컬 스토리지에서 사용자 관련 정보 제거
     localStorage.removeItem("accessToken");
@@ -370,8 +366,8 @@ const Main = () => {
   return (
     <div className={styles.mainContainer} style={backgroundStyle}>
       {/* 왼쪽 부분 (my-page) */}
-      <div className={styles.logo} style={logoStyle}>
-        <img className={styles.logoImg} src={imgfile} alt="로고" />
+      <div className={styles.logo}>
+        <img src={imgfile} alt="로고" />
       </div>
 
       {/* 오른쪽 상단 버튼들 */}
@@ -595,8 +591,12 @@ const Main = () => {
                     <div className={styles.roomBlueBox}>
                       <p>{data.roomName}</p>
                     </div>
-                    <div className={styles.playingText}>
-                      <h1>Playing</h1>
+                    <div
+                      className={
+                        data.isStarted ? styles.playingText : styles.waitingText
+                      }
+                    >
+                      <h1>{data.isStarted ? "Playing" : "Waiting"}</h1>
                     </div>
                     <div
                       className={styles.roomDescription}
@@ -605,7 +605,7 @@ const Main = () => {
                         WebkitTextStroke: "0.5px white",
                       }}
                     >
-                      백준 : {data.problemNo}
+                      {data.problemName}
                     </div>
                     <div
                       className={
@@ -623,7 +623,7 @@ const Main = () => {
                           margin: "0 5px 5px 0",
                         }}
                       />
-                      {data.timeLimit}
+                      {data.timeLimit}초
                     </div>
                     <div
                       className={
@@ -649,16 +649,14 @@ const Main = () => {
                           bottom: "10px",
                         }}
                       >
-                        <FontAwesomeIcon
-                          icon={data.hasPassword ? faKey : null}
-                          rotation={data.hasPassword ? 220 : 0}
-                          style={
-                            data.hasPassword
-                              ? { color: "#FFD43B", marginTop: "5px" }
-                              : null
-                          }
-                          className={styles.keyIcon}
-                        />
+                        {data.hasPassword && (
+                          <FontAwesomeIcon
+                            icon={faKey}
+                            style={{ color: "#FFD43B", marginTop: "5px" }}
+                            className={styles.keyIcon}
+                          />
+                        )}
+
                         <img
                           src={
                             data.codeReview

@@ -16,11 +16,11 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
     hasPassword: false,
     roomPassword: "",
     problemTier: 0,
-    problemNo: 0,
+    problemId: 0,
     timeLimit: 0,
     language: "java",
     codeReview: true,
-    master: "김진영",
+    master: "",
   });
 
   const [problems, setProblems] = useState([]); // 문제 목록을 저장할 상태
@@ -31,7 +31,7 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
     const fetchTiers = async () => {
       try {
         const response = await axios.get(
-          "https://i10d104.p.ssafy.io/api/tiers"
+          `${process.env.REACT_APP_BASE_URL}/tiers`
         );
         setTiers(response.data.result || []);
       } catch (error) {
@@ -51,7 +51,7 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
       }
       try {
         const response = await axios.get(
-          `https://i10d104.p.ssafy.io/api/problems?tier-id=${roomData.problemTier}`
+          `${process.env.REACT_APP_BASE_URL}/problems?tier-id=${roomData.problemTier}`
         );
         setProblems(response.data.result || []);
       } catch (error) {
@@ -74,7 +74,7 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
 
   // 폼을 제출할 때 호출되는 핸들러 함수를 정의합니다.
   const handleSubmit = () => {
-    console.log(roomData);
+    console.log(roomData.problemId + "\n\n\n\n\n\n");
     createRoom(roomData); // 방 만들기 함수 호출
     closeModal(); // 모달 닫기 함수 호출
 
@@ -185,8 +185,8 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
         <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
           <span>문제 이름 : </span>
           <select
-            name="problemNo"
-            value={roomData.problemNo}
+            name="problemId"
+            value={roomData.problemId}
             onChange={handleChange}
           >
             <option value="">문제를 선택하세요</option>

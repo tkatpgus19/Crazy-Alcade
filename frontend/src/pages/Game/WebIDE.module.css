@@ -23,6 +23,8 @@
   position: static;
   height: 100%; /* 전체 높이에서 결과창 높이를 뺀 값 */
   z-index: 1;
+  padding-top: 0;
+  background-color: #fff;
 }
 
 .loading {
@@ -31,12 +33,12 @@
 
 /* WebIDE.module.css */
 
-.resultContainer,
-.loading {
+.resultContainer {
+  width: 50%;
   margin: 10px 0px;
   margin-right: 1px;
-  margin-left: 10px;
-  padding: 10px;
+  margin-left: 20px;
+  padding: 5px 10px;
   border: 1px solid #ddd; /* Light grey border */
   border-radius: 10px; /* Slightly rounded corners for the border */
   background-color: #f9f9f9; /* Light grey background */
@@ -44,7 +46,6 @@
   overflow-y: auto; /* Scrollable if content overflows */
   position: absolute; /* 결과 컨테이너를 절대적 위치로 설정 */
   bottom: 1px; /* IDE 컨테이너의 바닥에 붙임 */
-  left: 0; /* IDE 컨테이너의 왼쪽에 붙임 */
   right: 0; /* IDE 컨테이너의 오른쪽에 붙임 */
   z-index: 4; /* 다른 요소들 위에 겹쳐 표시 */
   top: auto; /* Adjust this value so the result container sits in the middle of the screen */
@@ -52,21 +53,49 @@
   font-size: 15px;
 }
 
+.loading {
+  background-color: transparent; /* Light grey background */
+
+  margin: 10px 0px;
+  margin-right: 1px;
+  margin-left: 20px;
+  padding: 5px 10px;
+  border-radius: 10px; /* Slightly rounded corners for the border */
+  overflow-y: auto; /* Scrollable if content overflows */
+  position: absolute; /* 결과 컨테이너를 절대적 위치로 설정 */
+  bottom: 1px; /* IDE 컨테이너의 바닥에 붙임 */
+  right: 0; /* IDE 컨테이너의 오른쪽에 붙임 */
+  z-index: 4; /* 다른 요소들 위에 겹쳐 표시 */
+  top: auto; /* Adjust this value so the result container sits in the middle of the screen */
+  font-family: "BMDOHYEON";
+  font-size: 15px;
+}
+
+/* 확장 모드가 아닐 때 적용할 스타일 */
+.resultContainerCompact {
+  border-radius: 10px; /* Slightly rounded corners for the border */
+  background-color: transparent; /* Light grey background */
+  overflow-y: auto; /* Scrollable if content overflows */
+  position: absolute; /* 결과 컨테이너를 절대적 위치로 설정 */
+  bottom: 0px; /* IDE 컨테이너의 바닥에 붙임 */
+  right: 15px; /* IDE 컨테이너의 오른쪽에 붙임 */
+  z-index: 4; /* 다른 요소들 위에 겹쳐 표시 */
+
+  font-family: "BMDOHYEON";
+}
+
 .toggleButton {
+  /* margin-bottom: 0px; */
   padding: 5px 5px;
   background-color: whitesmoke; /* 버튼 배경색 */
   color: white; /* 아이콘 색상 */
   border: none;
   border-radius: 5px; /* 버튼 모서리 둥글게 */
   cursor: pointer; /* 마우스 오버 시 커서 변경 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .console {
   max-height: 50vh;
-
   overflow-y: hidden;
   display: flex;
   flex-direction: column;
@@ -78,6 +107,7 @@
   margin: 0; /* 외부 여백 제거 */
   width: 100%; /* 컨테이너 전체 너비 사용 */
   box-sizing: border-box; /* 총 너비에 패딩과 테두리 포함 */
+  overflow-y: scroll;
 }
 
 .resultContainer li {
