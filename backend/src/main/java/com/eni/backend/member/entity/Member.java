@@ -110,7 +110,7 @@ public class Member extends BaseTime {
         this.connectedAt = timestamp;
     }
 
-    public void updateDefaultLevel(Level level) {
+    public void updateLevel(Level level) {
         this.level = level;
     }
 
