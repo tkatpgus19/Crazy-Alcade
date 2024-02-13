@@ -107,6 +107,7 @@
   margin: 0; /* 외부 여백 제거 */
   width: 100%; /* 컨테이너 전체 너비 사용 */
   box-sizing: border-box; /* 총 너비에 패딩과 테두리 포함 */
+  overflow-y: scroll;
 }
 
 .resultContainer li {
@@ -146,7 +147,4 @@
   transform: rotateY(180deg); /* Y축을 중심으로 180도 회전 */
   transform-style: preserve-3d; /* 3D 변환 스타일을 유지 */
   transition: transform 0.6s; /* 변환에 대한 전환 효과 */
-}
-
-.h4 {
 }
