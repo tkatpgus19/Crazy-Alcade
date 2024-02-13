@@ -86,6 +86,9 @@ public class RoomService {
     public Boolean enter(PostRoomEnterRequest request){
         RoomDto room = roomRepository.getRoomById(request.getRoomId());
         if(room != null) {
+            if(room.getIsStarted()){
+                throw new CustomBadRequestException(ROOM_ENTER_FAIL_STARTED_ROOM);
+            }
             if (room.getUserCnt() < room.getMaxUserCnt()) {
                 String userUUID = UUID.randomUUID().toString();
                 room.setUserCnt(room.getUserCnt() + 1);
@@ -111,8 +114,9 @@ public class RoomService {
                 template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
                 return true;
             }
+            throw new CustomBadRequestException(ROOM_ENTER_FAIL);
         }
-        throw new CustomBadRequestException(ROOM_ENTER_FAIL);
+        throw new CustomBadRequestException(ROOM_NOT_EXIST);
     }
     // 방에 인원 추가
     public String addUser(String roomId, String nickname){
@@ -138,36 +142,38 @@ public class RoomService {
     public Boolean delUser(String roomId, String userUUID){
         if(roomId != null) {
             RoomDto room = roomRepository.getRoomById(roomId);
-            room.setUserCnt(room.getUserCnt() - 1);
-            String user = room.getUserList().get(userUUID);
+            if(room != null) {
+                room.setUserCnt(room.getUserCnt() - 1);
+                String user = room.getUserList().get(userUUID);
 
-            if (room.getReadyList().get(user).equals("MASTER") && room.getUserCnt() != 0) {
-                room.getReadyList().remove(user);
-                Map.Entry<String, String> firstEntry = room.getReadyList().entrySet().iterator().next();
-                room.getReadyList().replace(firstEntry.getKey(), "MASTER");
-                room.setMaster(firstEntry.getKey());
-            } else {
-                room.getReadyList().remove(user);
-            }
-            room.getUserList().remove(userUUID);
-            log.info("User exit : " + user);
+                if (room.getReadyList().get(user).equals("MASTER") && room.getUserCnt() != 0) {
+                    room.getReadyList().remove(user);
+                    Map.Entry<String, String> firstEntry = room.getReadyList().entrySet().iterator().next();
+                    room.getReadyList().replace(firstEntry.getKey(), "MASTER");
+                    room.setMaster(firstEntry.getKey());
+                } else {
+                    room.getReadyList().remove(user);
+                }
+                room.getUserList().remove(userUUID);
+                log.info("User exit : " + user);
 
-            // builder 어노테이션 활용
-            ChatDto chat = ChatDto.builder()
-                    .type(ChatDto.MessageType.LEAVE)
-                    .sender(user)
-                    .message(user + " 님 퇴장!!")
-                    .build();
-            template.convertAndSend("/sub/chat/room/" + roomId, chat);
-            template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal",null, null, null, false, 1));
-            template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
-            if(getUserStatus(roomId) != null) {
-                template.convertAndSend("/sub/room/" + roomId + "/status", getUserStatus(roomId));
-            }
-            if (room.getUserCnt() == 0) {
-                roomRepository.getRoomMap().remove(roomId);
-                template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal",null, null, null, false, 1));
+                // builder 어노테이션 활용
+                ChatDto chat = ChatDto.builder()
+                        .type(ChatDto.MessageType.LEAVE)
+                        .sender(user)
+                        .message(user + " 님 퇴장!!")
+                        .build();
+                template.convertAndSend("/sub/chat/room/" + roomId, chat);
+                template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, false, 1));
                 template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
+                if (getUserStatus(roomId) != null) {
+                    template.convertAndSend("/sub/room/" + roomId + "/status", getUserStatus(roomId));
+                }
+                if (room.getUserCnt() == 0) {
+                    roomRepository.getRoomMap().remove(roomId);
+                    template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, false, 1));
+                    template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
+                }
             }
 
         }
@@ -253,9 +259,11 @@ public class RoomService {
                     e.printStackTrace();
                 }
             }
+            template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, null, 1));
+            template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
             return true;
         }
-        return false;
+        throw new CustomBadRequestException(ROOM_GAME_START_FAIL_NOT_READY);
     }
 
     public void clearRooms(){
