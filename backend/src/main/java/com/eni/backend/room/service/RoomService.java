@@ -114,8 +114,12 @@ public class RoomService {
                 template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
                 return true;
             }
+            template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, null, 1));
+            template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
             throw new CustomBadRequestException(ROOM_ENTER_FAIL);
         }
+        template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, null, 1));
+        template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
         throw new CustomBadRequestException(ROOM_NOT_EXIST);
     }
     // 방에 인원 추가
@@ -164,18 +168,16 @@ public class RoomService {
                         .message(user + " 님 퇴장!!")
                         .build();
                 template.convertAndSend("/sub/chat/room/" + roomId, chat);
-                template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, false, 1));
-                template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
+
                 if (getUserStatus(roomId) != null) {
                     template.convertAndSend("/sub/room/" + roomId + "/status", getUserStatus(roomId));
                 }
                 if (room.getUserCnt() == 0) {
                     roomRepository.getRoomMap().remove(roomId);
-                    template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, false, 1));
-                    template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
                 }
             }
-
+            template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, false, 1));
+            template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
         }
         clearRooms();
         return true;
@@ -263,6 +265,8 @@ public class RoomService {
             template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
             return true;
         }
+        template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, null, 1));
+        template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
         throw new CustomBadRequestException(ROOM_GAME_START_FAIL_NOT_READY);
     }
 
@@ -272,6 +276,8 @@ public class RoomService {
                 roomRepository.getRoomMap().remove(room.getRoomId());
             }
         }
+        template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, null, 1));
+        template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
     }
 
     public Boolean startTimer(String roomId){
