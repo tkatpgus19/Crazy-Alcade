@@ -20,13 +20,11 @@ function App() {
           {/* <Route
             exact
             path="/login/oauth2/code/kakao"
-            // path="/oauth2/kakao"
             element={<KakaoRedirection />}
           />
           <Route
             exact
             path="/login/oauth2/code/google"
-            // path="/oauth2/kakao"
             element={<GoogleRedirection />}
           /> */}
           {/* <Route path="/nickname" element={<NicknameModal />} /> */}
