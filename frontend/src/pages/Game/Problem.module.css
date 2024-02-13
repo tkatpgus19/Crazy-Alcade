@@ -13,24 +13,24 @@
   white-space: pre-wrap;
 }
 
-h2,
-h3 {
+.h2,
+.h3 {
   color: #333;
   margin-top: 10px;
 }
 
-h4 {
+.h4 {
   margin-top: 0px;
 }
 
-hr {
+.hr {
   border: 0;
   height: 1px;
   background-color: #eaeaea;
   margin: 20px 0px;
 }
 
-p {
+.p {
   color: #111;
   line-height: 1.6;
   margin: 0px 5px;
