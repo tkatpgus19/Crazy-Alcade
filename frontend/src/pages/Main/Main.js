@@ -102,6 +102,7 @@ const Main = () => {
 
   const createRoom = (roomData) => {
     console.log("방이 생성되었습니다:", roomData);
+    roomData.master = nickname;
     axios
       .post(`${SERVER_URL}/rooms`, roomData)
       .then((res) => {
