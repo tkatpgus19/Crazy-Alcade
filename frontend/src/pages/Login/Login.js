@@ -69,16 +69,22 @@ const Login = () => {
       localStorage.setItem("isConnected", data.result.connected.toString());
 
       dispatch(loginSuccess(data.result));
-      navigate("/main"); // useHistory의 history.push('/main') 대신 useNavigate를 사용
+
+      // 사용자가 새로운 사용자인지 확인 후 조건에 따라 페이지 이동
+      if (data.result.isNew) {
+        navigate("/nickname"); // 닉네임 생성 경로로 이동
+      } else {
+        navigate("/main"); // 메인 페이지로 이동
+      }
     } catch (error) {
-      console.error("Failed to fetch access token:", error);
+      console.error("액세스 토큰을 가져오는 데 실패했습니다:", error);
     }
   };
 
   const kakaoLoginHandler = () => {
     // window.location.href = process.env.REACT_APP_KAKAO_URL;
     window.location.replace(
-      "http://172.30.1.11:8081/oauth2/authorization/kakao?redirect_uri=http://localhost:3000/login-redirection&mode=login"
+      "https://i10d104.p.ssafy.io/oauth2/authorization/kakao?redirect_uri=http://localhost:3000/login-redirection&mode=login"
     );
   };
 
