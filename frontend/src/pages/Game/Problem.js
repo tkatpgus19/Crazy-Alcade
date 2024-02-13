@@ -54,7 +54,8 @@ const renderProblem = (data) => {
     <div className={styles.problemBox}>
       <div className={styles.problem}>
         <div className={styles.stickyHeader}>
-          <h2>
+          {/* <h2>와 <h3> 태그에 custom 클래스 적용 */}
+          <h2 className={styles.customH2}>
             {data.no}. {data.title}
           </h2>
           <div className={styles.limitsContainer}>
@@ -66,10 +67,11 @@ const renderProblem = (data) => {
             </div>
           </div>
         </div>
-        <hr />
+        <hr className={styles.customHr} />
         <h3>문제</h3>
-        <p style={{ whiteSpace: "pre-wrap" }}>{data.description}</p>
-        <hr />
+        <p className={styles.customP}>{data.description}</p>
+
+        <hr className={styles.customHr} />
         <h3>입력</h3>
         <p>{data.input}</p>
         <hr />
