@@ -8,7 +8,7 @@
 .problem {
   border-radius: 0px;
   background-color: #ffffff;
-  padding: 10px 20px;
+  padding: 10px 15px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   white-space: pre-wrap;
 }
@@ -27,12 +27,13 @@ hr {
   border: 0;
   height: 1px;
   background-color: #eaeaea;
-  margin: 20px 0;
+  margin: 20px 0px;
 }
 
 p {
-  color: #666;
+  color: #111;
   line-height: 1.6;
+  margin: 0px 5px;
 }
 
 .examplesContainer {
