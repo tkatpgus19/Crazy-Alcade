@@ -17,8 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static com.eni.backend.common.response.BaseResponseStatus.PROBLEM_NOT_FOUND;
-import static com.eni.backend.common.response.BaseResponseStatus.TIER_NOT_FOUND;
+import static com.eni.backend.common.response.BaseResponseStatus.*;
 
 @Slf4j
 @Service
@@ -113,7 +112,7 @@ public class RoomService {
                 return true;
             }
         }
-        return false;
+        throw new CustomBadRequestException(ROOM_ENTER_FAIL);
     }
     // 방에 인원 추가
     public String addUser(String roomId, String nickname){
@@ -236,8 +235,24 @@ public class RoomService {
             }
         }
         if(cnt == room.getUserCnt()-1){
+            if(cnt == 0){
+                throw new CustomBadRequestException(ROOM_GAME_START_FAIL);
+            }
             room.setIsStarted(true);
             template.convertAndSend("/sub/room/"+roomId+"/start", room);
+
+            long timerValue = 0;
+
+            for (long i = room.getTimeLimit(); i >= 0; i--) {
+                timerValue = i;
+                template.convertAndSend("/sub/timer/"+roomId, timerValue);
+                log.warn("초: " + timerValue);
+                try {
+                    Thread.sleep(1000); // 1초 대기
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             return true;
         }
         return false;
