@@ -434,8 +434,12 @@ const Main = () => {
                     <div className={styles.roomBlueBox}>
                       <p>{data.roomName}</p>
                     </div>
-                    <div className={styles.playingText}>
-                      <h1>Playing</h1>
+                    <div
+                      className={
+                        data.isStarted ? styles.playingText : styles.waitingText
+                      }
+                    >
+                      <h1>{data.isStarted ? "Playing" : "Waiting"}</h1>
                     </div>
                     <div
                       className={styles.roomDescription}
@@ -444,7 +448,7 @@ const Main = () => {
                         WebkitTextStroke: "0.5px white",
                       }}
                     >
-                      백준 : {data.problemNo}
+                      {data.problemName}
                     </div>
                     <div
                       className={
@@ -462,7 +466,7 @@ const Main = () => {
                           margin: "0 5px 5px 0",
                         }}
                       />
-                      {data.timeLimit}
+                      {data.timeLimit}초
                     </div>
                     <div
                       className={

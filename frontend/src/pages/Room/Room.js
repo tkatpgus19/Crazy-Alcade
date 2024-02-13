@@ -66,11 +66,7 @@ const Room = () => {
   const connectRoom = () => {
     const socket = new SockJS(process.env.REACT_APP_SOCKET_URL);
     client.current = Stomp.over(socket);
-    client.current.connect(
-      { userUUID: userUUID, roomId: roomId },
-      onConnected,
-      onError
-    ); // 현재상태를 변경할 때, {}는 헤더값 쓸때 쓴는 것, 성공하면 onConnected 실패시 onError
+    client.current.connect({}, onConnected, onError); // 현재상태를 변경할 때, {}는 헤더값 쓸때 쓴는 것, 성공하면 onConnected 실패시 onError
   };
 
   const leaveRoom = () => {
@@ -92,16 +88,14 @@ const Room = () => {
       "/sub/room/" + roomId + "/status",
       onStatusReceived
     ); // 이 url은 방의 상태, user 목록이나 준비상태를 본다.
-    // client.current.send(
-    //   "/pub/room/enterUser",
-    //   {},
-    //   JSON.stringify({
-    //     type: "ENTER",
-    //     roomId: roomId,
-    //     sender: nickname,
-    //     roomType: roomType,
-    //   })
-    // ); // 입장 이벤트 처리
+    client.current.send(
+      "/pub/enter",
+      {},
+      JSON.stringify({
+        roomId: roomId,
+        nickname: userUUID,
+      })
+    ); // 입장 이벤트 처리
     client.current.subscribe(
       "/sub/room/" + roomId + "/start",
       onSignalReceived
@@ -201,6 +195,7 @@ const Room = () => {
   };
 
   const enterGame = (data) => {
+    console.log(isCameraOn);
     // 게임방 입장을 위한 로직
     navigate("/game", {
       state: {
@@ -243,7 +238,7 @@ const Room = () => {
   return (
     <Background>
       <RoomHeader roomTitle={roomInfo.roomName} />
-      <RoomHeader2 onExitClick={back} />
+      <RoomHeader2 onExitClick={back} problemName={roomInfo.problemName} />
       <GrayBox>
         <div style={{ display: "flex", width: "100%", minWidth: "1200px" }}>
           <div className={styles.blue}>

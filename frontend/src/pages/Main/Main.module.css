@@ -387,13 +387,20 @@
 }
 
 .waitingText {
-  font-size: 28px;
   position: absolute;
-  top: -5px;
-  right: 40px;
-  color: #dcb60c;
+  top: 0;
+  right: 20px;
+  font-size: 14px;
   padding: 5px;
   border-radius: 5px;
+}
+
+.waitingText h1 {
+  margin: 0;
+  background: linear-gradient(to top, #e39a00, #e2ffdb);
+  -webkit-text-stroke: 0.5px black;
+  color: transparent;
+  background-clip: text;
 }
 
 .roomDescription {
