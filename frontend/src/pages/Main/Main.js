@@ -7,13 +7,13 @@ import timeLimitImg from "../../assets/images/timeLimit.png";
 import languageImg from "../../assets/images/language.png";
 import background from "../../assets/images/mainback.png";
 
-import waterBalloonImg from "../../assets/images/waterBalloon.png";
-import octopusImg from "../../assets/images/octopus.png";
-import chickImg from "../../assets/images/chick.png";
-import magicImg from "../../assets/images/magic.png";
-import shieldImg from "../../assets/images/shield.png";
+import waterBalloonColorImg from "../../assets/images/waterBalloon.png";
+import octopusColorImg from "../../assets/images/octopus.png";
+import chickColorImg from "../../assets/images/chick.png";
+import magicColorImg from "../../assets/images/magic.png";
+import shieldColorImg from "../../assets/images/shield.png";
 
-import waterBalloonImgGrayImg from "../../assets/images/waterBalloonGrayImg.png";
+import waterBalloonGrayImg from "../../assets/images/waterBalloonGrayImg.png";
 import octopusGrayImg from "../../assets/images/octopusGrayImg.png";
 import chickGrayImg from "../../assets/images/chickGrayImg.png";
 import magicGrayImg from "../../assets/images/magicGrayImg.png";
@@ -91,7 +91,14 @@ const Main = () => {
   const [exp, setExp] = useState(0);
   const [coin, setCoin] = useState(0);
   const [memberItemList, setMemberItemList] = useState([]);
-  const [inventory, setInventory] = useState([]);
+
+  const [itemImages, setItemImages] = useState({
+    waterBalloon: waterBalloonGrayImg, // 기본값은 모두 회색 이미지로 설정
+    octopus: octopusGrayImg,
+    chick: chickGrayImg,
+    magic: magicGrayImg,
+    shield: shieldGrayImg,
+  });
 
   const navigate = useNavigate();
   const [nickname, setNickname] = useState("");
@@ -288,42 +295,51 @@ const Main = () => {
     connectSession();
   };
 
-  // 인벤토리 데이터를 가져오는 useEffect 훅
+  // 아이템 회색 흑백 관련
   useEffect(() => {
     axios
-      .get(`https://i10d104.p.ssafy.io/api/members/inventory`, {
+      .get(`https://i10d104.p.ssafy.io/api/members`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       })
       .then((response) => {
-        const inventoryData = response.data.result;
-        setInventory(inventoryData);
+        const { memberItemList } = response.data.result;
+        const updatedItemImages = { ...itemImages };
+
+        memberItemList.forEach((item) => {
+          const itemImg = item.itemImg; // API 응답에 따라 조정 필요
+          const itemCount = item.memberItemCount; // API 응답에 따라 조정 필요
+
+          // 아이템 이름에 따라 이미지 경로를 업데이트합니다.
+          if (itemCount > 0) {
+            switch (itemImg) {
+              case "waterBalloon":
+                updatedItemImages.waterBalloon = waterBalloonImg; // 컬러 이미지로 업데이트
+                break;
+              case "octopus":
+                updatedItemImages.octopus = octopusImg;
+                break;
+              case "chick":
+                updatedItemImages.chick = chickImg;
+                break;
+              case "magic":
+                updatedItemImages.magic = magicImg;
+                break;
+              case "shield":
+                updatedItemImages.shield = shieldImg;
+                break;
+              // 추가 아이템에 대한 케이스도 여기에 추가
+            }
+          }
+        });
+
+        setItemImages(updatedItemImages);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []); // 종속성 배열이 비어있기 때문에 컴포넌트 마운트 시에만 실행됩니다.
-
-  // 아이템의 수량에 따라 이미지를 설정하는 함수
-  const getItemImage = (itemName, count) => {
-    const colorImages = {
-      waterBalloon: waterBalloonColorImg,
-      octopus: octopusColorImg,
-      chick: chickColorImg,
-      magic: magicColorImg,
-      shield: shieldColorImg,
-    };
-    const grayImages = {
-      waterBalloon: waterBalloonGrayImg,
-      octopus: octopusGrayImg,
-      chick: chickGrayImg,
-      magic: magicGrayImg,
-      shield: shieldGrayImg,
-    };
-
-    return count > 0 ? colorImages[itemName] : grayImages[itemName];
-  };
+  }, []);
 
   const backgroundStyle = {
     backgroundImage: `url(${background})`,
@@ -466,11 +482,31 @@ const Main = () => {
 
           {/* 하단 흰색 네모 칸 5개 정렬 */}
           <div className={styles.whiteBoxes}>
-            <div className={styles.whiteBox}></div>
-            <div className={styles.whiteBox}></div>
-            <div className={styles.whiteBox}></div>
-            <div className={styles.whiteBox}></div>
-            <div className={styles.whiteBox}></div>
+            <img
+              src={itemImages.waterBalloon}
+              alt="water balloon"
+              className={styles.whiteBox}
+            />
+            <img
+              src={itemImages.octopus}
+              alt="octopus"
+              className={styles.whiteBox}
+            />
+            <img
+              src={itemImages.chick}
+              alt="chick"
+              className={styles.whiteBox}
+            />
+            <img
+              src={itemImages.magic}
+              alt="magic"
+              className={styles.whiteBox}
+            />
+            <img
+              src={itemImages.shield}
+              alt="shield"
+              className={styles.whiteBox}
+            />
           </div>
 
           {/* 마이페이지 파란색 네모 칸 */}
