@@ -131,12 +131,12 @@ function Game() {
     fetchRoomInfo();
     fetchUserInfo();
 
-    // 타이머 온 -> 방장만 요청.
-    if (roomInfo.master === nickname) {
-      axios.get(
-        `${process.env.REACT_APP_BASE_URL}/rooms/set-timer?roomId=${roomId}`
-      );
-    }
+    // // 타이머 온 -> 방장만 요청.
+    // if (roomInfo.master === nickname) {
+    //   axios.get(
+    //     `${process.env.REACT_APP_BASE_URL}/rooms/set-timer?roomId=${roomId}`
+    //   );
+    // }
   }, []);
 
   // 게임 모드에 따른 배경 화면 설정
