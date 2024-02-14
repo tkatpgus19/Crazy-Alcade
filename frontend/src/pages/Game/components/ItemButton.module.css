@@ -1,5 +1,6 @@
 .itemButton,
-.disabledButton {
+.disabledButton,
+.selectedButton {
   margin: 0px 5px; /* 변경된 부분 */
   padding: 3px 5px;
   cursor: pointer;
@@ -28,6 +29,12 @@
   background-color: #aaa; /* 마우스 호버 시 배경색 변경 */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* 마우스 호버 시 그림자 효과 추가 */
   transform: scale(1); /* 호버 시 약간 확대 */
+}
+
+.selectedButton {
+  background-color: pink; /* 마우스 호버 시 배경색 변경 */
+  transform: scale(1.1); /* 호버 시 약간 확대 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* 마우스 호버 시 그림자 효과 추가 */
 }
 
 .itemButtonContainer {

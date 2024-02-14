@@ -2,7 +2,14 @@ import React from "react";
 import PropTypes from "prop-types";
 import styles from "./ItemButton.module.css";
 
-const ItemButton = ({ icon, itemName, onUseItem, disabled, count }) => {
+const ItemButton = ({
+  icon,
+  itemName,
+  onUseItem,
+  disabled,
+  count,
+  selected,
+}) => {
   const handleItemUse = () => {
     // 사용할 아이템에 따라 처리 로직 추가
     onUseItem(itemName);
@@ -13,8 +20,15 @@ const ItemButton = ({ icon, itemName, onUseItem, disabled, count }) => {
       {" "}
       {/* 아이템 버튼 및 카운트를 포함할 컨테이너 추가 */}
       <button
-        className={disabled ? styles.disabledButton : styles.itemButton}
+        className={
+          disabled
+            ? styles.disabledButton
+            : selected
+              ? styles.selectedButton
+              : styles.itemButton
+        }
         disabled={disabled}
+        selected={selected}
         onClick={handleItemUse}
       >
         <img src={icon} width={30} height={30} alt="Item Icon" />
@@ -30,6 +44,7 @@ ItemButton.propTypes = {
   itemName: PropTypes.string.isRequired,
   onUseItem: PropTypes.func.isRequired,
   disabled: PropTypes.bool.isRequired,
+  selected: PropTypes.bool.isRequired,
   count: PropTypes.number.isRequired, // 개수 prop 추가
 };
 

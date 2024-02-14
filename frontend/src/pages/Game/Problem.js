@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styles from "./Problem.module.css";
 import PropTypes from "prop-types"; // prop-types 임포트
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -29,9 +29,18 @@ const Problem = ({ problemId, problemTier }) => {
           setLoading(false);
         }
       };
-      getData();
+      if (!problemData && problemId) {
+        getData();
+      }
     }
-  }, []);
+  }, [problemId]);
+
+  const problemContent = useMemo(() => {
+    if (!problemData) return null; // problemData가 없는 경우 null 반환
+
+    // problemData가 있을 때만 renderProblem 함수 호출
+    return renderProblem(problemData);
+  }, [problemData]); // problemData가 변경될 때만 실행
 
   if (loading) {
     return <div className={styles.loading}>Loading...</div>;
@@ -45,7 +54,7 @@ const Problem = ({ problemId, problemTier }) => {
     );
   }
 
-  return renderProblem(problemData);
+  return problemContent;
 };
 
 const renderProblem = (data) => {

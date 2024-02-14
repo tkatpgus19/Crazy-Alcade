@@ -50,6 +50,12 @@
   display: none; /* 기존의 파일 업로드 버튼 감추기 */
 }
 
+.profileImage {
+  width: 130px; /* 예시 너비 */
+  height: 130px; /* 예시 높이 */
+  object-fit: contain; /* 이미지 비율을 유지하면서 요소에 완전히 채움 */
+}
+
 /* Main.module.css */
 
 /* 기존의 스타일에 추가 */
@@ -121,8 +127,10 @@
   width: 50px;
   height: 50px;
   margin: 4px;
+  padding: 1px;
   background-color: white;
   border-radius: 10px;
+  object-fit: contain;
 }
 
 /* 스타일링 for 마이페이지 파란색 네모 칸 */
@@ -360,6 +368,7 @@
   display: flex; /* Flex 컨테이너로 설정 */
   align-items: right; /* 가운데 정렬 */
   justify-content: right; /* 가운데 정렬 */
+  font-family: "DNFBitBitv2";
 }
 
 .optionButton {
@@ -566,7 +575,8 @@
 
 .nickname {
   font-size: 16px;
-  -webkit-text-stroke: 0.2px white;
+  -webkit-text-stroke: 1px black;
+  color: white;
 }
 
 .timestamp {
@@ -612,6 +622,7 @@
   color: #fff; /* 전송 버튼 글자색 */
   width: 70px;
   padding: 8px;
+  margin-left: 10px;
   border: none;
   cursor: pointer;
   border-radius: 5px; /* 전송 버튼 테두리 둥글게 */

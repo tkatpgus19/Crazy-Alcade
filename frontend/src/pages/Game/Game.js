@@ -133,7 +133,7 @@ function Game() {
       fetchRoomInfo();
       fetchUserInfo();
     }
-  }, []);
+  }, [roomInfo, userInfo]);
 
   // 게임 모드에 따른 배경 화면 설정
   const backgroundStyle =
@@ -342,11 +342,7 @@ function Game() {
           </div>
         </Resizable>
       </div>
-      <Footer
-        roomType={roomInfo.roomType}
-        userInfo={userInfo}
-        problemId={roomInfo.problemId}
-      />
+      <Footer roomInfo={roomInfo} userInfo={userInfo} />
       {showOctopus && <OctopusImage />}
       {inkSpotImages}
       {chickenImages}

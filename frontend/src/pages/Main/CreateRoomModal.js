@@ -80,9 +80,26 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
   const handleSubmit = async (event) => {
     event.preventDefault(); // 폼 제출 시 페이지 리로드 방지
 
+    if (roomData.roomName.length === 0 || roomData.roomName.length > 10) {
+      alert("방 이름은 최소 1자, 최대 10자 이내입니다.");
+      return; // 함수 실행 종료
+    }
+
     // 비밀번호 설정이 되어있고, 비밀번호 길이가 4자리가 아닌 경우 경고창 표시
     if (roomData.hasPassword && roomData.roomPassword.length !== 4) {
       alert("비밀번호는 4자리 숫자여야 합니다.");
+      return; // 함수 실행 종료
+    }
+
+    // 티어 선택 검증
+    if (!roomData.problemTier) {
+      alert("티어를 선택해주세요.");
+      return; // 함수 실행 종료
+    }
+
+    // 문제 번호 선택 검증
+    if (!roomData.problemId) {
+      alert("문제를 선택해주세요.");
       return; // 함수 실행 종료
     }
 
@@ -171,6 +188,9 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
             name="roomName"
             value={roomData.name}
             onChange={handleChange}
+            minLength="1"
+            maxLength="10"
+            placeholder="1 ~ 10글자를 입력해주세요."
           />
         </div>
 
