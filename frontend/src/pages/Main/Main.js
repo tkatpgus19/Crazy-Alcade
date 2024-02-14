@@ -37,7 +37,8 @@ const Main = () => {
   const audioRef = useRef(new Audio(roomBackgroundMusicLobby));
   const getRoomList = (roomType) => {
     axios.get(`${SERVER_URL}/rooms/${roomType}?page=${page}`).then((res) => {
-      setRoomList(res.data.result);
+      setRoomList(res.data.result.roomList);
+      setTotalPage(res.data.result.totalPage);
     });
     // 최대페이지로 최신화.
     //setTotalPage();
@@ -83,7 +84,8 @@ const Main = () => {
   }
 
   function onRoomInforReceived(payload) {
-    setRoomList(JSON.parse(payload.body));
+    console.log(payload.body + "방 페이로들");
+    setRoomList(JSON.parse(payload.body.roomList));
   }
 
   const chatContainerRef = useRef();
@@ -385,7 +387,11 @@ const Main = () => {
   };
 
   const handleNextPage = () => {
+<<<<<<< HEAD
     setPage((prevPage) => Math.max(totalPage, prevPage + 1)); // 최대 페이지 번호 검증이 필요할 수 있음
+=======
+    setPage((prevPage) => Math.max(totalPage, prevPage - 1)); // 최대 페이지 번호 검증이 필요할 수 있음
+>>>>>>> frontend
   };
 
   return (
