@@ -73,18 +73,18 @@ public class RoomService {
                     .toList();
         }
 
-        if(resultList.size() > (page-1)*4){
-            if(resultList.size()<(page-1)*4+4){
-                resultList = resultList.subList((page-1)*4, resultList.size());
-            }
-            else{
-                resultList = resultList.subList((page-1)*4, (page-1)*4+4);
-            }
+        int totalPage = (resultList.size()-1) / 4+1;
+
+        // 조건에 부합하는 방이 있을 떄
+        if(!resultList.isEmpty()){
+            resultList = resultList.subList((page-1)*4, Math.min(resultList.size(), (page-1)*4+4));
+            
+            return GetRoomListResponse.of(totalPage, page, resultList);
         }
+        // 비어있을 때
         else{
-            return GetRoomListResponse.of(1, 1, Collections.emptyList());
+            return GetRoomListResponse.of(totalPage, 1, Collections.emptyList());
         }
-        return GetRoomListResponse.of(resultList.size()/5+1, page, resultList);
     }
 
     public Boolean enter(PostRoomEnterRequest request){
