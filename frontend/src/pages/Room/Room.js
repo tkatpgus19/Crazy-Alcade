@@ -269,26 +269,6 @@ const Room = () => {
     }
   }, [chatContent]); // chatContent가 변경될 때마다 이 로직을 실행합니다.
 
-  // useEffect(() => {
-  //   // 새로고침을 방지하는 함수
-  //   const handleRefresh = (e) => {
-  //     if (
-  //       e.key === "F5" ||
-  //       ((e.ctrlKey || e.metaKey) && (e.key === "r" || e.key === "R"))
-  //     ) {
-  //       e.preventDefault();
-  //     }
-  //   };
-
-  //   // 이벤트 리스너 등록
-  //   document.addEventListener("keydown", handleRefresh);
-
-  //   // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
-  //   return () => {
-  //     document.removeEventListener("keydown", handleRefresh);
-  //   };
-  // }, []);
-
   return (
     <Background>
       <RoomHeader roomTitle={roomInfo.roomName} />
@@ -306,6 +286,7 @@ const Room = () => {
                         nickname={userlist[index]}
                         status={readylist[index]}
                         currentUser={nickname}
+                        master={roomInfo.master}
                         image={
                           profilelist[index]
                             ? `/images/${profilelist[index]}`

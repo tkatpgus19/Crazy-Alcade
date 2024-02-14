@@ -5,12 +5,21 @@ import PropTypes from "prop-types";
 import styles from "./MiniBox.module.css"; // Import the modular CSS file
 import ModalAlert from "../../components/alert/ModalAlert";
 
-const MiniBox = ({ children, image, nickname, status, currentUser }) => {
-  const showModaAlert = nickname === currentUser && status !== "MASTER";
+const MiniBox = ({ master, image, nickname, status, currentUser }) => {
+  let showModalAlert = false;
+  // 지금 내가 방장인가?
+  if (master === currentUser) {
+    if (nickname !== currentUser) {
+      showModalAlert = true;
+    }
+  }
+  if (nickname === undefined) {
+    showModalAlert = false;
+  }
 
   return (
     <div className={styles.minibox}>
-      {showModaAlert && (
+      {showModalAlert && (
         <ModalAlert
           message={`${nickname}을(를) 강퇴시키시겠습니까?`}
           showCancelButton={true}
@@ -24,7 +33,7 @@ const MiniBox = ({ children, image, nickname, status, currentUser }) => {
   );
 };
 MiniBox.propTypes = {
-  children: PropTypes.node,
+  master: PropTypes.string.isRequired,
   image: PropTypes.string,
   nickname: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
