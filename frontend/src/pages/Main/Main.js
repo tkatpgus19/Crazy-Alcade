@@ -387,7 +387,7 @@ const Main = () => {
   };
 
   const handleNextPage = () => {
-    setPage((prevPage) => Math.max(totalPage, prevPage + 1)); // 최대 페이지 번호 검증이 필요할 수 있음
+    setPage((prevPage) => Math.min(totalPage, prevPage + 1)); // 최대 페이지 번호 검증이 필요할 수 있음
   };
 
   return (
