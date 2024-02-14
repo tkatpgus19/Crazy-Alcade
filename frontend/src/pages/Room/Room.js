@@ -159,10 +159,10 @@ const Room = () => {
 
   const onStatusReceived = (payload) => {
     //ready 상태등 유저들의 상태를 받아와서 세팅해준다.
-    setUserStatus(JSON.parse(payload.body.readyList));
-    setProfilelist(Object.values(JSON.parse(payload.body.profileList)));
-    setUserlist(Object.keys(JSON.parse(payload.body.readyList))); // 객체에 있는 메서드를 사용해서
-    setReadylist(Object.values(JSON.parse(payload.body.readyList))); // payload로 딕셔너리 (["username":"readyStatus"]) 이렇게 오는데, 위는 키값들만, 아래는 값들만 따로 분리해서 세팅
+    setUserStatus(JSON.parse(payload.body).readyList);
+    setProfilelist(Object.values(JSON.parse(payload.body).profileList));
+    setUserlist(Object.keys(JSON.parse(payload.body).readyList)); // 객체에 있는 메서드를 사용해서
+    setReadylist(Object.values(JSON.parse(payload.body).readyList)); // payload로 딕셔너리 (["username":"readyStatus"]) 이렇게 오는데, 위는 키값들만, 아래는 값들만 따로 분리해서 세팅
   };
 
   const getUserList = () => {
