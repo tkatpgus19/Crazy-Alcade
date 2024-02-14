@@ -100,7 +100,7 @@ const Main = () => {
 
   function onRoomInforReceived(payload) {
     console.log(payload.body + "방 페이로들");
-    setRoomList(JSON.parse(payload.body.roomList));
+    setRoomList(JSON.parse(payload.body).roomList);
   }
 
   const chatContainerRef = useRef();
@@ -651,110 +651,113 @@ const Main = () => {
             {/* 게임 대기 화면 방 */}
             <div className={styles.gameRoomList}>
               {/* 방 하나하나 */}
-              {roomList.map((data, index) => {
-                return (
-                  <div
-                    key={index}
-                    className={styles.room}
-                    onClick={() => enterRoom(data)}
-                  >
-                    {/* 방 안의 제목 */}
-                    <div className={styles.roomBlueBox}>
-                      <p>{data.roomName}</p>
-                    </div>
+              {roomList &&
+                roomList.map((data, index) => {
+                  return (
                     <div
-                      className={
-                        data.isStarted ? styles.playingText : styles.waitingText
-                      }
+                      key={index}
+                      className={styles.room}
+                      onClick={() => enterRoom(data)}
                     >
-                      <h1>{data.isStarted ? "Playing" : "Waiting"}</h1>
-                    </div>
-                    <div
-                      className={styles.roomDescription}
-                      style={{
-                        fontSize: "15px",
-                        WebkitTextStroke: "0.5px white",
-                      }}
-                    >
-                      {data.problemName}
-                    </div>
-                    <div
-                      className={
-                        styles.roomDescription +
-                        " " +
-                        styles.roomDescriptionTime
-                      }
-                      style={{ marginTop: "10px" }}
-                    >
-                      <img
-                        src={timeLimitImg}
-                        style={{
-                          width: "15px",
-                          height: "15px",
-                          margin: "0 5px 5px 0",
-                        }}
-                      />
-                      {data.timeLimit}min
-                    </div>
-                    <div
-                      className={
-                        styles.roomDescription +
-                        " " +
-                        styles.roomDescriptionTime
-                      }
-                    >
-                      <img
-                        src={languageImg}
-                        style={{
-                          width: "14px",
-                          height: "14px",
-                          margin: "0 7px 0 2px",
-                        }}
-                      />{" "}
-                      {data.language}
+                      {/* 방 안의 제목 */}
+                      <div className={styles.roomBlueBox}>
+                        <p>{data.roomName}</p>
+                      </div>
                       <div
+                        className={
+                          data.isStarted
+                            ? styles.playingText
+                            : styles.waitingText
+                        }
+                      >
+                        <h1>{data.isStarted ? "Playing" : "Waiting"}</h1>
+                      </div>
+                      <div
+                        className={styles.roomDescription}
                         style={{
-                          position: "absolute",
-                          display: "flex",
-                          right: "10px",
-                          bottom: "10px",
+                          fontSize: "15px",
+                          WebkitTextStroke: "0.5px white",
                         }}
                       >
-                        {data.hasPassword && (
-                          <FontAwesomeIcon
-                            icon={faKey}
-                            style={{ color: "#FFD43B", marginTop: "5px" }}
-                            className={styles.keyIcon}
-                          />
-                        )}
-
+                        {data.problemName}
+                      </div>
+                      <div
+                        className={
+                          styles.roomDescription +
+                          " " +
+                          styles.roomDescriptionTime
+                        }
+                        style={{ marginTop: "10px" }}
+                      >
                         <img
-                          src={
-                            data.codeReview
-                              ? "../images/speak.png"
-                              : "../images/unspeak.png"
-                          }
-                          alt="speak"
-                          className={styles.speakIcon}
+                          src={timeLimitImg}
+                          style={{
+                            width: "15px",
+                            height: "15px",
+                            margin: "0 5px 5px 0",
+                          }}
                         />
+                        {data.timeLimit}min
+                      </div>
+                      <div
+                        className={
+                          styles.roomDescription +
+                          " " +
+                          styles.roomDescriptionTime
+                        }
+                      >
+                        <img
+                          src={languageImg}
+                          style={{
+                            width: "14px",
+                            height: "14px",
+                            margin: "0 7px 0 2px",
+                          }}
+                        />{" "}
+                        {data.language}
                         <div
                           style={{
-                            background: "#0584df",
-                            fontSize: "14px",
-                            color: "white",
-                            borderRadius: "5px",
-                            padding: "4px",
-                            WebkitTextStroke: "0.5px black",
-                            fontWeight: "bold",
+                            position: "absolute",
+                            display: "flex",
+                            right: "10px",
+                            bottom: "10px",
                           }}
                         >
-                          {data.userCnt}/{data.maxUserCnt}
+                          {data.hasPassword && (
+                            <FontAwesomeIcon
+                              icon={faKey}
+                              style={{ color: "#FFD43B", marginTop: "5px" }}
+                              className={styles.keyIcon}
+                            />
+                          )}
+
+                          <img
+                            src={
+                              data.codeReview
+                                ? "../images/speak.png"
+                                : "../images/unspeak.png"
+                            }
+                            alt="speak"
+                            className={styles.speakIcon}
+                          />
+                          <div
+                            style={{
+                              background: "#0584df",
+                              fontSize: "14px",
+                              color: "white",
+                              borderRadius: "5px",
+                              padding: "4px",
+                              WebkitTextStroke: "0.5px black",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {data.userCnt}/{data.maxUserCnt}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
             </div>
 
             <div className={styles.backandforthPage}>

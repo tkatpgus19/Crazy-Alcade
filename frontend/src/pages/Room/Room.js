@@ -201,7 +201,8 @@ const Room = () => {
       .then((res) => {
         if (res.data.result) {
           console.log("되는거니..?");
-          axios.get(`${SERVER_URL}/rooms/set-timer?roomId=${roomId}`);
+          // axios.get(`${SERVER_URL}/rooms/set-timer?roomId=${roomId}`);
+          client.current.disconnect();
         } else {
           alert("준비가 되지 않았습니다.");
         }
