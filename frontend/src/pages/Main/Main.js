@@ -134,6 +134,7 @@ const Main = () => {
       .catch((error) => {
         console.log(error);
       });
+    getRoomList("item");
   }, []);
 
   const openModal = () => {
@@ -345,6 +346,21 @@ const Main = () => {
 
     // 로그아웃 후 사용자를 홈 페이지로 리디렉션
     navigate("/");
+  };
+
+  useEffect(() => {
+    if (normalMode) getRoomList("normal");
+    else {
+      getRoomList("item");
+    } // roomType은 상태 또는 props로부터 가져온 값이어야 합니다.
+  }, [page, normalMode]); // page 또는 roomType이 변경될 때마다 실행
+
+  const handlePrevPage = () => {
+    setPage((prevPage) => Math.max(1, prevPage - 1)); // 페이지 번호는 최소 1
+  };
+
+  const handleNextPage = () => {
+    setPage((prevPage) => prevPage + 1); // 최대 페이지 번호 검증이 필요할 수 있음
   };
 
   return (
@@ -651,14 +667,8 @@ const Main = () => {
             </div>
 
             <div className={styles.backandforthPage}>
-              <div
-                className={styles.backPage}
-                // onClick={this.handleBackPage}
-              ></div>
-              <div
-                className={styles.forthPage}
-                // onClick={this.handleForthPage}
-              ></div>
+              <div className={styles.backPage} onClick={handlePrevPage}></div>
+              <div className={styles.forthPage} onClick={handleNextPage}></div>
             </div>
           </div>
 

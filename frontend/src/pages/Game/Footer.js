@@ -29,6 +29,9 @@ import balloonIcon from "../../assets/images/waterBalloon.png";
 import magicIcon from "../../assets/images/magic.png";
 import shieldIcon from "../../assets/images/shield.png";
 
+import SockJS from "sockjs-client";
+import { Stomp } from "@stomp/stompjs";
+
 const Footer = ({ roomType, userInfo, problemId }) => {
   const dispatch = useDispatch();
 
@@ -42,12 +45,29 @@ const Footer = ({ roomType, userInfo, problemId }) => {
   const isAnimating = useSelector((state) => state.waterBalloon.isAnimating);
   const isFlipped = useSelector((state) => state.webIDE.isFlipped); // 가정: webIDE 슬라이스에서 isFlipped 상태를 관리
 
+  const client = useRef();
+
   useEffect(() => {
     if (roomType === "item") {
       setItem(true);
       console.log("아이템전입니다");
     }
+    // connectSession;
   }, []);
+
+  const connectSession = () => {
+    const socket = new SockJS(`${process.env.REACT_APP_SOCKET_URL}`);
+    client.current = Stomp.over(socket);
+    client.current.connect({}, onConnected, onError);
+  };
+
+  const onConnected = () => {
+    client.current.subscribe(`/sub/game/` + roomId, onStatusReceived);
+  };
+
+  const onStatusReceived = (payload) => {
+    console.log(JSON.parse(payload.body));
+  };
 
   // 각 아이템의 개수를 itemId를 키로 하는 객체로 변환
   const itemCounts = userInfo.memberItemList.reduce((acc, item) => {
@@ -65,6 +85,8 @@ const Footer = ({ roomType, userInfo, problemId }) => {
     if (itemCount <= 0) {
       console.log("아이템이 없습니다.");
     } else {
+      // 아이템이 있으면 상태에 현재 선택 아이템 저장.
+
       // 각 아이템에 대한 효과 로직 추가
       console.log(`아이템 사용: ${item}`);
 
@@ -200,6 +222,15 @@ const Footer = ({ roomType, userInfo, problemId }) => {
   return (
     <div className={styles.footer}>
       {/* 내 아이템 영역 */}
+      <div className={styles.itemContainer}>
+        <div className={styles.itemHeader}>내 아이템</div>
+        {/* 각각의 아이템 버튼을 ItemButton 컴포넌트로 대체 */}
+        <button>1</button>
+        <button>2</button>
+        <button>3</button>
+        <button>4</button>
+        <button>5</button>
+      </div>
       {isItem && (
         <div className={styles.itemContainer}>
           <div className={styles.itemHeader}>내 아이템</div>
