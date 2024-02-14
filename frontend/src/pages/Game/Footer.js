@@ -32,7 +32,7 @@ import shieldIcon from "../../assets/images/shield.png";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 
-const Footer = ({ roomType, userInfo, problemId }) => {
+const Footer = ({ roomInfo, userInfo }) => {
   const dispatch = useDispatch();
 
   const [isItem, setItem] = useState(false);
@@ -49,11 +49,11 @@ const Footer = ({ roomType, userInfo, problemId }) => {
   const client = useRef();
 
   useEffect(() => {
-    if (roomType === "item") {
+    if (roomInfo.roomType === "item") {
       setItem(true);
       console.log("아이템전입니다");
     }
-    // connectSession;
+    connectSession();
   }, []);
 
   const connectSession = () => {
@@ -63,12 +63,27 @@ const Footer = ({ roomType, userInfo, problemId }) => {
   };
 
   const onConnected = () => {
-    client.current.subscribe(`/sub/game/` + roomId, onStatusReceived);
+    client.current.subscribe(`/sub/game/` + roomInfo.roomId, onStatusReceived);
   };
 
   const onStatusReceived = (payload) => {
     console.log(JSON.parse(payload.body));
   };
+
+  const onError = (err) =>{
+    console.log(err);
+  }
+
+  const attackUser = ()=>{
+    axios.post(`${process.env.REACT_APP_BASE_URL}/rooms/attack`, {
+      roomId: roomInfo.roomId,
+      nickname: '닉넴입니당',
+      victim: '공격당할 대상',
+      itemNo: 0
+    })
+    .then(res=>console.log(res))
+    .catch(err=>console.log(err))
+  }
 
   // 각 아이템의 개수를 itemId를 키로 하는 객체로 변환
   const itemCounts = userInfo.memberItemList.reduce((acc, item) => {
@@ -163,7 +178,7 @@ const Footer = ({ roomType, userInfo, problemId }) => {
     dispatch(setLoading(true)); // 로딩 시작
     console.log("코드 실행");
     try {
-      const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/${problemId}/codes/execute`;
+      const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/${roomInfo.problemId}/codes/execute`;
       const token = localStorage.getItem("accessToken");
 
       const response = await axios.post(
@@ -196,7 +211,7 @@ const Footer = ({ roomType, userInfo, problemId }) => {
   const handleSubmit = async () => {
     dispatch(setLoading(true)); // 로딩 상태를 true로 설정
     const token = localStorage.getItem("accessToken");
-    const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/${problemId}/codes/submit`;
+    const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/${roomInfo.problemId}/codes/submit`;
     try {
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -307,9 +322,8 @@ const Footer = ({ roomType, userInfo, problemId }) => {
 };
 
 Footer.propTypes = {
-  roomType: PropTypes.string.isRequired,
+  roomInfo: PropTypes.object.isRequired,
   userInfo: PropTypes.object.isRequired,
-  problemId: PropTypes.number.isRequired,
 };
 
 export default Footer;
