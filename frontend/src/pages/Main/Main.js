@@ -100,7 +100,7 @@ const Main = () => {
 
   useEffect(() => {
     axios
-      .get(`https://i10d104.p.ssafy.io/api/members`, {
+      .get(`${process.env.REACT_APP_BASE_URL}/members`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -291,7 +291,7 @@ const Main = () => {
   // 인벤토리 데이터를 가져오는 useEffect 훅
   useEffect(() => {
     axios
-      .get(`https://i10d104.p.ssafy.io/api/members/inventory`, {
+      .get(process.env.REACT_APP_INVENTORY_URL, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
