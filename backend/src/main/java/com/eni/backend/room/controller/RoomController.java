@@ -6,6 +6,7 @@ import com.eni.backend.room.dto.ChatDto;
 import com.eni.backend.room.dto.ItemDto;
 import com.eni.backend.room.dto.RoomDto;
 import com.eni.backend.room.dto.request.*;
+import com.eni.backend.room.dto.response.GetRoomListResponse;
 import com.eni.backend.room.service.RoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -57,8 +58,11 @@ public class RoomController {
                                                     @RequestParam(value = "has-review", required = false) Boolean codeReview,
                                                     @RequestParam(value = "is-solved", required = false) Boolean isSolved,
                                                     @RequestParam(value = "page", required = false) Integer page){
-        log.warn("노말전 방 정보: {}", roomService.getSortedRoomList("normal", language, tier, codeReview, isSolved, page));
-        return BaseSuccessResponse.of(GET_ROOM_LIST_SUCCESS, roomService.getSortedRoomList("normal", language, tier, codeReview, isSolved, page));
+
+        GetRoomListResponse response = roomService.getSortedRoomList("normal", language, tier, codeReview, isSolved, page);
+        log.warn("노말전 방 정보: {}", response);
+
+        return BaseSuccessResponse.of(GET_ROOM_LIST_SUCCESS, response);
     }
 
     // 아이템전 방 리스트 조회
@@ -66,8 +70,11 @@ public class RoomController {
     public BaseSuccessResponse<?> getItemRoomList(@RequestParam(value = "language", required = false) String language,
                                                   @RequestParam(value = "tier", required = false) String tier,
                                                   @RequestParam(value = "page", required = false) Integer page){
-        log.warn("아이템전 방 정보: {}", roomService.getSortedRoomList("item", language, tier, null, null, page));
-        return BaseSuccessResponse.of(GET_ROOM_LIST_SUCCESS, roomService.getSortedRoomList("item", language, tier, null, null, page));
+
+        GetRoomListResponse response = roomService.getSortedRoomList("item", language, tier, null, null, page);
+        log.warn("아이템전 방 정보: {}", response);
+
+        return BaseSuccessResponse.of(GET_ROOM_LIST_SUCCESS, response);
     }
 
     // 게임방 정보 조회
