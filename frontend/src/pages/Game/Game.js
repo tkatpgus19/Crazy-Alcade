@@ -80,6 +80,13 @@ function Game() {
   // };
 
   useEffect(() => {
+    // roomId 값이 없거나 nickname이 없으면 에러 페이지로 리디렉션
+    if (!roomId || !nickname || !roomName) {
+      navigate("/error");
+    }
+  }, [roomId, nickname, navigate]); // 의존성 배열에 roomId와 nickname 추가
+
+  useEffect(() => {
     // 비정상인 접근 차단. 개발 후 살리기.
     if (!(roomInfo.roomId && nickname)) navigate("/error");
 
@@ -140,12 +147,6 @@ function Game() {
     roomType === "item"
       ? styles.itemBackgroundStyle
       : styles.normalBackgroundStyle;
-
-  useEffect(() => {
-    if (timeCompleted) {
-      setShowResult(true);
-    }
-  }, [timeCompleted]);
 
   useEffect(() => {
     // "쉴드" 상태가 활성화되면 문어와 병아리 애니메이션을 즉시 제거
@@ -368,9 +369,13 @@ function Game() {
       {chickenImages}
 
       {/* 시간이 0이 되면 결과창을 렌더링 */}
-      {0 && (
+      {timeCompleted && (
         <div className={styles.gameResultsContainer}>
-          <GameResults roomType={roomInfo.roomType} />
+          <GameResults
+            roomType={roomInfo.roomType}
+            roomId={roomInfo.roomId}
+            userInfo={userInfo}
+          />
         </div>
       )}
     </div>
