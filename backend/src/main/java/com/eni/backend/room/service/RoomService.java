@@ -16,6 +16,9 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static com.eni.backend.common.response.BaseResponseStatus.*;
 
@@ -229,7 +232,7 @@ public class RoomService {
         return !Objects.equals(room.getUserCnt(), room.getMaxUserCnt());
     }
 
-    public Boolean checkReady(String roomId){
+    public Boolean checkReady(String roomId) {
         int cnt = 0;
         RoomDto room = roomRepository.getRoomById(roomId);
         List<String> list = room
@@ -237,32 +240,31 @@ public class RoomService {
                 .values()
                 .stream()
                 .toList();
-        for(String status: list){
-            if(status.equals("READY")){
+        for (String status : list) {
+            if (status.equals("READY")) {
                 cnt++;
             }
         }
-        if(cnt == room.getUserCnt()-1){
-            if(cnt == 0){
+        if (cnt == room.getUserCnt() - 1) {
+            if (cnt == 0) {
                 throw new CustomBadRequestException(ROOM_GAME_START_FAIL);
             }
             room.setIsStarted(true);
-            template.convertAndSend("/sub/room/"+roomId+"/start", room);
-
-            long timerValue = 0;
-
-            for (long i = room.getTimeLimit(); i >= 0; i--) {
-                timerValue = i;
-                template.convertAndSend("/sub/timer/"+roomId, timerValue);
-                log.warn("초: " + timerValue);
-                try {
-                    Thread.sleep(1000); // 1초 대기
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+            template.convertAndSend("/sub/room/" + roomId + "/start", room);
             template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, null, 1));
             template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
+
+            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+            final long[] timeLimit = {room.getTimeLimit()};
+            scheduler.scheduleAtFixedRate(() -> {
+                template.convertAndSend("/sub/timer/" + roomId, timeLimit[0]);
+                log.warn("초: " + timeLimit[0]);
+                if (timeLimit[0] == 0) {
+                    scheduler.shutdown();
+                }
+                timeLimit[0]--;
+            }, 0, 1, TimeUnit.SECONDS);
+
             return true;
         }
         template.convertAndSend("/sub/normal/room-list", getSortedRoomList("normal", null, null, null, null, 1));
