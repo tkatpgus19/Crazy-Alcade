@@ -133,7 +133,7 @@ function Game() {
       fetchRoomInfo();
       fetchUserInfo();
     }
-  }, []);
+  }, [roomInfo.roomId]);
 
   // 게임 모드에 따른 배경 화면 설정
   const backgroundStyle =
