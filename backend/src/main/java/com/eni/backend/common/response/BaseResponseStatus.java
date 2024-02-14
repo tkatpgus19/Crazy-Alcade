@@ -52,6 +52,7 @@ public enum BaseResponseStatus {
     POST_ENTER_ROOM_SUCCESS(HttpStatus.OK, "방 입장에 성공하였습니다."),
     DELETE_MEMBER_SUCCESS(HttpStatus.OK, "방 퇴장에 성공하였습니다."),
     POST_ATTACK_SUCCESS(HttpStatus.OK, "공격에 성공하였습니다."),
+    GET_RANK_SUCCESS(HttpStatus.OK, "순위 조회에 성공하였습니다."),
 
     // BAD_REQUEST
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "유효하지 않은 요청입니다."),
@@ -107,8 +108,9 @@ public enum BaseResponseStatus {
     ROOM_ENTER_FAIL(HttpStatus.BAD_REQUEST, "인원이 가득 찼습니다."),
     ROOM_ENTER_FAIL_STARTED_ROOM(HttpStatus.BAD_REQUEST, "이미 시작된 방입니다."),
     ROOM_GAME_START_FAIL(HttpStatus.BAD_REQUEST, "게임은 최소 2인 이상부터 시작 가능합니다."),
-    ROOM_GAME_START_FAIL_NOT_READY(HttpStatus.BAD_REQUEST, "모든 인원이 준비 상태여야 게임을 시작할 수 있습니다.");
-
+    ROOM_GAME_START_FAIL_NOT_READY(HttpStatus.BAD_REQUEST, "모든 인원이 준비 상태여야 게임을 시작할 수 있습니다."),
+    ROOM_NOT_EXIST_MEMBER(HttpStatus.BAD_REQUEST, "방에 해당 멤버가 존재하지 않습니다."),
+    ;
 
     private final HttpStatus status;
     private final String message;

@@ -20,6 +20,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -183,6 +184,13 @@ public class RoomController {
     @PostMapping("/attack")
     public BaseSuccessResponse<?> postAttack(@RequestBody PostAttackRequest request){
         return BaseSuccessResponse.of(POST_ATTACK_SUCCESS, roomService.attackUser(request));
+    }
+
+    @GetMapping("/{room-id}/rank")
+    public BaseSuccessResponse<?> rank(@PathVariable(name = "room-id") String roomId,
+                                       Authentication authentication) {
+        log.info("RoomController.rank");
+        return BaseSuccessResponse.of(GET_RANK_SUCCESS, roomService.rank(roomId, authentication));
     }
 
     @MessageMapping("/item/use")
