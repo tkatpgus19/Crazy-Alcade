@@ -166,15 +166,15 @@ public class RoomService {
                     room.getUserList().remove(userUUID);
 
                     log.info("User exit : " + user);
-                }
 
-                // builder 어노테이션 활용
-                ChatDto chat = ChatDto.builder()
-                        .type(ChatDto.MessageType.LEAVE)
-                        .sender(user)
-                        .message(user + " 님 퇴장!!")
-                        .build();
-                template.convertAndSend("/sub/chat/room/" + roomId, chat);
+                    // builder 어노테이션 활용
+                    ChatDto chat = ChatDto.builder()
+                            .type(ChatDto.MessageType.LEAVE)
+                            .sender(user)
+                            .message(user + " 님 퇴장!!")
+                            .build();
+                    template.convertAndSend("/sub/chat/room/" + roomId, chat);
+                }
 
                 if (getUserStatus(roomId) != null) {
                     template.convertAndSend("/sub/room/" + roomId + "/status", getUserStatus(roomId));
@@ -259,7 +259,7 @@ public class RoomService {
             template.convertAndSend("/sub/item/room-list", getSortedRoomList("item", null, null, null, null, 1));
 
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-            final long[] timeLimit = {room.getTimeLimit()};
+            final long[] timeLimit = {room.getTimeLimit()*60};
             scheduler.scheduleAtFixedRate(() -> {
                 template.convertAndSend("/sub/timer/" + roomId, timeLimit[0]);
                 log.warn("초: " + timeLimit[0]);
