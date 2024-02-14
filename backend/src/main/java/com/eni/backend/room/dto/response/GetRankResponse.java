@@ -21,4 +21,12 @@ public class GetRankResponse {
         this.myRank = myRank;
     }
 
+    public static GetRankResponse of(String roomId, List<OtherRankDto> totalRanks, MyRankDto myRank) {
+        return builder()
+                .roomId(roomId)
+                .totalRanks(totalRanks)
+                .myRank(myRank)
+                .build();
+    }
+
 }

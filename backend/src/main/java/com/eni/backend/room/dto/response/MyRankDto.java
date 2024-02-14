@@ -1,5 +1,6 @@
 package com.eni.backend.room.dto.response;
 
+import com.eni.backend.room.entity.Ranking;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -19,4 +20,11 @@ public class MyRankDto {
         this.getCoin = getCoin;
     }
 
+    public static MyRankDto from(Ranking ranking, int getExp) {
+        return builder()
+                .rank(ranking.getValue())
+                .getExp(getExp)
+                .getCoin(ranking.getCoin())
+                .build();
+    }
 }

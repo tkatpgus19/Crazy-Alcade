@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-
 import java.util.List;
 
 public interface CodeRepository extends JpaRepository<Code, Long> {
@@ -17,4 +16,7 @@ public interface CodeRepository extends JpaRepository<Code, Long> {
 
     @Query("select DISTINCT(c.problem) from Code c where c.member = :member and c.status = :codeStatus order by c.problem.no")
     List<Problem> findAllByMemberAndCodeStatus(@Param("member") Member member, @Param("codeStatus") CodeStatus codeStatus);
+
+    Code findFirstByRoomIdAndMemberIdOrderByTimeOrderByMemory(String roomId, Long memberId);
+
 }
