@@ -150,19 +150,22 @@ public class RoomService {
         if(roomId != null) {
             RoomDto room = roomRepository.getRoomById(roomId);
             if(room != null) {
-                room.setUserCnt(room.getUserCnt() - 1);
                 String user = room.getUserList().get(userUUID);
 
-                if (room.getReadyList().get(user).equals("MASTER") && room.getUserCnt() != 0) {
-                    room.getReadyList().remove(user);
-                    Map.Entry<String, String> firstEntry = room.getReadyList().entrySet().iterator().next();
-                    room.getReadyList().replace(firstEntry.getKey(), "MASTER");
-                    room.setMaster(firstEntry.getKey());
-                } else {
-                    room.getReadyList().remove(user);
+                if(user != null){
+                    if (room.getReadyList().get(user).equals("MASTER") && room.getUserCnt() != 1) {
+                        room.getReadyList().remove(user);
+                        Map.Entry<String, String> firstEntry = room.getReadyList().entrySet().iterator().next();
+                        room.getReadyList().replace(firstEntry.getKey(), "MASTER");
+                        room.setMaster(firstEntry.getKey());
+                    } else {
+                        room.getReadyList().remove(user);
+                    }
+                    room.setUserCnt(room.getUserCnt() - 1);
+                    room.getUserList().remove(userUUID);
+
+                    log.info("User exit : " + user);
                 }
-                room.getUserList().remove(userUUID);
-                log.info("User exit : " + user);
 
                 // builder 어노테이션 활용
                 ChatDto chat = ChatDto.builder()
