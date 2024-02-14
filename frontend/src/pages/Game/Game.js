@@ -81,7 +81,7 @@ function Game() {
 
   useEffect(() => {
     // 비정상인 접근 차단. 개발 후 살리기.
-    if (!(roomInfo.roomId && nickname)) navigate("/error");
+    // if (!(roomInfo.roomId && nickname)) navigate("/error");
 
     // roomId를 이용해 API로 세부 방 정보 가져오기.
     const fetchRoomInfo = async () => {
@@ -140,12 +140,6 @@ function Game() {
     roomType === "item"
       ? styles.itemBackgroundStyle
       : styles.normalBackgroundStyle;
-
-  useEffect(() => {
-    if (timeCompleted) {
-      setShowResult(true);
-    }
-  }, [timeCompleted]);
 
   useEffect(() => {
     // "쉴드" 상태가 활성화되면 문어와 병아리 애니메이션을 즉시 제거
@@ -279,6 +273,26 @@ function Game() {
     />
   ));
 
+  useEffect(() => {
+    // 새로고침을 방지하는 함수
+    const handleRefresh = (e) => {
+      if (
+        e.key === "F5" ||
+        ((e.ctrlKey || e.metaKey) && (e.key === "r" || e.key === "R"))
+      ) {
+        e.preventDefault();
+      }
+    };
+
+    // 이벤트 리스너 등록
+    document.addEventListener("keydown", handleRefresh);
+
+    // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
+    return () => {
+      document.removeEventListener("keydown", handleRefresh);
+    };
+  }, []);
+
   const handleExitClick = () => {
     // "/main"으로 이동하는 코드
     navigate("/main");
@@ -348,9 +362,13 @@ function Game() {
       {chickenImages}
 
       {/* 시간이 0이 되면 결과창을 렌더링 */}
-      {0 && (
+      {timeCompleted && (
         <div className={styles.gameResultsContainer}>
-          <GameResults roomType={roomInfo.roomType} />
+          <GameResults
+            roomType={roomInfo.roomType}
+            roomId={roomInfo.roomId}
+            userInfo={userInfo}
+          />
         </div>
       )}
     </div>

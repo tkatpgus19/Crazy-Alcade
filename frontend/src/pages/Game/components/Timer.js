@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import axios from "axios";
 
 import PropTypes from "prop-types";
 import styles from "./Timer.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock } from "@fortawesome/free-solid-svg-icons";
 
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
@@ -15,11 +16,11 @@ const Timer = ({ roomId }) => {
   const [remainingTime, setRemainingTime] = useState();
   const client = useRef();
 
-  // 남은 시간을 '분:초' 형식으로 변환하는 함수
   const formatTime = (time) => {
-    const minutes = Math.floor(time / 60);
+    const hours = Math.floor(time / 3600);
+    const minutes = Math.floor((time % 3600) / 60);
     const seconds = time % 60;
-    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
   };
 
   useEffect(() => {
@@ -47,7 +48,7 @@ const Timer = ({ roomId }) => {
 
   // Game.js로 쏴라
   useEffect(() => {
-    if (remainingTime === 0) {
+    if (1) {
       dispatch(resetTimer()); // 게임 종료 알림.
       client.current.disconnect();
     }
@@ -57,6 +58,7 @@ const Timer = ({ roomId }) => {
     <div
       className={`${styles.timer} ${remainingTime < 60 ? styles.redTimer : ""}`}
     >
+      {/* 타이머 아이콘 */}
       TIME {remainingTime ? formatTime(remainingTime) : "??:??"}
     </div>
   );

@@ -1,8 +1,7 @@
 .timer {
   height: 35px;
-  width: 110px;
+  width: 130px;
   background-color: #0bbeff;
-
   margin-right: 8px;
   padding: 0px 6px;
   border: 1px solid;
@@ -13,7 +12,7 @@
   color: black;
   font-family: "DNFBitBitv2";
   text-align: center;
-  line-height: 35px; /* 높이와 동일하게 설정 */
+  line-height: 35px;
   -webkit-text-stroke: 0.3px white; /* 가독성 위해 0.5 => 0.3 */
   box-sizing: border-box;
 }
@@ -26,4 +25,8 @@
 .redTimer {
   /* background-color: red; */
   color: black;
+}
+
+.timerIcon {
+  margin-top: 30px;
 }

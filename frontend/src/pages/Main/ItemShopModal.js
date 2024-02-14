@@ -4,17 +4,17 @@ import styles from "./ItemShopModal.module.css";
 import axios from "axios";
 
 // 이미지 import
-import waterBalloonImg from "../../assets/images/waterBalloon.png";
 import octopusImg from "../../assets/images/octopus.png";
 import chickImg from "../../assets/images/chick.png";
+import waterBalloonImg from "../../assets/images/waterBalloon.png";
 import magicImg from "../../assets/images/magic.png";
 import shieldImg from "../../assets/images/shield.png";
 
 // 이미지를 itemId와 매핑하기 위한 객체
 const itemImages = {
-  1: waterBalloonImg,
-  2: octopusImg,
-  3: chickImg,
+  1: octopusImg,
+  2: chickImg,
+  3: waterBalloonImg,
   4: magicImg,
   5: shieldImg,
 };

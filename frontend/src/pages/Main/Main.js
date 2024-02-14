@@ -47,8 +47,31 @@ const Main = () => {
   const client = useRef();
   const messagesEndRef = useRef(null); // messages 참조 생성
   const audioRef = useRef(new Audio(roomBackgroundMusicLobby));
+
   const getRoomList = (roomType) => {
-    axios.get(`${SERVER_URL}/rooms/${roomType}?page=${page}`).then((res) => {
+    // 필터링 조건을 쿼리 파라미터로 변환
+    // 선택된 필터링 조건이 없으면 쿼리 파라미터를 추가하지 않음
+    let queryParams = `page=${page}`;
+    if (language) queryParams += `&language=${language}`;
+    if (hasReview) queryParams += `&has-review=${hasReview}`;
+    if (tier) queryParams += `&tier=${tier}`; // tier 값이 있을 때만 쿼리에 추가
+
+    axios.get(`${SERVER_URL}/rooms/${roomType}?${queryParams}`).then((res) => {
+      setRoomList(res.data.result.roomList);
+      setTotalPage(res.data.result.totalPage);
+    });
+    // 최대페이지로 최신화.
+    //setTotalPage();
+  };
+
+  const allList = (roomType) => {
+    let type;
+    if (roomType) {
+      type = "normal";
+    } else {
+      type = "item";
+    }
+    axios.get(`${SERVER_URL}/rooms/${type}?page=${page}`).then((res) => {
       setRoomList(res.data.result.roomList);
       setTotalPage(res.data.result.totalPage);
     });
@@ -133,6 +156,9 @@ const Main = () => {
   const [exp, setExp] = useState(0);
   const [coin, setCoin] = useState(0);
   const [memberItems, setMemberItems] = useState([]);
+  const [tier, setTier] = useState("");
+  const [language, setLanguage] = useState("");
+  const [hasReview, setHasReview] = useState("");
 
   const [itemImages, setItemImages] = useState({
     waterBalloon: waterBalloonGrayImg, // 기본값은 모두 회색 이미지로 설정
@@ -269,16 +295,25 @@ const Main = () => {
   const createRoom = (roomData) => {
     console.log("방이 생성되었습니다:", roomData);
     roomData.master = nickname;
+    const token = localStorage.getItem("accessToken");
     axios
       .post(`${SERVER_URL}/rooms`, roomData)
       .then((res) => {
         console.log(res.data.result.roomId);
         // 방 생성에 성공했을때 바로 입장
         axios
-          .post(`${SERVER_URL}/rooms/enter`, {
-            nickname: nickname,
-            roomId: res.data.result.roomId,
-          })
+          .post(
+            `${SERVER_URL}/rooms/enter`,
+            {
+              nickname: nickname,
+              roomId: res.data.result.roomId,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
           .then((response) => {
             if (response.data.result) {
               client.current.disconnect();
@@ -302,14 +337,19 @@ const Main = () => {
 
   const handleLanguageChange = (event) => {
     // TODO: 해당 언어 변경에 따른 로직 구현
+    setLanguage(event.target.value);
   };
 
   const handleDifficultyChange = (event) => {
     // TODO: 해당 난이도 변경에 따른 로직 구현
+    const tierMapping = { bronze: 1, silver: 2, gold: 3 };
+    setTier(tierMapping[event.target.value]);
   };
 
   const handleCodeReviewChange = (event) => {
     // TODO: 코드 리뷰 변경에 따른 로직 구현
+    const reviewValue = event.target.value === "o" ? "true" : "false";
+    setHasReview(reviewValue);
   };
 
   const handleChatInputChange = (event) => {
@@ -340,6 +380,7 @@ const Main = () => {
   };
 
   const enterRoom = (data) => {
+    const token = localStorage.getItem("accessToken");
     if (data.hasPassword) {
       const password = prompt("비밀번호를 입력하세요");
       axios
@@ -349,10 +390,18 @@ const Main = () => {
         .then((res) => {
           if (res.data.result) {
             axios
-              .post(`${SERVER_URL}/rooms/enter`, {
-                nickname: nickname,
-                roomId: data.roomId,
-              })
+              .post(
+                `${SERVER_URL}/rooms/enter`,
+                {
+                  nickname: nickname,
+                  roomId: data.roomId,
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              )
               .then((response) => {
                 client.current.disconnect();
                 navigate("/room", {
@@ -372,10 +421,18 @@ const Main = () => {
         });
     } else {
       axios
-        .post(`${SERVER_URL}/rooms/enter`, {
-          nickname: nickname,
-          roomId: data.roomId,
-        })
+        .post(
+          `${SERVER_URL}/rooms/enter`,
+          {
+            nickname: nickname,
+            roomId: data.roomId,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
         .then((response) => {
           client.current.disconnect();
           navigate("/room", {
@@ -452,6 +509,14 @@ const Main = () => {
       messagesEndRef.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
     }
   }, [chatContent]); // chatContent가 변경될 때마다 이 로직을 실행합니다.
+
+  useEffect(() => {
+    if (normalMode) {
+      getRoomList("normal");
+    } else {
+      getRoomList("item");
+    }
+  }, [tier, page, language, hasReview, normalMode]); // tier 또는 page 상태가 변경될 때마다 실행
 
   return (
     <div className={styles.mainContainer} style={backgroundStyle}>
@@ -630,23 +695,41 @@ const Main = () => {
               </div>
 
               {/* 코드 리뷰 드롭다운 */}
+
               <div className={styles.optionButton}>
                 <label htmlFor="codeReview">코드 리뷰</label>
-                <select
-                  name="codeReview"
-                  id="codeReview"
-                  onChange={handleCodeReviewChange}
-                >
-                  <option value="o">O</option>
-                  <option value="x">X</option>
-                </select>
+                {normalMode ? (
+                  <select
+                    name="codeReview"
+                    id="codeReview"
+                    onChange={handleCodeReviewChange}
+                  >
+                    <option value="o">O</option>
+                    <option value="x">X</option>
+                  </select>
+                ) : (
+                  <select
+                    name="codeReview"
+                    id="codeReview"
+                    onChange={handleCodeReviewChange}
+                  >
+                    <option value="x">X</option>
+                  </select>
+                )}
+              </div>
+              {/* 전체를 다시 보여주는 버튼 */}
+              <div
+                className={styles.optionButton}
+                onClick={() => allList(normalMode)}
+              >
+                <label>전체보기</label>
               </div>
 
               {/* 미해결 문제 체크박스 */}
-              <div className={styles.optionButton}>
+              {/* <div className={styles.optionButton}>
                 <input type="checkbox" id="unresolved" />
                 <label htmlFor="unresolved">미해결 문제</label>
-              </div>
+              </div> */}
             </div>
             {/* 게임 대기 화면 방 */}
             <div className={styles.gameRoomList}>

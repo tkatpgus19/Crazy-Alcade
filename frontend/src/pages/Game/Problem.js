@@ -84,11 +84,11 @@ const renderProblem = (data) => {
         <hr className={styles.customHr} />
         <h3>입력</h3>
         <p>{data.input}</p>
-        <hr />
+        <hr className={styles.customHr} />
         <h3>출력</h3>
         <p>{data.output}</p>
 
-        <hr />
+        <hr className={styles.customHr} />
         <h3>예제</h3>
         <div className={styles.examplesContainer}>
           {data.examples &&
