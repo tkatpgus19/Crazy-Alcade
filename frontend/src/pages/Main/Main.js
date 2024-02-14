@@ -68,6 +68,9 @@ const Main = () => {
       audio.currentTime = 0;
     };
 
+    connectSession;
+    getRoomList("normal");
+
     // 컴포넌트 언마운트 시 오디오 정지
     return () => {
       stopAudio();
@@ -191,6 +194,8 @@ const Main = () => {
         const { nickname, profile, levelId, exp, coin, memberItemList } =
           response.data.result;
 
+        localStorage.setItem("nickname", nickname);
+
         // 프로필 사진들 중 DB에 담긴 사진으로 프로필 설정
         const profileImg = profileImages[profile];
 
@@ -273,6 +278,7 @@ const Main = () => {
           })
           .then((response) => {
             if (response.data.result) {
+              client.current.disconnect();
               navigate("/room", {
                 state: {
                   roomId: res.data.result.roomId,
@@ -345,6 +351,7 @@ const Main = () => {
                 roomId: data.roomId,
               })
               .then((response) => {
+                client.current.disconnect();
                 navigate("/room", {
                   state: {
                     roomId: data.roomId,
@@ -367,6 +374,7 @@ const Main = () => {
           roomId: data.roomId,
         })
         .then((response) => {
+          client.current.disconnect();
           navigate("/room", {
             state: {
               roomId: data.roomId,
@@ -558,7 +566,7 @@ const Main = () => {
 
           {/* 소개 칸 */}
           <div className={styles.introduction}>
-            <p>
+            <div>
               <div>Lv. {levelId}</div>
               {/* 경험치 진행 상태 표시줄 */}
               <div style={{ display: "flex" }}>
@@ -587,7 +595,7 @@ const Main = () => {
                   className={styles.coinImage}
                 />
               </div>
-            </p>
+            </div>
           </div>
 
           {/* 하단 흰색 네모 칸 5개 정렬 */}
