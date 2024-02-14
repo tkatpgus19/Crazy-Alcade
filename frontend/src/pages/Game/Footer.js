@@ -36,6 +36,7 @@ const Footer = ({ roomType, userInfo, problemId }) => {
   const dispatch = useDispatch();
 
   const [isItem, setItem] = useState(false);
+  const [currentItem, setCurrentItem] = useState(0);
 
   const code = useSelector((state) => state.code.content); // 코드 상태 선택
   const lang = useSelector((state) => state.code.lang); // 언어 상태 선택
@@ -89,65 +90,66 @@ const Footer = ({ roomType, userInfo, problemId }) => {
 
       // 각 아이템에 대한 효과 로직 추가
       console.log(`아이템 사용: ${item}`);
-
+      setCurrentItem(item);
+      console.log(`현재 선택 아이템은 ${currentItem}`);
       // 여기에 API 요청 로직 추가
-      try {
-        const apiUrl = `${process.env.REACT_APP_BASE_URL}/items/members/sub`; // 환경변수나 상수로 API URL 관리
-        const token = localStorage.getItem("accessToken");
+      // // try {
+      // //   const apiUrl = `${process.env.REACT_APP_BASE_URL}/items/members/sub`; // 환경변수나 상수로 API URL 관리
+      // //   const token = localStorage.getItem("accessToken");
 
-        const response = await axios.put(
-          apiUrl,
-          {
-            itemId: item,
-            putValue: 1, // 아이템 개수 1 감소
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+      // //   const response = await axios.put(
+      // //     apiUrl,
+      // //     {
+      // //       itemId: item,
+      // //       putValue: 1, // 아이템 개수 1 감소
+      // //     },
+      // //     {
+      // //       headers: {
+      // //         Authorization: `Bearer ${token}`,
+      // //       },
+      // //     }
+      // //   );
 
-        // 요청 성공 시, 로직 처리 (예: 상태 업데이트)
-        console.log("아이템 개수 감소 성공", response.data);
-        // 아이템 개수 상태 업데이트 또는 부모 컴포넌트로부터 받은 함수 호출 등을 통해 UI를 업데이트할 수 있습니다.
-      } catch (error) {
-        console.error("아이템 사용 중 에러 발생", error);
-      }
+      // //   // 요청 성공 시, 로직 처리 (예: 상태 업데이트)
+      // //   console.log("아이템 개수 감소 성공", response.data);
+      // //   // 아이템 개수 상태 업데이트 또는 부모 컴포넌트로부터 받은 함수 호출 등을 통해 UI를 업데이트할 수 있습니다.
+      // // } catch (error) {
+      // //   console.error("아이템 사용 중 에러 발생", error);
+      // }
 
-      if (item === 1) {
-        if (!isSprayingInk) dispatch(toggleInkSpraying());
-        setTimeout(() => {
-          // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
-          dispatch(resetInkSpraying());
-        }, 5000);
-      } else if (item === 2) {
-        if (!isChickenWalking) dispatch(toggleChickenWalking());
-        setTimeout(() => {
-          // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
-          dispatch(resetChickenWalking());
-        }, 5000);
-      } else if (item === 3) {
-        if (!isAnimating) dispatch(toggleWaterBalloonAnimation(true)); // 애니메이션 시작
+      // if (item === 1) {
+      //   if (!isSprayingInk) dispatch(toggleInkSpraying());
+      //   setTimeout(() => {
+      //     // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
+      //     dispatch(resetInkSpraying());
+      //   }, 5000);
+      // } else if (item === 2) {
+      //   if (!isChickenWalking) dispatch(toggleChickenWalking());
+      //   setTimeout(() => {
+      //     // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
+      //     dispatch(resetChickenWalking());
+      //   }, 5000);
+      // } else if (item === 3) {
+      //   if (!isAnimating) dispatch(toggleWaterBalloonAnimation(true)); // 애니메이션 시작
 
-        setTimeout(() => {
-          // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
-          dispatch(resetWaterBalloonAnimation());
-        }, 5000);
-      } else if (item === 4) {
-        dispatch(toggleWebIDEFlip());
-        // setTimeout 콜백 내에서 isFlipped 상태를 확인
-        setTimeout(() => {
-          dispatch(resetWebIDEFlip());
-        }, 5000); // 5000ms = 5초
-      } else if (item === 5) {
-        if (isSprayingInk == true) dispatch(toggleInkSpraying(false));
-        if (isChickenWalking == true) dispatch(toggleChickenWalking(false));
-        if (isAnimating == true) dispatch(toggleWaterBalloonAnimation(false));
-        if (isFlipped == true) dispatch(toggleWebIDEFlip(false));
-        dispatch(toggleShield());
-        setTimeout(() => dispatch(resetShield()), 0); // 바로 상태를 리셋하여 다른 애니메이션에 영향을 주지 않음
-      }
+      //   setTimeout(() => {
+      //     // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
+      //     dispatch(resetWaterBalloonAnimation());
+      //   }, 5000);
+      // } else if (item === 4) {
+      //   dispatch(toggleWebIDEFlip());
+      //   // setTimeout 콜백 내에서 isFlipped 상태를 확인
+      //   setTimeout(() => {
+      //     dispatch(resetWebIDEFlip());
+      //   }, 5000); // 5000ms = 5초
+      // } else if (item === 5) {
+      //   if (isSprayingInk == true) dispatch(toggleInkSpraying(false));
+      //   if (isChickenWalking == true) dispatch(toggleChickenWalking(false));
+      //   if (isAnimating == true) dispatch(toggleWaterBalloonAnimation(false));
+      //   if (isFlipped == true) dispatch(toggleWebIDEFlip(false));
+      //   dispatch(toggleShield());
+      //   setTimeout(() => dispatch(resetShield()), 0); // 바로 상태를 리셋하여 다른 애니메이션에 영향을 주지 않음
+      // }
     }
   };
 
