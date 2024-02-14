@@ -114,15 +114,11 @@ const Login = () => {
 
   const kakaoLoginHandler = () => {
     // window.location.href = process.env.REACT_APP_KAKAO_URL;
-    window.location.replace(
-      "https://i10d104.p.ssafy.io/oauth2/authorization/kakao?redirect_uri=http://localhost:3000/login-redirection&mode=login"
-    );
+    window.location.replace(process.env.REACT_APP_KAKAO_URL);
   };
 
   const googleLoginHandler = () => {
-    window.location.replace(
-      "https://i10d104.p.ssafy.io/oauth2/authorization/google?redirect_uri=http://localhost:3000/login-redirection&mode=login"
-    );
+    window.location.replace(process.env.REACT_APP_GOOGLE_URL);
   };
 
   const backgroundStyle = {

@@ -38,7 +38,10 @@ const Main = () => {
   const getRoomList = (roomType) => {
     axios.get(`${SERVER_URL}/rooms/${roomType}?page=${page}`).then((res) => {
       setRoomList(res.data.result.roomList);
+      setTotalPage(res.data.result.totalPage);
     });
+    // 최대페이지로 최신화.
+    //setTotalPage();
   };
 
   useEffect(() => {
@@ -81,6 +84,7 @@ const Main = () => {
   }
 
   function onRoomInforReceived(payload) {
+    console.log(payload.body + "방 페이로들");
     setRoomList(JSON.parse(payload.body.roomList));
   }
 
@@ -107,6 +111,7 @@ const Main = () => {
   const [normalMode, setNormalMode] = useState(true);
   const [roomList, setRoomList] = useState([]);
   const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
   const [profile, setProfile] = useState([]);
   const [levelId, setLevelId] = useState(0);
   const [exp, setExp] = useState(0);
@@ -121,7 +126,7 @@ const Main = () => {
 
   useEffect(() => {
     axios
-      .get(`https://i10d104.p.ssafy.io/api/members`, {
+      .get(`${process.env.REACT_APP_BASE_URL}/members`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -155,6 +160,7 @@ const Main = () => {
       .catch((error) => {
         console.log(error);
       });
+    getRoomList("normal");
   }, []);
 
   const openModal = () => {
@@ -306,13 +312,14 @@ const Main = () => {
     } else {
       getRoomList("item");
     }
+    setPage(1); // 페이지를 1로 초기화
     connectSession();
   };
 
   // 인벤토리 데이터를 가져오는 useEffect 훅
   useEffect(() => {
     axios
-      .get(`https://i10d104.p.ssafy.io/api/members/inventory`, {
+      .get(process.env.REACT_APP_INVENTORY_URL, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -366,6 +373,21 @@ const Main = () => {
 
     // 로그아웃 후 사용자를 홈 페이지로 리디렉션
     navigate("/");
+  };
+
+  useEffect(() => {
+    if (normalMode) getRoomList("normal");
+    else {
+      getRoomList("item");
+    } // roomType은 상태 또는 props로부터 가져온 값이어야 합니다.
+  }, [page, normalMode]); // page 또는 roomType이 변경될 때마다 실행
+
+  const handlePrevPage = () => {
+    setPage((prevPage) => Math.max(1, prevPage - 1)); // 페이지 번호는 최소 1
+  };
+
+  const handleNextPage = () => {
+    setPage((prevPage) => Math.min(totalPage, prevPage + 1)); // 최대 페이지 번호 검증이 필요할 수 있음
   };
 
   return (
@@ -672,14 +694,11 @@ const Main = () => {
             </div>
 
             <div className={styles.backandforthPage}>
-              <div
-                className={styles.backPage}
-                // onClick={this.handleBackPage}
-              ></div>
-              <div
-                className={styles.forthPage}
-                // onClick={this.handleForthPage}
-              ></div>
+              <div className={styles.backPage} onClick={handlePrevPage}></div>
+              <div className={styles.pageControl}>
+                {page} / {totalPage}
+              </div>
+              <div className={styles.forthPage} onClick={handleNextPage}></div>
             </div>
           </div>
 

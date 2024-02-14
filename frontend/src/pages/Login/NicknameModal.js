@@ -17,7 +17,7 @@ const NicknameModal = ({ close }) => {
 
     try {
       const response = await fetch(
-        "https://i10d104.p.ssafy.io/api/members/nickname",
+        `${process.env.REACT_APP_API_BASE_URL}/members/nickname`,
         {
           method: "PUT", // HTTP 메소드 설정
           headers: {
@@ -33,6 +33,7 @@ const NicknameModal = ({ close }) => {
       }
 
       const data = await response.json();
+
       console.log("Nickname updated successfully: ", data);
 
       // 업데이트 성공 후 로컬 스토리지에 닉네임 저장
