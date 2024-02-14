@@ -37,7 +37,7 @@ const Main = () => {
   const audioRef = useRef(new Audio(roomBackgroundMusicLobby));
   const getRoomList = (roomType) => {
     axios.get(`${SERVER_URL}/rooms/${roomType}?page=${page}`).then((res) => {
-      setRoomList(res.data.result);
+      setRoomList(res.data.result.roomList);
     });
   };
 
@@ -81,7 +81,7 @@ const Main = () => {
   }
 
   function onRoomInforReceived(payload) {
-    setRoomList(JSON.parse(payload.body));
+    setRoomList(JSON.parse(payload.body.roomList));
   }
 
   const chatContainerRef = useRef();
@@ -608,7 +608,7 @@ const Main = () => {
                           margin: "0 5px 5px 0",
                         }}
                       />
-                      {data.timeLimit}초
+                      {data.timeLimit}min
                     </div>
                     <div
                       className={
