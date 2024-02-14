@@ -30,14 +30,35 @@ import { Stomp } from "@stomp/stompjs";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
+import roomBackgroundMusicLobby from "../../assets/music/lobby.mp3";
 
 const Main = () => {
   const client = useRef();
+  const audioRef = useRef(new Audio(roomBackgroundMusicLobby));
   const getRoomList = (roomType) => {
     axios.get(`${SERVER_URL}/rooms/${roomType}?page=${page}`).then((res) => {
       setRoomList(res.data.result);
     });
   };
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    // play()가 Promise를 반환하므로, catch 블록에서 오류를 처리합니다.
+    audio.play().catch((error) => {
+      console.log("재생을 시작하기 위해 사용자 상호작용이 필요합니다.", error);
+      // 필요한 경우, 사용자에게 알리거나 버튼을 통해 재생을 유도할 수 있습니다.
+    });
+
+    const stopAudio = () => {
+      audio.pause();
+      audio.currentTime = 0;
+    };
+
+    // 컴포넌트 언마운트 시 오디오 정지
+    return () => {
+      stopAudio();
+    };
+  }, []);
 
   const connectSession = () => {
     const socket = new SockJS(process.env.REACT_APP_SOCKET_URL);

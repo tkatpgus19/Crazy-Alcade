@@ -22,10 +22,11 @@ import {
   toggleCamera,
   toggleAudio,
 } from "./slices/settingSlice";
+import roomBackgroundMusicRoom from "../../assets/music/room.mp3";
 
 const Room = () => {
   const SERVER_URL = process.env.REACT_APP_BASE_URL;
-
+  const audioRef = useRef(new Audio(roomBackgroundMusicRoom));
   const messagesEndRef = useRef(null); // messages 참조 생성
 
   const { isMicrophoneOn, isCameraOn, isAudioOn } = useSelector(
@@ -236,6 +237,25 @@ const Room = () => {
       sendChat();
     }
   };
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    // play()가 Promise를 반환하므로, catch 블록에서 오류를 처리합니다.
+    audio.play().catch((error) => {
+      console.log("재생을 시작하기 위해 사용자 상호작용이 필요합니다.", error);
+      // 필요한 경우, 사용자에게 알리거나 버튼을 통해 재생을 유도할 수 있습니다.
+    });
+
+    const stopAudio = () => {
+      audio.pause();
+      audio.currentTime = 0;
+    };
+
+    // 컴포넌트 언마운트 시 오디오 정지
+    return () => {
+      stopAudio();
+    };
+  }, []);
 
   useEffect(() => {
     if (messagesEndRef.current) {
