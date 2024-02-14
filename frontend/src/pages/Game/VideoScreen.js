@@ -308,7 +308,7 @@ const VideoScreen = ({ roomId, nickname, userList, roomType }) => {
             "참가자 대기중"
           )}
         </div>
-        <div className={styles.chaticon}>🗨️</div>
+        {/* <div className={styles.chaticon}>🗨️</div> */}
       </div>
     </div>
   );

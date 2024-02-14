@@ -1,29 +1,87 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./GameResults.module.css";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const GameResults = ({ roomType }) => {
+const GameResults = ({ roomType, roomId, userInfo }) => {
   const navigate = useNavigate();
+  const [gameResult, setGameResult] = useState(null); // gameResult 상태 추가
 
-  const players = [
-    { rank: 1, name: "김세현", time: "100ms", memory: "13420KB" },
-    { rank: 2, name: "현직개발자", time: "120ms", memory: "53165KB" },
-    { rank: 3, name: "림수빈", time: "130ms", memory: "13420KB" },
-    { rank: 4, name: "한독냉", time: "420ms", memory: "51265KB" },
-    { rank: 5, name: "창준팕", time: "1200ms", memory: "134220KB" },
-    { rank: "-", name: "김규리", time: "RETIRE", memory: "" },
-    // ... Add more players here
-  ];
+  useEffect(() => {
+    if (!roomId) return; // roomId가 없으면 API 호출하지 않음
 
-  const playerResult = { rank: 2, level: "28", coins: "+ 300" };
+    // 게임 결과 API 호출
+    const fetchGameResult = async () => {
+      try {
+        const apiUrl = `${process.env.REACT_APP_BASE_URL}/rooms/${roomId}/rank`;
+        const token = localStorage.getItem("accessToken");
+        const response = await axios.get(apiUrl, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const { result } = response.data;
+        setGameResult(result); // API 응답을 상태에 저장
+      } catch (error) {
+        console.error("Error fetching game result:", error);
+      }
+    };
+
+    // 코인, 경험치 획득 API 호출
+    const fetchCoinExp = async () => {
+      try {
+        const apiUrl = `${process.env.REACT_APP_BASE_URL}/members/reward`;
+        const token = localStorage.getItem("accessToken");
+        const response = await axios.put(
+          apiUrl,
+          {
+            putCoinValue: 100,
+            putExpValue: 100,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const { result } = response.data;
+      } catch (error) {
+        console.error("Error fetching game result:", error);
+      }
+    };
+
+    fetchGameResult();
+    fetchCoinExp();
+  }, [roomId]);
 
   const exitClick = () => {
     if (roomType === "normal") {
-      navigate("/review"); // 노말 게임일 때 리뷰 페이지로 이동
+      navigate("/review");
     } else {
-      navigate("/main"); // 아이템 게임일 때 메인 페이지로 이동
+      navigate("/main");
     }
+  };
+
+  if (!gameResult) {
+    // gameResult가 아직 없을 때 로딩 상태 표시
+    return <div>Loading...</div>;
+  }
+
+  const { totalRanks, myRank } = gameResult;
+
+  const players = totalRanks.map((rankInfo) => ({
+    rank: rankInfo.rank,
+    name: rankInfo.nickname,
+    time: rankInfo.time === "-" ? "RETIRE" : rankInfo.time,
+    memory: rankInfo.memory === "-" ? "" : `${rankInfo.memory}`,
+  }));
+
+  const playerResult = {
+    rank: myRank.rank,
+    level: userInfo.levelId, // 임의의 레벨 정보
+    exp: userInfo.exp,
+    coins: `+ ${myRank.getCoin}`, // 획득한 경험치 정보 변경
   };
 
   return (
@@ -31,18 +89,18 @@ const GameResults = ({ roomType }) => {
       <div className={styles.resultsWindow}>
         <div className={styles.header}>게임 결과</div>
         <ul className={styles.leaderboard}>
-          {/* Header row */}
           <li className={styles.leaderboardHeader}>
             <span className={styles.rank}>Rank</span>
             <span className={styles.name}>Name</span>
             <span className={styles.headerTime}>Time</span>
             <span className={styles.headerMemory}>Memory</span>
           </li>
-          {/* Players list */}
           {players.map((player, index) => (
             <li
               key={index}
-              className={`${styles[`rank${player.rank}`]} ${player.rank === "-" ? styles.retiredPlayer : ""}`}
+              className={`${styles[`rank${player.rank}`]} ${
+                player.rank === "-" ? styles.retiredPlayer : ""
+              }`}
             >
               <span className={styles.rank}>{player.rank}</span>
               <span className={styles.name}>{player.name}</span>
@@ -57,8 +115,16 @@ const GameResults = ({ roomType }) => {
               <div className={styles.playerRank}>{playerResult.rank}등</div>
               <div className={styles.playerRewards}>
                 레벨 {playerResult.level}
-                <span className={styles.coins}>{playerResult.coins}</span>
               </div>
+              {/* 경험치 바 */}
+              <div className={styles.expBar}>
+                <div
+                  className={styles.expFill}
+                  style={{ width: `${(playerResult.exp / 1000) * 100}%` }} // 경험치에 따라 바의 길이 조절
+                ></div>
+              </div>
+              {/* 코인 추가*/}
+              <span className={styles.coins}>{playerResult.coins}</span>
             </div>
           </div>
           <button
@@ -77,6 +143,8 @@ const GameResults = ({ roomType }) => {
 
 GameResults.propTypes = {
   roomType: PropTypes.string.isRequired,
+  roomId: PropTypes.string.isRequired,
+  userInfo: PropTypes.object.isRequired,
 };
 
 export default GameResults;

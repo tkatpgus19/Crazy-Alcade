@@ -195,3 +195,19 @@
     #402bff
   ); /* 그라디언트 배경 */
 }
+
+/* 경험치 바 */
+.expBar {
+  width: 100px;
+  height: 22px;
+  background-color: #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.expFill {
+  height: 100%;
+  background-color: green;
+  border-radius: 10px;
+  transition: width 0.3s ease-in-out;
+}

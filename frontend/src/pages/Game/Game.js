@@ -142,12 +142,6 @@ function Game() {
       : styles.normalBackgroundStyle;
 
   useEffect(() => {
-    if (timeCompleted) {
-      setShowResult(true);
-    }
-  }, [timeCompleted]);
-
-  useEffect(() => {
     // "쉴드" 상태가 활성화되면 문어와 병아리 애니메이션을 즉시 제거
     if (isShieldActive) {
       setOctopus(false);
@@ -348,9 +342,13 @@ function Game() {
       {chickenImages}
 
       {/* 시간이 0이 되면 결과창을 렌더링 */}
-      {0 && (
+      {timeCompleted && (
         <div className={styles.gameResultsContainer}>
-          <GameResults roomType={roomInfo.roomType} />
+          <GameResults
+            roomType={roomInfo.roomType}
+            roomId={roomInfo.roomId}
+            userInfo={userInfo}
+          />
         </div>
       )}
     </div>
