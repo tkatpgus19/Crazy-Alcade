@@ -17,7 +17,7 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
     roomPassword: "",
     problemTier: 0,
     problemId: 0,
-    timeLimit: 0,
+    timeLimit: 60,
     language: "java",
     codeReview: true,
     master: "",
