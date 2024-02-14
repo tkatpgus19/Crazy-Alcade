@@ -134,6 +134,7 @@ const Main = () => {
       .catch((error) => {
         console.log(error);
       });
+    getRoomList("normal");
   }, []);
 
   const openModal = () => {

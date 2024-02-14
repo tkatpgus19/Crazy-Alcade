@@ -8,6 +8,7 @@ import com.eni.backend.problem.repository.TierRepository;
 import com.eni.backend.room.dto.ChatDto;
 import com.eni.backend.room.dto.RoomDto;
 import com.eni.backend.room.dto.request.*;
+import com.eni.backend.room.dto.response.GetRoomListResponse;
 import com.eni.backend.room.dto.response.PostRoomResponse;
 import com.eni.backend.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +52,7 @@ public class RoomService {
     }
 
     // 조건에 부합하는 방 리스트 조회
-    public List<RoomDto> getSortedRoomList(String roomType, String language, String tier, Boolean codeReview, Boolean isSolved, Integer page){
+    public GetRoomListResponse getSortedRoomList(String roomType, String language, String tier, Boolean codeReview, Boolean isSolved, Integer page){
         List<RoomDto> resultList = roomRepository.getRoomListByRoomType(roomType);
         if(language != null){
             resultList = resultList
@@ -81,9 +82,9 @@ public class RoomService {
             }
         }
         else{
-            return Collections.emptyList();
+            return GetRoomListResponse.of(0, 1, Collections.emptyList());
         }
-        return resultList;
+        return GetRoomListResponse.of(resultList.size()/4+1, page, resultList);
     }
 
     public Boolean enter(PostRoomEnterRequest request){
@@ -150,19 +151,22 @@ public class RoomService {
         if(roomId != null) {
             RoomDto room = roomRepository.getRoomById(roomId);
             if(room != null) {
-                room.setUserCnt(room.getUserCnt() - 1);
                 String user = room.getUserList().get(userUUID);
 
-                if (room.getReadyList().get(user).equals("MASTER") && room.getUserCnt() != 0) {
-                    room.getReadyList().remove(user);
-                    Map.Entry<String, String> firstEntry = room.getReadyList().entrySet().iterator().next();
-                    room.getReadyList().replace(firstEntry.getKey(), "MASTER");
-                    room.setMaster(firstEntry.getKey());
-                } else {
-                    room.getReadyList().remove(user);
+                if(user != null){
+                    if (room.getReadyList().get(user).equals("MASTER") && room.getUserCnt() != 1) {
+                        room.getReadyList().remove(user);
+                        Map.Entry<String, String> firstEntry = room.getReadyList().entrySet().iterator().next();
+                        room.getReadyList().replace(firstEntry.getKey(), "MASTER");
+                        room.setMaster(firstEntry.getKey());
+                    } else {
+                        room.getReadyList().remove(user);
+                    }
+                    room.setUserCnt(room.getUserCnt() - 1);
+                    room.getUserList().remove(userUUID);
+
+                    log.info("User exit : " + user);
                 }
-                room.getUserList().remove(userUUID);
-                log.info("User exit : " + user);
 
                 // builder 어노테이션 활용
                 ChatDto chat = ChatDto.builder()
