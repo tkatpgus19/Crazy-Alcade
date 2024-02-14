@@ -60,10 +60,13 @@ public class MemberService {
 
         // 회원 정보가 있으면 해당 회원 리턴
         if (flag) {
-            // 회원이 로그인할 때 최종 접속시간 갱신
-            member.updateConnectedAt(Timestamp.valueOf(LocalDateTime.now()));
+            Optional<Member> optionalMember = memberRepository.findById(member.getId());
+            Member findMember = optionalMember.get();
 
-            loginInfo = LoginInfo.of(member.getId(), false, Objects.equals(member.getConnectedAt().toLocalDateTime().toLocalDate(), LocalDate.now()));
+            loginInfo = LoginInfo.of(findMember.getId(), false, Objects.equals(findMember.getConnectedAt().toLocalDateTime().toLocalDate(), LocalDate.now()));
+
+            // 회원이 로그인할 때 최종 접속시간 갱신
+            findMember.updateConnectedAt(Timestamp.valueOf(LocalDateTime.now()));
         }
         // 없으면 새로 생성해서 리턴
         else {
