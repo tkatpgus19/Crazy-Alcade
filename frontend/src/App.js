@@ -9,7 +9,6 @@ import Game from "./pages/Game/Game";
 // import GoogleRedirection from "./pages/Login/GoogleRedirection";
 import GameIntroduction from "./pages/Main/GameIntroduction";
 import LoginRedirection from "./pages/Login/LoginRedirection";
-// import NicknameModal from "./pages/Login/NicknameModal";
 
 function App() {
   return (
@@ -29,7 +28,7 @@ function App() {
           /> */}
           {/* <Route path="/nickname" element={<NicknameModal />} /> */}
           <Route path="/game-introduction" element={<GameIntroduction />} />
-          {/* <Route path="/login-redirection" element={<LoginRedirection />} /> */}
+          <Route path="/login-redirection" element={<LoginRedirection />} />
           <Route path="/main" element={<Main />} />
           <Route path="/room" element={<Room />} />
           <Route path="/game" element={<Game />} />

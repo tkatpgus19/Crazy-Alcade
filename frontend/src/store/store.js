@@ -10,6 +10,7 @@ import waterBalloonReducer from "../pages/Game/slices/waterBalloonSlice";
 import animationControlReducer from "../pages/Game/slices/animationControlSlice";
 import timerReducer from "../pages/Game/slices/timerSlice";
 import authReducer from "./authSlice";
+import settingsReducer from "../pages/Room/slices/settingSlice";
 
 const store = configureStore({
   reducer: {
@@ -23,6 +24,7 @@ const store = configureStore({
     animationControl: animationControlReducer,
     auth: authReducer,
     timer: timerReducer,
+    settings: settingsReducer,
 
     // 다른 리듀서가 있다면 여기에 추가하세요.
   },

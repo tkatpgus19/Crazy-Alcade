@@ -7,13 +7,51 @@ const NicknameModal = ({ close }) => {
   const [nickname, setNickname] = useState("");
   const navigate = useNavigate();
 
+  // 닉네임 업데이트 함수
+  const updateNickname = async (newNickname) => {
+    const accessToken = localStorage.getItem("accessToken"); // 액세스 토큰 가져오기
+    if (!accessToken) {
+      console.error("Access token not found.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/members/nickname`,
+        {
+          method: "PUT", // HTTP 메소드 설정
+          headers: {
+            Authorization: `Bearer ${accessToken}`, // Bearer 토큰을 헤더에 포함
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ nickname: newNickname }), // 요청 본문에 닉네임 포함
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update nickname.");
+      }
+
+      const data = await response.json();
+
+      console.log("Nickname updated successfully: ", data);
+
+      // 업데이트 성공 후 로컬 스토리지에 닉네임 저장
+      localStorage.setItem("nickname", newNickname);
+
+      // 업데이트 성공 후 로직
+      localStorage.setItem("isNew", "false"); // isNew 상태 업데이트
+      close(); // 모달 닫기
+      navigate("/main"); // 메인 페이지로 리디렉션
+    } catch (error) {
+      console.error("Error updating nickname: ", error);
+    }
+  };
+
   const handleSubmit = () => {
     console.log("닉네임 제출: ", nickname);
-    // 닉네임 제출 로직 구현
-    // API 호출이 성공했다고 가정하고, isNew 값을 업데이트
-    localStorage.setItem("isNew", "false");
-    close(); // 모달 닫기
-    navigate("/main");
+    // localStorage.setItem("isNew", "false");
+    updateNickname(nickname); // 닉네임 업데이트 함수 호출
   };
 
   return (

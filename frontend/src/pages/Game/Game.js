@@ -16,12 +16,13 @@ import { useDispatch, useSelector } from "react-redux";
 import octopusImage from "../../assets/images/octopus.png"; // 문어 이미지의 경로
 import inkImage from "../../assets/images/muk.png"; // 먹물 이미지의 경로
 import chickenImage from "../../assets/images/chick.png"; // 병아리 이미지 경로
-const normalBackgroundImage = "../../assets/images/normalBackground.webp";
-const itemBackgroundImage = "../../assets/images/normalBackground.webp";
+import SockJS from "sockjs-client";
+import { Stomp } from "@stomp/stompjs";
 
 function Game() {
   const navigate = useNavigate();
   let location = useLocation();
+  const client = useRef();
 
   // 아이템 동작 확인
   const isSprayingInk = useSelector((state) => state.octopus.isSprayingInk);
@@ -109,7 +110,7 @@ function Game() {
     const fetchUserInfo = async () => {
       try {
         const apiUrl = `${process.env.REACT_APP_BASE_URL}/members`;
-        const token = process.env.REACT_APP_TOKEN;
+        const token = localStorage.getItem("accessToken");
 
         const response = await axios.get(apiUrl, {
           headers: {
@@ -130,7 +131,22 @@ function Game() {
 
     fetchRoomInfo();
     fetchUserInfo();
+    connectSession;
   }, []);
+
+  const connectSession = () => {
+    const socket = new SockJS(`${process.env.REACT_APP_SOCKET_URL}`);
+    client.current = Stomp.over(socket);
+    client.current.connect({}, onConnected, onError);
+  };
+
+  const onConnected = () => {
+    client.current.subscribe(`/sub/game/` + roomId, onStatusReceived);
+  };
+
+  const onStatusReceived = (payload) => {
+    console.log(JSON.parse(payload.body));
+  };
 
   // 게임 모드에 따른 배경 화면 설정
   const backgroundStyle =

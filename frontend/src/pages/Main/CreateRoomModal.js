@@ -31,7 +31,7 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
     const fetchTiers = async () => {
       try {
         const response = await axios.get(
-          "https://i10d104.p.ssafy.io/api/tiers"
+          `${process.env.REACT_APP_BASE_URL}/tiers`
         );
         setTiers(response.data.result || []);
       } catch (error) {
@@ -51,7 +51,7 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
       }
       try {
         const response = await axios.get(
-          `https://i10d104.p.ssafy.io/api/problems?tier-id=${roomData.problemTier}`
+          `${process.env.REACT_APP_BASE_URL}/problems?tier-id=${roomData.problemTier}`
         );
         setProblems(response.data.result || []);
       } catch (error) {
