@@ -9,27 +9,28 @@ const Problem = ({ problemId, problemTier }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getData = async () => {
-      const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/${problemId}`;
+    if (!problemData) {
+      const getData = async () => {
+        const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/${problemId}`;
 
-      try {
-        const response = await fetch(apiUrl);
+        try {
+          const response = await fetch(apiUrl);
 
-        if (!response || !response.ok) {
-          throw new Error("서버 응답이 올바르지 않습니다.");
+          if (!response || !response.ok) {
+            throw new Error("서버 응답이 올바르지 않습니다.");
+          }
+
+          const data = await response.json();
+          setProblemData(data.result);
+          setLoading(false);
+        } catch (error) {
+          console.error("데이터를 불러오는 중에 문제가 발생했습니다.", error);
+          setProblemData(null);
+          setLoading(false);
         }
-
-        const data = await response.json();
-        setProblemData(data.result);
-        setLoading(false);
-      } catch (error) {
-        console.error("데이터를 불러오는 중에 문제가 발생했습니다.", error);
-        setProblemData(null);
-        setLoading(false);
-      }
-    };
-
-    getData();
+      };
+      getData();
+    }
   }, []);
 
   if (loading) {

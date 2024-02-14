@@ -30,14 +30,37 @@ import { Stomp } from "@stomp/stompjs";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
+import roomBackgroundMusicLobby from "../../assets/music/lobby.mp3";
 
 const Main = () => {
   const client = useRef();
+  const audioRef = useRef(new Audio(roomBackgroundMusicLobby));
   const getRoomList = (roomType) => {
     axios.get(`${SERVER_URL}/rooms/${roomType}?page=${page}`).then((res) => {
       setRoomList(res.data.result);
     });
+    // 최대페이지로 최신화.
+    //setTotalPage();
   };
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    // play()가 Promise를 반환하므로, catch 블록에서 오류를 처리합니다.
+    audio.play().catch((error) => {
+      console.log("재생을 시작하기 위해 사용자 상호작용이 필요합니다.", error);
+      // 필요한 경우, 사용자에게 알리거나 버튼을 통해 재생을 유도할 수 있습니다.
+    });
+
+    const stopAudio = () => {
+      audio.pause();
+      audio.currentTime = 0;
+    };
+
+    // 컴포넌트 언마운트 시 오디오 정지
+    return () => {
+      stopAudio();
+    };
+  }, []);
 
   const connectSession = () => {
     const socket = new SockJS(process.env.REACT_APP_SOCKET_URL);
@@ -86,6 +109,7 @@ const Main = () => {
   const [normalMode, setNormalMode] = useState(true);
   const [roomList, setRoomList] = useState([]);
   const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
   const [profile, setProfile] = useState([]);
   const [levelId, setLevelId] = useState(0);
   const [exp, setExp] = useState(0);
@@ -286,6 +310,7 @@ const Main = () => {
     } else {
       getRoomList("item");
     }
+    setPage(1); // 페이지를 1로 초기화
     connectSession();
   };
 
@@ -346,6 +371,21 @@ const Main = () => {
 
     // 로그아웃 후 사용자를 홈 페이지로 리디렉션
     navigate("/");
+  };
+
+  useEffect(() => {
+    if (normalMode) getRoomList("normal");
+    else {
+      getRoomList("item");
+    } // roomType은 상태 또는 props로부터 가져온 값이어야 합니다.
+  }, [page, normalMode]); // page 또는 roomType이 변경될 때마다 실행
+
+  const handlePrevPage = () => {
+    setPage((prevPage) => Math.max(1, prevPage - 1)); // 페이지 번호는 최소 1
+  };
+
+  const handleNextPage = () => {
+    setPage((prevPage) => Math.max(totalPage, prevPage + 1)); // 최대 페이지 번호 검증이 필요할 수 있음
   };
 
   return (
@@ -652,14 +692,11 @@ const Main = () => {
             </div>
 
             <div className={styles.backandforthPage}>
-              <div
-                className={styles.backPage}
-                // onClick={this.handleBackPage}
-              ></div>
-              <div
-                className={styles.forthPage}
-                // onClick={this.handleForthPage}
-              ></div>
+              <div className={styles.backPage} onClick={handlePrevPage}></div>
+              <div className={styles.pageControl}>
+                {page} / {totalPage}
+              </div>
+              <div className={styles.forthPage} onClick={handleNextPage}></div>
             </div>
           </div>
 
