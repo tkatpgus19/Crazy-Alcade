@@ -54,7 +54,7 @@ public class RoomController {
     // 노멀전 방 리스트 조회
     @GetMapping("/normal")
     public BaseSuccessResponse<?> getNormalRoomList(@RequestParam(value = "language", required = false) String language,
-                                                    @RequestParam(value = "tier", required = false) String tier,
+                                                    @RequestParam(value = "tier", required = false) Long tier,
                                                     @RequestParam(value = "has-review", required = false) Boolean codeReview,
                                                     @RequestParam(value = "is-solved", required = false) Boolean isSolved,
                                                     @RequestParam(value = "page", required = false) Integer page){
@@ -68,7 +68,7 @@ public class RoomController {
     // 아이템전 방 리스트 조회
     @GetMapping("/item")
     public BaseSuccessResponse<?> getItemRoomList(@RequestParam(value = "language", required = false) String language,
-                                                  @RequestParam(value = "tier", required = false) String tier,
+                                                  @RequestParam(value = "tier", required = false) Long tier,
                                                   @RequestParam(value = "page", required = false) Integer page){
 
         GetRoomListResponse response = roomService.getSortedRoomList("item", language, tier, null, null, page);

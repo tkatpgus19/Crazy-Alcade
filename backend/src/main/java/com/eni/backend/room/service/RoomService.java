@@ -52,7 +52,7 @@ public class RoomService {
     }
 
     // 조건에 부합하는 방 리스트 조회
-    public GetRoomListResponse getSortedRoomList(String roomType, String language, String tier, Boolean codeReview, Boolean isSolved, Integer page){
+    public GetRoomListResponse getSortedRoomList(String roomType, String language, Long tier, Boolean codeReview, Boolean isSolved, Integer page){
         List<RoomDto> resultList = roomRepository.getRoomListByRoomType(roomType);
         if(language != null){
             resultList = resultList
@@ -63,7 +63,7 @@ public class RoomService {
         if(tier != null){
             resultList = resultList
                     .stream()
-                    .filter(entry -> entry.getProblemTier().equals(tier))
+                    .filter(entry -> entry.getProblemTier() == tier)
                     .toList();
         }
         if(codeReview != null){
