@@ -42,6 +42,7 @@ import { Stomp } from "@stomp/stompjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
 import roomBackgroundMusicLobby from "../../assets/music/lobby.mp3";
+import MyPage from "./MyPage";
 
 const Main = () => {
   const client = useRef();
@@ -132,18 +133,9 @@ const Main = () => {
   const [levelId, setLevelId] = useState(0);
   const [exp, setExp] = useState(0);
   const [coin, setCoin] = useState(0);
-  const [memberItems, setMemberItems] = useState([]);
-
-  const [itemImages, setItemImages] = useState({
-    waterBalloon: waterBalloonGrayImg, // 기본값은 모두 회색 이미지로 설정
-    octopus: octopusGrayImg,
-    chick: chickGrayImg,
-    magic: magicGrayImg,
-    shield: shieldGrayImg,
-  });
+  const [nickname, setNickname] = useState("");
 
   const navigate = useNavigate();
-  const [nickname, setNickname] = useState("");
 
   const SERVER_URL = process.env.REACT_APP_BASE_URL;
 
@@ -577,7 +569,10 @@ const Main = () => {
           </div>
 
           {/* 마이페이지 파란색 네모 칸 */}
-          <div className={styles.myPageBlueBox}>
+          <div
+            className={styles.myPageBlueBox}
+            onClick={() => navigate("/MyPage")}
+          >
             <p>마이페이지</p>
           </div>
         </div>
