@@ -214,9 +214,6 @@ const Room = () => {
   };
 
   const enterGame = (data) => {
-    console.log(isCameraOn);
-    console.log(isAudioOn);
-    console.log(isMicrophoneOn);
     // 게임방 입장을 위한 로직
     navigate("/game", {
       state: {
@@ -266,6 +263,26 @@ const Room = () => {
       messagesEndRef.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
     }
   }, [chatContent]); // chatContent가 변경될 때마다 이 로직을 실행합니다.
+
+  // useEffect(() => {
+  //   // 새로고침을 방지하는 함수
+  //   const handleRefresh = (e) => {
+  //     if (
+  //       e.key === "F5" ||
+  //       ((e.ctrlKey || e.metaKey) && (e.key === "r" || e.key === "R"))
+  //     ) {
+  //       e.preventDefault();
+  //     }
+  //   };
+
+  //   // 이벤트 리스너 등록
+  //   document.addEventListener("keydown", handleRefresh);
+
+  //   // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
+  //   return () => {
+  //     document.removeEventListener("keydown", handleRefresh);
+  //   };
+  // }, []);
 
   return (
     <Background>

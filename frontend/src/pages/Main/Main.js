@@ -45,6 +45,7 @@ import roomBackgroundMusicLobby from "../../assets/music/lobby.mp3";
 
 const Main = () => {
   const client = useRef();
+  const messagesEndRef = useRef(null); // messages 참조 생성
   const audioRef = useRef(new Audio(roomBackgroundMusicLobby));
   const getRoomList = (roomType) => {
     axios.get(`${SERVER_URL}/rooms/${roomType}?page=${page}`).then((res) => {
@@ -109,6 +110,7 @@ const Main = () => {
       content: JSON.parse(payload.body).message,
       timestamp: formattedDate,
       isBold: true,
+      sender: JSON.parse(payload.body).sender,
     };
 
     setChatContent((chatContent) => [...chatContent, newMessage]);
@@ -235,6 +237,7 @@ const Main = () => {
         setCoin(coin);
         //setMemberItems(updatedMemberItems);
         connectSession();
+        getRoomList("normal");
       })
       .catch((error) => {
         console.log("오류!", error);
@@ -395,54 +398,6 @@ const Main = () => {
     connectSession();
   };
 
-  /*
-  useEffect(() => {
-    // REACT_APP_INVENTORY_URL이 이미 정의되어 있고 올바른지 가정합니다.
-    axios
-      .get(process.env.REACT_APP_INVENTORY_URL, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      })
-      .then((response) => {
-        const { memberItemList } = response.data.result;
-        const updatedItemImages = { ...itemImages };
-
-        (memberItemList || []).forEach((item) => {
-          // memberItemCount에 따라 올바른 이미지 결정
-          const colorImageMap = {
-            octopus: octopusColorImg,
-            chick: chickColorImg,
-            waterBalloon: waterBalloonColorImg,
-            magic: magicColorImg,
-            shield: shieldColorImg,
-          };
-
-          const grayImageMap = {
-            octopus: octopusGrayImg,
-            chick: chickGrayImg,
-            waterBalloon: waterBalloonGrayImg,
-            magic: magicGrayImg,
-            shield: shieldGrayImg,
-          };
-
-          // 아이템 카운트가 0보다 큰지 확인하여 이미지를 결정
-          const imageKey = item.itemImg; // 이미지 맵의 키와 일치하도록 확실히 합니다.
-          if (item.memberItemCount > 0) {
-            updatedItemImages[imageKey] = colorImageMap[imageKey];
-          } else {
-            updatedItemImages[imageKey] = grayImageMap[imageKey];
-          }
-        });
-
-        setItemImages(updatedItemImages);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []); // 코드 구조에 따라 여기에 의존성을 추가해야 할 수 있습니다.
-*/
-
   const backgroundStyle = {
     backgroundImage: `url(${background})`,
     backgroundRepeat: "no-repeat",
@@ -479,6 +434,16 @@ const Main = () => {
   const handleNextPage = () => {
     setPage((prevPage) => Math.min(totalPage, prevPage + 1)); // 최대 페이지 번호 검증이 필요할 수 있음
   };
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      // 스크롤을 컨테이너의 맨 아래로 이동시킵니다.
+      const scrollHeight = messagesEndRef.current.scrollHeight;
+      const height = messagesEndRef.current.clientHeight;
+      const maxScrollTop = scrollHeight - height;
+      messagesEndRef.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+    }
+  }, [chatContent]); // chatContent가 변경될 때마다 이 로직을 실행합니다.
 
   return (
     <div className={styles.mainContainer} style={backgroundStyle}>
@@ -799,13 +764,13 @@ const Main = () => {
               <button className={styles.chatPageButton}>
                 <p>전체</p>
               </button>
-              <div className={styles.chatContent} ref={chatContainerRef}>
+              <div className={styles.chatContent} ref={messagesEndRef}>
                 {/* 채팅 내용 표시 */}
                 {chatContent.map((message, index) => (
                   <div key={index} style={{ marginBottom: "5px" }}>
                     {/* 닉네임과 현재 날짜 및 시간 표시 */}
                     <p className={styles.messageInfo}>
-                      <span className={styles.nickname}>{nickname}</span>
+                      <span className={styles.nickname}>{message.sender}</span>
                       <span className={styles.timestamp}>
                         {message.timestamp}
                       </span>

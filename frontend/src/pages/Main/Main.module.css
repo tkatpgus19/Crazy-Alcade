@@ -575,7 +575,8 @@
 
 .nickname {
   font-size: 16px;
-  -webkit-text-stroke: 0.2px white;
+  -webkit-text-stroke: 1px black;
+  color: white;
 }
 
 .timestamp {
@@ -621,6 +622,7 @@
   color: #fff; /* 전송 버튼 글자색 */
   width: 70px;
   padding: 8px;
+  margin-left: 10px;
   border: none;
   cursor: pointer;
   border-radius: 5px; /* 전송 버튼 테두리 둥글게 */
