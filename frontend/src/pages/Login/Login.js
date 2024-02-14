@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../store/authSlice";
 import NicknameModal from "./NicknameModal";
@@ -8,12 +8,28 @@ import styles from "./Login.module.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import kakaoImg from "../../assets/images/kakao_login_large_wide.png";
 import googleImg from "../../assets/images/web_neutral_sq_ctn@2x.png";
+import roomBackgroundMusicLogin from "../../assets/music/login.mp3";
+import cloudImage1 from "../../assets/images/cloud1.png";
+import cloudImage2 from "../../assets/images/cloud2.png";
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
+  const [showLoginButtons, setShowLoginButtons] = useState(false); // 로그인 버튼 표시 상태 관리
+  const audioRef = useRef(new Audio(roomBackgroundMusicLogin));
+
+  useEffect(() => {
+    // 오디오 객체 생성 및 설정
+    audioRef.current = new Audio(roomBackgroundMusicLogin);
+    // 컴포넌트 언마운트 시 오디오 정지
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const handleOAuthRedirect = async () => {
@@ -33,15 +49,6 @@ const Login = () => {
     handleOAuthRedirect();
   }, [navigate]); // navigate를 의존성 배열에 추가
 
-  useEffect(() => {
-    // 페이지 로드 시 로컬 스토리지에서 'isNew' 값을 확인하여
-    // 신규 사용자일 경우 닉네임 모달을 열어야 하는 로직
-    const isNew = localStorage.getItem("isNew") === "true";
-    if (isNew) {
-      setIsNicknameModalOpen(true);
-    }
-  }, []); // 컴포넌트 마운트 시 실행되는 useEffect
-
   // 쿠키를 확인하여 리다이렉션 처리하는 로직 추가
   const checkRedirectCookie = () => {
     const cookies = document.cookie.split("; ").reduce((acc, current) => {
@@ -56,6 +63,14 @@ const Login = () => {
     }
   };
 
+  const handleStartClick = () => {
+    setShowLoginButtons(true); // 로그인 버튼 표시
+    if (audioRef.current) {
+      audioRef.current.play().catch((error) => {
+        console.error("배경음악 재생에 실패했습니다: ", error);
+      });
+    }
+  };
   const fetchAccessToken = async (code) => {
     try {
       // 서버에 코드를 보내고 액세스 토큰을 요청하는 URL과 방식을 확인하세요.
@@ -110,10 +125,6 @@ const Login = () => {
     );
   };
 
-  const navigateToMain = () => {
-    navigate("/main");
-  };
-
   const backgroundStyle = {
     backgroundImage: `url(${background})`,
     backgroundRepeat: "no-repeat",
@@ -126,26 +137,85 @@ const Login = () => {
 
   return (
     <div className={styles.loginmainContainer} style={backgroundStyle}>
+      <img
+        src={cloudImage1}
+        alt="Cloud"
+        className={styles.cloud}
+        style={{ left: "10%" }}
+      />
+      <img
+        src={cloudImage2}
+        alt="Cloud"
+        className={styles.cloud}
+        style={{ left: "30%" }}
+      />
+
+      <img
+        src={cloudImage1}
+        alt="Cloud"
+        className={styles.cloud}
+        style={{ left: "20%" }}
+      />
+
+      <img
+        src={cloudImage1}
+        alt="Cloud"
+        className={styles.cloud}
+        style={{ left: "0%" }}
+      />
+
+      <img
+        src={cloudImage2}
+        alt="Cloud"
+        className={styles.cloud}
+        style={{ left: "60%" }}
+      />
+
+      <img
+        src={cloudImage2}
+        alt="Cloud"
+        className={styles.cloud}
+        style={{ left: "76%" }}
+      />
+
+      <img
+        src={cloudImage1}
+        alt="Cloud"
+        className={styles.cloud}
+        style={{ left: "-30%" }}
+      />
+
+      <img
+        src={cloudImage2}
+        alt="Cloud"
+        className={styles.cloud}
+        style={{ left: "-45%" }}
+      />
+
       <div className={styles.loginlogo}>
         <img className={styles.loginlogoImg} src={imgfile} alt="로고" />
       </div>
 
-      <div className={styles.kakaoLogin} onClick={kakaoLoginHandler}>
-        <img src={kakaoImg} width={"300px"} />
-      </div>
+      {!showLoginButtons && (
+        <button onClick={handleStartClick} className={styles.startButton}>
+          Press Start
+        </button>
+      )}
 
-      <div className={styles.googleLogin} onClick={googleLoginHandler}>
-        <img src={googleImg} width={"300px"} style={{ borderRadius: "7px" }} />
-      </div>
-
-      {/* Add a new button for navigating to "/main" */}
-      <button
-        type="button"
-        onClick={navigateToMain}
-        className={`${styles.mainButton}`}
-      >
-        이동하기
-      </button>
+      {showLoginButtons && (
+        <>
+          <div className={styles.kakaoLogin} onClick={kakaoLoginHandler}>
+            <img src={kakaoImg} width={"300px"} />
+          </div>
+          <div className={styles.googleLogin} onClick={googleLoginHandler}>
+            <img
+              src={googleImg}
+              width={"300px"}
+              style={{ borderRadius: "7px" }}
+            />
+          </div>
+        </>
+      )}
 
       {isNicknameModalOpen && (
         <NicknameModal close={() => setIsNicknameModalOpen(false)} />
