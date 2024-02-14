@@ -78,7 +78,7 @@ public class RoomService {
         // 조건에 부합하는 방이 있을 떄
         if(!resultList.isEmpty()){
             resultList = resultList.subList((page-1)*4, Math.min(resultList.size(), (page-1)*4+4));
-            
+
             return GetRoomListResponse.of(totalPage, page, resultList);
         }
         // 비어있을 때
