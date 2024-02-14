@@ -33,10 +33,10 @@ function Game() {
   const timeCompleted = useSelector((state) => state.timer.timeCompleted);
 
   // 대기 방에서 넘어 온 정보들.
-  const roomId = location.state.roomId;
-  const nickname = location.state.nickname;
-  const userList = location.state.userList;
-  const roomType = location.state.roomType;
+  const roomId = location.state ? location.state.roomId : 'sdfasfd'
+  const nickname = location.state ? location.state.nickname : 'sdfasfd'
+  const userList = location.state ? location.state.userList : []
+  const roomType = location.state ? location.state.roomType : 'item'
 
   const [showOctopus, setOctopus] = useState(false);
   const [chickens, setChickens] = useState([]); // 병아리 이미지 상태
@@ -82,6 +82,8 @@ function Game() {
 
   useEffect(() => {
     // 비정상인 접근 차단. 개발 후 살리기.
+    axios.get(`${process.env.REACT_APP_BASE_URL}/rooms/normal?page=1`)
+    .then(res=>{console.log(res)})
     if (!(roomInfo.roomId && nickname)) navigate("/error");
 
     // roomId를 이용해 API로 세부 방 정보 가져오기.
@@ -131,7 +133,7 @@ function Game() {
 
     fetchRoomInfo();
     fetchUserInfo();
-    connectSession;
+    connectSession();
   }, []);
 
   const connectSession = () => {
@@ -143,6 +145,8 @@ function Game() {
   const onConnected = () => {
     client.current.subscribe(`/sub/game/` + roomId, onStatusReceived);
   };
+
+  const onError = ()=>{()=>{}}
 
   const onStatusReceived = (payload) => {
     console.log(JSON.parse(payload.body));

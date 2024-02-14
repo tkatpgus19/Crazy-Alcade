@@ -258,7 +258,7 @@ public class RoomService {
             final long[] timeLimit = {room.getTimeLimit()};
             scheduler.scheduleAtFixedRate(() -> {
                 template.convertAndSend("/sub/timer/" + roomId, timeLimit[0]);
-                log.warn("초: " + timeLimit[0]);
+//                log.warn("초: " + timeLimit[0]);
                 if (timeLimit[0] == 0) {
                     scheduler.shutdown();
                 }
