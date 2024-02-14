@@ -80,15 +80,8 @@ function Game() {
   // };
 
   useEffect(() => {
-    // roomId 값이 없거나 nickname이 없으면 에러 페이지로 리디렉션
-    if (!roomId || !nickname || !roomName) {
-      navigate("/error");
-    }
-  }, [roomId, nickname, navigate]); // 의존성 배열에 roomId와 nickname 추가
-
-  useEffect(() => {
     // 비정상인 접근 차단. 개발 후 살리기.
-    if (!(roomInfo.roomId && nickname)) navigate("/error");
+    // if (!(roomInfo.roomId && nickname)) navigate("/error");
 
     // roomId를 이용해 API로 세부 방 정보 가져오기.
     const fetchRoomInfo = async () => {
