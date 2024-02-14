@@ -483,7 +483,8 @@
 }
 
 .backPage,
-.forthPage {
+.forthPage,
+.pageControl {
   width: 70px;
   height: 25px;
   background-color: #0584df; /* 파란색 배경 */
@@ -493,9 +494,9 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  margin: 0 40px; /*간격 조절*/
+  margin: 0 10px; /*간격 조절*/
   line-height: 20px;
-  margin-top: 165px;
+  margin-top: 167px;
   font-family: "DNFBitBitv2";
   border-radius: 15px;
 }
