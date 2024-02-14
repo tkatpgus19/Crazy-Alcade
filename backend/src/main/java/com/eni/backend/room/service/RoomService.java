@@ -1,6 +1,7 @@
 package com.eni.backend.room.service;
 
 import com.eni.backend.common.exception.CustomBadRequestException;
+import com.eni.backend.member.repository.MemberRepository;
 import com.eni.backend.problem.entity.Problem;
 import com.eni.backend.problem.entity.Tier;
 import com.eni.backend.problem.repository.ProblemRepository;
@@ -31,6 +32,7 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final TierRepository tierRepository;
     private final ProblemRepository problemRepository;
+    
     private final SimpMessageSendingOperations template;
 
     // 방 등록
