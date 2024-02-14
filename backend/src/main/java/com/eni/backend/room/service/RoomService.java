@@ -8,6 +8,7 @@ import com.eni.backend.problem.repository.TierRepository;
 import com.eni.backend.room.dto.ChatDto;
 import com.eni.backend.room.dto.RoomDto;
 import com.eni.backend.room.dto.request.*;
+import com.eni.backend.room.dto.response.GetRoomListResponse;
 import com.eni.backend.room.dto.response.PostRoomResponse;
 import com.eni.backend.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +52,7 @@ public class RoomService {
     }
 
     // 조건에 부합하는 방 리스트 조회
-    public List<RoomDto> getSortedRoomList(String roomType, String language, String tier, Boolean codeReview, Boolean isSolved, Integer page){
+    public GetRoomListResponse getSortedRoomList(String roomType, String language, String tier, Boolean codeReview, Boolean isSolved, Integer page){
         List<RoomDto> resultList = roomRepository.getRoomListByRoomType(roomType);
         if(language != null){
             resultList = resultList
@@ -81,9 +82,9 @@ public class RoomService {
             }
         }
         else{
-            return Collections.emptyList();
+            return GetRoomListResponse.of(0, 1, Collections.emptyList());
         }
-        return resultList;
+        return GetRoomListResponse.of(resultList.size()/4+1, page, resultList);
     }
 
     public Boolean enter(PostRoomEnterRequest request){
