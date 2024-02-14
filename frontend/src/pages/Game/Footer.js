@@ -36,7 +36,7 @@ const Footer = ({ roomInfo, userInfo }) => {
   const dispatch = useDispatch();
 
   const [isItem, setItem] = useState(false);
-  const [currentItem, setCurrentItem] = useState(0);
+  const [currentItem, setCurrentItem] = useState(1);
 
   const code = useSelector((state) => state.code.content); // 코드 상태 선택
   const lang = useSelector((state) => state.code.lang); // 언어 상태 선택
@@ -67,23 +67,66 @@ const Footer = ({ roomInfo, userInfo }) => {
   };
 
   const onStatusReceived = (payload) => {
-    console.log(JSON.parse(payload.body));
+    const data = JSON.parse(payload.body);
+    // 공겨 당한 자가 나이면
+    console.log(data.victim + "로 공격받음");
+    if (data.victim === userInfo.nickname) {
+      const item = data.itemNo;
+      // 나한테 아이템 표시. // 쉴드는 따로
+      if (item === 1) {
+        if (!isSprayingInk) dispatch(toggleInkSpraying());
+        setTimeout(() => {
+          // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
+          dispatch(resetInkSpraying());
+        }, 5000);
+      } else if (item === 2) {
+        if (!isChickenWalking) dispatch(toggleChickenWalking());
+        setTimeout(() => {
+          // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
+          dispatch(resetChickenWalking());
+        }, 5000);
+      } else if (item === 3) {
+        if (!isAnimating) dispatch(toggleWaterBalloonAnimation(true)); // 애니메이션 시작
+
+        setTimeout(() => {
+          // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
+          dispatch(resetWaterBalloonAnimation());
+        }, 5000);
+      } else if (item === 4) {
+        dispatch(toggleWebIDEFlip());
+        // setTimeout 콜백 내에서 isFlipped 상태를 확인
+        setTimeout(() => {
+          dispatch(resetWebIDEFlip());
+        }, 5000); // 5000ms = 5초
+      } else if (item === 5) {
+        if (isSprayingInk == true) dispatch(toggleInkSpraying(false));
+        if (isChickenWalking == true) dispatch(toggleChickenWalking(false));
+        if (isAnimating == true) dispatch(toggleWaterBalloonAnimation(false));
+        if (isFlipped == true) dispatch(toggleWebIDEFlip(false));
+        dispatch(toggleShield());
+        setTimeout(() => dispatch(resetShield()), 0); // 바로 상태를 리셋하여 다른 애니메이션에 영향을 주지 않음
+      }
+    }
   };
 
-  const onError = (err) =>{
+  const onError = (err) => {
     console.log(err);
-  }
+  };
 
-  const attackUser = ()=>{
-    axios.post(`${process.env.REACT_APP_BASE_URL}/rooms/attack`, {
-      roomId: roomInfo.roomId,
-      nickname: '닉넴입니당',
-      victim: '공격당할 대상',
-      itemNo: 0
-    })
-    .then(res=>console.log(res))
-    .catch(err=>console.log(err))
-  }
+  const attackUser = (victim) => {
+    axios
+      .post(`${process.env.REACT_APP_BASE_URL}/rooms/attack`, {
+        roomId: roomInfo.roomId,
+        nickname: userInfo.nickname,
+        victim: userInfo.nickname,
+        // victim: Object.values(roomInfo.userList)[victim],
+        itemNo: currentItem,
+      })
+      .then((res) => {
+        subItem(currentItem);
+      })
+      .catch((err) => console.log(err));
+  };
 
   // 각 아이템의 개수를 itemId를 키로 하는 객체로 변환
   const itemCounts = userInfo.memberItemList.reduce((acc, item) => {
@@ -96,6 +139,38 @@ const Footer = ({ roomInfo, userInfo }) => {
     config: { duration: isAnimating ? 3000 : 300 },
   });
 
+  useEffect(() => {
+    console.log(`현재 선택 아이템은 ${currentItem}`);
+  }, [currentItem]); // currentItem이 변경될 때마다 실행됨
+
+  // 아이템 개수 감소 요청 API
+  const subItem = async (item) => {
+    //  여기에 API 요청 로직 추가
+    try {
+      const apiUrl = `${process.env.REACT_APP_BASE_URL}/items/members/sub`; // 환경변수나 상수로 API URL 관리
+      const token = localStorage.getItem("accessToken");
+
+      const response = await axios.put(
+        apiUrl,
+        {
+          itemId: item,
+          putValue: 1, // 아이템 개수 1 감소
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // 요청 성공 시, 로직 처리 (예: 상태 업데이트)
+      console.log("아이템 개수 감소 성공", response.data);
+      // 아이템 개수 상태 업데이트 또는 부모 컴포넌트로부터 받은 함수 호출 등을 통해 UI를 업데이트할 수 있습니다.
+    } catch (error) {
+      console.error("아이템 사용 중 에러 발생", error);
+    }
+  };
+
   // 아이템 사용 함수
   const handleUseItem = async (item, itemCount) => {
     if (itemCount <= 0) {
@@ -106,65 +181,6 @@ const Footer = ({ roomInfo, userInfo }) => {
       // 각 아이템에 대한 효과 로직 추가
       console.log(`아이템 사용: ${item}`);
       setCurrentItem(item);
-      console.log(`현재 선택 아이템은 ${currentItem}`);
-      // 여기에 API 요청 로직 추가
-      // // try {
-      // //   const apiUrl = `${process.env.REACT_APP_BASE_URL}/items/members/sub`; // 환경변수나 상수로 API URL 관리
-      // //   const token = localStorage.getItem("accessToken");
-
-      // //   const response = await axios.put(
-      // //     apiUrl,
-      // //     {
-      // //       itemId: item,
-      // //       putValue: 1, // 아이템 개수 1 감소
-      // //     },
-      // //     {
-      // //       headers: {
-      // //         Authorization: `Bearer ${token}`,
-      // //       },
-      // //     }
-      // //   );
-
-      // //   // 요청 성공 시, 로직 처리 (예: 상태 업데이트)
-      // //   console.log("아이템 개수 감소 성공", response.data);
-      // //   // 아이템 개수 상태 업데이트 또는 부모 컴포넌트로부터 받은 함수 호출 등을 통해 UI를 업데이트할 수 있습니다.
-      // // } catch (error) {
-      // //   console.error("아이템 사용 중 에러 발생", error);
-      // }
-
-      // if (item === 1) {
-      //   if (!isSprayingInk) dispatch(toggleInkSpraying());
-      //   setTimeout(() => {
-      //     // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
-      //     dispatch(resetInkSpraying());
-      //   }, 5000);
-      // } else if (item === 2) {
-      //   if (!isChickenWalking) dispatch(toggleChickenWalking());
-      //   setTimeout(() => {
-      //     // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
-      //     dispatch(resetChickenWalking());
-      //   }, 5000);
-      // } else if (item === 3) {
-      //   if (!isAnimating) dispatch(toggleWaterBalloonAnimation(true)); // 애니메이션 시작
-
-      //   setTimeout(() => {
-      //     // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
-      //     dispatch(resetWaterBalloonAnimation());
-      //   }, 5000);
-      // } else if (item === 4) {
-      //   dispatch(toggleWebIDEFlip());
-      //   // setTimeout 콜백 내에서 isFlipped 상태를 확인
-      //   setTimeout(() => {
-      //     dispatch(resetWebIDEFlip());
-      //   }, 5000); // 5000ms = 5초
-      // } else if (item === 5) {
-      //   if (isSprayingInk == true) dispatch(toggleInkSpraying(false));
-      //   if (isChickenWalking == true) dispatch(toggleChickenWalking(false));
-      //   if (isAnimating == true) dispatch(toggleWaterBalloonAnimation(false));
-      //   if (isFlipped == true) dispatch(toggleWebIDEFlip(false));
-      //   dispatch(toggleShield());
-      //   setTimeout(() => dispatch(resetShield()), 0); // 바로 상태를 리셋하여 다른 애니메이션에 영향을 주지 않음
-      // }
     }
   };
 
@@ -242,11 +258,15 @@ const Footer = ({ roomInfo, userInfo }) => {
       <div className={styles.itemContainer}>
         <div className={styles.itemHeader}>내 아이템</div>
         {/* 각각의 아이템 버튼을 ItemButton 컴포넌트로 대체 */}
-        <button>1</button>
-        <button>2</button>
-        <button>3</button>
-        <button>4</button>
-        <button>5</button>
+        {roomInfo.userList &&
+          Object.values(roomInfo.userList).map((data, index) => {
+            if (data != userInfo.nickname)
+              return (
+                <>
+                  <button onClick={() => attackUser(index)}>{data}</button>
+                </>
+              );
+          })}
       </div>
       {isItem && (
         <div className={styles.itemContainer}>
@@ -256,6 +276,7 @@ const Footer = ({ roomInfo, userInfo }) => {
             icon={octopusIcon}
             itemName="문어"
             disabled={itemCounts[1] === 0} // itemId가 1인 아이템의 개수를 기반으로 비활성화 결정
+            selected={currentItem == 1}
             onUseItem={() => handleUseItem(1, itemCounts[1])}
             count={itemCounts[1]}
           />
@@ -265,6 +286,7 @@ const Footer = ({ roomInfo, userInfo }) => {
             disabled={itemCounts[2] === 0} // itemId가 2인 아이템의 개수를 기반으로 비활성화 결정
             onUseItem={() => handleUseItem(2, itemCounts[2])}
             count={itemCounts[2]}
+            selected={currentItem == 2}
           />
           <ItemButton
             icon={balloonIcon}
@@ -272,6 +294,7 @@ const Footer = ({ roomInfo, userInfo }) => {
             disabled={itemCounts[3] === 0} // itemId가 3인 아이템의 개수를 기반으로 비활성화 결정
             onUseItem={() => handleUseItem(3, itemCounts[3])}
             count={itemCounts[3]}
+            selected={currentItem == 3}
           />
           <ItemButton
             icon={magicIcon}
@@ -279,6 +302,7 @@ const Footer = ({ roomInfo, userInfo }) => {
             disabled={itemCounts[4] === 0} // itemId가 4인 아이템의 개수를 기반으로 비활성화 결정
             onUseItem={() => handleUseItem(4, itemCounts[4])}
             count={itemCounts[4]}
+            selected={currentItem == 4}
           />
           <ItemButton
             icon={shieldIcon}
@@ -286,6 +310,7 @@ const Footer = ({ roomInfo, userInfo }) => {
             disabled={itemCounts[5] === 0} // itemId가 5인 아이템의 개수를 기반으로 비활성화 결정
             onUseItem={() => handleUseItem(5, itemCounts[5])}
             count={itemCounts[5]}
+            selected={currentItem == 5}
           />
         </div>
       )}
