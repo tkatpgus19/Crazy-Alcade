@@ -15,49 +15,53 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
     roomName: "",
     hasPassword: false,
     roomPassword: "",
-    problemTier: "",
-    problemName: "",
+    problemTier: 0,
+    problemId: 0,
     timeLimit: 0,
     language: "java",
     codeReview: true,
-    master: "김진영",
+    master: "",
   });
 
   const [problems, setProblems] = useState([]); // 문제 목록을 저장할 상태
   const [tiers, setTiers] = useState([]); // 티어 정보 상태 추가
 
+  // 티어 정보를 불러오는 함수
   useEffect(() => {
-    const fetchProblems = async () => {
-      try {
-        const response = await axios.get(
-          "https://i10d104.p.ssafy.io/api/problems?tier-id=1"
-        );
-        // 'result' 배열을 상태에 저장
-        setProblems(response.data.result);
-      } catch (error) {
-        console.error("문제 목록을 불러오는 데 실패했습니다.", error);
-        setProblems([]); // 오류 발생 시 빈 배열 설정
-      }
-    };
-
-    fetchProblems();
-
-    // 티어 정보를 불러오는 함수
     const fetchTiers = async () => {
       try {
         const response = await axios.get(
-          "https://i10d104.p.ssafy.io/api/tiers"
+          `${process.env.REACT_APP_BASE_URL}/tiers`
         );
-        // API 응답에서 'result' 배열을 추출하여 'tiers' 상태에 설정
-        setTiers(response.data.result || []); // 'result'가 없는 경우 빈 배열을 기본값으로 사용
+        setTiers(response.data.result || []);
       } catch (error) {
         console.error("티어 정보를 불러오는 데 실패했습니다.", error);
-        setTiers([]); // 오류 발생 시 빈 배열 설정
+        setTiers([]);
+      }
+    };
+    fetchTiers();
+  }, []);
+
+  // 선택된 티어가 변경될 때마다 문제 목록을 불러오는 로직
+  useEffect(() => {
+    const fetchProblemsByTier = async () => {
+      if (!roomData.problemTier) {
+        setProblems([]);
+        return;
+      }
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/problems?tier-id=${roomData.problemTier}`
+        );
+        setProblems(response.data.result || []);
+      } catch (error) {
+        console.error("문제 목록을 불러오는 데 실패했습니다.", error);
+        setProblems([]);
       }
     };
 
-    fetchTiers();
-  }, []);
+    fetchProblemsByTier();
+  }, [roomData.problemTier]);
 
   // 입력값이 변경될 때 호출되는 핸들러 함수를 정의합니다.
   const handleChange = (e) => {
@@ -70,7 +74,7 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
 
   // 폼을 제출할 때 호출되는 핸들러 함수를 정의합니다.
   const handleSubmit = () => {
-    console.log(roomData);
+    console.log(roomData.problemId + "\n\n\n\n\n\n");
     createRoom(roomData); // 방 만들기 함수 호출
     closeModal(); // 모달 닫기 함수 호출
 
@@ -181,8 +185,8 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
         <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
           <span>문제 이름 : </span>
           <select
-            name="problemName"
-            value={roomData.problemName}
+            name="problemId"
+            value={roomData.problemId}
             onChange={handleChange}
           >
             <option value="">문제를 선택하세요</option>

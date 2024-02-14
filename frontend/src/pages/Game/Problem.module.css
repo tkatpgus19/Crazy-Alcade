@@ -1,12 +1,102 @@
+/* Problem.module.css */
 .problemBox {
-  padding: 7px;
-  /* overflow-y: auto; 컴포넌트 전체에 스크롤 적용 */
-  /* background-color: white; 예시 색상, 필요에 따라 변경 */
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-radius: 0px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .problem {
-  border-radius: 10px;
-  overflow: auto;
-  background-color: white; /* 예시 색상, 필요에 따라 변경 */
-  padding-left: 12px;
+  border-radius: 0px;
+  background-color: #ffffff;
+  padding: 10px 15px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  white-space: pre-wrap;
+}
+
+/* 태그 선택자 대신 클래스 추가 */
+.customH2,
+.customH3 {
+  color: #333;
+  margin-top: 10px;
+}
+
+.customH4 {
+  margin-top: 0px;
+}
+
+.customHr {
+  border: 0;
+  height: 1px;
+  background-color: #eaeaea;
+  margin: 20px 0px;
+}
+
+.customP {
+  color: #111;
+  line-height: 1.6;
+  margin: 0px 5px;
+  white-space: pre-wrap;
+}
+
+.examplesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* 예제 간의 간격 */
+}
+
+.exampleRow {
+  display: flex;
+  gap: 10px; /* 입력과 출력 상자 사이의 간격 */
+}
+
+.exampleBlock {
+  flex: 1; /* 입력과 출력 상자의 너비를 같게 조정 */
+  border: 1px solid #ddd; /* 경계선 스타일 */
+  padding: 10px 10px; /* 패딩 조정 */
+  border-radius: 5px; /* 모서리 둥글게 */
+}
+
+.exampleBlock h4 {
+  margin-bottom: 10px; /* 제목과 내용 사이의 간격 */
+  color: #555; /* 제목 색상 */
+  border-bottom: 2px solid #0076c0; /* 제목 아래 푸른색 선 */
+  padding-bottom: 5px; /* 선과 텍스트 사이의 패딩 */
+}
+
+.exampleContent {
+  white-space: pre-wrap; /* 공백과 줄바꿈을 그대로 유지 */
+  line-height: 1.7; /* 줄 간격 */
+  overflow-x: auto; /* 가로 스크롤바 필요시 표시 */
+  font-family: BMDOHYOEN;
+  padding: 2px 10px;
+  background-color: #eee;
+}
+
+.limitsContainer {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.limit {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.limit i {
+  margin-right: 5px;
+  color: #555; /* 아이콘 색상 설정 */
+  font-size: 1em; /* 아이콘 크기는 상위 요소의 글꼴 크기에 맞춤 */
+}
+
+.limit span {
+  white-space: nowrap;
+  margin-left: 7px;
+  padding-bottom: 0px;
+  font-size: 12px;
 }

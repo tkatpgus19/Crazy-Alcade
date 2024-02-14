@@ -1,9 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+
+// 이미지 import
 import imgfile from "../../assets/images/logo.png";
 import timeLimitImg from "../../assets/images/timeLimit.png";
 import languageImg from "../../assets/images/language.png";
 import background from "../../assets/images/mainback.png";
+
+import waterBalloonImg from "../../assets/images/waterBalloon.png";
+import octopusImg from "../../assets/images/octopus.png";
+import chickImg from "../../assets/images/chick.png";
+import magicImg from "../../assets/images/magic.png";
+import shieldImg from "../../assets/images/shield.png";
+
+import waterBalloonGrayImg from "../../assets/images/waterBalloonGrayImg.png";
+import octopusGrayImg from "../../assets/images/octopusGrayImg.png";
+import chickGrayImg from "../../assets/images/chickGrayImg.png";
+import magicGrayImg from "../../assets/images/magicGrayImg.png";
+import shieldGrayImg from "../../assets/images/shieldGrayImg.png";
+
 import "./Main.module.css";
 import styles from "./Main.module.css";
 
@@ -17,14 +32,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
 
 const Main = () => {
-  const SERVER_URL = process.env.REACT_APP_BASE_URL;
-
-  useEffect(() => {
-    getRoomList("normal");
-
-    connectSession();
-  }, []);
-
   const client = useRef();
   const getRoomList = (roomType) => {
     axios.get(`${SERVER_URL}/rooms/${roomType}?page=${page}`).then((res) => {
@@ -33,7 +40,7 @@ const Main = () => {
   };
 
   const connectSession = () => {
-    const socket = new SockJS(`${SERVER_URL}/ws-stomp`);
+    const socket = new SockJS(process.env.REACT_APP_SOCKET_URL);
     client.current = Stomp.over(socket);
     client.current.connect({}, onConnected, onError);
   };
@@ -71,7 +78,6 @@ const Main = () => {
     setChatContent((chatContent) => [...chatContent, newMessage]);
   }
 
-  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [createRoomButtonPressed, setCreateRoomButtonPressed] = useState(false);
   const [isItemShopModalOpen, setIsItemShopModalOpen] = useState(false);
@@ -80,9 +86,55 @@ const Main = () => {
   const [normalMode, setNormalMode] = useState(true);
   const [roomList, setRoomList] = useState([]);
   const [page, setPage] = useState(1);
-  const [nickname, setNickname] = useState(
-    "닉네임" + Math.floor(Math.random() * 100)
-  );
+  const [profile, setProfile] = useState([]);
+  const [levelId, setLevelId] = useState(0);
+  const [exp, setExp] = useState(0);
+  const [coin, setCoin] = useState(0);
+  const [memberItemList, setMemberItemList] = useState([]);
+  const [inventory, setInventory] = useState([]);
+
+  const navigate = useNavigate();
+  const [nickname, setNickname] = useState("");
+
+  const SERVER_URL = process.env.REACT_APP_BASE_URL;
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_BASE_URL}/members`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      })
+      .then((response) => {
+        const { nickname, levelId, exp, coin, memberItemList } =
+          response.data.result;
+
+        // nickname을 기반으로 1부터 10 사이의 숫자를 생성하는 해시 함수
+        const hash = (str) => {
+          let hash = 0;
+          for (let i = 0; i < str.length; i++) {
+            const character = str.charCodeAt(i);
+            hash = (hash << 5) - hash + character;
+            hash = hash & hash; // Convert to 32bit integer
+          }
+          return Math.abs(hash % 10) + 1; // 1부터 10 사이의 숫자 반환
+        };
+
+        const profileNumber = hash(nickname); // 닉네임을 기반으로 숫자 생성
+        const profilePicture = `profile${profileNumber}.png`; // 파일 이름 구성
+
+        setNickname(nickname);
+        setProfile(`/images/${profilePicture}`);
+        setLevelId(levelId);
+        setExp(exp);
+        setCoin(coin);
+        setMemberItemList(memberItemList);
+        connectSession();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -102,6 +154,7 @@ const Main = () => {
 
   const createRoom = (roomData) => {
     console.log("방이 생성되었습니다:", roomData);
+    roomData.master = nickname;
     axios
       .post(`${SERVER_URL}/rooms`, roomData)
       .then((res) => {
@@ -175,43 +228,50 @@ const Main = () => {
     if (data.hasPassword) {
       const password = prompt("비밀번호를 입력하세요");
       axios
-        .post(
-          `${SERVER_URL}/rooms/checkPwd?roomId=${data.roomId}&roomPwd=${password}`
+        .get(
+          `${SERVER_URL}/rooms/password?roomId=${data.roomId}&roomPwd=${password}`
         )
         .then((res) => {
-          if (res.data) {
+          if (res.data.result) {
             axios
               .post(`${SERVER_URL}/rooms/enter`, {
-                roomId: data.roomId,
                 nickname: nickname,
+                roomId: data.roomId,
               })
-              .then((res) => {
-                if (res.data.result) {
-                  navigate("/room", {
-                    state: {
-                      roomId: data.roomId,
-                      nickname: nickname,
-                      roomType: data.roomType,
-                    },
-                  });
-                } else {
-                  alert("방에 인원이 가득 찼습니다.");
-                }
+              .then((response) => {
+                navigate("/room", {
+                  state: {
+                    roomId: data.roomId,
+                    nickname: nickname,
+                    roomType: data.roomType,
+                  },
+                });
+              })
+              .catch((err) => {
+                alert(err.response.data.message);
               });
           } else {
             alert("비밀번호가 달라요");
           }
         });
     } else {
-      navigate("/room", {
-        state: {
-          // 아래 주석을 풀어주세요
-          // roomId: data.result.roomId,
-          roomId: data.roomId,
+      axios
+        .post(`${SERVER_URL}/rooms/enter`, {
           nickname: nickname,
-          roomType: data.roomType,
-        },
-      });
+          roomId: data.roomId,
+        })
+        .then((response) => {
+          navigate("/room", {
+            state: {
+              roomId: data.roomId,
+              nickname: nickname,
+              roomType: data.roomType,
+            },
+          });
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
     }
   };
 
@@ -228,6 +288,43 @@ const Main = () => {
     connectSession();
   };
 
+  // 인벤토리 데이터를 가져오는 useEffect 훅
+  useEffect(() => {
+    axios
+      .get(process.env.REACT_APP_INVENTORY_URL, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      })
+      .then((response) => {
+        const inventoryData = response.data.result;
+        setInventory(inventoryData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []); // 종속성 배열이 비어있기 때문에 컴포넌트 마운트 시에만 실행됩니다.
+
+  // 아이템의 수량에 따라 이미지를 설정하는 함수
+  const getItemImage = (itemName, count) => {
+    const colorImages = {
+      waterBalloon: waterBalloonColorImg,
+      octopus: octopusColorImg,
+      chick: chickColorImg,
+      magic: magicColorImg,
+      shield: shieldColorImg,
+    };
+    const grayImages = {
+      waterBalloon: waterBalloonGrayImg,
+      octopus: octopusGrayImg,
+      chick: chickGrayImg,
+      magic: magicGrayImg,
+      shield: shieldGrayImg,
+    };
+
+    return count > 0 ? colorImages[itemName] : grayImages[itemName];
+  };
+
   const backgroundStyle = {
     backgroundImage: `url(${background})`,
     backgroundRepeat: "no-repeat",
@@ -238,21 +335,23 @@ const Main = () => {
     alignItems: "space-between",
   };
 
-  const logoStyle = {
-    // 로고에 대한 추가 스타일을 여기에 추가
-  };
-
   const handleLogout = () => {
-    // 로그아웃 관련 로직 수행 (필요하다면)
-    // 홈 페이지로 이동
+    // 로컬 스토리지에서 사용자 관련 정보 제거
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("nickname");
+    localStorage.removeItem("isNew");
+    localStorage.removeItem("isConnected");
+    localStorage.removeItem("memberId");
+
+    // 로그아웃 후 사용자를 홈 페이지로 리디렉션
     navigate("/");
   };
 
   return (
     <div className={styles.mainContainer} style={backgroundStyle}>
       {/* 왼쪽 부분 (my-page) */}
-      <div className={styles.logo} style={logoStyle}>
-        <img className={styles.logoImg} src={imgfile} alt="로고" />
+      <div className={styles.logo}>
+        <img src={imgfile} alt="로고" />
       </div>
 
       {/* 오른쪽 상단 버튼들 */}
@@ -316,21 +415,54 @@ const Main = () => {
 
           {/* 프로필 사진 입력 칸 */}
           <div className={styles.profilePicture}>
-            <label htmlFor="profile-pic">프로필 사진</label>
-            <input type="file" id={styles.profilePic} accept="image/*" />
+            {/* profile 상태가 이미지 URL을 담고 있다고 가정하고 img 태그로 이미지를 표시합니다. */}
+            {profile && (
+              <img
+                src={profile}
+                alt="프로필 사진"
+                style={{ width: "100px", height: "100px" }}
+              />
+            )}
+            {/* <input type="file" id="profile-pic" accept="image/*" /> */}
           </div>
 
           {/* 소개 칸 */}
           <div className={styles.introduction}>
             <p>
-              <div>Lv. </div>
-              <div>경험치 </div>
-              <div>코인</div>
+              <div>Lv. {levelId}</div>
+              {/* 경험치 진행 상태 표시줄 */}
+              <div style={{ display: "flex" }}>
+                <p
+                  style={{
+                    margin: "0",
+                    width: "100px",
+                  }}
+                >
+                  경험치
+                </p>
+                <div className={styles.expBarContainer}>
+                  <div
+                    className={styles.expBar}
+                    style={{ width: `${exp}%` }}
+                  ></div>
+                  <div className={styles.expText}>exp</div>
+                </div>
+              </div>
+              {/* 코인 부분 */}
+              <div className={styles.coinContainer}>
+                <div>코인 {coin}</div>
+                <img
+                  src="/images/coinImage.png"
+                  alt="코인"
+                  className={styles.coinImage}
+                />
+              </div>
             </p>
           </div>
 
-          {/* 하단 흰색 네모 칸 4개 정렬 */}
+          {/* 하단 흰색 네모 칸 5개 정렬 */}
           <div className={styles.whiteBoxes}>
+            <div className={styles.whiteBox}></div>
             <div className={styles.whiteBox}></div>
             <div className={styles.whiteBox}></div>
             <div className={styles.whiteBox}></div>
@@ -423,8 +555,12 @@ const Main = () => {
                     <div className={styles.roomBlueBox}>
                       <p>{data.roomName}</p>
                     </div>
-                    <div className={styles.playingText}>
-                      <h1>Playing</h1>
+                    <div
+                      className={
+                        data.isStarted ? styles.playingText : styles.waitingText
+                      }
+                    >
+                      <h1>{data.isStarted ? "Playing" : "Waiting"}</h1>
                     </div>
                     <div
                       className={styles.roomDescription}
@@ -433,7 +569,7 @@ const Main = () => {
                         WebkitTextStroke: "0.5px white",
                       }}
                     >
-                      백준 : {data.problemNo}
+                      {data.problemName}
                     </div>
                     <div
                       className={
@@ -451,7 +587,7 @@ const Main = () => {
                           margin: "0 5px 5px 0",
                         }}
                       />
-                      {data.timeLimit}
+                      {data.timeLimit}초
                     </div>
                     <div
                       className={
@@ -477,16 +613,14 @@ const Main = () => {
                           bottom: "10px",
                         }}
                       >
-                        <FontAwesomeIcon
-                          icon={data.hasPassword ? faKey : null}
-                          rotation={data.hasPassword ? 220 : 0}
-                          style={
-                            data.hasPassword
-                              ? { color: "#FFD43B", marginTop: "5px" }
-                              : null
-                          }
-                          className={styles.keyIcon}
-                        />
+                        {data.hasPassword && (
+                          <FontAwesomeIcon
+                            icon={faKey}
+                            style={{ color: "#FFD43B", marginTop: "5px" }}
+                            className={styles.keyIcon}
+                          />
+                        )}
+
                         <img
                           src={
                             data.codeReview

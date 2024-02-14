@@ -10,19 +10,35 @@ import { useNavigate, useLocation } from "react-router-dom";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import axios from "axios";
+import micOnImage from "../../assets/images/MIC-ON.png";
+import micOffImage from "../../assets/images/MIC-OFF.png";
+import soundOnImage from "../../assets/images/SOUND-ON.png";
+import soundOffImage from "../../assets/images/SOUND-OFF.png";
+import screenOnImage from "../../assets/images/SCREEN-ON.png";
+import screenOffImage from "../../assets/images/SCREEN-OFF.png";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  toggleMicrophone,
+  toggleCamera,
+  toggleAudio,
+} from "./slices/settingSlice";
 
 const Room = () => {
   const SERVER_URL = process.env.REACT_APP_BASE_URL;
 
   const messagesEndRef = useRef(null); // messages 참조 생성
 
+  const { isMicrophoneOn, isCameraOn, isAudioOn } = useSelector(
+    (state) => state.settings
+  );
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    console.log("뭔데\n\n\n\n\n" + roomId + nickname + roomType);
+    getRoomInfo();
     connectRoom();
     getUserList();
 
     // 추가한 부분
-    getRoomInfo();
   }, []);
 
   // 추가한 부분
@@ -31,8 +47,14 @@ const Room = () => {
   // 추가한 부분
   const getRoomInfo = () => {
     axios.get(`${SERVER_URL}/rooms/info?roomId=${roomId}`).then((res) => {
-      console.log("제바라라라라라라\n\n\n\n\n" + res.data.result);
       setRoomInfo(res.data.result);
+      let index = 0;
+      Object.values(res.data.result.userList).forEach((data, idx) => {
+        if (data === nickname) {
+          index = idx;
+        }
+      });
+      setUserUUID(Object.keys(res.data.result.userList)[index]);
     });
   };
 
@@ -41,21 +63,28 @@ const Room = () => {
   const [userStatus, setUserStatus] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
-  const { roomId, nickname, roomType } = location.state; // 세가지 받아옴.
+  const roomId = location.state ? location.state.roomId : "roomId";
+  const nickname = location.state ? location.state.nickname : "nickname";
+  const roomType = location.state ? location.state.roomType : "normal"; // 기본값을 "normal"로 설정
   const [chatContent, setChatContent] = useState([]);
   const [chatInput, setChatInput] = useState("");
+  const [userUUID, setUserUUID] = useState("");
 
   const client = useRef();
 
   const connectRoom = () => {
-    const socket = new SockJS(`${SERVER_URL}/ws-stomp`);
+    const socket = new SockJS(process.env.REACT_APP_SOCKET_URL);
     client.current = Stomp.over(socket);
     client.current.connect({}, onConnected, onError); // 현재상태를 변경할 때, {}는 헤더값 쓸때 쓴는 것, 성공하면 onConnected 실패시 onError
   };
 
   const leaveRoom = () => {
-    client.current.disconnect();
-    navigate(-1);
+    axios
+      .delete(`${SERVER_URL}/rooms/exit?roomId=${roomId}&member-id=${userUUID}`)
+      .then((res) => {
+        client.current.disconnect();
+        navigate(-1);
+      });
   };
 
   const onSignalReceived = (payload) => {
@@ -68,16 +97,14 @@ const Room = () => {
       "/sub/room/" + roomId + "/status",
       onStatusReceived
     ); // 이 url은 방의 상태, user 목록이나 준비상태를 본다.
-    // client.current.send(
-    //   "/pub/room/enterUser",
-    //   {},
-    //   JSON.stringify({
-    //     type: "ENTER",
-    //     roomId: roomId,
-    //     sender: nickname,
-    //     roomType: roomType,
-    //   })
-    // ); // 입장 이벤트 처리
+    client.current.send(
+      "/pub/enter",
+      {},
+      JSON.stringify({
+        roomId: roomId,
+        nickname: userUUID,
+      })
+    ); // 입장 이벤트 처리
     client.current.subscribe(
       "/sub/room/" + roomId + "/start",
       onSignalReceived
@@ -86,6 +113,15 @@ const Room = () => {
 
   const onError = (error) => {
     alert("error");
+  };
+
+  // // 현재 페이지 상태를 history 스택에 추가
+  // history.pushState(null, null, location.href);
+
+  // 사용자가 뒤로 가기를 시도할 때 발생하는 이벤트를 감지
+  window.onpopstate = function () {
+    // history 스택에 현재 페이지를 다시 추가하여 뒤로 가기를 방지
+    client.current.disconnect();
   };
 
   const onChatReceived = (payload) => {
@@ -139,10 +175,12 @@ const Room = () => {
   };
 
   const getReady = () => {
-    axios.put(`${SERVER_URL}/rooms/ready`, {
-      roomId: roomId,
-      nickname: nickname,
-    });
+    axios
+      .put(`${SERVER_URL}/rooms/ready`, {
+        roomId: roomId,
+        nickname: nickname,
+      })
+      .then((res) => console.log(res));
   };
 
   const back = () => {
@@ -157,17 +195,27 @@ const Room = () => {
   };
   const onStartClicked = () => {
     // 게임시작을 하기위해서 불러오는 API
-    axios.put(`${SERVER_URL}/rooms/start?roomId=${roomId}`).then((res) => {
-      if (res.data.result) {
-        console.log("되는거니..?");
-        axios.get(`${SERVER_URL}/rooms/set-timer?roomId=${roomId}`);
-      } else {
-        alert("준비가 되지 않았습니다.");
-      }
-    });
+    axios
+      .put(`${SERVER_URL}/rooms/start?roomId=${roomId}`)
+      .then((res) => {
+        if (res.data.result) {
+          console.log("되는거니..?");
+          axios.get(`${SERVER_URL}/rooms/set-timer?roomId=${roomId}`);
+        } else {
+          alert("준비가 되지 않았습니다.");
+        }
+      })
+      .catch((err) => {
+        if (err.response.data.code === 400) {
+          alert(err.response.data.message);
+        }
+      });
   };
 
   const enterGame = (data) => {
+    console.log(isCameraOn);
+    console.log(isAudioOn);
+    console.log(isMicrophoneOn);
     // 게임방 입장을 위한 로직
     navigate("/game", {
       state: {
@@ -202,7 +250,7 @@ const Room = () => {
   return (
     <Background>
       <RoomHeader roomTitle={roomInfo.roomName} />
-      <RoomHeader2 onExitClick={back} />
+      <RoomHeader2 onExitClick={back} problemName={roomInfo.problemName} />
       <GrayBox>
         <div style={{ display: "flex", width: "100%", minWidth: "1200px" }}>
           <div className={styles.blue}>
@@ -277,14 +325,35 @@ const Room = () => {
                 {userStatus[nickname] === "MASTER" ? "START" : "READY"}
               </div>
               <div className={styles.button3}>
-                <div className={styles.rightbutton}>
-                  <p>버튼1</p>
+                <div
+                  className={styles.rightbutton}
+                  onClick={() => dispatch(toggleMicrophone())}
+                >
+                  {/* 마이크 토글 이미지 */}
+                  <img
+                    src={isMicrophoneOn ? micOnImage : micOffImage}
+                    alt="Mic Toggle"
+                  />
                 </div>
-                <div className={styles.rightbutton}>
-                  <p>버튼2</p>
+                <div
+                  className={styles.rightbutton}
+                  onClick={() => dispatch(toggleAudio())}
+                >
+                  {/* 오디오 토글 이미지 */}
+                  <img
+                    src={isAudioOn ? soundOnImage : soundOffImage}
+                    alt="Audio Toggle"
+                  />
                 </div>
-                <div className={styles.rightbutton}>
-                  <p>버튼3</p>
+                <div
+                  className={styles.rightbutton}
+                  onClick={() => dispatch(toggleCamera())}
+                >
+                  {/* 카메라 토글 이미지 */}
+                  <img
+                    src={isCameraOn ? screenOnImage : screenOffImage}
+                    alt="Camera Toggle"
+                  />
                 </div>
               </div>
             </div>
