@@ -1,22 +1,26 @@
 package com.eni.backend.room.dto.response;
 
 import com.eni.backend.problem.entity.Code;
+import com.eni.backend.problem.entity.CodeStatus;
+import com.eni.backend.room.dto.CodeDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+
+import java.util.Optional;
 
 @Getter
 @ToString
 public class OtherRankDto {
 
-    private int rank;
+    private String rank;
     private String status;
     private String nickname;
     private String time;
     private String memory;
 
     @Builder
-    private OtherRankDto(int rank, String status, String nickname, String time, String memory) {
+    private OtherRankDto(String rank, String status, String nickname, String time, String memory) {
         this.rank = rank;
         this.status = status;
         this.nickname = nickname;
@@ -24,13 +28,20 @@ public class OtherRankDto {
         this.memory = memory;
     }
 
-    public static OtherRankDto from(int rank, Code code) {
+    public static OtherRankDto from(String rank, CodeDto code) {
+        String time = "-";
+        String memory = "-";
+        if (code.getCodeStatus() == CodeStatus.SUCCESS) {
+            time = code.getTime() + "ms";
+            memory = code.getMemory() + "KB";
+        }
+
         return builder()
                 .rank(rank)
-                .status(code.getStatus().getStatus())
+                .status(code.getCodeStatus().getStatus())
                 .nickname(code.getMember().getNickname())
-                .time(code.getTime() + "ms")
-                .memory(code.getMemory() + "KB")
+                .time(time)
+                .memory(memory)
                 .build();
     }
 

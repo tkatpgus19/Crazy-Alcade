@@ -52,6 +52,7 @@ public enum BaseResponseStatus {
     POST_ENTER_ROOM_SUCCESS(HttpStatus.OK, "방 입장에 성공하였습니다."),
     DELETE_MEMBER_SUCCESS(HttpStatus.OK, "방 퇴장에 성공하였습니다."),
     POST_ATTACK_SUCCESS(HttpStatus.OK, "공격에 성공하였습니다."),
+    GET_RANK_SUCCESS(HttpStatus.OK, "순위 조회에 성공하였습니다."),
 
     // BAD_REQUEST
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "유효하지 않은 요청입니다."),

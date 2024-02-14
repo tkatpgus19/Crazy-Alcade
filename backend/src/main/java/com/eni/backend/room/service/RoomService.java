@@ -1,7 +1,9 @@
 package com.eni.backend.room.service;
 
+import com.eni.backend.auth.jwt.JwtTokenProvider;
 import com.eni.backend.common.exception.CustomBadRequestException;
 import com.eni.backend.common.exception.CustomServerErrorException;
+import com.eni.backend.member.dto.SecurityMemberDto;
 import com.eni.backend.member.entity.Member;
 import com.eni.backend.member.repository.MemberRepository;
 import com.eni.backend.problem.entity.Code;
@@ -12,6 +14,7 @@ import com.eni.backend.problem.repository.CodeRepository;
 import com.eni.backend.problem.repository.ProblemRepository;
 import com.eni.backend.problem.repository.TierRepository;
 import com.eni.backend.room.dto.ChatDto;
+import com.eni.backend.room.dto.CodeDto;
 import com.eni.backend.room.dto.RoomDto;
 import com.eni.backend.room.dto.request.*;
 import com.eni.backend.room.dto.response.*;
@@ -22,6 +25,7 @@ import com.eni.backend.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -29,6 +33,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.eni.backend.common.response.BaseResponseStatus.*;
 
@@ -45,6 +50,7 @@ public class RoomService {
     private final RankingRepository rankingRepository;
 
     private final SimpMessageSendingOperations template;
+    private final JwtTokenProvider jwtTokenProvider;
 
     // 방 등록
     public PostRoomResponse post(PostRoomRequest request){
@@ -140,8 +146,8 @@ public class RoomService {
         throw new CustomBadRequestException(ROOM_NOT_EXIST);
     }
 
-    public GetRankResponse rank(String roomId, Long memberId) {
-        Member member = findMemberById(memberId); // 요청을 보낸 사용자
+    public GetRankResponse rank(String roomId, Authentication authentication) {
+        Member member = findMemberByAuth(authentication); // 요청을 보낸 사용자
         RoomDto room = getRoomInfo(roomId); // 참가한 방 정보
 
         // 방이 존재하지 않을 경우
@@ -149,67 +155,79 @@ public class RoomService {
             throw new CustomBadRequestException(ROOM_NOT_EXIST);
         }
 
-        List<Code> codes = new ArrayList<>();
+        List<CodeDto> codes = new ArrayList<>();
 
         // 방에 존재하는 유저 리스트
         Collection<String> members = room.getUserList().values();
         for (String nickname: members) {
             // 1. 닉네임으로 멤버를 찾아서
-            Member m = findMemberByNickname(nickname);
-            // 2. 제출한 코드를 검색
-            Code code = findCodeByRoomIdAndMemberId(roomId, m.getId());
-            // 3. 코드 리스트에 저장
-            codes.add(code);
+            Member roomMember = findMemberByNickname(nickname);
+            // 2. 해당 멤버가 제출한 코드를 검색
+            Code code = findFirstCodeByRoomIdAndMember(roomId, roomMember);
+            // 3. CodeDto로 변환해서 리스트에 저장
+            if (code == null) {
+                codes.add(CodeDto.from(roomMember));
+            } else {
+                codes.add(CodeDto.from(code));
+            }
         }
 
         List<OtherRankDto> ranks = new ArrayList<>();
-        MyRankDto myRank = null;
-
         AtomicInteger idx = new AtomicInteger();
+        AtomicReference<String> myRank = new AtomicReference<>();
 
         codes.stream()
                 // 정렬
-                .sorted(Comparator.comparing(Code::getTime) // 1. 시간 순
-                .thenComparing(Code::getMemory)) // 2. 메모리 순
+                .sorted(Comparator.comparing(CodeDto::getTime) // 1. 시간 순
+                .thenComparing(CodeDto::getMemory)) // 2. 메모리 순
                 // 순위 저장
                 .forEach(c -> {
                     // 전체 순위
-                    ranks.add(OtherRankDto.from(idx.getAndIncrement() + 1, c));
+                    int i = idx.addAndGet(1);
+                    String r = String.valueOf(i);
+                    // 성공
+                    if (c.getCodeStatus() == CodeStatus.SUCCESS) {
+                        // 전 순위와 결과가 같다면 -> 같은 순위
+                        if (i >= 2
+                                && ranks.get(i-2).getTime() == c.getTime() + "ms"
+                                && ranks.get(i-2).getMemory() == c.getMemory() + "KB") {
+                            r = ranks.get(i-2).getRank();
+                        }
+                    }
+                    // 실패
+                    else {
+                        r = "-";
+                    }
+
+                    // 저장
+                    ranks.add(OtherRankDto.from(r, c));
+
                     // 내 순위
-                    if (member == c.getMember()) {
-                        if (myRank != null) {
-                            throw new CustomServerErrorException(SERVER_ERROR);
-                        }
-
-                        Ranking ranking = findRankingByPlayModeAndValue(room.getRoomType(), idx.get());
-                        Tier tier = findTierById(room.getProblemTier());
-
-                        int getExp = 0;
-
-                        // 성공한 경우
-                        if (c.getStatus() == CodeStatus.SUCCESS) {
-                            getExp = tier.getSuccessExp();
-                        }
-
-                        // 노말모드 실패
-                        else if (getPlayMode(room.getRoomType()) == PlayMode.NORMAL) {
-                            getExp = tier.getNormalFailExp();
-                        }
-
-                        // 아이템모드 실패
-                        else if (getPlayMode(room.getRoomType()) == PlayMode.ITEM) {
-                            getExp = tier.getItemFailExp();
-                        }
-
-                        else {
-                            throw new CustomServerErrorException(SERVER_ERROR);
-                        }
-
-                        myRank.from(ranking, getExp);
+                    if (member.getId() == c.getMember().getId()) {
+                        myRank.set(r);
                     }
                 });
 
-        return GetRankResponse.of(roomId, ranks, myRank);
+        Code myCode = findFirstCodeByRoomIdAndMember(roomId, member);
+        Tier tier = findTierById(room.getProblemTier());
+
+        // 성공한 경우
+        if (myCode.getStatus() == CodeStatus.SUCCESS) {
+            Ranking ranking = findRankingByPlayModeAndValue(room.getRoomType(), Integer.parseInt(myRank.get()));
+            return GetRankResponse.of(roomId, ranks, MyRankDto.from(ranking, tier.getSuccessExp()));
+        }
+
+        // 노말모드 실패
+        if (getPlayMode(room.getRoomType()) == PlayMode.NORMAL) {
+            return GetRankResponse.of(roomId, ranks, MyRankDto.of(tier.getNormalFailExp()));
+        }
+
+        // 아이템모드 실패
+        if (getPlayMode(room.getRoomType()) == PlayMode.ITEM) {
+            return GetRankResponse.of(roomId, ranks, MyRankDto.of(tier.getItemFailExp()));
+        }
+
+        throw new CustomServerErrorException(SERVER_ERROR);
     }
 
     // 방에 인원 추가
@@ -423,13 +441,22 @@ public class RoomService {
                 .orElseThrow(() -> new CustomBadRequestException(MEMBER_NOT_FOUND));
     }
 
+    private Member findMemberByAuth(Authentication authentication) {
+        SecurityMemberDto member = jwtTokenProvider.getSecurityMemberDto(authentication);
+        return findMemberById(member.getId());
+    }
+
     private Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomBadRequestException(MEMBER_NOT_FOUND));
     }
 
-    private Code findCodeByRoomIdAndMemberId(String roomId, Long memberId) {
-        return codeRepository.findFirstByRoomIdAndMemberIdOrderByTimeOrderByMemory(roomId, memberId);
+    private Code findFirstCodeByRoomIdAndMember(String roomId, Member member) {
+        List<Code> codes = codeRepository.findByRoomIdAndMemberOrderByTimeAndMemory(roomId, member);
+        if (codes.size() > 0) {
+            return codes.get(0);
+        }
+        return null;
     }
 
     private Ranking findRankingByPlayModeAndValue(String roomType, Integer rank) {
@@ -438,9 +465,11 @@ public class RoomService {
     }
 
     private PlayMode getPlayMode(String roomType) {
-        return PlayMode.valueOf(roomType);
+        if (roomType == "normal") {
+            return PlayMode.NORMAL;
+        }
+        return PlayMode.ITEM;
     }
-
 
     public void test(){
         roomRepository.test();

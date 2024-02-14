@@ -11,12 +11,16 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface CodeRepository extends JpaRepository<Code, Long> {
+
     @Query("select DISTINCT(c.problem) from Code c where c.member = :member order by c.problem.no")
     List<Problem> findAllByMember(@Param("member") Member member);
 
     @Query("select DISTINCT(c.problem) from Code c where c.member = :member and c.status = :codeStatus order by c.problem.no")
     List<Problem> findAllByMemberAndCodeStatus(@Param("member") Member member, @Param("codeStatus") CodeStatus codeStatus);
 
-    Code findFirstByRoomIdAndMemberIdOrderByTimeOrderByMemory(String roomId, Long memberId);
+    @Query("select c from Code c " +
+            "where c.roomId = :roomId and c.member = :member and c.status = 'SUCCESS' " +
+            "order by c.time, c.memory")
+    List<Code> findByRoomIdAndMemberOrderByTimeAndMemory(@Param("roomId") String roomId, @Param("member") Member member);
 
 }

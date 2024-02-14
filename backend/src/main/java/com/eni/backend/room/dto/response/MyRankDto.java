@@ -9,12 +9,12 @@ import lombok.ToString;
 @ToString
 public class MyRankDto {
 
-    private int rank;
+    private String rank;
     private int getExp;
     private int getCoin;
 
     @Builder
-    private MyRankDto(int rank, int getExp, int getCoin) {
+    private MyRankDto(String rank, int getExp, int getCoin) {
         this.rank = rank;
         this.getExp = getExp;
         this.getCoin = getCoin;
@@ -22,9 +22,18 @@ public class MyRankDto {
 
     public static MyRankDto from(Ranking ranking, int getExp) {
         return builder()
-                .rank(ranking.getValue())
+                .rank(String.valueOf(ranking.getValue()))
                 .getExp(getExp)
                 .getCoin(ranking.getCoin())
                 .build();
     }
+
+    public static MyRankDto of(int getExp) {
+        return builder()
+                .rank("-")
+                .getExp(getExp)
+                .getCoin(50)
+                .build();
+    }
+
 }
