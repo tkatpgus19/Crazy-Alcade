@@ -215,6 +215,7 @@ const Room = () => {
 
   const enterGame = (data) => {
     // 게임방 입장을 위한 로직
+    client.current.disconnect();
     navigate("/game", {
       state: {
         roomId: data.roomId,
