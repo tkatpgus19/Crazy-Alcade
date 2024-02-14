@@ -106,16 +106,19 @@ public class RoomService {
         }
     }
 
-    public Boolean enter(PostRoomEnterRequest request){
+    public Boolean enter(Authentication authentication, PostRoomEnterRequest request){
         RoomDto room = roomRepository.getRoomById(request.getRoomId());
         if(room != null) {
             if(room.getIsStarted()){
                 throw new CustomBadRequestException(ROOM_ENTER_FAIL_STARTED_ROOM);
             }
             if (room.getUserCnt() < room.getMaxUserCnt()) {
+                Member member = findMemberByAuth(authentication);
+
                 String userUUID = UUID.randomUUID().toString();
                 room.setUserCnt(room.getUserCnt() + 1);
                 room.getUserList().put(userUUID, request.getNickname());
+                room.getProfileList().put(request.getNickname(), member.getProfile());
 
                 // 마스터 등록
                 if (room.getUserCnt() == 1) {
@@ -266,6 +269,7 @@ public class RoomService {
                     } else {
                         room.getReadyList().remove(user);
                     }
+                    room.getProfileList().remove(user);
                     room.setUserCnt(room.getUserCnt() - 1);
                     room.getUserList().remove(userUUID);
 
@@ -295,9 +299,17 @@ public class RoomService {
     }
 
     // 게임방 참여인원 조회
-    public LinkedHashMap<String, String> getUserStatus(String roomId){
+    public GetStatusResponse getUserStatus(String roomId){
         if(roomRepository.getRoomById(roomId) != null){
-            return roomRepository.getRoomById(roomId).getReadyList();
+            RoomDto room = roomRepository.getRoomById(roomId);
+            return GetStatusResponse.of(room.getReadyList(), room.getProfileList());
+        }
+        return null;
+    }
+
+    public LinkedHashMap<String, String> getUserProfile(String roomId){
+        if(roomRepository.getRoomById(roomId) != null){
+            return roomRepository.getRoomById(roomId).getProfileList();
         }
         return null;
     }

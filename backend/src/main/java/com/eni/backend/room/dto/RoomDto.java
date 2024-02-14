@@ -30,6 +30,7 @@ public class RoomDto {
 
     private LinkedHashMap<String, String> userList = new LinkedHashMap<>();
     private LinkedHashMap<String, String> readyList = new LinkedHashMap<>();
+    private LinkedHashMap<String, String> profileList = new LinkedHashMap<>();
 
     @Builder
     private RoomDto(String roomId, String roomType, String roomName, Boolean hasPassword,

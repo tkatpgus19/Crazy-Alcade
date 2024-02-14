@@ -141,8 +141,9 @@ public class RoomController {
     }
 
     @PostMapping("/enter")
-    public BaseSuccessResponse<?> putEnter(@RequestBody PostRoomEnterRequest request){
-        return BaseSuccessResponse.of(POST_ENTER_ROOM_SUCCESS, roomService.enter(request));
+    public BaseSuccessResponse<?> putEnter(Authentication authentication,
+                                           @RequestBody PostRoomEnterRequest request){
+        return BaseSuccessResponse.of(POST_ENTER_ROOM_SUCCESS, roomService.enter(authentication, request));
     }
 
     @DeleteMapping("/exit")
