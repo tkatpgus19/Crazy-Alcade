@@ -106,10 +106,6 @@ const Login = () => {
     window.location.replace(process.env.REACT_APP_GOOGLE_URL);
   };
 
-  const navigateToMain = () => {
-    navigate("/main");
-  };
-
   const backgroundStyle = {
     backgroundImage: `url(${background})`,
     backgroundRepeat: "no-repeat",
@@ -133,15 +129,6 @@ const Login = () => {
       <div className={styles.googleLogin} onClick={googleLoginHandler}>
         <img src={googleImg} width={"300px"} style={{ borderRadius: "7px" }} />
       </div>
-
-      {/* Add a new button for navigating to "/main" */}
-      <button
-        type="button"
-        onClick={navigateToMain}
-        className={`${styles.mainButton}`}
-      >
-        이동하기
-      </button>
 
       {isNicknameModalOpen && (
         <NicknameModal close={() => setIsNicknameModalOpen(false)} />

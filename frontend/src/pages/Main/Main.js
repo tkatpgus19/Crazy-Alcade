@@ -7,17 +7,28 @@ import timeLimitImg from "../../assets/images/timeLimit.png";
 import languageImg from "../../assets/images/language.png";
 import background from "../../assets/images/mainback.png";
 
-import waterBalloonColorImg from "../../assets/images/waterBalloon.png";
 import octopusColorImg from "../../assets/images/octopus.png";
 import chickColorImg from "../../assets/images/chick.png";
+import waterBalloonColorImg from "../../assets/images/waterBalloon.png";
 import magicColorImg from "../../assets/images/magic.png";
 import shieldColorImg from "../../assets/images/shield.png";
 
-import waterBalloonGrayImg from "../../assets/images/waterBalloonGrayImg.png";
 import octopusGrayImg from "../../assets/images/octopusGrayImg.png";
 import chickGrayImg from "../../assets/images/chickGrayImg.png";
+import waterBalloonGrayImg from "../../assets/images/waterBalloonGrayImg.png";
 import magicGrayImg from "../../assets/images/magicGrayImg.png";
 import shieldGrayImg from "../../assets/images/shieldGrayImg.png";
+
+import profile1 from "../../assets/images/profile1.png";
+import profile2 from "../../assets/images/profile2.png";
+import profile3 from "../../assets/images/profile3.png";
+import profile4 from "../../assets/images/profile4.png";
+import profile5 from "../../assets/images/profile5.png";
+import profile6 from "../../assets/images/profile6.png";
+import profile7 from "../../assets/images/profile7.png";
+import profile8 from "../../assets/images/profile8.png";
+import profile9 from "../../assets/images/profile9.png";
+import profile10 from "../../assets/images/profile10.png";
 
 import "./Main.module.css";
 import styles from "./Main.module.css";
@@ -35,7 +46,7 @@ const Main = () => {
   const client = useRef();
   const getRoomList = (roomType) => {
     axios.get(`${SERVER_URL}/rooms/${roomType}?page=${page}`).then((res) => {
-      setRoomList(res.data.result);
+      setRoomList(res.data.result.roomList);
     });
   };
 
@@ -60,7 +71,7 @@ const Main = () => {
   }
 
   function onRoomInforReceived(payload) {
-    setRoomList(JSON.parse(payload.body));
+    setRoomList(JSON.parse(payload.body.roomList));
   }
 
   const chatContainerRef = useRef();
@@ -90,7 +101,7 @@ const Main = () => {
   const [levelId, setLevelId] = useState(0);
   const [exp, setExp] = useState(0);
   const [coin, setCoin] = useState(0);
-  const [memberItemList, setMemberItemList] = useState([]);
+  const [memberItems, setMemberItems] = useState([]);
 
   const [itemImages, setItemImages] = useState({
     waterBalloon: waterBalloonGrayImg, // 기본값은 모두 회색 이미지로 설정
@@ -105,6 +116,44 @@ const Main = () => {
 
   const SERVER_URL = process.env.REACT_APP_BASE_URL;
 
+  // 이미지를 객체에 매핑
+  const profileImages = {
+    "profile1.png": profile1,
+    "profile2.png": profile2,
+    "profile3.png": profile3,
+    "profile4.png": profile4,
+    "profile5.png": profile5,
+    "profile6.png": profile6,
+    "profile7.png": profile7,
+    "profile8.png": profile8,
+    "profile9.png": profile9,
+    "profile10.png": profile10,
+  };
+
+  // 아이템 상태 초기화
+  const [octopusImage, setOctopusImage] = useState(octopusGrayImg);
+  const [chickImage, setChickImage] = useState(chickGrayImg);
+  const [waterBalloonImage, setWaterBalloonImage] =
+    useState(waterBalloonGrayImg);
+  const [magicImage, setMagicImage] = useState(magicGrayImg);
+  const [shieldImage, setShieldImage] = useState(shieldGrayImg);
+
+  const colorImageMap = {
+    octopusColorImg: octopusColorImg,
+    chickColorImg: chickColorImg,
+    waterBalloonColorImg: waterBalloonColorImg,
+    magicColorImg: magicColorImg,
+    shieldColorImg: shieldColorImg,
+  };
+
+  const grayImageMap = {
+    octopusColorImg: octopusGrayImg, // 여기서 colorImg.png를 grayImg로 매핑
+    chickColorImg: chickGrayImg,
+    waterBalloonColorImg: waterBalloonGrayImg,
+    magicColorImg: magicGrayImg,
+    shieldColorImg: shieldGrayImg,
+  };
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BASE_URL}/members`, {
@@ -113,33 +162,56 @@ const Main = () => {
         },
       })
       .then((response) => {
-        const { nickname, levelId, exp, coin, memberItemList } =
+        const { nickname, profile, levelId, exp, coin, memberItemList } =
           response.data.result;
 
-        // nickname을 기반으로 1부터 10 사이의 숫자를 생성하는 해시 함수
-        const hash = (str) => {
-          let hash = 0;
-          for (let i = 0; i < str.length; i++) {
-            const character = str.charCodeAt(i);
-            hash = (hash << 5) - hash + character;
-            hash = hash & hash; // Convert to 32bit integer
-          }
-          return Math.abs(hash % 10) + 1; // 1부터 10 사이의 숫자 반환
-        };
+        // 프로필 사진들 중 DB에 담긴 사진으로 프로필 설정
+        const profileImg = profileImages[profile];
 
-        const profileNumber = hash(nickname); // 닉네임을 기반으로 숫자 생성
-        const profilePicture = `profile${profileNumber}.png`; // 파일 이름 구성
+        // API 응답을 바탕으로 각 아이템 상태 업데이트
+        memberItemList.forEach((item) => {
+          switch (item.itemId) {
+            case 1: // 예를 들어 octopus의 itemId가 1이라 가정
+              setOctopusImage(
+                item.memberItemCount > 0 ? octopusColorImg : octopusGrayImg
+              );
+              break;
+            case 2:
+              setChickImage(
+                item.memberItemCount > 0 ? chickColorImg : chickGrayImg
+              );
+              break;
+            case 3:
+              setWaterBalloonImage(
+                item.memberItemCount > 0
+                  ? waterBalloonColorImg
+                  : waterBalloonGrayImg
+              );
+              break;
+            case 4:
+              setMagicImage(
+                item.memberItemCount > 0 ? magicColorImg : magicGrayImg
+              );
+              break;
+            case 5:
+              setShieldImage(
+                item.memberItemCount > 0 ? shieldColorImg : shieldGrayImg
+              );
+              break;
+            // 추가 아이템에 대한 case 추가
+          }
+        });
 
         setNickname(nickname);
-        setProfile(`/images/${profilePicture}`);
+        setProfile(profileImg);
         setLevelId(levelId);
         setExp(exp);
         setCoin(coin);
-        setMemberItemList(memberItemList);
+        //setMemberItems(updatedMemberItems);
         connectSession();
       })
       .catch((error) => {
-        console.log(error);
+        console.log("오류!", error);
       });
   }, []);
 
@@ -295,8 +367,9 @@ const Main = () => {
     connectSession();
   };
 
-  // 아이템 회색 흑백 관련
+  /*
   useEffect(() => {
+    // REACT_APP_INVENTORY_URL이 이미 정의되어 있고 올바른지 가정합니다.
     axios
       .get(process.env.REACT_APP_INVENTORY_URL, {
         headers: {
@@ -307,30 +380,30 @@ const Main = () => {
         const { memberItemList } = response.data.result;
         const updatedItemImages = { ...itemImages };
 
-        memberItemList.forEach((item) => {
-          const itemImg = item.itemImg; // API 응답에 따라 조정 필요
-          const itemCount = item.memberItemCount; // API 응답에 따라 조정 필요
+        (memberItemList || []).forEach((item) => {
+          // memberItemCount에 따라 올바른 이미지 결정
+          const colorImageMap = {
+            octopus: octopusColorImg,
+            chick: chickColorImg,
+            waterBalloon: waterBalloonColorImg,
+            magic: magicColorImg,
+            shield: shieldColorImg,
+          };
 
-          // 아이템 이름에 따라 이미지 경로를 업데이트합니다.
-          if (itemCount > 0) {
-            switch (itemImg) {
-              case "waterBalloon":
-                updatedItemImages.waterBalloon = waterBalloonImg; // 컬러 이미지로 업데이트
-                break;
-              case "octopus":
-                updatedItemImages.octopus = octopusImg;
-                break;
-              case "chick":
-                updatedItemImages.chick = chickImg;
-                break;
-              case "magic":
-                updatedItemImages.magic = magicImg;
-                break;
-              case "shield":
-                updatedItemImages.shield = shieldImg;
-                break;
-              // 추가 아이템에 대한 케이스도 여기에 추가
-            }
+          const grayImageMap = {
+            octopus: octopusGrayImg,
+            chick: chickGrayImg,
+            waterBalloon: waterBalloonGrayImg,
+            magic: magicGrayImg,
+            shield: shieldGrayImg,
+          };
+
+          // 아이템 카운트가 0보다 큰지 확인하여 이미지를 결정
+          const imageKey = item.itemImg; // 이미지 맵의 키와 일치하도록 확실히 합니다.
+          if (item.memberItemCount > 0) {
+            updatedItemImages[imageKey] = colorImageMap[imageKey];
+          } else {
+            updatedItemImages[imageKey] = grayImageMap[imageKey];
           }
         });
 
@@ -339,7 +412,8 @@ const Main = () => {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, []); // 코드 구조에 따라 여기에 의존성을 추가해야 할 수 있습니다.
+*/
 
   const backgroundStyle = {
     backgroundImage: `url(${background})`,
@@ -433,12 +507,9 @@ const Main = () => {
           <div className={styles.profilePicture}>
             {/* profile 상태가 이미지 URL을 담고 있다고 가정하고 img 태그로 이미지를 표시합니다. */}
             {profile && (
-              <img
-                src={profile}
-                alt="프로필 사진"
-                style={{ width: "100px", height: "100px" }}
-              />
+              <img src={profile} alt="프로필" className={styles.profileImage} />
             )}
+
             {/* <input type="file" id="profile-pic" accept="image/*" /> */}
           </div>
 
@@ -478,31 +549,15 @@ const Main = () => {
 
           {/* 하단 흰색 네모 칸 5개 정렬 */}
           <div className={styles.whiteBoxes}>
+            <img src={octopusImage} alt="octopus" className={styles.whiteBox} />
+            <img src={chickImage} alt="chick" className={styles.whiteBox} />
             <img
-              src={itemImages.waterBalloon}
+              src={waterBalloonImage}
               alt="water balloon"
               className={styles.whiteBox}
             />
-            <img
-              src={itemImages.octopus}
-              alt="octopus"
-              className={styles.whiteBox}
-            />
-            <img
-              src={itemImages.chick}
-              alt="chick"
-              className={styles.whiteBox}
-            />
-            <img
-              src={itemImages.magic}
-              alt="magic"
-              className={styles.whiteBox}
-            />
-            <img
-              src={itemImages.shield}
-              alt="shield"
-              className={styles.whiteBox}
-            />
+            <img src={magicImage} alt="magic" className={styles.whiteBox} />
+            <img src={shieldImage} alt="shield" className={styles.whiteBox} />
           </div>
 
           {/* 마이페이지 파란색 네모 칸 */}
