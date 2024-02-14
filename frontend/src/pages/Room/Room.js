@@ -306,7 +306,11 @@ const Room = () => {
                         nickname={userlist[index]}
                         status={readylist[index]}
                         currentUser={nickname}
-                        image={`/images/${profilelist[index]}`}
+                        image={
+                          profilelist[index]
+                            ? `/images/${profilelist[index]}`
+                            : `/images/user.png`
+                        }
                       />
                       <Status
                         nickname={userlist[index]}
