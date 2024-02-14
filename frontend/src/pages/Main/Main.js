@@ -630,7 +630,7 @@ const Main = () => {
                           margin: "0 5px 5px 0",
                         }}
                       />
-                      {data.timeLimit}초
+                      {data.timeLimit}min
                     </div>
                     <div
                       className={

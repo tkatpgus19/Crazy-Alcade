@@ -53,7 +53,12 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/problems?tier-id=${roomData.problemTier}`
         );
-        setProblems(response.data.result || []);
+        // '랜덤문제' 옵션을 문제 목록에 추가합니다.
+        const randomProblemOption = {
+          problemId: "random", // 랜덤 문제를 식별할 수 있는 고유 값
+          title: "랜덤문제",
+        };
+        setProblems([randomProblemOption, ...(response.data.result || [])]);
       } catch (error) {
         console.error("문제 목록을 불러오는 데 실패했습니다.", error);
         setProblems([]);
@@ -61,7 +66,7 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
     };
 
     fetchProblemsByTier();
-  }, [roomData.problemTier]);
+  }, [roomData.problemTier, tiers]); // tiers도 의존성 배열에 추가합니다.
 
   // 입력값이 변경될 때 호출되는 핸들러 함수를 정의합니다.
   const handleChange = (e) => {
@@ -72,13 +77,35 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
     }));
   };
 
-  // 폼을 제출할 때 호출되는 핸들러 함수를 정의합니다.
-  const handleSubmit = () => {
-    console.log(roomData.problemId + "\n\n\n\n\n\n");
-    createRoom(roomData); // 방 만들기 함수 호출
-    closeModal(); // 모달 닫기 함수 호출
+  const handleSubmit = async (event) => {
+    event.preventDefault(); // 폼 제출 시 페이지 리로드 방지
 
-    // 방 만들기가 성공하면 "/room"으로 이동합니다.
+    // 비밀번호 설정이 되어있고, 비밀번호 길이가 4자리가 아닌 경우 경고창 표시
+    if (roomData.hasPassword && roomData.roomPassword.length !== 4) {
+      alert("비밀번호는 4자리 숫자여야 합니다.");
+      return; // 함수 실행 종료
+    }
+
+    // '랜덤문제' 옵션이 선택되었고 문제 목록이 존재하는 경우
+    if (roomData.problemId === "random" && problems.length > 0) {
+      // '랜덤문제'를 제외한 문제 목록에서 랜덤하게 하나를 선택합니다.
+      // 이때, '랜덤문제' 자체는 문제 목록에 포함되지 않으므로, 모든 문제가 선택 대상이 됩니다.
+      const randomIndex = Math.floor(Math.random() * problems.length);
+      const randomProblem = problems[randomIndex];
+
+      // 방을 만들기 전에 roomData 상태를 직접 수정하지 않고,
+      // 선택된 랜덤 문제의 ID와 기타 필요한 정보를 createRoom 함수에 직접 전달합니다.
+      createRoom({
+        ...roomData,
+        problemId: randomProblem.problemId, // 랜덤하게 선택된 문제의 ID
+      });
+    } else {
+      // '랜덤문제'가 아닌 경우, 현재 roomData로 방을 생성합니다.
+      createRoom(roomData);
+    }
+
+    closeModal(); // 모달 닫기 함수 호출
+    // 여기에 방 만들기 성공 후의 로직 추가 (예: navigate("/room") 등)
   };
 
   // 풀이 언어 변경 핸들러 함수
@@ -94,6 +121,8 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
     setRoomData((prevData) => ({
       ...prevData,
       roomType: type,
+      // 방 타입이 'item'일 경우 코드 리뷰를 false로 설정
+      codeReview: type === "item" ? false : prevData.codeReview,
     }));
   };
 
@@ -160,6 +189,10 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
               name="roomPassword"
               value={roomData.password}
               onChange={handleChange}
+              maxLength="4"
+              pattern="\d{4}"
+              title="4자리 숫자를 입력해주세요."
+              placeholder="4자리 숫자를 입력해주세요."
             />
           )}
         </div>
@@ -198,15 +231,20 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
           </select>
         </div>
 
-        {/* 시간 제한 드롭다운 */}
+        {/* 시간 제한 슬라이더 */}
         <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
           <span>시간 제한</span>
           <input
-            type="number"
+            type="range"
             name="timeLimit"
+            min="10"
+            max="120"
+            step="10"
             value={roomData.timeLimit}
             onChange={handleChange}
+            className={styles.timeSlider} // 스타일을 적용하기 위한 클래스
           />
+          <span>{roomData.timeLimit} 분</span> {/* 현재 선택된 시간을 표시 */}
         </div>
 
         {/* 풀이 언어 체크박스 */}
@@ -222,14 +260,14 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
             checked={roomData.language === "java"}
             onChange={() => handleChangeLanguage("java")}
           />
-          Python
+          {/* Python
           <input
             type="checkbox"
             name="language"
             value="python"
             checked={roomData.language === "python"}
             onChange={() => handleChangeLanguage("python")}
-          />
+          /> */}
         </div>
 
         {/* 코드 리뷰 체크박스 */}
@@ -237,29 +275,21 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
           className={`${styles.roomSectionTitle} ${styles.codeReviewCheckbox}`}
         >
           <span>코드 리뷰</span>
-          o
           <input
             type="checkbox"
             name="codeReview"
             checked={roomData.codeReview}
-            onChange={() =>
-              setRoomData((prevData) => ({
-                ...prevData,
-                codeReview: !prevData.codeReview,
-              }))
-            }
-          />
-          x
-          <input
-            type="checkbox"
-            name="codeReviewReject"
-            checked={!roomData.codeReview}
-            onChange={() =>
-              setRoomData((prevData) => ({
-                ...prevData,
-                codeReview: !prevData.codeReview,
-              }))
-            }
+            onChange={() => {
+              // 방 타입이 'item'이 아닐 때만 코드 리뷰 상태를 변경할 수 있도록 함
+              if (roomData.roomType !== "item") {
+                setRoomData((prevData) => ({
+                  ...prevData,
+                  codeReview: !prevData.codeReview,
+                }));
+              }
+            }}
+            // 방 타입이 'item'일 경우 체크박스를 비활성화
+            disabled={roomData.roomType === "item"}
           />
         </div>
       </div>
