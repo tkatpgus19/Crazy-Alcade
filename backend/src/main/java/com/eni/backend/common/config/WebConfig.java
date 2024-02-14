@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${BASE-URL}")
+    @Value("${base-url}")
     private String baseUrl;
 
     private final JwtAuthInterceptor jwtAuthenticationInterceptor;

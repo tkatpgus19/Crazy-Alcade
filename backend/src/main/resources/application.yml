@@ -31,7 +31,7 @@ spring:
             client-secret: ${GOOGLE_SECRET}
             scope:
               - email
-            redirect-uri: ${GOOGLE_REDIRECT_URL}
+            redirect-uri: ${GOOGLE_REDIRECT_URI}
           kakao:
             client-id: ${KAKAO_CLIENT_ID} # 발급 받은 Client ID
             client-secret: ${KAKAO_SECRET} # 발급 받은 Client Secret
@@ -63,7 +63,8 @@ jwt:
 code:
   base-path: ${BASE_PATH}
 
-OPENVIDU_URL: ${OPENVIDU_URL}
-OPENVIDU_SECRET: ${OPENVIDU_URL}
+openvidu:
+  url: ${OPENVIDU_URL}
+  secret: ${OPENVIDU_URL}
 
-BASE_URL: ${BASE_URL}
+base-url: ${BASE_URL}
