@@ -72,7 +72,7 @@ const Footer = ({ roomInfo, userInfo }) => {
       `${data.nickname}이 ${data.victim}에게  ${data.itemNo}번 아이템 공격함`
     );
     // 공겨 당한 자가 나이면
-    if (data.victim === userInfo.nickname) {
+    if (data.victim === userInfo) {
       console.log(`나는 ${userInfo.nickname} 라서 ${data.victim}과 같아 아픔`);
       const item = data.itemNo;
       // 나한테 아이템 표시. // 쉴드는 따로
@@ -258,7 +258,7 @@ const Footer = ({ roomInfo, userInfo }) => {
     <div className={styles.footer}>
       {/* 내 아이템 영역 */}
       <div className={styles.itemContainer}>
-        <div className={styles.itemHeader}>내 아이템</div>
+        <div className={styles.itemHeader}>{userInfo.nickname}</div>
         {/* 각각의 아이템 버튼을 ItemButton 컴포넌트로 대체 */}
         {roomInfo.userList &&
           Object.values(roomInfo.userList).map((data, index) => {
