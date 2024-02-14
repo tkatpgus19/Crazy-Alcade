@@ -31,14 +31,14 @@ spring:
             client-secret: ${GOOGLE_SECRET}
             scope:
               - email
-            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}" #${GOOGLE_REDIRECT_URI}
+            redirect-uri: "${BASE_URL}/{action}/oauth2/code/{registrationId}"
           kakao:
             client-id: ${KAKAO_CLIENT_ID} # 발급 받은 Client ID
             client-secret: ${KAKAO_SECRET} # 발급 받은 Client Secret
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
             scope: account_email
-            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}" #${KAKAO_REDIRECT_URI}
+            redirect-uri: ${KAKAO_REDIRECT_URI} # "${BASE_URL}/{action}/oauth2/code/{registrationId}"
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize

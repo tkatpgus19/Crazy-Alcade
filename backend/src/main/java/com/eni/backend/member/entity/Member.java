@@ -33,7 +33,7 @@ public class Member extends BaseTime {
     @Column(name = "member_id", nullable = false)
     private Long id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 50)
     private String email;
 
     @Enumerated(EnumType.STRING)
@@ -85,7 +85,7 @@ public class Member extends BaseTime {
         this.provider = provider;
         this.nickname = nickname;
         this.connectedAt = Timestamp.valueOf(LocalDateTime.now());
-        this.profile = "https://lwi.nexon.com/ca/common/info/character/cha1.png";
+        this.profile = "image1";
     }
 
     public static Member of(String email, OAuth2Provider provider, String socialId, String nickname) {
@@ -110,8 +110,12 @@ public class Member extends BaseTime {
         this.connectedAt = timestamp;
     }
 
-    public void updateDefaultLevel(Level level) {
+    public void updateLevel(Level level) {
         this.level = level;
+    }
+
+    public void updateProfile(String image) {
+        this.profile = image;
     }
 
     public void updateNickname(PutNicknameRequest putNicknameRequest) {
