@@ -1,70 +1,83 @@
-// NicknameModal.js
-
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import styles from "./NicknameModal.module.css";
+import { useNavigate } from "react-router-dom";
+import styles from "./NicknameModal.module.css"; // 스타일시트 임포트
 
-const NicknameModal = ({ onClose }) => {
+const NicknameModal = ({ close }) => {
   const [nickname, setNickname] = useState("");
+  const navigate = useNavigate();
 
-  // 닉네임이 변경될 때 호출되는 함수입니다.
-  const handleNicknameChange = (e) => {
-    setNickname(e.target.value);
-  };
-
-  // 제출 버튼이 클릭되면 호출되는 함수입니다.
-  const handleSubmit = () => {
-    // 닉네임이 비어있지 않은 경우에만 처리합니다.
-    if (nickname.trim() !== "") {
-      // 여기에 닉네임을 사용하거나 저장하는 로직을 추가하세요.
-      alert(`닉네임 제출됨: ${nickname}`);
-
-      // 닉네임을 저장한 후에 입력 필드를 비웁니다.
-      setNickname("");
-    } else {
-      // 닉네임이 비어있는 경우 알림을 표시하거나 제출을 막을 수 있습니다.
-      alert("닉네임을 입력하세요.");
+  // 닉네임 업데이트 함수
+  const updateNickname = async (newNickname) => {
+    const accessToken = localStorage.getItem("accessToken"); // 액세스 토큰 가져오기
+    if (!accessToken) {
+      console.error("Access token not found.");
+      return;
     }
 
-    // 부모 컴포넌트로부터 전달받은 onClose 함수를 호출하여 모달을 닫습니다.
-    onClose();
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/members/nickname`,
+        {
+          method: "PUT", // HTTP 메소드 설정
+          headers: {
+            Authorization: `Bearer ${accessToken}`, // Bearer 토큰을 헤더에 포함
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ nickname: newNickname }), // 요청 본문에 닉네임 포함
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update nickname.");
+      }
+
+      const data = await response.json();
+
+      console.log("Nickname updated successfully: ", data);
+
+      // 업데이트 성공 후 로컬 스토리지에 닉네임 저장
+      localStorage.setItem("nickname", newNickname);
+
+      // 업데이트 성공 후 로직
+      localStorage.setItem("isNew", "false"); // isNew 상태 업데이트
+      close(); // 모달 닫기
+      navigate("/main"); // 메인 페이지로 리디렉션
+    } catch (error) {
+      console.error("Error updating nickname: ", error);
+    }
   };
 
-  // 취소 버튼이 클릭되면 호출되는 함수입니다.
-  const handleCancel = () => {
-    // 취소 버튼 클릭 시 입력 필드를 비웁니다.
-    setNickname("");
-
-    // 부모 컴포넌트로부터 전달받은 onClose 함수를 호출하여 모달을 닫습니다.
-    onClose();
+  const handleSubmit = () => {
+    console.log("닉네임 제출: ", nickname);
+    // localStorage.setItem("isNew", "false");
+    updateNickname(nickname); // 닉네임 업데이트 함수 호출
   };
 
   return (
-    <div className={styles.modalContainer}>
+    <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
-        <h2>닉네임을 입력하세요</h2>
-        {/* 닉네임을 입력받는 input 요소입니다. */}
+        <h2>닉네임 설정</h2>
         <input
           type="text"
-          placeholder="닉네임"
+          placeholder="닉네임 입력"
           value={nickname}
-          onChange={handleNicknameChange}
+          onChange={(e) => setNickname(e.target.value)}
+          className={styles.inputField}
         />
-        {/* 버튼들을 감싸는 div입니다. */}
-        <div className={styles.buttonContainer}>
-          {/* 제출 버튼 */}
-          <button onClick={handleSubmit}>제출</button>
-          {/* 추가: 취소 버튼 */}
-          <button onClick={handleCancel}>취소</button>
-        </div>
+        <button onClick={handleSubmit} className={styles.submitButton}>
+          제출
+        </button>
+        <button onClick={close} className={styles.closeButton}>
+          닫기
+        </button>
       </div>
     </div>
   );
 };
 
-// 프로퍼티 타입을 검사합니다.
 NicknameModal.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  close: PropTypes.func.isRequired,
 };
 
 export default NicknameModal;
