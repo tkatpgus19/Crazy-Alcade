@@ -23,6 +23,7 @@ const Timer = ({ roomId }) => {
   };
 
   useEffect(() => {
+    console.log("타이머 구독 합니다!!!");
     connectSession();
   }, []);
 

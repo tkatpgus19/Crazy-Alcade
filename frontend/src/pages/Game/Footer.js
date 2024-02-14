@@ -116,6 +116,7 @@ const Footer = ({ roomInfo, userInfo }) => {
     console.log(err);
   };
 
+  // 공격 API 전송
   const attackUser = (victim) => {
     axios
       .post(`${process.env.REACT_APP_BASE_URL}/rooms/attack`, {
@@ -258,7 +259,7 @@ const Footer = ({ roomInfo, userInfo }) => {
     <div className={styles.footer}>
       {/* 내 아이템 영역 */}
       <div className={styles.itemContainer}>
-        <div className={styles.itemHeader}>{userInfo.nickname}</div>
+        <div className={styles.itemHeader}>공격</div>
         {/* 각각의 아이템 버튼을 ItemButton 컴포넌트로 대체 */}
         {roomInfo.userList &&
           Object.values(roomInfo.userList).map((data, index) => {
