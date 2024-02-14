@@ -68,9 +68,12 @@ const Footer = ({ roomInfo, userInfo }) => {
 
   const onStatusReceived = (payload) => {
     const data = JSON.parse(payload.body);
+    console.log(
+      `${data.nickname}이 ${data.victim}에게  ${data.itemNo}번 아이템 공격함`
+    );
     // 공겨 당한 자가 나이면
-    console.log(`${data.nickname}으로부터 ${data.itemNo}번 아이템 공격받음`);
     if (data.victim === userInfo.nickname) {
+      console.log(`나는 ${userInfo.nickname} 라서 ${data.victim}과 같아 아픔`);
       const item = data.itemNo;
       // 나한테 아이템 표시. // 쉴드는 따로
       if (item === 1) {
@@ -118,7 +121,7 @@ const Footer = ({ roomInfo, userInfo }) => {
       .post(`${process.env.REACT_APP_BASE_URL}/rooms/attack`, {
         roomId: roomInfo.roomId,
         nickname: userInfo.nickname,
-        victim: Object.values(roomInfo.userList)[victim],
+        victim: victim,
         itemNo: currentItem,
       })
       .then((res) => {
@@ -262,7 +265,7 @@ const Footer = ({ roomInfo, userInfo }) => {
             if (data != userInfo.nickname)
               return (
                 <>
-                  <button onClick={() => attackUser(index)}>{data}</button>
+                  <button onClick={() => attackUser(data)}>{data}</button>
                 </>
               );
           })}
