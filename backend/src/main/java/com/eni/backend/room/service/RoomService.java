@@ -84,7 +84,7 @@ public class RoomService {
         else{
             return GetRoomListResponse.of(1, 1, Collections.emptyList());
         }
-        return GetRoomListResponse.of(resultList.size()/4+1, page, resultList);
+        return GetRoomListResponse.of(resultList.size()/5+1, page, resultList);
     }
 
     public Boolean enter(PostRoomEnterRequest request){
