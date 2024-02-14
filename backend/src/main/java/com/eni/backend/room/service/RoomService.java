@@ -212,18 +212,18 @@ public class RoomService {
         Tier tier = findTierById(room.getProblemTier());
 
         // 성공한 경우
-        if (myCode.getStatus() == CodeStatus.SUCCESS) {
+        if (myCode != null && myCode.getStatus() == CodeStatus.SUCCESS) {
             Ranking ranking = findRankingByPlayModeAndValue(room.getRoomType(), Integer.parseInt(myRank.get()));
             return GetRankResponse.of(roomId, ranks, MyRankDto.from(ranking, tier.getSuccessExp()));
         }
 
         // 노말모드 실패
-        if (getPlayMode(room.getRoomType()) == PlayMode.NORMAL) {
+        if (myCode == null || getPlayMode(room.getRoomType()) == PlayMode.NORMAL) {
             return GetRankResponse.of(roomId, ranks, MyRankDto.of(tier.getNormalFailExp()));
         }
 
         // 아이템모드 실패
-        if (getPlayMode(room.getRoomType()) == PlayMode.ITEM) {
+        if (myCode == null || getPlayMode(room.getRoomType()) == PlayMode.ITEM) {
             return GetRankResponse.of(roomId, ranks, MyRankDto.of(tier.getItemFailExp()));
         }
 
