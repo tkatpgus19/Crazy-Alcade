@@ -82,7 +82,7 @@ public class RoomService {
             }
         }
         else{
-            return GetRoomListResponse.of(0, 1, Collections.emptyList());
+            return GetRoomListResponse.of(1, 1, Collections.emptyList());
         }
         return GetRoomListResponse.of(resultList.size()/4+1, page, resultList);
     }
