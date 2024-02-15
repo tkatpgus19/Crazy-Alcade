@@ -58,6 +58,7 @@ const Room = () => {
         }
       });
       setUserUUID(Object.keys(res.data.result.userList)[index]);
+      localStorage.setItem("userUUID",Object.keys(res.data.result.userList)[index] )
     });
   };
 
