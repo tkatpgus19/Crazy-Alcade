@@ -25,6 +25,7 @@
   z-index: 1;
   padding-top: 0;
   background-color: #fff;
+  transition: 0.6s all;
 }
 
 .loading {
@@ -144,7 +145,7 @@
 }
 
 .flipped {
-  transform: rotateY(180deg); /* Y축을 중심으로 180도 회전 */
+  transform: rotateY(180deg) rotateX(180deg); /* Y축을 중심으로 180도 회전 */
   transform-style: preserve-3d; /* 3D 변환 스타일을 유지 */
   transition: transform 0.6s; /* 변환에 대한 전환 효과 */
 }
