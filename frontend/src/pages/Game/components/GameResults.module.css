@@ -14,8 +14,8 @@
   padding: 25px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
   width: 525px; /* 기본 너비를 1.5배로 조정 */
-  min-width: 300px; /* 최소 너비 설정 */
-  max-width: 700px; /* 최대 너비 설정 */
+  min-width: 730px; /* 최소 너비 설정 */
+  max-width: 900px; /* 최대 너비 설정 */
   margin: 20px auto;
   font-family: "DNFBITBITV2"; /* 폰트 변경 */
   pointer-events: all; /* 결과 창 내부에서는 클릭 가능 */
@@ -127,7 +127,7 @@
 }
 
 .playerSection {
-  flex: 7; /* 비율 7 */
+  flex: 8; /* 비율 7 */
 }
 
 .playerInfo {
@@ -143,13 +143,21 @@
   background: #fff; /* 진한 노란색으로 변경 */
   border-radius: 5px;
   padding: 3px 8px;
+  margin: 0px 10px;
+  font-size: 20px;
 }
 
+/* 경험치 텍스트 스타일 */
 .expText {
-  background: #ffc107; /* 진한 노란색으로 변경 */
-  border-radius: 15px;
-  padding: 3px 8px;
-  font-weight: bold;
+  position: absolute; /* expBar 내에서 절대 위치 */
+  top: 0; /* 상단 정렬 */
+  left: 50%; /* 왼쪽에서 50% 위치에 배치 */
+  transform: translateX(-50%); /* 정중앙 정렬을 위해 X축 기준으로 -50% 이동 */
+  color: #fff; /* 텍스트 색상 */
+  font-weight: bold; /* 글씨 굵게 */
+  line-height: 20px; /* expBar의 높이와 동일하게 설정하여 세로 중앙 정렬 */
+  font-size: 13px;
+  -webkit-text-stroke: 1px black;
 }
 
 .coins {
@@ -157,6 +165,15 @@
   border-radius: 15px;
   padding: 3px 8px;
   font-weight: bold;
+}
+
+.up {
+  background: whitesmoke; /* 진한 노란색으로 변경 */
+  color: green;
+  border-radius: 15px;
+  padding: 3px 8px;
+  margin: 0px 4px;
+  /* font-weight: bold; */
 }
 
 /* 기존 스타일... */
@@ -180,7 +197,7 @@
     box-shadow 0.2s ease-in-out; /* 변환 및 그림자 변경시 애니메이션 */
   display: block; /* 블록 레벨 요소로 변경 */
   text-align: center; /* 텍스트 중앙 정렬 */
-  flex: 3; /* 비율 3 */
+  flex: 2; /* 비율 3 */
 }
 
 .exitButton:hover {
@@ -207,11 +224,12 @@
 
 /* 경험치 바 */
 .expBar {
-  width: 100px;
+  width: 190px;
   height: 22px;
   background-color: #ddd;
   border-radius: 10px;
   overflow: hidden;
+  position: relative; /* 자식 요소를 상대적으로 위치시키기 위해 */
 }
 
 .expFill {
@@ -219,4 +237,13 @@
   background-color: green;
   border-radius: 10px;
   transition: width 0.3s ease-in-out;
+}
+
+.playerRewards {
+  margin: 0px 4px;
+}
+
+.myRankHighlight {
+  background-color: rgb(87, 143, 2); /* 눈에 띄는 색상으로 변경 */
+  color: rgb(41, 128, 41);
 }

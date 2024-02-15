@@ -7,11 +7,14 @@ import axios from "axios";
 const GameResults = ({ roomType, roomId, userInfo }) => {
   const navigate = useNavigate();
   const [gameResult, setGameResult] = useState(null); // gameResult 상태 추가
+  const [levelResult, setLevelResult] = useState(null); // gameResult 상태 추가
 
+  const [currentExp, setCurrentExp] = useState(userInfo.tempExp);
+
+  // 게임 결과 API 호출
   useEffect(() => {
     if (!roomId) return; // roomId가 없으면 API 호출하지 않음
 
-    // 게임 결과 API 호출
     const fetchGameResult = async () => {
       try {
         const apiUrl = `${process.env.REACT_APP_BASE_URL}/rooms/${roomId}/rank`;
@@ -28,16 +31,26 @@ const GameResults = ({ roomType, roomId, userInfo }) => {
       }
     };
 
-    // 코인, 경험치 획득 API 호출
+    fetchGameResult();
+  }, [roomId]);
+
+  // 코인, 경험치 획득 API 호출
+  useEffect(() => {
     const fetchCoinExp = async () => {
       try {
         const apiUrl = `${process.env.REACT_APP_BASE_URL}/members/reward`;
         const token = localStorage.getItem("accessToken");
+        // console.log(
+        //   gameResult.myRank.getExp +
+        //     " " +
+        //     gameResult.myRank.getCoin +
+        //     "경험치코인"
+        // );
         const response = await axios.put(
           apiUrl,
           {
-            putCoinValue: 100,
-            putExpValue: 100,
+            putCoinValue: gameResult.myRank.getCoin,
+            putExpValue: gameResult.myRank.getExp,
           },
           {
             headers: {
@@ -46,14 +59,18 @@ const GameResults = ({ roomType, roomId, userInfo }) => {
           }
         );
         const { result } = response.data;
+        setLevelResult(result);
+
+        // console.log(
+        //   gameResult.myRank.getCoin,
+        //   gameResult.myRank + " " + getExp + " 획득!"
+        // );
       } catch (error) {
         console.error("Error fetching game result:", error);
       }
     };
-
-    fetchGameResult();
     fetchCoinExp();
-  }, [roomId]);
+  }, [gameResult]);
 
   const exitClick = () => {
     if (roomType === "normal") {
@@ -63,12 +80,13 @@ const GameResults = ({ roomType, roomId, userInfo }) => {
     }
   };
 
-  if (!gameResult) {
+  if (!gameResult || !levelResult) {
     // gameResult가 아직 없을 때 로딩 상태 표시
     return <div>Loading...</div>;
   }
 
   const { totalRanks, myRank } = gameResult;
+  const { levelId, levelUp } = levelResult;
 
   const players = totalRanks.map((rankInfo) => ({
     rank: rankInfo.rank,
@@ -80,7 +98,7 @@ const GameResults = ({ roomType, roomId, userInfo }) => {
   const playerResult = {
     rank: myRank.rank,
     level: userInfo.levelId, // 임의의 레벨 정보
-    exp: userInfo.exp,
+    exp: userInfo.tempExp,
     coins: `+ ${myRank.getCoin}`, // 획득한 경험치 정보 변경
   };
 
@@ -100,7 +118,7 @@ const GameResults = ({ roomType, roomId, userInfo }) => {
               key={index}
               className={`${styles[`rank${player.rank}`]} ${
                 player.rank === "-" ? styles.retiredPlayer : ""
-              }`}
+              } ${player.name === userInfo.nickname ? styles.myRankHighlight : ""}`}
             >
               <span className={styles.rank}>{player.rank}</span>
               <span className={styles.name}>{player.name}</span>
@@ -113,15 +131,38 @@ const GameResults = ({ roomType, roomId, userInfo }) => {
           <div className={styles.playerSection}>
             <div className={styles.playerInfo}>
               <div className={styles.playerRank}>{playerResult.rank}등</div>
-              <div className={styles.playerRewards}>
-                레벨 {playerResult.level}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div className={styles.playerRewards}>레벨 {levelId}</div>
+                {levelUp && <span className={styles.up}>Level Up!</span>}
               </div>
+
               {/* 경험치 바 */}
               <div className={styles.expBar}>
                 <div
                   className={styles.expFill}
-                  style={{ width: `${(playerResult.exp / 1000) * 100}%` }} // 경험치에 따라 바의 길이 조절
+                  style={{
+                    width: `${
+                      levelUp
+                        ? ((userInfo.tempExp +
+                            gameResult.myRank.getExp -
+                            userInfo.expLimit) /
+                            userInfo.expLimit) *
+                          100
+                        : ((userInfo.tempExp + gameResult.myRank.getExp) /
+                            userInfo.expLimit) *
+                          100
+                    }%`,
+                  }} // 경험치에 따라 바의 길이 조절
                 ></div>
+                <div className={styles.expText}>
+                  {`${levelUp ? userInfo.tempExp + gameResult.myRank.getExp - userInfo.expLimit : userInfo.tempExp + gameResult.myRank.getExp} / ${userInfo.expLimit}`}
+                </div>
               </div>
               {/* 코인 추가*/}
               <span className={styles.coins}>{playerResult.coins}</span>

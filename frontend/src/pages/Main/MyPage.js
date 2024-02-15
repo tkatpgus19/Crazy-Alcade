@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import imgfile from "../../assets/images/logo.png";
@@ -6,6 +6,7 @@ import background from "../../assets/images/mainback.png";
 import googleProviderImg from "../../assets/images/googleProviderImg.png";
 import kakaoProviderImg from "../../assets/images/kakaoProviderImg.png";
 import styles from "./MyPage.module.css";
+import roomBackgroundMusicMypage from "../../assets/music/mypage.mp3";
 
 import profile1 from "../../assets/images/profile1.png";
 import profile2 from "../../assets/images/profile2.png";
@@ -27,6 +28,8 @@ const MyPage = () => {
   const [email, setEmail] = useState("");
   const [provider, setProvider] = useState("");
   const [selectedLang, setSelectedLang] = useState("");
+  const audioRef = useRef(new Audio(roomBackgroundMusicMypage));
+
   const [isEditing, setIsEditing] = useState(false); // 닉네임 편집 상태 관리
   const [successProblems, setsuccessPorblems] = useState([]);
   const [failProblems, setFailProblems] = useState([]);
@@ -186,6 +189,25 @@ const MyPage = () => {
       .catch((error) => {
         console.log("오류!", error);
       });
+  }, []);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    // play()가 Promise를 반환하므로, catch 블록에서 오류를 처리합니다.
+    audio.play().catch((error) => {
+      console.log("재생을 시작하기 위해 사용자 상호작용이 필요합니다.", error);
+      // 필요한 경우, 사용자에게 알리거나 버튼을 통해 재생을 유도할 수 있습니다.
+    });
+
+    const stopAudio = () => {
+      audio.pause();
+      audio.currentTime = 0;
+    };
+
+    // 컴포넌트 언마운트 시 오디오 정지
+    return () => {
+      stopAudio();
+    };
   }, []);
 
   return (
