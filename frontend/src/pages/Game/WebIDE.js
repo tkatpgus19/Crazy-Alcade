@@ -71,8 +71,8 @@ const WebIDE = ({ language }) => {
       return <div className={styles.loading}>Loading...</div>;
     }
     console.log(executionResult);
-    if (!executionResult.result.tcResult) {
-      return <div className={styles.loading}>컴파일 에러!</div>;
+    if (!executionResult || !executionResult.result.tcResult) {
+      return <div className={styles.loading}>컴파일 에러..!</div>;
     }
 
     // 성공한 테스트 케이스의 수를 계산합니다.
