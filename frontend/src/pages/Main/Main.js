@@ -676,40 +676,50 @@ const Main = () => {
             {/* 노말, 아이템전 + 옵션 선택하는 드롭다운 박스 */}
             <div className={styles.optionButtons}>
               {/* 토글 방식으로 노말전, 아이템전 버튼 */}
-              <button
-                className={`${styles.normalButton} ${normalMode ? styles.active : ""}`}
-                onClick={() => toggleNormalMode(true)}
+              <div
+                style={{ display: "flex", position: "absolute", left: "400px" }}
               >
-                노말전
-              </button>
-              <button
-                className={`${styles.itemButton} ${!normalMode ? styles.active : ""}`}
-                onClick={() => toggleNormalMode(false)}
-              >
-                아이템전
-              </button>
+                <button
+                  className={`${styles.normalButton} ${normalMode ? styles.active : ""}`}
+                  onClick={() => toggleNormalMode(true)}
+                >
+                  노말전
+                </button>
+                <button
+                  className={`${styles.itemButton} ${!normalMode ? styles.active : ""}`}
+                  onClick={() => toggleNormalMode(false)}
+                >
+                  아이템전
+                </button>
+              </div>
 
               {/* 사용 언어 드롭다운 */}
               <div className={styles.optionButton}>
-                <label htmlFor="language">사용 언어</label>
                 <select
                   name="language"
                   id="language"
+                  className={styles.optionSelect}
                   onChange={handleLanguageChange}
                 >
+                  <option value="" disabled selected>
+                    풀이 언어
+                  </option>
                   <option value="java">Java</option>
-                  <option value="python">Python</option>
+                  {/* <option value="python">Python</option> */}
                 </select>
               </div>
 
               {/* 난이도 드롭다운 */}
               <div className={styles.optionButton}>
-                <label htmlFor="difficulty">난이도</label>
                 <select
                   name="difficulty"
                   id="difficulty"
                   onChange={handleDifficultyChange}
+                  className={styles.optionSelect}
                 >
+                  <option value="" disabled selected>
+                    문제 난이도
+                  </option>
                   <option value="bronze">Bronze</option>
                   <option value="silver">Silver</option>
                   <option value="gold">Gold</option>
@@ -718,33 +728,38 @@ const Main = () => {
 
               {/* 코드 리뷰 드롭다운 */}
 
-              <div className={styles.optionButton}>
-                <label htmlFor="codeReview">코드 리뷰</label>
+              <div
+                className={styles.optionButton}
+                style={
+                  normalMode
+                    ? { visibility: "visible" }
+                    : { visibility: "collapse", width: "0" }
+                }
+              >
                 {normalMode ? (
                   <select
                     name="codeReview"
                     id="codeReview"
                     onChange={handleCodeReviewChange}
+                    className={styles.optionSelect}
                   >
+                    <option value="" disabled selected>
+                      리뷰 여부
+                    </option>
                     <option value="o">O</option>
                     <option value="x">X</option>
                   </select>
                 ) : (
-                  <select
-                    name="codeReview"
-                    id="codeReview"
-                    onChange={handleCodeReviewChange}
-                  >
-                    <option value="x">X</option>
-                  </select>
+                  ""
                 )}
               </div>
               {/* 전체를 다시 보여주는 버튼 */}
               <div
                 className={styles.optionButton}
                 onClick={() => allList(normalMode)}
+                style={{ cursor: "pointer" }}
               >
-                <label>전체보기</label>
+                전체 보기
               </div>
 
               {/* 미해결 문제 체크박스 */}
