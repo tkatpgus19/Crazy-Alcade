@@ -29,6 +29,7 @@ import profile7 from "../../assets/images/profile7.png";
 import profile8 from "../../assets/images/profile8.png";
 import profile9 from "../../assets/images/profile9.png";
 import profile10 from "../../assets/images/profile10.png";
+import profile999 from "../../assets/images/profile999.png";
 
 import "./Main.module.css";
 import styles from "./Main.module.css";
@@ -186,6 +187,7 @@ const Main = () => {
     "profile8.png": profile8,
     "profile9.png": profile9,
     "profile10.png": profile10,
+    "profile999.png": profile999,
   };
 
   // 아이템 상태 초기화
@@ -273,6 +275,7 @@ const Main = () => {
       })
       .catch((error) => {
         console.log("오류!", error);
+        navigate("/error");
       });
     getRoomList("normal");
   }, []);
@@ -598,9 +601,11 @@ const Main = () => {
           {/* 소개 칸 */}
           <div className={styles.introduction}>
             <div>
-              <div>Lv. {levelId}</div>
+              <div style={{ textAlign: "center", marginTop: "10px" }}>
+                Lv. {levelId}
+              </div>
               {/* 경험치 진행 상태 표시줄 */}
-              <div style={{ display: "flex" }}>
+              <div style={{ display: "flex", marginBottom: "5px" }}>
                 <p
                   style={{
                     margin: "0",
@@ -658,7 +663,9 @@ const Main = () => {
             {/* 노말, 아이템전 + 옵션 선택하는 드롭다운 박스 */}
             <div className={styles.optionButtons}>
               {/* 토글 방식으로 노말전, 아이템전 버튼 */}
-              <div style={{display:'flex', position:'absolute', left: '400px'}}>
+              <div
+                style={{ display: "flex", position: "absolute", left: "400px" }}
+              >
                 <button
                   className={`${styles.normalButton} ${normalMode ? styles.active : ""}`}
                   onClick={() => toggleNormalMode(true)}
@@ -681,9 +688,11 @@ const Main = () => {
                   className={styles.optionSelect}
                   onChange={handleLanguageChange}
                 >
-                  <option value="" disabled selected>풀이 언어</option>
+                  <option value="" disabled selected>
+                    풀이 언어
+                  </option>
                   <option value="java">Java</option>
-                  <option value="python">Python</option>
+                  {/* <option value="python">Python</option> */}
                 </select>
               </div>
 
@@ -695,7 +704,9 @@ const Main = () => {
                   onChange={handleDifficultyChange}
                   className={styles.optionSelect}
                 >
-                  <option value="" disabled selected>문제 난이도</option>
+                  <option value="" disabled selected>
+                    문제 난이도
+                  </option>
                   <option value="bronze">Bronze</option>
                   <option value="silver">Silver</option>
                   <option value="gold">Gold</option>
@@ -704,8 +715,14 @@ const Main = () => {
 
               {/* 코드 리뷰 드롭다운 */}
 
-              <div className={styles.optionButton} 
-              style={normalMode ? {visibility: 'visible'} : {visibility: 'collapse', width:'0'}}>
+              <div
+                className={styles.optionButton}
+                style={
+                  normalMode
+                    ? { visibility: "visible" }
+                    : { visibility: "collapse", width: "0" }
+                }
+              >
                 {normalMode ? (
                   <select
                     name="codeReview"
@@ -713,17 +730,21 @@ const Main = () => {
                     onChange={handleCodeReviewChange}
                     className={styles.optionSelect}
                   >
-                    <option value="" disabled selected>리뷰 여부</option>
+                    <option value="" disabled selected>
+                      리뷰 여부
+                    </option>
                     <option value="o">O</option>
                     <option value="x">X</option>
                   </select>
-                ) : ''}
+                ) : (
+                  ""
+                )}
               </div>
               {/* 전체를 다시 보여주는 버튼 */}
               <div
                 className={styles.optionButton}
                 onClick={() => allList(normalMode)}
-                style={{cursor:'pointer'}}
+                style={{ cursor: "pointer" }}
               >
                 전체 보기
               </div>

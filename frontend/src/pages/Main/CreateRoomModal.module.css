@@ -122,13 +122,13 @@
 }
 
 /* 버튼 호버 효과 스타일 */
-.createRoomModal button:hover {
+.createRoomModal button:last-child:hover {
   background-color: #5eff5e; /* 호버 시 배경색 변경 (녹색 계열) */
   transition: 0.5s all;
 }
 
 /* 취소 버튼 호버 효과 스타일 */
-.createRoomModal button:last-child:hover {
+.createRoomModal button:hover {
   background-color: #ff4d4d; /* 취소 버튼 hover 색상 (빨간 계열) */
   transition: 0.5s all;
 }
