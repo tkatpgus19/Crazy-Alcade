@@ -11,7 +11,8 @@ const MiniBox = ({
   nickname,
   status,
   currentUser,
-  showModal,
+  userUUID,
+  roomId,
 }) => {
   let showModalAlert = false;
   // 지금 내가 방장인가?
@@ -31,7 +32,8 @@ const MiniBox = ({
           message={`${nickname}을(를) 강퇴시키시겠습니까?`}
           showCancelButton={true}
           showConfirmButton={true}
-          currentUser={currentUser}
+          userUUID={userUUID}
+          roomId={roomId}
         />
       )}
       <div>
@@ -46,7 +48,8 @@ MiniBox.propTypes = {
   nickname: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
   currentUser: PropTypes.string.isRequired,
-  showModal: PropTypes.bool.isRequired,
+  userUUID: PropTypes.string.isRequired,
+  roomId: PropTypes.string.isRequired,
 };
 
 export default MiniBox;
