@@ -356,7 +356,7 @@ function Game() {
       {chickenImages}
 
       {/* 시간이 0이 되면 결과창을 렌더링 */}
-      {1 && (
+      {timeCompleted && (
         <Suspense fallback={<div>Loading...</div>}>
           <div className={styles.gameResultsContainer}>
             <GameResults
