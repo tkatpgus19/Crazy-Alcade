@@ -123,7 +123,6 @@ const GameResults = ({ roomType, roomId, userInfo }) => {
                   style={{ width: `${(playerResult.exp / 1000) * 100}%` }} // 경험치에 따라 바의 길이 조절
                 ></div>
               </div>
-
               {/* 코인 추가*/}
               <span className={styles.coins}>{playerResult.coins}</span>
             </div>

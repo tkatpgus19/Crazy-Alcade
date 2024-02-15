@@ -326,6 +326,10 @@ public class RoomService {
 
     // 게임방 정보 조회
     public RoomDto getRoomInfo(String roomId){
+        RoomDto room = roomRepository.getRoomById(roomId);
+        if(room == null) {
+            throw new CustomServerErrorException(ROOM_NOT_EXIST);
+        }
         return roomRepository.getRoomById(roomId);
     }
 
