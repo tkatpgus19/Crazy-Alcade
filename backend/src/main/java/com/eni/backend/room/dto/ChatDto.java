@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ChatDto {
     public enum MessageType{
-        ENTER, TALK, LEAVE;
+        ENTER, TALK, LEAVE, EXPELLED;
     }
 
     private MessageType type;
