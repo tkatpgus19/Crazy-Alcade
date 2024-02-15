@@ -135,7 +135,7 @@ public class Member extends BaseTime {
     }
 
     public void setDefaultCoin(Integer putValue) {
-        this.coin += putValue;
+        this.coin = putValue;
     }
 
     public void updateCoin(Integer putValue) {
