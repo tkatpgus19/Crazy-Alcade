@@ -22,9 +22,74 @@ const MyPage = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState([]);
   const [nickname, setNickname] = useState("");
+  const [originalNickname, setOriginalNickname] = useState(""); // 원래 닉네임을 저장할 상태
   const [email, setEmail] = useState("");
   const [provider, setProvider] = useState("");
   const [selectedLang, setSelectedLang] = useState("");
+  const [isEditing, setIsEditing] = useState(false); // 닉네임 편집 상태 관리
+  const [successProblems, setsuccessPorblems] = useState([]);
+  const [failProblems, setFailProblems] = useState([]);
+
+  const handleNicknameChange = (event) => {
+    setNickname(event.target.value.slice(0, 8)); // 입력값을 8글자로 제한
+  };
+
+  const submitNewNickname = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      console.error("Access token not found.");
+      return;
+    }
+
+    if (nickname.length > 8) {
+      alert("닉네임은 8자 이하로 설정해 주세요.");
+      return;
+    }
+
+    axios
+      .put(
+        `${process.env.REACT_APP_BASE_URL}/members/nickname`,
+        { nickname: nickname },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        console.log("Nickname updated successfully: ", response.data);
+        setOriginalNickname(nickname);
+        setIsEditing(false); // Turn off editing mode after successful update
+      })
+      .catch((error) => {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          // 서버 응답에서 제공된 에러 메시지를 사용하여 사용자에게 알림
+          alert(error.response.data.message);
+        } else {
+          console.error("Error updating nickname: ", error);
+        }
+      });
+  };
+
+  // 편집 상태 전환 함수
+  const toggleEdit = () => {
+    setIsEditing(!isEditing);
+    if (isEditing) {
+      // 편집을 취소하는 경우 원래 닉네임으로 되돌림
+      setNickname(originalNickname);
+    }
+  };
+
+  const cancelEdit = () => {
+    // 편집 모드 종료 및 원래 닉네임으로 되돌림
+    setIsEditing(false);
+    setNickname(originalNickname);
+  };
 
   const updatePreferLang = async (newLang) => {
     setSelectedLang(newLang);
@@ -100,7 +165,8 @@ const MyPage = () => {
 
         // 프로필 사진들 중 DB에 담긴 사진으로 프로필 설정
         const profileImg = profileImages[profile];
-
+        setNickname(nickname);
+        setOriginalNickname(nickname);
         // if (provider === "GOOGLE") {
         //   provider = googleProviderImg;
         // } else {
@@ -112,6 +178,8 @@ const MyPage = () => {
         setEmail(email);
         setProvider(provider);
         setSelectedLang(lang);
+        setsuccessPorblems(successProblems);
+        setFailProblems(failProblems);
       })
       .catch((error) => {
         console.log("오류!", error);
@@ -152,7 +220,30 @@ const MyPage = () => {
                   />
                 )}
               </div>
-              <div className={styles.nameInput}>{nickname}</div>
+              <div className={styles.nameInput}>
+                {isEditing ? (
+                  <>
+                    <input
+                      value={nickname}
+                      onChange={handleNicknameChange}
+                      maxLength={8} // 입력 가능한 최대 길이 설정
+                      style={{ marginRight: "5px" }}
+                    />
+                    <button onClick={submitNewNickname}>수정</button>
+                    <button onClick={cancelEdit} style={{ marginLeft: "5px" }}>
+                      취소
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    {nickname}
+                    <button onClick={toggleEdit} style={{ marginLeft: "10px" }}>
+                      ✏️
+                    </button>
+                  </>
+                )}
+              </div>
+
               <div className={styles.emailInput}>
                 {/* <div className={styles.emailProvider}>
                   {provider && (
@@ -185,8 +276,28 @@ const MyPage = () => {
             </div>
           </div>
           <div className={styles.rightInContent}>
-            <div className={styles.solvedProblems}>푼 문제</div>
-            <div className={styles.unsolvedProblems}>미해결 문제</div>
+            <div className={styles.solvedProblems}>
+              <div className={styles.solvedProblemsText}>푼 문제</div>
+              <div className={styles.exsuccessProblemscontent}>
+                {/* successProblems 배열을 매핑하여 각 항목을 리스트 아이템으로 렌더링 */}
+                {successProblems.map((problem, index) => (
+                  <div key={index} className={styles.successProblemscontent}>
+                    {problem}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className={styles.unsolvedProblems}>
+              <div className={styles.unsolvedProblemsText}>미해결 문제</div>
+              <div className={styles.exunsolvedProblemscontent}>
+                {/* failProblems 배열을 매핑하여 각 항목을 리스트 아이템으로 렌더링 */}
+                {failProblems.map((problem, index) => (
+                  <div key={index} className={styles.unsolvedProblemscontent}>
+                    {problem}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

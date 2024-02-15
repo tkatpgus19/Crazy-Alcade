@@ -152,9 +152,9 @@ const Room = () => {
     // 추가한 부분
     if (JSON.parse(payload.body).type === "EXPELLED") {
       if (JSON.parse(payload.body).sender === nickname) {
-        alert("강퇴당했습니다.");
         client.current.disconnect();
         navigate(-1);
+        alert("강퇴당했습니다.");
       }
     }
   };
