@@ -33,7 +33,7 @@ const Item = ({ key, itemId, name, description, count, img, coin, onBuy }) => {
       <div className={styles.itemContent}>
         <div className={styles.itemHeader}>
           <div className={styles.itemName}>{name}</div>
-          <div className={styles.itemCount}>보유 갯수: {count}</div>
+          <div className={styles.itemCount}>보유 개수: {count}</div>
         </div>
         <div className={styles.itemBody}>
           <div className={styles.itemDescription}>{description}</div>
@@ -77,7 +77,7 @@ const ItemShopModal = ({ closeModal }) => {
           ...item,
           name: item.name, // 아이템 설명
           description: item.itemDescription, // 아이템 설명
-          count: item.memberCount, // 아이템 보유 갯수
+          count: item.memberCount, // 아이템 보유 개수
           img: itemImages[item.itemId], // itemId에 따라 이미지 할당
           coin: item.itemPrice, // 아이템 가격
         }));
