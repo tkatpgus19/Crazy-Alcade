@@ -35,7 +35,7 @@ function Game() {
   const nickname = location.state ? location.state.nickname : "123";
   const userList = location.state ? location.state.userList : ["123", "456"];
   const roomType = location.state ? location.state.roomType : "item";
-  const userUUID = localStorage.getItem('userUUID');
+  const userUUID = localStorage.getItem("userUUID");
 
   const [showOctopus, setOctopus] = useState(false);
   const [chickens, setChickens] = useState([]); // 병아리 이미지 상태
@@ -153,7 +153,7 @@ function Game() {
       setTimeout(() => {
         setInkSpots([]);
         setOctopus(false); // 필요한 경우 문어 이미지 숨김
-      }, 5000);
+      }, 10000);
     }
   }, [isSprayingInk, inkSpots.length]);
 
@@ -163,7 +163,7 @@ function Game() {
 
     if (isChickenWalking) {
       // 병아리가 걸어다니는 상태가 활성화되면 병아리를 생성
-      const initialChickens = Array(20)
+      const initialChickens = Array(50)
         .fill(null)
         .map((_, index) => ({
           id: index,
@@ -194,7 +194,7 @@ function Game() {
       setTimeout(() => {
         clearInterval(intervalId);
         setChickens([]);
-      }, 5000);
+      }, 10000);
     }
 
     // 컴포넌트 언마운트 시 인터벌 정리
@@ -285,7 +285,7 @@ function Game() {
         `${process.env.REACT_APP_BASE_URL}/rooms/exit?roomId=${roomId}&member-id=${userUUID}&isExpelled=false`
       )
       .then((res) => {
-        navigate('/main', { replace: true });
+        navigate("/main", { replace: true });
         window.location.reload();
       });
   };
@@ -354,7 +354,7 @@ function Game() {
       {chickenImages}
 
       {/* 시간이 0이 되면 결과창을 렌더링 */}
-      {timeCompleted && (
+      {1 && (
         <Suspense fallback={<div>Loading...</div>}>
           <div className={styles.gameResultsContainer}>
             <GameResults
