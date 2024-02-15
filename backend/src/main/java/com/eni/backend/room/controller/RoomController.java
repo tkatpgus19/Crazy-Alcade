@@ -118,7 +118,7 @@ public class RoomController {
         log.info("headAccessor {}", headerAccessor);
 
         // 채팅방 유저 리스트에서 UUID 유저 닉네임 조회 및 리스트에서 유저 삭제
-        roomService.delUser(roomId, userUUID);
+        roomService.delUser(roomId, userUUID, false);
         String nickname = roomService.getUserName(roomId, userUUID);
 
         if (nickname != null) {
@@ -147,8 +147,10 @@ public class RoomController {
     }
 
     @DeleteMapping("/exit")
-    public BaseSuccessResponse<?> deleteUser(@RequestParam("roomId") String roomId, @RequestParam("member-id") String memberId){
-        return BaseSuccessResponse.of(DELETE_MEMBER_SUCCESS, roomService.delUser(roomId, memberId));
+    public BaseSuccessResponse<?> deleteUser(@RequestParam("roomId") String roomId,
+                                             @RequestParam("member-id") String memberId,
+                                             @RequestParam( name = "isExpelled", required = false) Boolean isExpelled){
+        return BaseSuccessResponse.of(DELETE_MEMBER_SUCCESS, roomService.delUser(roomId, memberId, isExpelled));
     }
 
     // 게임 준비
