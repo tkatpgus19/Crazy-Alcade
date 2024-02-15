@@ -95,7 +95,7 @@
 .coinContainer {
   display: flex; /* 플렉스 컨테이너로 설정 */
   align-items: center; /* 수직으로 중앙 정렬 */
-  margin-top: 5px; /* 위쪽 여백 추가 */
+  margin-bottom: 10px; /* 위쪽 여백 추가 */
 }
 
 .coinImage {
@@ -135,12 +135,12 @@
 
 /* 스타일링 for 마이페이지 파란색 네모 칸 */
 .myPageBlueBox {
-  width: 260px;
+  width: 300px;
   height: 30px;
   background-color: #0594df;
   color: white;
   font-family: "DNFBitBitv2";
-  margin-left: 25px;
+  margin: auto;
   text-align: center;
   line-height: 30px;
   cursor: pointer;
@@ -154,8 +154,8 @@
 
 .rightTop {
   position: absolute;
-  right: 20px;
-  top: 20px;
+  right: 80px;
+  top: 13px;
   display: flex;
   height: fit-content;
   -webkit-text-stroke: 0.5px #000000;
