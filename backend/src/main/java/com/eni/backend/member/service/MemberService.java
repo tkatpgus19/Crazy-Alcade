@@ -121,6 +121,7 @@ public class MemberService {
             throw new CustomBadRequestException(MEMBER_NOT_FOUND);
         }
 
+        // 멤버가 가진 exp
         Integer memberExp = member.getExp();
 
         Optional<Level> optionalLevel = levelRepository.findById(member.getLevel().getId() - 1);
@@ -131,10 +132,11 @@ public class MemberService {
             preLevelExp = optionalLevel.get().getExp();
         }
 
+        // 현재 레벨의 최대 exp
         Integer tempLevelExp = member.getLevel().getExp();
 
         // 현재 레벨에서 채워진 EXP
-        Integer responseExp = tempLevelExp - memberExp;
+        Integer responseExp = memberExp - preLevelExp;
         // 현재 레벨의 EXP 구간 넓이
         Integer responseExpLimit = tempLevelExp - preLevelExp;
 
