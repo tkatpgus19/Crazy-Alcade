@@ -50,7 +50,7 @@ const GameResults = ({ roomType, roomId, userInfo }) => {
           apiUrl,
           {
             putCoinValue: gameResult.myRank.getCoin,
-            putExpValue: -gameResult.myRank.getExp,
+            putExpValue: gameResult.myRank.getExp,
           },
           {
             headers: {
