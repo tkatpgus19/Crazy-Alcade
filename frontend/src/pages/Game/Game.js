@@ -59,26 +59,6 @@ function Game() {
     memberItemList: [],
   });
 
-  // 더미 방 데이터.
-  // const roomInfo = {
-  //   roomId: "e50ec323-60ce-4fde-9837-2a393a59897d",
-  //   roomType: "item",
-  //   roomName: "더미방1",
-  //   hasPassword: false,
-  //   roomPassword: "",
-  //   problemTier: "골드1",
-  //   problemNo: 1,
-  //   timeLimit: 60,
-  //   language: "JAVA",
-  //   codeReview: false,
-  //   maxUserCnt: 6,
-  //   master: "123",
-  //   userList: {},
-  //   readyList: {},
-  //   started: false,
-  //   userCnt: 0,
-  // };
-
   useEffect(() => {
     // 비정상인 접근 차단. 개발 후 살리기.
     // if (!(roomInfo.roomId && nickname)) navigate("/error");
