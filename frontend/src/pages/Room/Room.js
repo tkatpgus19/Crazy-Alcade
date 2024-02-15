@@ -245,6 +245,7 @@ const Room = () => {
         nickname: nickname,
         userList: data.userList,
         roomType: data.roomType,
+        userUUID: userUUID,
       },
     });
   };

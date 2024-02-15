@@ -35,6 +35,7 @@ function Game() {
   const nickname = location.state ? location.state.nickname : "123";
   const userList = location.state ? location.state.userList : ["123", "456"];
   const roomType = location.state ? location.state.roomType : "item";
+  const userUUID = location.state ? location.state.userUUID : "";
 
   const [showOctopus, setOctopus] = useState(false);
   const [chickens, setChickens] = useState([]); // 병아리 이미지 상태
@@ -279,7 +280,8 @@ function Game() {
 
   const handleExitClick = () => {
     // "/main"으로 이동하는 코드
-    navigate("/main");
+        navigate('/main', { replace: true });
+        window.location.reload();
   };
 
   if (isLoading) {
