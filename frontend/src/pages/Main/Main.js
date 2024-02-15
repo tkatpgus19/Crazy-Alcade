@@ -29,6 +29,7 @@ import profile7 from "../../assets/images/profile7.png";
 import profile8 from "../../assets/images/profile8.png";
 import profile9 from "../../assets/images/profile9.png";
 import profile10 from "../../assets/images/profile10.png";
+import profile999 from "../../assets/images/profile999.png";
 
 import "./Main.module.css";
 import styles from "./Main.module.css";
@@ -186,6 +187,7 @@ const Main = () => {
     "profile8.png": profile8,
     "profile9.png": profile9,
     "profile10.png": profile10,
+    "profile999.png": profile999,
   };
 
   // 아이템 상태 초기화

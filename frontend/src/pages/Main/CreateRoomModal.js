@@ -219,7 +219,7 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
 
         {/* 티어 선택 드롭다운 */}
         <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
-          <span>티어 선택 : </span>
+          <span>티어 선택</span>
           <select
             name="problemTier"
             value={roomData.problemTier}
@@ -236,7 +236,7 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
 
         {/* 문제 번호 선택 드롭다운 */}
         <div className={`${styles.roomSectionTitle} ${styles.inputField}`}>
-          <span>문제 이름 : </span>
+          <span>문제 이름</span>
           <select
             name="problemId"
             value={roomData.problemId}
@@ -318,8 +318,8 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
 
       {/* 방 만들기 및 취소 버튼 */}
       <div className={styles.createActionButtons}>
-        <button onClick={handleSubmit}>방 만들기</button>
         <button onClick={closeModal}>취소</button>
+        <button onClick={handleSubmit}>방 만들기</button>
       </div>
     </div>
   );
