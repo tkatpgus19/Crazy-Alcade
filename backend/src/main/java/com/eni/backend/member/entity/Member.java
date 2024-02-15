@@ -135,7 +135,11 @@ public class Member extends BaseTime {
     }
 
     public void setDefaultCoin(Integer putValue) {
+<<<<<<< HEAD
         this.coin = putValue;
+=======
+        this.coin += putValue;
+>>>>>>> 3640fac (Feat: 회원가입시 기본 코인 추가)
     }
 
     public void updateCoin(Integer putValue) {

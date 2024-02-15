@@ -76,7 +76,11 @@ public class MemberService {
 
             // 이메일을 기준으로 해시를 사용해 사용자 프로필 아바타 랜덤 지정
             member.updateProfile(selectRandomProfileImage(member.getEmail()));
+<<<<<<< HEAD
             member.setDefaultCoin(2000);
+=======
+            member.setDefaultCoin(3000);
+>>>>>>> 3640fac (Feat: 회원가입시 기본 코인 추가)
 
             try {
                 Long memberId = memberRepository.save(member).getId();
