@@ -290,7 +290,7 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
           /> */}
         </div>
 
-        {/* 코드 리뷰 체크박스 */}
+        {/* 코드 리뷰 체크박스
         <div
           className={`${styles.roomSectionTitle} ${styles.codeReviewCheckbox}`}
         >
@@ -310,8 +310,8 @@ const CreateRoomModal = ({ closeModal, createRoom }) => {
             }}
             // 방 타입이 'item'일 경우 체크박스를 비활성화
             disabled={roomData.roomType === "item"}
-          />
-        </div>
+          /> */}
+        {/* </div> */}
       </div>
 
       {/* 추가적인 방 정보에 대한 유사한 입력 필드를 추가하세요 */}

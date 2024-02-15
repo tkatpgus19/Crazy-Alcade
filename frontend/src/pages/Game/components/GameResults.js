@@ -73,19 +73,15 @@ const GameResults = ({ roomType, roomId, userInfo }) => {
   }, [gameResult]);
 
   const exitClick = () => {
-    if (roomType === "normal") {
-      navigate("/review");
-    } else {
-      const userUUID = localStorage.getItem("userUUID");
-      axios
-        .delete(
-          `${process.env.REACT_APP_BASE_URL}/rooms/exit?roomId=${roomId}&member-id=${userUUID}&isExpelled=false`
-        )
-        .then((res) => {
-          navigate("/main", { replace: true });
-          window.location.reload();
-        });
-    }
+    const userUUID = localStorage.getItem("userUUID");
+    axios
+      .delete(
+        `${process.env.REACT_APP_BASE_URL}/rooms/exit?roomId=${roomId}&member-id=${userUUID}&isExpelled=false`
+      )
+      .then((res) => {
+        navigate("/main", { replace: true });
+        window.location.reload();
+      });
   };
 
   if (!gameResult || !levelResult) {
@@ -176,13 +172,8 @@ const GameResults = ({ roomType, roomId, userInfo }) => {
               <span className={styles.coins}>{playerResult.coins}</span>
             </div>
           </div>
-          <button
-            className={
-              roomType === "normal" ? styles.reviewButton : styles.exitButton
-            }
-            onClick={exitClick}
-          >
-            {roomType === "normal" ? "리뷰화면으로" : "나가기"}
+          <button className={styles.exitButton} onClick={exitClick}>
+            나가기
           </button>
         </div>
       </div>
