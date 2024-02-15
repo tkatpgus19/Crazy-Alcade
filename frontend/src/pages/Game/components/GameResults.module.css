@@ -139,8 +139,16 @@
   border-radius: 10px;
 }
 
-.playerRank,
-.coins {
+.playerRank {
+  background: #fff; /* 진한 노란색으로 변경 */
+  border-radius: 5px;
+  padding: 3px 8px;
+}
+
+.expText {
+  background: #ffc107; /* 진한 노란색으로 변경 */
+  border-radius: 15px;
+  padding: 3px 8px;
   font-weight: bold;
 }
 
@@ -148,6 +156,7 @@
   background: #ffc107; /* 진한 노란색으로 변경 */
   border-radius: 15px;
   padding: 3px 8px;
+  font-weight: bold;
 }
 
 /* 기존 스타일... */

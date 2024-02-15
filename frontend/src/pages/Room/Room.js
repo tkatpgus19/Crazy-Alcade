@@ -61,6 +61,7 @@ const Room = () => {
 
   const [userlist, setUserlist] = useState([]);
   const [readylist, setReadylist] = useState([]);
+  const [profilelist, setProfilelist] = useState([]);
   const [userStatus, setUserStatus] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
@@ -158,18 +159,20 @@ const Room = () => {
 
   const onStatusReceived = (payload) => {
     //ready 상태등 유저들의 상태를 받아와서 세팅해준다.
-    setUserStatus(JSON.parse(payload.body));
-    setUserlist(Object.keys(JSON.parse(payload.body))); // 객체에 있는 메서드를 사용해서
-    setReadylist(Object.values(JSON.parse(payload.body))); // payload로 딕셔너리 (["username":"readyStatus"]) 이렇게 오는데, 위는 키값들만, 아래는 값들만 따로 분리해서 세팅
+    setUserStatus(JSON.parse(payload.body).readyList);
+    setProfilelist(Object.values(JSON.parse(payload.body).profileList));
+    setUserlist(Object.keys(JSON.parse(payload.body).readyList)); // 객체에 있는 메서드를 사용해서
+    setReadylist(Object.values(JSON.parse(payload.body).readyList)); // payload로 딕셔너리 (["username":"readyStatus"]) 이렇게 오는데, 위는 키값들만, 아래는 값들만 따로 분리해서 세팅
   };
 
   const getUserList = () => {
     axios
       .get(`${SERVER_URL}/rooms/userStatus?roomId=${roomId}`) // requset param 형태 api 요청할때 필요한 것
       .then((res) => {
-        setUserStatus(res.data.result);
-        setUserlist(Object.keys(res.data.result));
-        setReadylist(Object.values(res.data.result));
+        setUserStatus(res.data.result.readyList);
+        setProfilelist(Object.values(res.data.result.profileList));
+        setUserlist(Object.keys(res.data.result.readyList));
+        setReadylist(Object.values(res.data.result.readyList));
         console.log("getUserList 호출됨 : " + res.data);
       })
       .catch((err) => console.log(err));
@@ -266,26 +269,6 @@ const Room = () => {
     }
   }, [chatContent]); // chatContent가 변경될 때마다 이 로직을 실행합니다.
 
-  // useEffect(() => {
-  //   // 새로고침을 방지하는 함수
-  //   const handleRefresh = (e) => {
-  //     if (
-  //       e.key === "F5" ||
-  //       ((e.ctrlKey || e.metaKey) && (e.key === "r" || e.key === "R"))
-  //     ) {
-  //       e.preventDefault();
-  //     }
-  //   };
-
-  //   // 이벤트 리스너 등록
-  //   document.addEventListener("keydown", handleRefresh);
-
-  //   // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
-  //   return () => {
-  //     document.removeEventListener("keydown", handleRefresh);
-  //   };
-  // }, []);
-
   return (
     <Background>
       <RoomHeader roomTitle={roomInfo.roomName} />
@@ -299,7 +282,17 @@ const Room = () => {
                 return (
                   <>
                     <div>
-                      <MiniBox image="/images/user.png" />
+                      <MiniBox
+                        nickname={userlist[index]}
+                        status={readylist[index]}
+                        currentUser={nickname}
+                        master={roomInfo.master}
+                        image={
+                          profilelist[index]
+                            ? `/images/${profilelist[index]}`
+                            : `/images/user.png`
+                        }
+                      />
                       <Status
                         nickname={userlist[index]}
                         status={readylist[index]}

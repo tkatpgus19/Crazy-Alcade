@@ -42,6 +42,7 @@ import { Stomp } from "@stomp/stompjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
 import roomBackgroundMusicLobby from "../../assets/music/lobby.mp3";
+import MyPage from "./MyPage";
 
 const Main = () => {
   const client = useRef();
@@ -167,9 +168,9 @@ const Main = () => {
     magic: magicGrayImg,
     shield: shieldGrayImg,
   });
+  const [nickname, setNickname] = useState("");
 
   const navigate = useNavigate();
-  const [nickname, setNickname] = useState("");
 
   const SERVER_URL = process.env.REACT_APP_BASE_URL;
 
@@ -295,16 +296,25 @@ const Main = () => {
   const createRoom = (roomData) => {
     console.log("방이 생성되었습니다:", roomData);
     roomData.master = nickname;
+    const token = localStorage.getItem("accessToken");
     axios
       .post(`${SERVER_URL}/rooms`, roomData)
       .then((res) => {
         console.log(res.data.result.roomId);
         // 방 생성에 성공했을때 바로 입장
         axios
-          .post(`${SERVER_URL}/rooms/enter`, {
-            nickname: nickname,
-            roomId: res.data.result.roomId,
-          })
+          .post(
+            `${SERVER_URL}/rooms/enter`,
+            {
+              nickname: nickname,
+              roomId: res.data.result.roomId,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
           .then((response) => {
             if (response.data.result) {
               client.current.disconnect();
@@ -371,6 +381,7 @@ const Main = () => {
   };
 
   const enterRoom = (data) => {
+    const token = localStorage.getItem("accessToken");
     if (data.hasPassword) {
       const password = prompt("비밀번호를 입력하세요");
       axios
@@ -380,10 +391,18 @@ const Main = () => {
         .then((res) => {
           if (res.data.result) {
             axios
-              .post(`${SERVER_URL}/rooms/enter`, {
-                nickname: nickname,
-                roomId: data.roomId,
-              })
+              .post(
+                `${SERVER_URL}/rooms/enter`,
+                {
+                  nickname: nickname,
+                  roomId: data.roomId,
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              )
               .then((response) => {
                 client.current.disconnect();
                 navigate("/room", {
@@ -403,10 +422,18 @@ const Main = () => {
         });
     } else {
       axios
-        .post(`${SERVER_URL}/rooms/enter`, {
-          nickname: nickname,
-          roomId: data.roomId,
-        })
+        .post(
+          `${SERVER_URL}/rooms/enter`,
+          {
+            nickname: nickname,
+            roomId: data.roomId,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
         .then((response) => {
           client.current.disconnect();
           navigate("/room", {
@@ -616,7 +643,10 @@ const Main = () => {
           </div>
 
           {/* 마이페이지 파란색 네모 칸 */}
-          <div className={styles.myPageBlueBox}>
+          <div
+            className={styles.myPageBlueBox}
+            onClick={() => navigate("/MyPage")}
+          >
             <p>마이페이지</p>
           </div>
         </div>
