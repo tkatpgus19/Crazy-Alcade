@@ -312,7 +312,7 @@ public class RoomService {
     public GetStatusResponse getUserStatus(String roomId){
         if(roomRepository.getRoomById(roomId) != null){
             RoomDto room = roomRepository.getRoomById(roomId);
-            return GetStatusResponse.of(room.getReadyList(), room.getProfileList());
+            return GetStatusResponse.of(room.getUserList(), room.getReadyList(), room.getProfileList());
         }
         return null;
     }
@@ -326,6 +326,10 @@ public class RoomService {
 
     // 게임방 정보 조회
     public RoomDto getRoomInfo(String roomId){
+        RoomDto room = roomRepository.getRoomById(roomId);
+        if(room == null) {
+            throw new CustomServerErrorException(ROOM_NOT_EXIST);
+        }
         return roomRepository.getRoomById(roomId);
     }
 
