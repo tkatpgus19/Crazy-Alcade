@@ -273,17 +273,21 @@ public class MemberService {
 
         member.putReward(putRewardRequest);
 
+        // EXP에 따른 레벨업
         List<Level> levelList = levelRepository.findAll();
+        Level preLevel = member.getLevel();
         boolean levelUp = false;
 
         for (Level level : levelList) {
             if (member.getLevel().getId() < level.getId()) {
                 if (member.getExp() <= level.getExp()) {
+                    member.updateLevel(preLevel);
                     break;
+                } else {
+                    member.updateLevel(level);
+                    preLevel = level;
+                    levelUp = true;
                 }
-
-                member.updateLevel(level);
-                levelUp = true;
             }
         }
 

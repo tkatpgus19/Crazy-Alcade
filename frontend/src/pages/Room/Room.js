@@ -23,6 +23,7 @@ import {
   toggleAudio,
 } from "./slices/settingSlice";
 import roomBackgroundMusicRoom from "../../assets/music/room.mp3";
+import LanguageBox from "../Game/components/LanguageBox";
 
 const Room = () => {
   const SERVER_URL = process.env.REACT_APP_BASE_URL;
@@ -271,7 +272,17 @@ const Room = () => {
 
   return (
     <Background>
-      <RoomHeader roomTitle={roomInfo.roomName} />
+      <div
+        style={{
+          display: "flex",
+          paddingTop: "15px",
+          alignContent: "center",
+        }}
+      >
+        <RoomHeader roomTitle={roomInfo.roomName} />
+        <LanguageBox language={roomInfo.language} />
+        <LanguageBox language={roomInfo.roomType} />
+      </div>
       <RoomHeader2 onExitClick={back} problemName={roomInfo.problemName} />
       <GrayBox>
         <div style={{ display: "flex", width: "100%", minWidth: "1200px" }}>

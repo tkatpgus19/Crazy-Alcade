@@ -600,9 +600,11 @@ const Main = () => {
           {/* 소개 칸 */}
           <div className={styles.introduction}>
             <div>
-              <div>Lv. {levelId}</div>
+              <div style={{ textAlign: "center", marginTop: "10px" }}>
+                Lv. {levelId}
+              </div>
               {/* 경험치 진행 상태 표시줄 */}
-              <div style={{ display: "flex" }}>
+              <div style={{ display: "flex", marginBottom: "5px" }}>
                 <p
                   style={{
                     margin: "0",
@@ -689,7 +691,7 @@ const Main = () => {
                     풀이 언어
                   </option>
                   <option value="java">Java</option>
-                  <option value="python">Python</option>
+                  {/* <option value="python">Python</option> */}
                 </select>
               </div>
 

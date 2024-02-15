@@ -254,7 +254,7 @@ public class RoomService {
     }
 
     // 방에서 인원 삭제
-    public Boolean delUser(String roomId, String userUUID){
+    public Boolean delUser(String roomId, String userUUID, Boolean isExpelled){
         if(roomId != null) {
             RoomDto room = roomRepository.getRoomById(roomId);
             if(room != null) {
@@ -275,13 +275,23 @@ public class RoomService {
 
                     log.info("User exit : " + user);
 
-                    // builder 어노테이션 활용
-                    ChatDto chat = ChatDto.builder()
-                            .type(ChatDto.MessageType.LEAVE)
-                            .sender(user)
-                            .message(user + " 님 퇴장!!")
-                            .build();
-                    template.convertAndSend("/sub/chat/room/" + roomId, chat);
+                    if(isExpelled){
+                        ChatDto chat = ChatDto.builder()
+                                .type(ChatDto.MessageType.EXPELLED)
+                                .sender(user)
+                                .message(user + " 님이 퇴장당했습니다!!")
+                                .build();
+                        template.convertAndSend("/sub/chat/room/" + roomId, chat);
+                    }
+                    else{
+                        // builder 어노테이션 활용
+                        ChatDto chat = ChatDto.builder()
+                                .type(ChatDto.MessageType.LEAVE)
+                                .sender(user)
+                                .message(user + " 님 퇴장!!")
+                                .build();
+                        template.convertAndSend("/sub/chat/room/" + roomId, chat);
+                    }
                 }
 
                 if (getUserStatus(roomId) != null) {
