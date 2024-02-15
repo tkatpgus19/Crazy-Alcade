@@ -194,6 +194,8 @@ const Main = () => {
     useState(waterBalloonGrayImg);
   const [magicImage, setMagicImage] = useState(magicGrayImg);
   const [shieldImage, setShieldImage] = useState(shieldGrayImg);
+  const [tempExp, setTempExp] = useState();
+  const [expLimit, setExpLimit] = useState();
 
   const colorImageMap = {
     octopusColorImg: octopusColorImg,
@@ -219,7 +221,7 @@ const Main = () => {
         },
       })
       .then((response) => {
-        const { nickname, profile, levelId, exp, coin, memberItemList } =
+        const { nickname, profile, levelId, coin, memberItemList, tempExp, expLimit } =
           response.data.result;
 
         localStorage.setItem("nickname", nickname);
@@ -264,8 +266,9 @@ const Main = () => {
         setNickname(nickname);
         setProfile(profileImg);
         setLevelId(levelId);
-        setExp(exp);
         setCoin(coin);
+        setTempExp(tempExp);
+        setExpLimit(expLimit);
         //setMemberItems(updatedMemberItems);
         connectSession();
         getRoomList("normal");
@@ -609,11 +612,11 @@ const Main = () => {
                   경험치
                 </p>
                 <div className={styles.expBarContainer}>
+                <p style={{position:'absolute',fontSize:'10px', right: '5px', top:'-10px' }}>{tempExp +'/'+expLimit}</p>
                   <div
                     className={styles.expBar}
-                    style={{ width: `${exp}%` }}
+                    style={{ width: `${tempExp / expLimit * 100}%` }}
                   ></div>
-                  <div className={styles.expText}>exp</div>
                 </div>
               </div>
               {/* 코인 부분 */}

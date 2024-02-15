@@ -74,6 +74,9 @@ const VideoScreen = ({ roomId, nickname, userList, roomType }) => {
   // 페이지 입장 시, 화상 회의 즉시 입장된다.
   useEffect(() => {
     joinSession();
+    return(
+      leaveSession()
+    )
   }, []);
 
   // OpenVidu 세션에 참가하는 함수
