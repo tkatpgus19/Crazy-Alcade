@@ -96,15 +96,16 @@ public class ProblemController {
 
         Problem problem = codeService.findProblemById(problemId);
         Language language = codeService.getLanguage(request.getLang());
+        codeService.validateRoom(request.getRoomId());
 
         // 자바 실행 결과
         if (language == Language.JAVA) {
-            return BaseSuccessResponse.of(responseStatus, javaCodeService.judge(authentication, problem, request.getContent(), isHidden));
+            return BaseSuccessResponse.of(responseStatus, javaCodeService.judge(authentication, request.getRoomId(), problem, request.getContent(), isHidden));
         }
 
         // 파이썬 실행 결과
         if (language == Language.PYTHON) {
-            return BaseSuccessResponse.of(responseStatus, pythonCodeService.judge(authentication, problem, request.getContent(), isHidden));
+            return BaseSuccessResponse.of(responseStatus, pythonCodeService.judge(authentication, request.getRoomId(), problem, request.getContent(), isHidden));
         }
 
         throw new CustomBadRequestException(LANGUAGE_NOT_SUPPORTED);

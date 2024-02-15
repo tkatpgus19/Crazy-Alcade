@@ -11,6 +11,7 @@ const BackgroundImage = ({ children }) => {
         backgroundImage: 'url("/images/background.png")',
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
+        overflow: "hidden",
       }}
     >
       {children}

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import NicknameModal from "./NicknameModal";
 import imgfile from "../../assets/images/loginlogo.png";
@@ -15,6 +16,8 @@ const Login = () => {
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
   const [showLoginButtons, setShowLoginButtons] = useState(false); // 로그인 버튼 표시 상태 관리
   const audioRef = useRef(new Audio(roomBackgroundMusicLogin));
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     // 오디오 객체 생성 및 설정
@@ -28,11 +31,17 @@ const Login = () => {
   }, []);
 
   const handleStartClick = () => {
-    setShowLoginButtons(true); // 로그인 버튼 표시
     if (audioRef.current) {
       audioRef.current.play().catch((error) => {
         console.error("배경음악 재생에 실패했습니다: ", error);
       });
+    }
+
+    // 로그인 토큰이 있을 시 바로 메인으로 이동.
+    if (!localStorage.getItem("accessToken")) {
+      setShowLoginButtons(true); // 로그인 버튼 표시
+    } else {
+      navigate("/main");
     }
   };
 

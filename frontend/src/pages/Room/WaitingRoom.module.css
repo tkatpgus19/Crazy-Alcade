@@ -188,10 +188,10 @@
   /* 아래는 각각 열 행? 이 화면의 얼마만큼을 차지하게 할지 정하는 것 */
   /* 참고로 1fr은 화면을 꽉채우는 비율 */
   grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: 0.9fr 1fr;
   justify-content: center;
   justify-items: center;
-  padding: 1.5% 50px 0 50px;
+  padding: 1.5% 50px 50px 50px;
   /* 상 우 하 좌 순서 */
 }
 
