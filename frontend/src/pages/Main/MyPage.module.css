@@ -117,7 +117,7 @@
   display: flex; /* Flex 컨테이너로 설정 */
   align-items: center; /* 세로 가운데 정렬 */
   justify-content: center; /* 가로 가운데 정렬 */
-  margin: auto;
+  margin: 20px auto;
   border-radius: 10px;
 }
 
@@ -149,21 +149,56 @@
   object-fit: contain; /* 이미지 비율을 유지하면서 요소에 완전히 채움 */
 }
 
+/* Container for both states */
 .nameInput {
-  margin: 15px auto;
-  font-size: 15px;
+  display: flex;
+  justify-content: center; /* Center children horizontally */
+  align-items: center; /* Center children vertically */
+  width: 100%; /* Full width to center content */
+  margin: -5px auto;
+}
+
+/* Style for non-editing state, including the nickname and pencil icon */
+.nameDisplay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: auto; /* Auto width to fit content */
+  padding: 10px;
+  font-family: "DNFBitBitv2";
+  font-size: 20px;
+  margin: -10px 5px 5px 5px;
+}
+
+.editInput {
+  width: 50%;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Editing state styles */
+.editInput,
+.editButton,
+.cancelButton {
+  font-family: "DNFBitBitv2";
+  color: black;
   background-color: white;
-  border: 2px solid black;
+  border: 1px solid #ccc;
   border-radius: 8px;
-  text-align: center;
-  height: 30px;
-  line-height: 30px;
-  width: 200px;
-  flex-direction: row;
+  padding: 3px 8px;
+  margin: 0px 5px 5px 5px; /* Spacing between elements */
+}
+
+.editButton,
+.cancelButton {
+  cursor: pointer;
+  border: none; /* Optional: Remove border for a cleaner look */
+  background-color: white; /* Ensure buttons are white */
+  color: black; /* Text color */
 }
 
 .emailInput {
-  margin: 15px auto;
+  margin: 5px auto;
   font-size: 15px;
   background-color: white;
   border: 2px solid black;
@@ -179,7 +214,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: -5px;
+  margin-top: 0px;
 }
 
 .langButton {
@@ -189,7 +224,7 @@
 }
 
 .langInput {
-  margin: 20px auto;
+  margin: 10px auto;
   font-size: 15px;
   background-color: rgba(137, 183, 223, 0.66);
   color: white;
@@ -262,21 +297,4 @@
   border-radius: 5px;
   padding: 5px;
   font-size: 15px;
-}
-
-/* 스크롤바 스타일링 */
-.exsuccessProblemscontent::-webkit-scrollbar,
-.exunsolvedProblemscontent::-webkit-scrollbar {
-  width: 8px; /* 스크롤바의 너비 */
-}
-
-.exsuccessProblemscontent::-webkit-scrollbar-thumb,
-.exunsolvedProblemscontent::-webkit-scrollbar-thumb {
-  background: #888; /* 스크롤바의 색상 */
-  border-radius: 4px; /* 스크롤바의 모서리 둥글기 */
-}
-
-.exsuccessProblemscontent::-webkit-scrollbar-thumb:hover,
-.exunsolvedProblemscontent::-webkit-scrollbar-thumb:hover {
-  background: #555; /* 스크롤바의 색상 (hover 시) */
 }
