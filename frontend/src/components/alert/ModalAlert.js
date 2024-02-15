@@ -18,9 +18,21 @@ const ModalAlert = ({
     closeModal(); // 모달 닫기
   };
 
+  const cancelBtnStyle = {
+    position: 'absolute', 
+    width:'25px', 
+    right:'10px',
+    top:'5px', 
+    fontFamily: "DNFBitBitv2", 
+    background:'#0F679F',
+    textAlign: 'center',
+    borderRadius: '5px',
+    color:'white'
+  }
+
   return (
     <div>
-      <button onClick={openModal}>클릭하세요</button>
+      <div onClick={openModal} style={cancelBtnStyle}>X</div>
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}

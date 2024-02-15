@@ -49,7 +49,7 @@ public class JavaCodeService {
     private long resultMemory = Long.MAX_VALUE;
     
     @Transactional
-    public Object judge(Authentication authentication, Problem problem, String code, Boolean isHidden) throws IOException, InterruptedException {
+    public Object judge(Authentication authentication, String roomId, Problem problem, String code, Boolean isHidden) throws IOException, InterruptedException {
         // 멤버
         Member member = findMemberByAuth(authentication);
 
@@ -94,7 +94,7 @@ public class JavaCodeService {
 
             // 코드 저장
             try {
-                codeRepository.save(Code.of(code, Language.JAVA, resultTime, resultMemory, codeStatus, member, problem));
+                codeRepository.save(Code.of(code, Language.JAVA, resultTime, resultMemory, roomId, codeStatus, member, problem));
             } catch (Exception e) {
                 deleteFolder(dirPath);
                 throw new CustomServerErrorException(DATABASE_ERROR);
@@ -439,7 +439,6 @@ public class JavaCodeService {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomBadRequestException(MEMBER_NOT_FOUND));
     }
-
 
 }
 

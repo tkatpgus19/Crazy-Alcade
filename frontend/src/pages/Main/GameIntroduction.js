@@ -61,7 +61,9 @@ const GameIntroduction = () => {
       style={{ backgroundImage: `url(${background})` }}
     >
       <div className={styles.header}>
-        <img className={styles.logoImg} src={imgfile} alt="로고" />
+        <div className={styles.logo}>
+          <img src={imgfile} alt="로고" />
+        </div>{" "}
         <button
           className={styles.gameInfoButton}
           onClick={() => setCurrentPage("intro")}

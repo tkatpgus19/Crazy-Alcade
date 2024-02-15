@@ -17,7 +17,7 @@ const NicknameModal = ({ close }) => {
 
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/members/nickname`,
+        `${process.env.REACT_APP_BASE_URL}/members/nickname`,
         {
           method: "PUT", // HTTP 메소드 설정
           headers: {

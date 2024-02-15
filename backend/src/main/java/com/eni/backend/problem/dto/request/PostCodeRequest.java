@@ -12,6 +12,9 @@ import lombok.ToString;
 @NoArgsConstructor
 public class PostCodeRequest {
 
+    @NotBlank(message = "roomId를 입력해주세요.")
+    private String roomId;
+
     @NotBlank(message = "언어를 입력해주세요.")
     private String lang;
 
