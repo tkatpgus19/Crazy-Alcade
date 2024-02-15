@@ -118,7 +118,7 @@ const GameResults = ({ roomType, roomId, userInfo }) => {
               key={index}
               className={`${styles[`rank${player.rank}`]} ${
                 player.rank === "-" ? styles.retiredPlayer : ""
-              }`}
+              } ${player.name === userInfo.nickname ? styles.myRankHighlight : ""}`}
             >
               <span className={styles.rank}>{player.rank}</span>
               <span className={styles.name}>{player.name}</span>
@@ -160,6 +160,9 @@ const GameResults = ({ roomType, roomId, userInfo }) => {
                     }%`,
                   }} // 경험치에 따라 바의 길이 조절
                 ></div>
+                <div className={styles.expText}>
+                  {`${levelUp ? userInfo.tempExp + gameResult.myRank.getExp - userInfo.expLimit : userInfo.tempExp + gameResult.myRank.getExp} / ${userInfo.expLimit}`}
+                </div>
               </div>
               {/* 코인 추가*/}
               <span className={styles.coins}>{playerResult.coins}</span>
