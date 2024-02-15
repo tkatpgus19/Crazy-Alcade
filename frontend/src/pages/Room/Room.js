@@ -24,6 +24,7 @@ import {
 } from "./slices/settingSlice";
 import roomBackgroundMusicRoom from "../../assets/music/room.mp3";
 import LanguageBox from "../Game/components/LanguageBox";
+import userEvent from "@testing-library/user-event";
 
 const Room = () => {
   const SERVER_URL = process.env.REACT_APP_BASE_URL;
@@ -62,6 +63,9 @@ const Room = () => {
 
   const [userlist, setUserlist] = useState([]);
   const [readylist, setReadylist] = useState([]);
+  // 추가
+  const [userUUIDlist, setUserUUIDlist] = useState([]);
+
   const [profilelist, setProfilelist] = useState([]);
   const [userStatus, setUserStatus] = useState({});
   const navigate = useNavigate();
@@ -83,7 +87,9 @@ const Room = () => {
 
   const leaveRoom = () => {
     axios
-      .delete(`${SERVER_URL}/rooms/exit?roomId=${roomId}&member-id=${userUUID}`)
+      .delete(
+        `${SERVER_URL}/rooms/exit?roomId=${roomId}&member-id=${userUUID}&isExpelled=false`
+      )
       .then((res) => {
         client.current.disconnect();
         navigate(-1);
@@ -141,6 +147,16 @@ const Room = () => {
     };
 
     setChatContent((chatContent) => [...chatContent, newMessage]);
+
+    console.log("부럽당앙앙아앙 \n\n\n\n\n\n" + JSON.stringify(payload.body));
+    // 추가한 부분
+    if (JSON.parse(payload.body).type === "EXPELLED") {
+      if (JSON.parse(payload.body).sender === nickname) {
+        alert("강퇴당했습니다.");
+        client.current.disconnect();
+        navigate(-1);
+      }
+    }
   };
 
   const sendChat = () => {
@@ -164,6 +180,7 @@ const Room = () => {
     setProfilelist(Object.values(JSON.parse(payload.body).profileList));
     setUserlist(Object.keys(JSON.parse(payload.body).readyList)); // 객체에 있는 메서드를 사용해서
     setReadylist(Object.values(JSON.parse(payload.body).readyList)); // payload로 딕셔너리 (["username":"readyStatus"]) 이렇게 오는데, 위는 키값들만, 아래는 값들만 따로 분리해서 세팅
+    setUserUUIDlist(Object.keys(JSON.parse(payload.body).userList));
   };
 
   const getUserList = () => {
@@ -174,6 +191,7 @@ const Room = () => {
         setProfilelist(Object.values(res.data.result.profileList));
         setUserlist(Object.keys(res.data.result.readyList));
         setReadylist(Object.values(res.data.result.readyList));
+        setUserUUIDlist(Object.keys(res.data.result.userList));
         console.log("getUserList 호출됨 : " + res.data);
       })
       .catch((err) => console.log(err));
@@ -241,6 +259,8 @@ const Room = () => {
     }
   };
 
+  useEffect(() => {}, [userStatus]);
+
   useEffect(() => {
     const audio = audioRef.current;
     // play()가 Promise를 반환하므로, catch 블록에서 오류를 처리합니다.
@@ -298,6 +318,9 @@ const Room = () => {
                         status={readylist[index]}
                         currentUser={nickname}
                         master={roomInfo.master}
+                        // 추가한 부분
+                        userUUID={userUUIDlist[index]}
+                        roomId={roomId}
                         image={
                           profilelist[index]
                             ? `/images/${profilelist[index]}`
