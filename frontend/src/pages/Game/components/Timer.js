@@ -50,7 +50,7 @@ const Timer = ({ roomId }) => {
   useEffect(() => {
     if (remainingTime === 0) {
       dispatch(resetTimer()); // 게임 종료 알림.
-      client.current.disconnect();
+      // client.current.disconnect();
     }
   }, [remainingTime]);
 

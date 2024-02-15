@@ -50,7 +50,7 @@ const GameResults = ({ roomType, roomId, userInfo }) => {
           apiUrl,
           {
             putCoinValue: gameResult.myRank.getCoin,
-            putExpValue: gameResult.myRank.getExp,
+            putExpValue: -gameResult.myRank.getExp,
           },
           {
             headers: {
@@ -76,7 +76,15 @@ const GameResults = ({ roomType, roomId, userInfo }) => {
     if (roomType === "normal") {
       navigate("/review");
     } else {
-      navigate("/main");
+      const userUUID = localStorage.getItem("userUUID");
+      axios
+        .delete(
+          `${process.env.REACT_APP_BASE_URL}/rooms/exit?roomId=${roomId}&member-id=${userUUID}&isExpelled=false`
+        )
+        .then((res) => {
+          navigate("/main", { replace: true });
+          window.location.reload();
+        });
     }
   };
 

@@ -97,20 +97,20 @@ const Footer = ({ roomInfo, userInfo }) => {
         setTimeout(() => {
           // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
           dispatch(resetInkSpraying());
-        }, 5000);
+        }, 10000);
       } else if (item === 2) {
         if (!isChickenWalking) dispatch(toggleChickenWalking());
         setTimeout(() => {
           // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
           dispatch(resetChickenWalking());
-        }, 5000);
+        }, 10000);
       } else if (item === 3) {
         if (!isAnimating) dispatch(toggleWaterBalloonAnimation(true)); // 애니메이션 시작
 
         setTimeout(() => {
           // 5초 후에 애니메이션 상태를 false로 설정하여 애니메이션 종료
           dispatch(resetWaterBalloonAnimation());
-        }, 5000);
+        }, 10000);
       } else if (item === 4) {
         dispatch(toggleWebIDEFlip());
         // setTimeout 콜백 내에서 isFlipped 상태를 확인
@@ -119,7 +119,7 @@ const Footer = ({ roomInfo, userInfo }) => {
         setTimeout(() => setShowMagicWandImage(false), 1000);
         setTimeout(() => {
           dispatch(resetWebIDEFlip());
-        }, 4000); // 5000ms = 5초
+        }, 9000); // 5000ms = 5초
       }
     }
   };
