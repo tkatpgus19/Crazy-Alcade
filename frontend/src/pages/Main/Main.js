@@ -221,8 +221,15 @@ const Main = () => {
         },
       })
       .then((response) => {
-        const { nickname, profile, levelId, coin, memberItemList, tempExp, expLimit } =
-          response.data.result;
+        const {
+          nickname,
+          profile,
+          levelId,
+          coin,
+          memberItemList,
+          tempExp,
+          expLimit,
+        } = response.data.result;
 
         localStorage.setItem("nickname", nickname);
 
@@ -612,10 +619,19 @@ const Main = () => {
                   경험치
                 </p>
                 <div className={styles.expBarContainer}>
-                <p style={{position:'absolute',fontSize:'10px', right: '5px', top:'-10px' }}>{tempExp +'/'+expLimit}</p>
+                  <p
+                    style={{
+                      position: "absolute",
+                      fontSize: "10px",
+                      right: "5px",
+                      top: "-10px",
+                    }}
+                  >
+                    {tempExp + "/" + expLimit}
+                  </p>
                   <div
                     className={styles.expBar}
-                    style={{ width: `${tempExp / expLimit * 100}%` }}
+                    style={{ width: `${(tempExp / expLimit) * 100}%` }}
                   ></div>
                 </div>
               </div>
@@ -646,7 +662,7 @@ const Main = () => {
 
           {/* 마이페이지 파란색 네모 칸 */}
           <div className={styles.myPageBlueBox}>
-            <p>마이페이지</p>
+            <p onClick={navigate("/MyPage")}>마이페이지</p>
           </div>
         </div>
 
