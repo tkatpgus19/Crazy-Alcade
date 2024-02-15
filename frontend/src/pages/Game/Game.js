@@ -35,7 +35,11 @@ function Game() {
   const nickname = location.state ? location.state.nickname : "123";
   const userList = location.state ? location.state.userList : ["123", "456"];
   const roomType = location.state ? location.state.roomType : "item";
+<<<<<<< HEAD
   const userUUID = localStorage.getItem("userUUID");
+=======
+  const userUUID = location.state ? location.state.userUUID : "";
+>>>>>>> 7d74288 (Feat: 메인 페이지 경험치 상태 표시 추가 및 게임방 나가기 로직 추가)
 
   const [showOctopus, setOctopus] = useState(false);
   const [chickens, setChickens] = useState([]); // 병아리 이미지 상태
@@ -280,6 +284,7 @@ function Game() {
 
   const handleExitClick = () => {
     // "/main"으로 이동하는 코드
+<<<<<<< HEAD
     axios
       .delete(
         `${process.env.REACT_APP_BASE_URL}/rooms/exit?roomId=${roomId}&member-id=${userUUID}&isExpelled=false`
@@ -288,6 +293,10 @@ function Game() {
         navigate("/main", { replace: true });
         window.location.reload();
       });
+=======
+        navigate('/main', { replace: true });
+        window.location.reload();
+>>>>>>> 7d74288 (Feat: 메인 페이지 경험치 상태 표시 추가 및 게임방 나가기 로직 추가)
   };
 
   if (isLoading) {
