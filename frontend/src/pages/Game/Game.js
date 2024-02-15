@@ -36,10 +36,14 @@ function Game() {
   const userList = location.state ? location.state.userList : ["123", "456"];
   const roomType = location.state ? location.state.roomType : "item";
 <<<<<<< HEAD
+<<<<<<< HEAD
   const userUUID = localStorage.getItem("userUUID");
 =======
   const userUUID = localStorage.getItem('userUUID');
 >>>>>>> 857df27 (Fix: 게임방 나가기 버그 수정)
+=======
+  const userUUID = localStorage.getItem("userUUID");
+>>>>>>> 6a1ff75 (Fix : 나가기 버튼 새로고침 추가)
 
   const [showOctopus, setOctopus] = useState(false);
   const [chickens, setChickens] = useState([]); // 병아리 이미지 상태
@@ -290,10 +294,14 @@ function Game() {
       )
       .then((res) => {
 <<<<<<< HEAD
+<<<<<<< HEAD
         navigate("/main", { replace: true });
 =======
         navigate('/main', { replace: true });
 >>>>>>> 857df27 (Fix: 게임방 나가기 버그 수정)
+=======
+        navigate("/main", { replace: true });
+>>>>>>> 6a1ff75 (Fix : 나가기 버튼 새로고침 추가)
         window.location.reload();
       });
   };
