@@ -242,7 +242,7 @@ const VideoScreen = ({ roomId, nickname, userList, roomType }) => {
   }, [publisher, subscribers, isMicrophoneOn, isCameraOn, isAudioOn]);
 
   return (
-    <div>
+    <div style={{paddingBottom: '20px'}}>
       <div className={styles.videoScreen}>
         <div className={styles.userArea}>
           <div className={styles.mainVideo}>
@@ -271,7 +271,7 @@ const VideoScreen = ({ roomId, nickname, userList, roomType }) => {
           {/* 카메라 토글 이미지 버튼 */}
           <img
             src={isCameraOn ? screenOnImage : screenOffImage}
-            className={styles.btnIcon}
+            className={styles.btnIcon + " " + styles.btnIcon2}
             onClick={toggleca}
             alt="카메라 토글"
           />
@@ -280,35 +280,35 @@ const VideoScreen = ({ roomId, nickname, userList, roomType }) => {
           {subscribers.length > 0 ? (
             <UserVideoComponent streamManager={subscribers[0]} />
           ) : (
-            "참가자 대기중"
+            <></>
           )}
         </div>
         <div className={styles.userVideo}>
           {subscribers.length > 1 ? (
             <UserVideoComponent streamManager={subscribers[1]} />
           ) : (
-            "참가자 대기중"
+            <></>
           )}
         </div>
         <div className={styles.userVideo}>
           {subscribers.length > 2 ? (
             <UserVideoComponent streamManager={subscribers[2]} />
           ) : (
-            "참가자 대기중"
+            <></>
           )}
         </div>
         <div className={styles.userVideo}>
           {subscribers.length > 3 ? (
             <UserVideoComponent streamManager={subscribers[3]} />
           ) : (
-            "참가자 대기중"
+            <></>
           )}
         </div>
         <div className={styles.userVideo}>
           {subscribers.length > 4 ? (
             <UserVideoComponent streamManager={subscribers[4]} />
           ) : (
-            "참가자 대기중"
+            <></>
           )}
         </div>
         {/* <div className={styles.chaticon}>🗨️</div> */}

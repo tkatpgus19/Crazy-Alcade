@@ -874,7 +874,7 @@ const Main = () => {
                     </p>
                     {/* 메시지 내용 표시 (글씨 두껍게 여부에 따라 스타일 조정) */}
                     <div
-                      className={`${styles.messageContent} ${message.isBold ? styles.bold : ""}`}
+                      className={`${styles.messageContent} ${nickname === message.sender ? styles.bold : ""}`}
                     >
                       {message.content}
                     </div>

@@ -659,3 +659,8 @@ select{
 select option[value=""][disabled] {
 	display: none;
 }
+
+.bold{
+  
+  color: rgb(235, 235, 65);
+}
