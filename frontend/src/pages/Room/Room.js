@@ -351,9 +351,9 @@ const Room = () => {
                           {" " + " "}
                           {message.timestamp}
                         </span>
-                        <span style={{ display: "block" }}>
+                        <div style={ message.sender === nickname ? {color: 'yellow'} : {color: 'white'}}>
                           {message.content}
-                        </span>
+                        </div>
                       </div>
                     </>
                   );
