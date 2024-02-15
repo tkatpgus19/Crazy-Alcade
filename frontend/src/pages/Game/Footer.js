@@ -224,6 +224,7 @@ const Footer = ({ roomInfo, userInfo }) => {
         {
           headers: {
             Authorization: `Bearer ${token}`, // Bearer 토큰 방식을 사용하는 경우
+
             // Origin 헤더는 브라우저가 자동으로 설정하기 때문에 여기서 설정할 필요가 없습니다.
           },
         }
@@ -374,8 +375,8 @@ const Footer = ({ roomInfo, userInfo }) => {
 };
 
 Footer.propTypes = {
-  userInfo: PropTypes.object.isRequired,
   roomInfo: PropTypes.object.isRequired,
+  userInfo: PropTypes.object.isRequired,
 };
 
 export default Footer;

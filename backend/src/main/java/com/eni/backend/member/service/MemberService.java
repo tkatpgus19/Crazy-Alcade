@@ -121,6 +121,23 @@ public class MemberService {
             throw new CustomBadRequestException(MEMBER_NOT_FOUND);
         }
 
+        Integer memberExp = member.getExp();
+
+        Optional<Level> optionalLevel = levelRepository.findById(member.getLevel().getId() - 1);
+
+        Integer preLevelExp = 0;
+
+        if (optionalLevel.isPresent()) {
+            preLevelExp = optionalLevel.get().getExp();
+        }
+
+        Integer tempLevelExp = member.getLevel().getExp();
+
+        // 현재 레벨에서 채워진 EXP
+        Integer responseExp = tempLevelExp - memberExp;
+        // 현재 레벨의 EXP 구간 넓이
+        Integer responseExpLimit = tempLevelExp - preLevelExp;
+
         List<Item> itemList = itemRepository.findAll();
         List<GetMemberItemListResponse> getMemberItemListResponses = new ArrayList<>();
 
@@ -137,7 +154,7 @@ public class MemberService {
             getMemberItemListResponses.add(GetMemberItemListResponse.from(item, memberItemCount));
         }
 
-        return GetMemberResponse.from(member, getMemberItemListResponses);
+        return GetMemberResponse.from(member, responseExp, responseExpLimit, getMemberItemListResponses);
     }
 
     public GetMemberDetailResponse getMemberDetails(Authentication authentication) {
@@ -275,17 +292,15 @@ public class MemberService {
 
         // EXP에 따른 레벨업
         List<Level> levelList = levelRepository.findAll();
-        Level preLevel = member.getLevel();
+
         boolean levelUp = false;
 
         for (Level level : levelList) {
-            if (member.getLevel().getId() < level.getId()) {
+            if (Objects.equals(member.getLevel().getId(), level.getId())) {
                 if (member.getExp() <= level.getExp()) {
-                    member.updateLevel(preLevel);
                     break;
                 } else {
-                    member.updateLevel(level);
-                    preLevel = level;
+                    member.updateLevel(levelRepository.findById(level.getId() + 1).get());
                     levelUp = true;
                 }
             }
