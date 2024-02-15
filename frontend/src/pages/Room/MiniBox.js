@@ -1,10 +1,9 @@
 // MiniBox.js
 
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import styles from "./MiniBox.module.css"; // Import the modular CSS file
 import ModalAlert from "../../components/alert/ModalAlert";
-import userEvent from "@testing-library/user-event";
 
 const MiniBox = ({
   master,
@@ -12,8 +11,7 @@ const MiniBox = ({
   nickname,
   status,
   currentUser,
-  userUUID,
-  roomId,
+  showModal,
 }) => {
   let showModalAlert = false;
   // 지금 내가 방장인가?
@@ -33,8 +31,7 @@ const MiniBox = ({
           message={`${nickname}을(를) 강퇴시키시겠습니까?`}
           showCancelButton={true}
           showConfirmButton={true}
-          userUUID={userUUID}
-          roomId={roomId}
+          currentUser={currentUser}
         />
       )}
       <div>
@@ -49,8 +46,7 @@ MiniBox.propTypes = {
   nickname: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
   currentUser: PropTypes.string.isRequired,
-  userUUID: PropTypes.string.isRequired,
-  roomId: PropTypes.string.isRequired,
+  showModal: PropTypes.bool.isRequired,
 };
 
 export default MiniBox;

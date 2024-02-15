@@ -259,8 +259,6 @@ const Room = () => {
     }
   };
 
-  useEffect(() => {}, [userStatus]);
-
   useEffect(() => {
     const audio = audioRef.current;
     // play()가 Promise를 반환하므로, catch 블록에서 오류를 처리합니다.
