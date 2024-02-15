@@ -661,7 +661,10 @@ const Main = () => {
           </div>
 
           {/* 마이페이지 파란색 네모 칸 */}
-          <div className={styles.myPageBlueBox}>
+          <div
+            className={styles.myPageBlueBox}
+            onClick={() => navigate("/MyPage")}
+          >
             <p>마이페이지</p>
           </div>
         </div>
