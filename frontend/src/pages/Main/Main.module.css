@@ -351,7 +351,7 @@
   cursor: pointer;
   transition: 0.5s all;
 }
-.normalButton:hover{
+.normalButton:hover {
   background-color: #12deff;
   transition: 0.5s all;
 }
@@ -371,12 +371,12 @@
   cursor: pointer;
   transition: 0.5s all;
 }
-.itemButton:hover{
+.itemButton:hover {
   background-color: #12deff;
   transition: 0.5s all;
 }
 
-select{
+select {
   cursor: pointer;
 }
 
@@ -646,7 +646,7 @@ select{
   font-family: "DNFBitBitv2";
 }
 
-.optionSelect{
+.optionSelect {
   background: #d9d9d9;
   width: 100%;
   height: 100%;
@@ -654,9 +654,9 @@ select{
   font-family: "DNFBitBitv2";
   text-align: center;
 }
-.optionSelect option{
+.optionSelect option {
   height: 40px;
 }
 select option[value=""][disabled] {
-	display: none;
+  display: none;
 }
