@@ -25,7 +25,7 @@ import { toggleShield, resetShield } from "./slices/animationControlSlice";
 
 import octopusIcon from "../../assets/images/octopus.png";
 import chickIcon from "../../assets/images/chick.png";
-import balloonIcon from "../../assets/images/waterBalloon.png";
+import balloonIcon from "../../assets/images/waterBall.png";
 import magicIcon from "../../assets/images/magic.png";
 import shieldIcon from "../../assets/images/shield.png";
 
@@ -351,12 +351,12 @@ const Footer = ({ roomInfo, userInfo }) => {
             className={styles.waterBalloon}
           />
         )}
-        <ActionButton
+        {/* <ActionButton
           className={styles.button}
           color="#3498db"
           text="임시 저장"
           onClick={handleSave}
-        />
+        /> */}
         <ActionButton
           className={styles.button}
           color="#27ae60"
