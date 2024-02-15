@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, Suspense } from "react";
 
 import Header from "./Header"; // Header 컴포넌트의 경로에 맞게 수정하세요.
 import VideoScreen from "./VideoScreen";
@@ -7,8 +7,7 @@ import styles from "./Game.module.css";
 import Footer from "./Footer";
 import WebIDE from "./WebIDE";
 import axios from "axios";
-
-import GameResults from "./components/GameResults"; // Adjust the path according to your file structure
+// import GameResults from "./components/GameResults"; // Adjust the path according to your file structure
 import { Resizable } from "re-resizable";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,6 +20,7 @@ function Game() {
   const navigate = useNavigate();
   let location = useLocation();
   const client = useRef();
+  const GameResults = React.lazy(() => import("./components/GameResults"));
 
   // 아이템 동작 확인
   const isSprayingInk = useSelector((state) => state.octopus.isSprayingInk);
@@ -347,13 +347,15 @@ function Game() {
 
       {/* 시간이 0이 되면 결과창을 렌더링 */}
       {timeCompleted && (
-        <div className={styles.gameResultsContainer}>
-          <GameResults
-            roomType={roomInfo.roomType}
-            roomId={roomInfo.roomId}
-            userInfo={userInfo}
-          />
-        </div>
+        <Suspense fallback={<div>Loading...</div>}>
+          <div className={styles.gameResultsContainer}>
+            <GameResults
+              roomType={roomInfo.roomType}
+              roomId={roomInfo.roomId}
+              userInfo={userInfo}
+            />
+          </div>
+        </Suspense>
       )}
     </div>
   );

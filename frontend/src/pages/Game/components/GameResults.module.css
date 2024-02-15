@@ -14,7 +14,7 @@
   padding: 25px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
   width: 525px; /* 기본 너비를 1.5배로 조정 */
-  min-width: 300px; /* 최소 너비 설정 */
+  min-width: 600px; /* 최소 너비 설정 */
   max-width: 700px; /* 최대 너비 설정 */
   margin: 20px auto;
   font-family: "DNFBITBITV2"; /* 폰트 변경 */
@@ -127,7 +127,7 @@
 }
 
 .playerSection {
-  flex: 7; /* 비율 7 */
+  flex: 8; /* 비율 7 */
 }
 
 .playerInfo {
@@ -159,6 +159,15 @@
   font-weight: bold;
 }
 
+.up {
+  background: whitesmoke; /* 진한 노란색으로 변경 */
+  color: green;
+  border-radius: 15px;
+  padding: 3px 8px;
+  margin: 0px 4px;
+  /* font-weight: bold; */
+}
+
 /* 기존 스타일... */
 .exitButton,
 .reviewButton {
@@ -180,7 +189,7 @@
     box-shadow 0.2s ease-in-out; /* 변환 및 그림자 변경시 애니메이션 */
   display: block; /* 블록 레벨 요소로 변경 */
   text-align: center; /* 텍스트 중앙 정렬 */
-  flex: 3; /* 비율 3 */
+  flex: 2; /* 비율 3 */
 }
 
 .exitButton:hover {
@@ -219,4 +228,8 @@
   background-color: green;
   border-radius: 10px;
   transition: width 0.3s ease-in-out;
+}
+
+.playerRewards {
+  margin: 0px 5px;
 }
