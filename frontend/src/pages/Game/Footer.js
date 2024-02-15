@@ -46,6 +46,7 @@ const Footer = ({ roomInfo, userInfo }) => {
   const isChickenWalking = useSelector((state) => state.feature.chickenWalking);
   const isAnimating = useSelector((state) => state.waterBalloon.isAnimating);
   const isFlipped = useSelector((state) => state.webIDE.isFlipped); // 가정: webIDE 슬라이스에서 isFlipped 상태를 관리
+  const [showShieldImage, setShowShieldImage] = useState(false);
 
   const client = useRef();
 
@@ -192,6 +193,13 @@ const Footer = ({ roomInfo, userInfo }) => {
       if (isFlipped == true) dispatch(toggleWebIDEFlip(false));
       dispatch(toggleShield());
       setTimeout(() => dispatch(resetShield()), 0); // 바로 상태를 리셋하여 다른 애니메이션에 영향을 주지 않음
+
+      // 쉴드 이미지 표시
+      setShowShieldImage(true);
+
+      // 1초 후에 이미지 숨기기
+      setTimeout(() => setShowShieldImage(false), 1000);
+
       // 쉴드 아이템 개수 차감.
       subItem(itemId);
     } else {
@@ -369,6 +377,11 @@ const Footer = ({ roomInfo, userInfo }) => {
           text="코드 제출"
           onClick={handleSubmit}
         />
+        {showShieldImage && (
+          <div className={styles.shieldImageContainer}>
+            <img src={shieldIcon} alt="Shield" className={styles.shieldImage} />
+          </div>
+        )}
       </animated.div>
     </div>
   );
