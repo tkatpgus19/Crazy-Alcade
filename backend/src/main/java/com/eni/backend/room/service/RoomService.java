@@ -312,7 +312,7 @@ public class RoomService {
     public GetStatusResponse getUserStatus(String roomId){
         if(roomRepository.getRoomById(roomId) != null){
             RoomDto room = roomRepository.getRoomById(roomId);
-            return GetStatusResponse.of(room.getReadyList(), room.getProfileList());
+            return GetStatusResponse.of(room.getUserList(), room.getReadyList(), room.getProfileList());
         }
         return null;
     }
