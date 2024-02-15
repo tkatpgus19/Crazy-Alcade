@@ -275,7 +275,10 @@ const Main = () => {
       })
       .catch((error) => {
         console.log("오류!", error);
-        navigate("/error");
+        // 토큰 검사 시 잘못된 토큰이면 에러 페이지로 이동.
+        //액세스 토큰 삭제후 로그인 페이지 이동.
+        localStorage.removeItem("accessToken");
+        navigate("/");
       });
     getRoomList("normal");
   }, []);
