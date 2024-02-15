@@ -25,7 +25,7 @@ import { toggleShield, resetShield } from "./slices/animationControlSlice";
 
 import octopusIcon from "../../assets/images/octopus.png";
 import chickIcon from "../../assets/images/chick.png";
-import balloonIcon from "../../assets/images/waterBalloon.png";
+import balloonIcon from "../../assets/images/waterBall.png";
 import magicIcon from "../../assets/images/magic.png";
 import shieldIcon from "../../assets/images/shield.png";
 
@@ -46,6 +46,8 @@ const Footer = ({ roomInfo, userInfo }) => {
   const isChickenWalking = useSelector((state) => state.feature.chickenWalking);
   const isAnimating = useSelector((state) => state.waterBalloon.isAnimating);
   const isFlipped = useSelector((state) => state.webIDE.isFlipped); // 가정: webIDE 슬라이스에서 isFlipped 상태를 관리
+  const [showShieldImage, setShowShieldImage] = useState(false);
+  const [showMagicWandImage, setShowMagicWandImage] = useState(false);
 
   const client = useRef();
 
@@ -112,9 +114,12 @@ const Footer = ({ roomInfo, userInfo }) => {
       } else if (item === 4) {
         dispatch(toggleWebIDEFlip());
         // setTimeout 콜백 내에서 isFlipped 상태를 확인
+        setShowMagicWandImage(true);
+        // 1초 후에 이미지 숨기기
+        setTimeout(() => setShowMagicWandImage(false), 1000);
         setTimeout(() => {
           dispatch(resetWebIDEFlip());
-        }, 5000); // 5000ms = 5초
+        }, 4000); // 5000ms = 5초
       }
     }
   };
@@ -192,6 +197,13 @@ const Footer = ({ roomInfo, userInfo }) => {
       if (isFlipped == true) dispatch(toggleWebIDEFlip(false));
       dispatch(toggleShield());
       setTimeout(() => dispatch(resetShield()), 0); // 바로 상태를 리셋하여 다른 애니메이션에 영향을 주지 않음
+
+      // 쉴드 이미지 표시
+      setShowShieldImage(true);
+
+      // 1초 후에 이미지 숨기기
+      setTimeout(() => setShowShieldImage(false), 1000);
+
       // 쉴드 아이템 개수 차감.
       subItem(itemId);
     } else {
@@ -351,12 +363,12 @@ const Footer = ({ roomInfo, userInfo }) => {
             className={styles.waterBalloon}
           />
         )}
-        <ActionButton
+        {/* <ActionButton
           className={styles.button}
           color="#3498db"
           text="임시 저장"
           onClick={handleSave}
-        />
+        /> */}
         <ActionButton
           className={styles.button}
           color="#27ae60"
@@ -369,6 +381,16 @@ const Footer = ({ roomInfo, userInfo }) => {
           text="코드 제출"
           onClick={handleSubmit}
         />
+        {showShieldImage && (
+          <div className={styles.shieldImageContainer}>
+            <img src={shieldIcon} alt="Shield" className={styles.shieldImage} />
+          </div>
+        )}
+        {showMagicWandImage && (
+          <div className={styles.shieldImageContainer}>
+            <img src={magicIcon} alt="Magic Wand" />
+          </div>
+        )}
       </animated.div>
     </div>
   );

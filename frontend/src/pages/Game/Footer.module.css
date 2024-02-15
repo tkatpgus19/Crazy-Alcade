@@ -79,3 +79,16 @@
   border-radius: 5px;
   cursor: pointer;
 }
+
+.shieldImageContainer {
+  position: fixed;
+  top: -35vh;
+  left: -15vw;
+  transform: translate(-50%, -50%);
+  z-index: 1000; /* 다른 요소들 위에 표시되도록 z-index 설정 */
+}
+
+.shieldImage {
+  width: 300px; /* 이미지 크기 조절 */
+  height: auto;
+}

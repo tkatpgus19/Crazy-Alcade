@@ -29,7 +29,6 @@ import profile7 from "../../assets/images/profile7.png";
 import profile8 from "../../assets/images/profile8.png";
 import profile9 from "../../assets/images/profile9.png";
 import profile10 from "../../assets/images/profile10.png";
-import profile999 from "../../assets/images/profile999.png";
 
 import "./Main.module.css";
 import styles from "./Main.module.css";
@@ -43,7 +42,6 @@ import { Stomp } from "@stomp/stompjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
 import roomBackgroundMusicLobby from "../../assets/music/lobby.mp3";
-import MyPage from "./MyPage";
 
 const Main = () => {
   const client = useRef();
@@ -169,9 +167,9 @@ const Main = () => {
     magic: magicGrayImg,
     shield: shieldGrayImg,
   });
-  const [nickname, setNickname] = useState("");
 
   const navigate = useNavigate();
+  const [nickname, setNickname] = useState("");
 
   const SERVER_URL = process.env.REACT_APP_BASE_URL;
 
@@ -187,7 +185,6 @@ const Main = () => {
     "profile8.png": profile8,
     "profile9.png": profile9,
     "profile10.png": profile10,
-    "profile999.png": profile999,
   };
 
   // 아이템 상태 초기화
@@ -275,10 +272,6 @@ const Main = () => {
       })
       .catch((error) => {
         console.log("오류!", error);
-        // 토큰 검사 시 잘못된 토큰이면 에러 페이지로 이동.
-        //액세스 토큰 삭제후 로그인 페이지 이동.
-        localStorage.removeItem("accessToken");
-        navigate("/");
       });
     getRoomList("normal");
   }, []);
@@ -604,11 +597,9 @@ const Main = () => {
           {/* 소개 칸 */}
           <div className={styles.introduction}>
             <div>
-              <div style={{ textAlign: "center", marginTop: "10px" }}>
-                Lv. {levelId}
-              </div>
+              <div>Lv. {levelId}</div>
               {/* 경험치 진행 상태 표시줄 */}
-              <div style={{ display: "flex", marginBottom: "5px" }}>
+              <div style={{ display: "flex" }}>
                 <p
                   style={{
                     margin: "0",
@@ -651,10 +642,7 @@ const Main = () => {
           </div>
 
           {/* 마이페이지 파란색 네모 칸 */}
-          <div
-            className={styles.myPageBlueBox}
-            onClick={() => navigate("/MyPage")}
-          >
+          <div className={styles.myPageBlueBox}>
             <p>마이페이지</p>
           </div>
         </div>
@@ -666,50 +654,40 @@ const Main = () => {
             {/* 노말, 아이템전 + 옵션 선택하는 드롭다운 박스 */}
             <div className={styles.optionButtons}>
               {/* 토글 방식으로 노말전, 아이템전 버튼 */}
-              <div
-                style={{ display: "flex", position: "absolute", left: "400px" }}
+              <button
+                className={`${styles.normalButton} ${normalMode ? styles.active : ""}`}
+                onClick={() => toggleNormalMode(true)}
               >
-                <button
-                  className={`${styles.normalButton} ${normalMode ? styles.active : ""}`}
-                  onClick={() => toggleNormalMode(true)}
-                >
-                  노말전
-                </button>
-                <button
-                  className={`${styles.itemButton} ${!normalMode ? styles.active : ""}`}
-                  onClick={() => toggleNormalMode(false)}
-                >
-                  아이템전
-                </button>
-              </div>
+                노말전
+              </button>
+              <button
+                className={`${styles.itemButton} ${!normalMode ? styles.active : ""}`}
+                onClick={() => toggleNormalMode(false)}
+              >
+                아이템전
+              </button>
 
               {/* 사용 언어 드롭다운 */}
               <div className={styles.optionButton}>
+                <label htmlFor="language">사용 언어</label>
                 <select
                   name="language"
                   id="language"
-                  className={styles.optionSelect}
                   onChange={handleLanguageChange}
                 >
-                  <option value="" disabled selected>
-                    풀이 언어
-                  </option>
                   <option value="java">Java</option>
-                  {/* <option value="python">Python</option> */}
+                  <option value="python">Python</option>
                 </select>
               </div>
 
               {/* 난이도 드롭다운 */}
               <div className={styles.optionButton}>
+                <label htmlFor="difficulty">난이도</label>
                 <select
                   name="difficulty"
                   id="difficulty"
                   onChange={handleDifficultyChange}
-                  className={styles.optionSelect}
                 >
-                  <option value="" disabled selected>
-                    문제 난이도
-                  </option>
                   <option value="bronze">Bronze</option>
                   <option value="silver">Silver</option>
                   <option value="gold">Gold</option>
@@ -718,38 +696,33 @@ const Main = () => {
 
               {/* 코드 리뷰 드롭다운 */}
 
-              <div
-                className={styles.optionButton}
-                style={
-                  normalMode
-                    ? { visibility: "visible" }
-                    : { visibility: "collapse", width: "0" }
-                }
-              >
+              <div className={styles.optionButton}>
+                <label htmlFor="codeReview">코드 리뷰</label>
                 {normalMode ? (
                   <select
                     name="codeReview"
                     id="codeReview"
                     onChange={handleCodeReviewChange}
-                    className={styles.optionSelect}
                   >
-                    <option value="" disabled selected>
-                      리뷰 여부
-                    </option>
                     <option value="o">O</option>
                     <option value="x">X</option>
                   </select>
                 ) : (
-                  ""
+                  <select
+                    name="codeReview"
+                    id="codeReview"
+                    onChange={handleCodeReviewChange}
+                  >
+                    <option value="x">X</option>
+                  </select>
                 )}
               </div>
               {/* 전체를 다시 보여주는 버튼 */}
               <div
                 className={styles.optionButton}
                 onClick={() => allList(normalMode)}
-                style={{ cursor: "pointer" }}
               >
-                전체 보기
+                <label>전체보기</label>
               </div>
 
               {/* 미해결 문제 체크박스 */}
