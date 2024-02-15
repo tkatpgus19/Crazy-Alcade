@@ -71,7 +71,11 @@ const WebIDE = ({ language }) => {
       return <div className={styles.loading}>Loading...</div>;
     }
     console.log(executionResult);
-    if (!executionResult || !executionResult.result.tcResult) {
+    if (!executionResult) {
+      return;
+    }
+
+    if (!executionResult.result.tcResult) {
       return <div className={styles.loading}>컴파일 에러..!</div>;
     }
 
