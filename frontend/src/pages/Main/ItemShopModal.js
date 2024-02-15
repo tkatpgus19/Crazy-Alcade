@@ -133,9 +133,9 @@ const ItemShopModal = ({ closeModal }) => {
         &times;
       </button>
       <div className={styles.coinsDisplay}>보유 코인: {coins}</div>
-      {/* <button className={styles.coinsDisplay} onClick={showMeTheMoney}>
+      <button className={styles.coinsDisplay} onClick={showMeTheMoney}>
         돈복사
-      </button> */}
+      </button>
       <div className={styles.itemsContainer}>
         {items.map((item, index) => (
           <Item

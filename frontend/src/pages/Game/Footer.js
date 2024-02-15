@@ -47,6 +47,7 @@ const Footer = ({ roomInfo, userInfo }) => {
   const isAnimating = useSelector((state) => state.waterBalloon.isAnimating);
   const isFlipped = useSelector((state) => state.webIDE.isFlipped); // 가정: webIDE 슬라이스에서 isFlipped 상태를 관리
   const [showShieldImage, setShowShieldImage] = useState(false);
+  const [showMagicWandImage, setShowMagicWandImage] = useState(false);
 
   const client = useRef();
 
@@ -113,9 +114,12 @@ const Footer = ({ roomInfo, userInfo }) => {
       } else if (item === 4) {
         dispatch(toggleWebIDEFlip());
         // setTimeout 콜백 내에서 isFlipped 상태를 확인
+        setShowMagicWandImage(true);
+        // 1초 후에 이미지 숨기기
+        setTimeout(() => setShowMagicWandImage(false), 1000);
         setTimeout(() => {
           dispatch(resetWebIDEFlip());
-        }, 5000); // 5000ms = 5초
+        }, 4000); // 5000ms = 5초
       }
     }
   };
@@ -380,6 +384,11 @@ const Footer = ({ roomInfo, userInfo }) => {
         {showShieldImage && (
           <div className={styles.shieldImageContainer}>
             <img src={shieldIcon} alt="Shield" className={styles.shieldImage} />
+          </div>
+        )}
+        {showMagicWandImage && (
+          <div className={styles.shieldImageContainer}>
+            <img src={magicIcon} alt="Magic Wand" />
           </div>
         )}
       </animated.div>
