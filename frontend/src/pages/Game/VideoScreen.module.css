@@ -3,7 +3,7 @@
   background-color: #0594df;
   padding: 16px;
   box-sizing: border-box;
-  height: 18vh;
+  height: 150px;
   border: 1px solid black;
   overflow-x: hidden;
   overflow-y: hidden;
@@ -29,7 +29,8 @@
   height: 110px;
   border: 2px solid #000000;
   border-radius: 10px;
-  margin-right: 20px;
+  margin-left: 30px;
+  background: #0C74D0;
 }
 
 .iconContainer {
@@ -48,4 +49,7 @@
   background-color: transparent; /* 버튼의 배경색 투명 */
   cursor: pointer; /* 마우스 오버 시 커서 변경 */
   margin: 1px;
+}
+.btnIcon2{
+  margin-top: 15px;
 }
