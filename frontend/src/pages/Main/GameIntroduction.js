@@ -7,8 +7,56 @@ import gameIntroImg from "../../assets/images/gameintro.png";
 import "./GameIntroduction.module.css";
 import styles from "./GameIntroduction.module.css";
 
+// 이미지 import
+import octopusImg from "../../assets/images/octopus.png";
+import chickImg from "../../assets/images/chick.png";
+import waterBalloonImg from "../../assets/images/waterBalloon.png";
+import magicImg from "../../assets/images/magic.png";
+import shieldImg from "../../assets/images/shield.png";
+
+// 상세 이미지 import
+import octopusDetailImg from "../../assets/images/octopusDetail.png";
+import chickDetailImg from "../../assets/images/chickDetail.png";
+import waterBallonDetailImg from "../../assets/images/waterBallonDetail.png";
+import magicDetailImg from "../../assets/images/magicDetail.png";
+import shieldDetailImg from "../../assets/images/shieldDetail.png";
+
+const items = [
+  {
+    id: 1,
+    name: "문어",
+    image: octopusImg,
+    detailImage: octopusDetailImg,
+  },
+  {
+    id: 2,
+    name: "병아리",
+    image: chickImg,
+    detailImage: chickDetailImg,
+  },
+  {
+    id: 3,
+    name: "물풍선",
+    image: waterBalloonImg,
+    detailImage: waterBallonDetailImg,
+  },
+  {
+    id: 4,
+    name: "요술봉",
+    image: magicImg,
+    detailImage: magicDetailImg,
+  },
+  {
+    id: 5,
+    name: "쉴드",
+    image: shieldImg,
+    detailImage: shieldDetailImg,
+  },
+];
+
 const GameIntroduction = () => {
-  const [currentPage, setCurrentPage] = useState("intro"); // 현재 보여줄 페이지 상태 관리
+  const [currentPage, setCurrentPage] = useState("intro");
+  const [selectedItem, setSelectedItem] = useState(null); // 선택된 아이템을 위한 상태
   const navigate = useNavigate();
 
   // 현재 페이지에 따라 버튼 클래스를 결정하는 함수
@@ -17,23 +65,9 @@ const GameIntroduction = () => {
       ? `${styles.tabButton} ${styles.tabButtonActive}`
       : styles.tabButton;
 
-  const backgroundStyle = {
-    backgroundImage: `url(${background})`,
-    backgroundRepeat: "no-repeat",
-    backgroundSize: "cover",
-    height: "100vh",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "space-between",
-  };
-
-  const logoStyle = {
-    // 로고에 대한 추가 스타일을 여기에 추가
-  };
-
   // 게임 소개 페이지 내용
   const GameIntroContent = () => (
-    <div>
+    <div className={styles.introImage}>
       <img src={gameIntroImg} alt="게임 소개" className="gameIntroImage" />
       {/* 게임 소개 내용 */}
     </div>
@@ -41,17 +75,33 @@ const GameIntroduction = () => {
 
   // 아이템 도감 페이지 내용
   const ItemDexContent = () => (
-    <div>
-      <h1>아이템 도감</h1>
-      {/* 아이템 목록을 보여주는 컴포넌트 또는 내용 */}
-    </div>
-  );
-
-  // 경험치 표 페이지 내용
-  const ExpTableContent = () => (
-    <div>
-      <h1>경험치 표</h1>
-      {/* 경험치 표를 보여주는 컴포넌트 또는 내용 */}
+    <div className={styles.itemDexContainer}>
+      {/* 선택된 아이템의 상세 이미지를 보여줍니다 (왼쪽 부분) */}
+      <div className={styles.itemDetailContainer}>
+        {selectedItem && (
+          <img
+            src={selectedItem.detailImage}
+            alt={selectedItem.name}
+            className={styles.itemDetailImage}
+          />
+        )}
+      </div>
+      {/* 아이템 목록을 보여줍니다 (오른쪽 부분) */}
+      <div className={styles.itemList}>
+        {items.map((item) => (
+          <div
+            key={item.id}
+            className={styles.item}
+            onClick={() => setSelectedItem(item)}
+          >
+            <img
+              src={item.image}
+              alt={item.name}
+              className={styles.itemImage}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 
@@ -89,18 +139,11 @@ const GameIntroduction = () => {
           >
             아이템 도감
           </button>
-          <button
-            className={getButtonClass("exptable")}
-            onClick={() => setCurrentPage("exptable")}
-          >
-            경험치 표
-          </button>
         </div>
 
         <div className={styles.contentArea}>
           {currentPage === "intro" && <GameIntroContent />}
           {currentPage === "itemdex" && <ItemDexContent />}
-          {currentPage === "exptable" && <ExpTableContent />}
         </div>
       </div>
     </div>

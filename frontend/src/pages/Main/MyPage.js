@@ -248,23 +248,35 @@ const MyPage = () => {
                 {isEditing ? (
                   <>
                     <input
+                      type="text"
                       value={nickname}
                       onChange={handleNicknameChange}
-                      maxLength={8} // 입력 가능한 최대 길이 설정
-                      style={{ marginRight: "5px" }}
+                      className={styles.editInput}
                     />
-                    <button onClick={submitNewNickname}>수정</button>
-                    <button onClick={cancelEdit} style={{ marginLeft: "5px" }}>
+                    <button
+                      onClick={submitNewNickname}
+                      className={styles.editButton}
+                    >
+                      수정
+                    </button>
+                    <button
+                      onClick={cancelEdit}
+                      className={styles.cancelButton}
+                    >
                       취소
                     </button>
                   </>
                 ) : (
-                  <>
-                    {nickname}
-                    <button onClick={toggleEdit} style={{ marginLeft: "10px" }}>
+                  <div className={styles.nameDisplay}>
+                    <span>{nickname}</span>
+                    <button
+                      onClick={toggleEdit}
+                      className={styles.editButton}
+                      style={{ marginLeft: "10px" }}
+                    >
                       ✏️
                     </button>
-                  </>
+                  </div>
                 )}
               </div>
 
