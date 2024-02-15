@@ -1,0 +1,31 @@
+.errorContainer {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-family: "DNFBITBITV2";
+  color: white;
+  -webkit-text-stroke: 0.5px black;
+  background-image: url("../assets/images/mainback.png");
+  background-repeat: "no-repeat";
+  height: 100vh;
+  background-size: cover;
+}
+
+.homeButton {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  -webkit-text-stroke: 0.5px black;
+  letter-spacing: 3px;
+}
+
+.homeButton:hover {
+  background-color: #0056b3;
+}

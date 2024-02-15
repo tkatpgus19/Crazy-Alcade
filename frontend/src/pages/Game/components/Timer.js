@@ -48,7 +48,7 @@ const Timer = ({ roomId }) => {
 
   // Game.js로 쏴라
   useEffect(() => {
-    if (1) {
+    if (remainingTime == 0) {
       dispatch(resetTimer()); // 게임 종료 알림.
       client.current.disconnect();
     }
