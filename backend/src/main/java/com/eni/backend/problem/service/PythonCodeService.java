@@ -52,7 +52,7 @@ public class PythonCodeService {
     private long resultMemory;
 
     @Transactional
-    public Object judge(Authentication authentication, Problem problem, String code, Boolean isHidden) throws IOException, InterruptedException {
+    public Object judge(Authentication authentication, String roomId, Problem problem, String code, Boolean isHidden) throws IOException, InterruptedException {
         // 멤버
         Member member = findMemberByAuth(authentication);
 
@@ -97,7 +97,7 @@ public class PythonCodeService {
 
             // 코드 저장
             try {
-                codeRepository.save(Code.of(code, Language.PYTHON, resultTime, resultMemory, codeStatus, member, problem));
+                codeRepository.save(Code.of(code, Language.PYTHON, resultTime, resultMemory, roomId, codeStatus, member, problem));
             } catch (Exception e) {
                 deleteFolder(dirPath);
                 throw new CustomServerErrorException(DATABASE_ERROR);

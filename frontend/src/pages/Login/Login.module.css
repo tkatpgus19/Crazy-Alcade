@@ -11,6 +11,7 @@
   margin-top: 200px;
   margin-bottom: 50px; /* 로고를 가운데에서 조금 더 위에 위치하도록 음수 값으로 조절 */
   margin-left: 150px;
+  z-index: 10;
 }
 
 .loginlogoImg {
@@ -23,4 +24,105 @@
 .kakaoLogin,
 .googleLogin {
   cursor: pointer;
+  z-index: 10;
+}
+
+.startButton {
+  border: none; /* 테두리 없애기 */
+  color: white; /* 텍스트 색상은 흰색 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  text-decoration: none; /* 텍스트 밑줄 없애기 */
+  display: inline-block;
+  font-size: 25px;
+
+  cursor: pointer; /* 마우스를 올렸을 때 커서 모양 변경 */
+  border-radius: 12px; /* 버튼 모서리 둥글게 */
+  border: 2px solid;
+  border-color: white;
+  width: 250px;
+  height: 80px;
+  z-index: 10; /* 구름이 다른 요소들보다 뒤에 위치하도록 설정 */
+  color: white;
+  font-family: "DNFBitBitv2";
+  -webkit-text-stroke: 1.3px black;
+  background: linear-gradient(
+    to right,
+    orange,
+    yellow
+  ); /* 주황색 그라데이션 효과 */
+  transition: 0.5s all;
+}
+
+/* 구름 애니메이션 및 스타일 */
+
+/* 'float'라는 이름의 keyframes 애니메이션을 정의합니다. 구름이 오른쪽으로 이동하며 마지막에 서서히 사라지는 효과를 줍니다. */
+@keyframes float {
+  0% {
+    transform: translateX(
+      0%
+    ); /* 애니메이션 시작 시, 구름이 원래 위치에서 시작합니다. */
+    opacity: 1; /* 시작 시 구름의 투명도는 0.7입니다. */
+  }
+  90% {
+    opacity: 0.7; /* 90% 지점까지 구름의 투명도는 변하지 않습니다. */
+  }
+  100% {
+    transform: translateX(
+      calc(100vw - 100%)
+    ); /* 애니메이션 종료 시, 구름이 화면 너비만큼 이동하되 구름 자체의 너비만큼 빼서 화면 끝에서 완전히 사라지게 합니다. */
+    opacity: 0; /* 화면 끝에 도달했을 때 구름은 완전히 투명해져 사라집니다. */
+  }
+}
+
+/* 구름에 적용되는 스타일 */
+.cloud {
+  position: fixed; /* 구름을 화면에 고정시킵니다. 스크롤해도 구름의 위치는 변하지 않습니다. */
+  width: 500px; /* 구름 이미지의 너비를 400px로 설정합니다. */
+  height: auto; /* 구름 이미지의 높이는 자동으로 설정되어, 원본 비율을 유지합니다. */
+  animation: float 60s linear infinite; /* 위에서 정의한 'float' 애니메이션을 60초 동안 선형적으로 무한 반복 적용합니다. */
+  opacity: 0.9; /* 구름의 기본 투명도를 0.9로 설정합니다. */
+  z-index: 1; /* 구름의 쌓임 순서를 설정하여, 페이지의 다른 요소들보다 앞에 오도록 합니다. */
+}
+
+/* 첫 번째 구름에 적용되는 스타일 */
+.cloud:nth-child(1) {
+  animation-duration: 50s; /* 첫 번째 구름의 애니메이션 지속 시간을 50초로 설정합니다. */
+  /* animation-delay: 1s; 애니메이션 시작 전 1초의 지연을 줍니다. */
+  top: 5vh; /* 화면 상단에서부터 5%의 위치에 구름을 배치합니다. */
+}
+
+/* 두 번째 구름에 적용되는 스타일 */
+.cloud:nth-child(2) {
+  animation-duration: 70s; /* 두 번째 구름의 애니메이션 지속 시간을 70초로 설정합니다. */
+  top: 15vh; /* 화면 상단에서부터 15%의 위치에 구름을 배치합니다. */
+}
+
+.cloud:nth-child(3) {
+  animation-duration: 90s;
+  top: 60vh;
+}
+
+.cloud:nth-child(4) {
+  animation-duration: 70s;
+  top: 90vh;
+}
+
+.cloud:nth-child(5) {
+  animation-duration: 90s;
+  top: 50vh;
+}
+
+.cloud:nth-child(6) {
+  animation-duration: 90s;
+  top: 10vh;
+}
+
+.cloud:nth-child(6) {
+  animation-duration: 90s;
+  top: 15vh;
+}
+
+.cloud:nth-child(6) {
+  animation-duration: 90s;
+  top: 45vh;
 }

@@ -6,6 +6,7 @@ import com.eni.backend.room.dto.ChatDto;
 import com.eni.backend.room.dto.ItemDto;
 import com.eni.backend.room.dto.RoomDto;
 import com.eni.backend.room.dto.request.*;
+import com.eni.backend.room.dto.response.GetRoomListResponse;
 import com.eni.backend.room.service.RoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -53,21 +55,27 @@ public class RoomController {
     // 노멀전 방 리스트 조회
     @GetMapping("/normal")
     public BaseSuccessResponse<?> getNormalRoomList(@RequestParam(value = "language", required = false) String language,
-                                                    @RequestParam(value = "tier", required = false) String tier,
+                                                    @RequestParam(value = "tier", required = false) Long tier,
                                                     @RequestParam(value = "has-review", required = false) Boolean codeReview,
                                                     @RequestParam(value = "is-solved", required = false) Boolean isSolved,
                                                     @RequestParam(value = "page", required = false) Integer page){
-        log.warn("노말전 방 정보: {}", roomService.getSortedRoomList("normal", language, tier, codeReview, isSolved, page));
-        return BaseSuccessResponse.of(GET_ROOM_LIST_SUCCESS, roomService.getSortedRoomList("normal", language, tier, codeReview, isSolved, page));
+
+        GetRoomListResponse response = roomService.getSortedRoomList("normal", language, tier, codeReview, isSolved, page);
+        log.warn("노말전 방 정보: {}", response);
+
+        return BaseSuccessResponse.of(GET_ROOM_LIST_SUCCESS, response);
     }
 
     // 아이템전 방 리스트 조회
     @GetMapping("/item")
     public BaseSuccessResponse<?> getItemRoomList(@RequestParam(value = "language", required = false) String language,
-                                                  @RequestParam(value = "tier", required = false) String tier,
+                                                  @RequestParam(value = "tier", required = false) Long tier,
                                                   @RequestParam(value = "page", required = false) Integer page){
-        log.warn("아이템전 방 정보: {}", roomService.getSortedRoomList("item", language, tier, null, null, page));
-        return BaseSuccessResponse.of(GET_ROOM_LIST_SUCCESS, roomService.getSortedRoomList("item", language, tier, null, null, page));
+
+        GetRoomListResponse response = roomService.getSortedRoomList("item", language, tier, null, null, page);
+        log.warn("아이템전 방 정보: {}", response);
+
+        return BaseSuccessResponse.of(GET_ROOM_LIST_SUCCESS, response);
     }
 
     // 게임방 정보 조회
@@ -133,8 +141,9 @@ public class RoomController {
     }
 
     @PostMapping("/enter")
-    public BaseSuccessResponse<?> putEnter(@RequestBody PostRoomEnterRequest request){
-        return BaseSuccessResponse.of(POST_ENTER_ROOM_SUCCESS, roomService.enter(request));
+    public BaseSuccessResponse<?> putEnter(Authentication authentication,
+                                           @RequestBody PostRoomEnterRequest request){
+        return BaseSuccessResponse.of(POST_ENTER_ROOM_SUCCESS, roomService.enter(authentication, request));
     }
 
     @DeleteMapping("/exit")
@@ -176,6 +185,13 @@ public class RoomController {
     @PostMapping("/attack")
     public BaseSuccessResponse<?> postAttack(@RequestBody PostAttackRequest request){
         return BaseSuccessResponse.of(POST_ATTACK_SUCCESS, roomService.attackUser(request));
+    }
+
+    @GetMapping("/{room-id}/rank")
+    public BaseSuccessResponse<?> rank(@PathVariable(name = "room-id") String roomId,
+                                       Authentication authentication) {
+        log.info("RoomController.rank");
+        return BaseSuccessResponse.of(GET_RANK_SUCCESS, roomService.rank(roomId, authentication));
     }
 
     @MessageMapping("/item/use")

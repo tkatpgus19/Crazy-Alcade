@@ -1,6 +1,6 @@
 .ovvideo {
-  width: 199px;
-  height: 99px;
+  width: 200px;
+  height: 110px;
   float: left;
   cursor: pointer;
   border-radius: 8px;
@@ -14,9 +14,8 @@
   align-items: flex-end;
   position: absolute;
   border-radius: 5px;
-
   width: 200px;
-  height: 100px;
+  height: 110px;
   color: white;
 }
 
@@ -27,6 +26,7 @@
 
 .nickname {
   font-family: "DNFBitBitv2";
+  -webkit-text-stroke: 1px black;
 }
 /* 
 .videobox {

@@ -33,6 +33,9 @@ public class Code extends BaseTime {
     @Column
     private Long memory;
 
+    @Column
+    private String roomId;
+
     @Enumerated(EnumType.STRING)
     private CodeStatus status;
 
@@ -45,22 +48,24 @@ public class Code extends BaseTime {
     private Problem problem;
 
     @Builder
-    private Code(String content, Language lang, Long time, Long memory, CodeStatus status, Member member, Problem problem) {
+    private Code(String content, Language lang, Long time, Long memory, String roomId, CodeStatus status, Member member, Problem problem) {
         this.content = content;
         this.lang = lang;
         this.time = time;
         this.memory = memory;
+        this.roomId = roomId;
         this.status = status;
         this.member = member;
         this.problem = problem;
     }
 
-    public static Code of(String content, Language lang, Long time, Long memory, CodeStatus status, Member member, Problem problem) {
+    public static Code of(String content, Language lang, Long time, Long memory, String roomId, CodeStatus status, Member member, Problem problem) {
         return builder()
                 .content(content)
                 .lang(lang)
                 .time(time)
                 .memory(memory)
+                .roomId(roomId)
                 .status(status)
                 .member(member)
                 .problem(problem)

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styles from "./Problem.module.css";
 import PropTypes from "prop-types"; // prop-types 임포트
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,28 +9,38 @@ const Problem = ({ problemId, problemTier }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getData = async () => {
-      const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/${problemId}`;
+    if (!problemData) {
+      const getData = async () => {
+        const apiUrl = `${process.env.REACT_APP_BASE_URL}/problems/${problemId}`;
 
-      try {
-        const response = await fetch(apiUrl);
+        try {
+          const response = await fetch(apiUrl);
 
-        if (!response || !response.ok) {
-          throw new Error("서버 응답이 올바르지 않습니다.");
+          if (!response || !response.ok) {
+            throw new Error("서버 응답이 올바르지 않습니다.");
+          }
+
+          const data = await response.json();
+          setProblemData(data.result);
+          setLoading(false);
+        } catch (error) {
+          console.error("데이터를 불러오는 중에 문제가 발생했습니다.", error);
+          setProblemData(null);
+          setLoading(false);
         }
-
-        const data = await response.json();
-        setProblemData(data.result);
-        setLoading(false);
-      } catch (error) {
-        console.error("데이터를 불러오는 중에 문제가 발생했습니다.", error);
-        setProblemData(null);
-        setLoading(false);
+      };
+      if (!problemData && problemId) {
+        getData();
       }
-    };
+    }
+  }, [problemId]);
 
-    getData();
-  }, []);
+  const problemContent = useMemo(() => {
+    if (!problemData) return null; // problemData가 없는 경우 null 반환
+
+    // problemData가 있을 때만 renderProblem 함수 호출
+    return renderProblem(problemData);
+  }, [problemData]); // problemData가 변경될 때만 실행
 
   if (loading) {
     return <div className={styles.loading}>Loading...</div>;
@@ -44,7 +54,7 @@ const Problem = ({ problemId, problemTier }) => {
     );
   }
 
-  return renderProblem(problemData);
+  return problemContent;
 };
 
 const renderProblem = (data) => {

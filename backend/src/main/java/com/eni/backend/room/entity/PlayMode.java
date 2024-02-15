@@ -1,5 +1,16 @@
 package com.eni.backend.room.entity;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public enum PlayMode {
-    NORMAL, ITEM
+
+    NORMAL("normal"),
+    ITEM("item"),
+    ;
+
+    private final String roomType;
+
 }

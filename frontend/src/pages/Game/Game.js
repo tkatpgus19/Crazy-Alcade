@@ -16,8 +16,6 @@ import { useDispatch, useSelector } from "react-redux";
 import octopusImage from "../../assets/images/octopus.png"; // 문어 이미지의 경로
 import inkImage from "../../assets/images/muk.png"; // 먹물 이미지의 경로
 import chickenImage from "../../assets/images/chick.png"; // 병아리 이미지 경로
-import SockJS from "sockjs-client";
-import { Stomp } from "@stomp/stompjs";
 
 function Game() {
   const navigate = useNavigate();
@@ -33,10 +31,10 @@ function Game() {
   const timeCompleted = useSelector((state) => state.timer.timeCompleted);
 
   // 대기 방에서 넘어 온 정보들.
-  const roomId = location.state.roomId;
-  const nickname = location.state.nickname;
-  const userList = location.state.userList;
-  const roomType = location.state.roomType;
+  const roomId = location.state ? location.state.roomId : "roomId";
+  const nickname = location.state ? location.state.nickname : "123";
+  const userList = location.state ? location.state.userList : ["123", "456"];
+  const roomType = location.state ? location.state.roomType : "item";
 
   const [showOctopus, setOctopus] = useState(false);
   const [chickens, setChickens] = useState([]); // 병아리 이미지 상태
@@ -46,7 +44,7 @@ function Game() {
   const [showResult, setShowResult] = useState(false);
 
   const [roomInfo, setRoomInfo] = useState({
-    roomId: "roodId",
+    roomId: "roomId",
     roomType: "normal", // 기본값 설정
     roomName: "Loading...", // 로딩 중임을 알리는 기본값
     language: "language",
@@ -60,6 +58,7 @@ function Game() {
     coin: 0,
     memberItemList: [],
   });
+
   // 더미 방 데이터.
   // const roomInfo = {
   //   roomId: "e50ec323-60ce-4fde-9837-2a393a59897d",
@@ -129,24 +128,12 @@ function Game() {
       }
     };
 
-    fetchRoomInfo();
-    fetchUserInfo();
-    connectSession;
-  }, []);
-
-  const connectSession = () => {
-    const socket = new SockJS(`${process.env.REACT_APP_SOCKET_URL}`);
-    client.current = Stomp.over(socket);
-    client.current.connect({}, onConnected, onError);
-  };
-
-  const onConnected = () => {
-    client.current.subscribe(`/sub/game/` + roomId, onStatusReceived);
-  };
-
-  const onStatusReceived = (payload) => {
-    console.log(JSON.parse(payload.body));
-  };
+    console.log(roomId + "현재룸아이디디디디디");
+    if (roomInfo.roomId === "roomId") {
+      fetchRoomInfo();
+      fetchUserInfo();
+    }
+  }, [roomInfo, userInfo]);
 
   // 게임 모드에 따른 배경 화면 설정
   const backgroundStyle =
@@ -175,7 +162,7 @@ function Game() {
       setOctopus(true); // 문어 이미지를 표시
 
       // 1초 후에 먹물 이미지의 위치를 한 번만 무작위로 계산하여 상태에 저장
-      const newInkSpots = Array(125)
+      const newInkSpots = Array(20)
         .fill(null)
         .map((_, index) => ({
           id: index,
@@ -197,7 +184,7 @@ function Game() {
 
     if (isChickenWalking) {
       // 병아리가 걸어다니는 상태가 활성화되면 병아리를 생성
-      const initialChickens = Array(50)
+      const initialChickens = Array(20)
         .fill(null)
         .map((_, index) => ({
           id: index,
@@ -355,11 +342,7 @@ function Game() {
           </div>
         </Resizable>
       </div>
-      <Footer
-        roomType={roomInfo.roomType}
-        userInfo={userInfo}
-        problemId={roomInfo.problemId}
-      />
+      <Footer roomInfo={roomInfo} userInfo={userInfo} />
       {showOctopus && <OctopusImage />}
       {inkSpotImages}
       {chickenImages}

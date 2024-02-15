@@ -18,16 +18,15 @@
 }
 
 .mainVideo {
-  margin-right: 30px;
-  width: 100%;
-  height: 100%;
+  width: 200px;
+  height: 110px;
   border: 2px solid #000000;
   border-radius: 10px;
 }
 
 .userVideo {
-  width: 14%;
-  height: 100%;
+  width: 200px;
+  height: 110px;
   border: 2px solid #000000;
   border-radius: 10px;
   margin-right: 20px;

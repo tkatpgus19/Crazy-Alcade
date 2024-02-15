@@ -22,10 +22,11 @@ import {
   toggleCamera,
   toggleAudio,
 } from "./slices/settingSlice";
+import roomBackgroundMusicRoom from "../../assets/music/room.mp3";
 
 const Room = () => {
   const SERVER_URL = process.env.REACT_APP_BASE_URL;
-
+  const audioRef = useRef(new Audio(roomBackgroundMusicRoom));
   const messagesEndRef = useRef(null); // messages 참조 생성
 
   const { isMicrophoneOn, isCameraOn, isAudioOn } = useSelector(
@@ -200,7 +201,8 @@ const Room = () => {
       .then((res) => {
         if (res.data.result) {
           console.log("되는거니..?");
-          axios.get(`${SERVER_URL}/rooms/set-timer?roomId=${roomId}`);
+          // axios.get(`${SERVER_URL}/rooms/set-timer?roomId=${roomId}`);
+          client.current.disconnect();
         } else {
           alert("준비가 되지 않았습니다.");
         }
@@ -213,10 +215,8 @@ const Room = () => {
   };
 
   const enterGame = (data) => {
-    console.log(isCameraOn);
-    console.log(isAudioOn);
-    console.log(isMicrophoneOn);
     // 게임방 입장을 위한 로직
+    client.current.disconnect();
     navigate("/game", {
       state: {
         roomId: data.roomId,
@@ -238,6 +238,25 @@ const Room = () => {
   };
 
   useEffect(() => {
+    const audio = audioRef.current;
+    // play()가 Promise를 반환하므로, catch 블록에서 오류를 처리합니다.
+    audio.play().catch((error) => {
+      console.log("재생을 시작하기 위해 사용자 상호작용이 필요합니다.", error);
+      // 필요한 경우, 사용자에게 알리거나 버튼을 통해 재생을 유도할 수 있습니다.
+    });
+
+    const stopAudio = () => {
+      audio.pause();
+      audio.currentTime = 0;
+    };
+
+    // 컴포넌트 언마운트 시 오디오 정지
+    return () => {
+      stopAudio();
+    };
+  }, []);
+
+  useEffect(() => {
     if (messagesEndRef.current) {
       // 스크롤을 컨테이너의 맨 아래로 이동시킵니다.
       const scrollHeight = messagesEndRef.current.scrollHeight;
@@ -246,6 +265,26 @@ const Room = () => {
       messagesEndRef.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
     }
   }, [chatContent]); // chatContent가 변경될 때마다 이 로직을 실행합니다.
+
+  // useEffect(() => {
+  //   // 새로고침을 방지하는 함수
+  //   const handleRefresh = (e) => {
+  //     if (
+  //       e.key === "F5" ||
+  //       ((e.ctrlKey || e.metaKey) && (e.key === "r" || e.key === "R"))
+  //     ) {
+  //       e.preventDefault();
+  //     }
+  //   };
+
+  //   // 이벤트 리스너 등록
+  //   document.addEventListener("keydown", handleRefresh);
+
+  //   // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
+  //   return () => {
+  //     document.removeEventListener("keydown", handleRefresh);
+  //   };
+  // }, []);
 
   return (
     <Background>
