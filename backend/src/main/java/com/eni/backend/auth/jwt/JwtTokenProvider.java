@@ -41,7 +41,7 @@ public class JwtTokenProvider implements InitializingBean {
 
     private Key key;
 
-    private final long accessTokenValidTime = (60 * 1000) * 30; // 30분
+    private final long accessTokenValidTime = (60 * 1000) * 60 * 6; // 6시간
     //    private final long refreshTokenValidTime = (60 * 1000) * 60 * 24 * 7; // 7일
 
     @PostConstruct
