@@ -281,15 +281,18 @@ function Game() {
 
   const handleExitClick = () => {
     // "/main"으로 이동하는 코드
-    axios
-      .delete(
-        `${process.env.REACT_APP_BASE_URL}/rooms/exit?roomId=${roomId}&member-id=${userUUID}&isExpelled=false`
-      )
-      .then((res) => {
-        navigate("/main", { replace: true });
+    const real = confirm("게임이 진행중입니다... 정말로 나가시겠습니까?");
+    if (real) {
+      axios
+        .delete(
+          `${process.env.REACT_APP_BASE_URL}/rooms/exit?roomId=${roomId}&member-id=${userUUID}&isExpelled=false`
+        )
+        .then((res) => {
+          navigate("/main", { replace: true });
 
-        window.location.reload();
-      });
+          window.location.reload();
+        });
+    }
   };
 
   if (isLoading) {
